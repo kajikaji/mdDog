@@ -7,6 +7,7 @@ use Data::Dumper;
 use File::Copy;
 use File::Basename;
 use File::Path;
+use Date::Manip;
 use NKF;
 use MYUTIL;
 
@@ -31,7 +32,11 @@ sub listupFile {
   my $self = shift;
   my @infos;
 
-  my $sql = "select id,file_name,is_used,to_char(created_at,'YYYY-MM-DD hh:mm:ss'),to_char(deleted_at,'YYYY-MM-DD hh:mm:ss') from docx_infos order by is_used DESC, created_at desc, deleted_at desc;";
+  my $sql = "select
+  id,file_name,is_used,to_char(created_at,'YYYY-MM-DD hh:mm:ss'),to_char(deleted_at,'YYYY-MM-DD hh:mm:ss')
+from docx_infos
+where deleted_at is null
+order by is_used DESC, created_at desc;";
 
   my $ary = $self->{dbh}->selectall_arrayref($sql) || $self->errorMessage("DB:Error",1);
   foreach (@$ary)
@@ -75,6 +80,9 @@ sub gitLog {
     my $obj = eval {$_};
     $obj->{message} =~ s/\n/<br>/g;
     $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
+
+    $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
+    $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
 
     push @loglist, $obj;
     $cnt++;
@@ -143,6 +151,8 @@ sub commitFile {
   if($git->diff()){
     $git->add($filename);
     $git->commit({message => $self->qParam('detail')});
+  }else{
+    $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
 }
 
@@ -231,6 +241,11 @@ sub downloadFile {
   my $filename = $ary[0];
   my $filepath = "./$self->{repodir}/$fid/$filename";
 
+  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+  if($rev){
+    $git->checkout($rev);
+  }
+
   print "Content-type:application/octet-stream\n";
   print "Content-Disposition:attachment;filename=$filename\n\n";
 
@@ -239,8 +254,10 @@ sub downloadFile {
   binmode STDOUT;
   while (my $DFdata = <DF>) {
     print STDOUT $DFdata;
-}
+  }
   close DF;
+
+  $git->checkout("master");
 }
 
 1;

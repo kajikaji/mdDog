@@ -17,7 +17,6 @@
 <tbody>
   [% FOREACH info IN infos %]
   <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
-    <td class="id">[% info.id %]</td>
     <td class="info">
 
 [% UNLESS info.deleted_at %]
@@ -44,7 +43,6 @@
       [% END %]
       <div class="file-detail">
         <div class="create-at">作成日：[% info.created_at %]</div>
-        <div class="deleted_at">削除日：[% info.deleted_at %]</div>
       </div>
     </td>
   </tr>
