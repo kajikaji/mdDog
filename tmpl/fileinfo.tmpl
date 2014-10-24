@@ -1,0 +1,48 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE error.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ファイル一覧に戻る</a></li>
+</ul>
+
+<h2>[% file_name %]</h2>
+<div class="description">
+<span class="download-link"><a href="download.cgi?fid=[% fid %]">最新版DL</a></span>
+ファイルのコミット履歴です。
+</div>
+
+<form action="?fid=[% fid %]" method="post" id="docx-upload" class="" enctype="multipart/form-data">
+  <div>docxファイル：<input type="file" name="docxfile"></div>
+  <div>詳細：<input type="text" size="100" name="detail"></div>
+  <div>
+    <input type="submit" name="upload" value="アップロード">
+    <input type="hidden" name="fid" value="[% fid %]">
+  </div>
+</form>
+
+<table class="gitlog">
+<tbody>
+[% FOREACH log IN loglist %]
+  <tr>
+    <td>
+      <ul class="info">
+        <li>rev:<span class="data">[% log.id %]</span></li>
+        <li>author:<span class="data">[% log.attr.author %]</span></li>
+        <li>date:<span class="data">[% log.attr.date %]</span></li>
+      </ul>
+      <div class="message">[% log.message %]</div>
+      <div class="ctrl">
+        <span class="download-link"><a href="download.cgi?fid=[% fid %]&rev=[% log.id %]">download</a></span>
+        [% UNLESS log.is_first %]
+          <span class="diff"*>&gt;&gt; <a href="filediff.cgi?fid=[% fid %]&ver=[% log.id %]">diff</a></spa>
+        [% END %]
+      </div>
+    </td>
+  </tr>
+[% END %]
+</tbody>
+</table>
+
+</body>
+</html>

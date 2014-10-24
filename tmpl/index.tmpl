@@ -1,0 +1,58 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE error.tmpl %]
+<div>[% debug %]</div>
+
+<div class="description">
+管理されているファイル一覧です
+</div>
+
+<form action="" method="post" id="docx-upload" class="" enctype="multipart/form-data">
+  <div class="subject">docxファイルの追加フォーム</div>
+  <div>docxファイル：<input type="file" name="docxfile"></div>
+  <div><input type="submit" name="upload" value="アップロード"></div>
+</form>
+
+<table class="file-list">
+<tbody>
+  [% FOREACH info IN infos %]
+  <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
+    <td class="id">[% info.id %]</td>
+    <td class="info">
+
+[% UNLESS info.deleted_at %]
+<div class="file-ctrl">
+<form action="" method="post">
+[% IF info.is_used %]<input type="submit" name="unuse" value="使用しない">
+[% ELSE %]
+<input type="submit" name="use" value="使用する">
+<input type="submit" name="delete" value="削除する">
+[% END %]
+<input type="hidden" name="fid" value="[% info.id %]">
+</form>
+</div>
+[% END %]
+
+      [% IF info.deleted_at %]
+        [% info.file_name %]
+      [% ELSIF info.is_used %]
+        <a href="fileinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+        <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
+      [% ELSE %]
+        [% info.file_name %]
+        <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
+      [% END %]
+      <div class="file-detail">
+        <div class="create-at">作成日：[% info.created_at %]</div>
+        <div class="deleted_at">削除日：[% info.deleted_at %]</div>
+      </div>
+    </td>
+  </tr>
+  [% END %]
+</tbody>
+</table>
+
+</body>
+</html>
+
+

@@ -1,0 +1,22 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE error.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ファイル一覧に戻る</a></li> 
+<li><a href="fileinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+</ul>
+
+<h2>[% file_name %]</h2>
+<div class="description">リヴィジョン<span class="revision">[% revision %]</span>の差分</div>
+
+<section class="diff-view">
+  <div class="canvas">
+  [% FOREACH obj IN difflist %]<div class="line">
+    <div class="no">[% obj.no %]</div><div class="content">[% obj.content %]</div>
+  </div>[% END %]
+  </div>
+</section>
+
+</body>
+</html>
