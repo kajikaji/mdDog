@@ -12,6 +12,7 @@
 ファイルのコミット履歴です。
 </div>
 
+[% IF login %]
 <form action="?fid=[% fid %]" method="post" id="docx-upload" class="" enctype="multipart/form-data">
   <div>docxファイル：<input type="file" name="docxfile"></div>
   <div>詳細：<input type="text" size="100" name="detail"></div>
@@ -20,6 +21,7 @@
     <input type="hidden" name="fid" value="[% fid %]">
   </div>
 </form>
+[% END %]
 
 <table class="gitlog">
 <tbody>
@@ -33,9 +35,9 @@
       </ul>
       <div class="message">[% log.message %]</div>
       <div class="ctrl">
-        <span class="download-link"><a href="download.cgi?fid=[% fid %]&rev=[% log.id %]">download</a></span>
+        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS log.is_first %]
-          <span class="diff"*>&gt;&gt; <a href="filediff.cgi?fid=[% fid %]&ver=[% log.id %]">diff</a></spa>
+          <span class="diff"*>&gt;&gt; <a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">diff</a></spa>
         [% END %]
       </div>
     </td>

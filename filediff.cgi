@@ -7,11 +7,12 @@ use Data::Dumper;
 
 my $docxlog =DocxLog->new();
 $docxlog->setupConfig();
+$docxlog->login();
 
 if(!$docxlog->qParam('fid')) {
   $docxlog->{t}->{error} = "違法なアクセスです";
 } else {
-  if($docxlog->qParam('ver')){
+  if($docxlog->qParam('revision')){
     $docxlog->gitDiff();
   }
 

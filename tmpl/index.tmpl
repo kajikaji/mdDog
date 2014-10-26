@@ -7,11 +7,13 @@
 管理されているファイル一覧です
 </div>
 
+[% IF login %]
 <form action="" method="post" id="docx-upload" class="" enctype="multipart/form-data">
   <div class="subject">docxファイルの追加フォーム</div>
   <div>docxファイル：<input type="file" name="docxfile"></div>
   <div><input type="submit" name="upload" value="アップロード"></div>
 </form>
+[% END %]
 
 <table class="file-list">
 <tbody>

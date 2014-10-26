@@ -5,3 +5,14 @@ is_used boolean default true,
 created_at timestamp,
 deleted_at timestamp
 );
+
+create table docx_users(
+id serial primary key,
+account text not null,
+password text not null,
+mail text,
+nicname text,
+is_used boolean default true,
+user_type int default 0,
+created_at timestamp
+);

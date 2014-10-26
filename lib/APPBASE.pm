@@ -2,6 +2,7 @@ package APPBASE;
 
 use strict;
 use CGI;
+use CGI::Session;
 use Template;
 use DBI;
 use constant TRUE => 1;
@@ -15,8 +16,11 @@ sub new {
 
   my $hash = {
     q           => new CGI,
+    s           => undef,      #CGI::Session
+    cookie      => undef,
     cginame     => undef,
     basename    => undef,
+    sessiondir  => './sess/',
     templatedir  => './tmpl/',
     tmplfile    => undef,
     t           => undef,
@@ -49,7 +53,14 @@ sub setupConfig {
   $self->{cginame} = $cginame;
   $self->{basename} = $basename;
 
+  #セッションの準備
+  $self->{s} = new CGI::Session("driver:File", $self->{q}, {Directory=>$self->{sessiondir}});
+  $self->{cookie} = $self->{q}->cookie(-name => 'CGISESSID', -value => $self->{s}->id);
+
+  #テンプレートの準備
   $self->setupTmpl($tmplfile);
+
+  #DBの準備
   $self->connectDb() if($self->{dsn} && $self->{duser} && $self->{dpass});
 
   return TRUE;
@@ -97,7 +108,7 @@ sub printPage {
   $self->destroy();
 
   my $tmplobj = Template->new({INCLUDE_PATH => $self->{templatedir}});
-  print $self->{q}->header(-charset => 'utf-8');
+  print $self->{q}->header(-charset => 'utf-8', -cookie => $self->{cookie});
   $tmplobj->process($self->{tmplfile}, $self->{t} ) || die;
 }
 
@@ -166,5 +177,6 @@ sub qParam {
 
   return $self->{q}->param($param);
 }
+
 
 1;

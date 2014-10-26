@@ -28,6 +28,50 @@ sub setupConfig {
   $self->SUPER::setupConfig();
 }
 
+############################################################
+#ログイン処理
+#
+sub login {
+  my $self = shift;
+
+  my $id = $self->{s}->param("login");
+
+  if($self->qParam('login')){
+    my $account = $self->qParam('account');
+    my $password = $self->qParam('password');
+
+    my $sql = "select id from docx_users where account = '$account' and password = md5('$password');";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    if(@ary){
+      $self->{s}->param("login", $ary[0]);
+    }
+  }
+
+  #ログアウト処理
+  if($self->qParam('logout')){
+    $self->{s}->clear("login");
+    $self->{s}->close;
+    $self->{s}->delete;
+  }
+}
+
+
+############################################################
+#出力処理
+#
+sub printPage {
+  my $self = shift;
+
+  if($self->{s}->param("login")){
+    $self->{t}->{login} = $self->{s}->param("login");
+  }
+
+  $self->SUPER::printPage();
+}
+
+############################################################
+#登録されたファイル一覧の取得
+#
 sub listupFile {
   my $self = shift;
   my @infos;
@@ -159,7 +203,7 @@ sub commitFile {
 sub gitDiff{
   my $self = shift;
   my $fid = $self->qParam('fid');
-  my $ver = $self->qParam('ver');
+  my $ver = $self->qParam('revision');
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   my @difflist;
