@@ -15,6 +15,7 @@
 </form>
 [% END %]
 
+[% IF infos %]
 <table class="file-list">
 <tbody>
   [% FOREACH info IN infos %]
@@ -51,6 +52,11 @@
   [% END %]
 </tbody>
 </table>
+[% ELSE %]
+<div class="no-file">
+ファイルは登録されていません
+</div>
+[% END %]
 
 </body>
 </html>

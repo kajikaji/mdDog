@@ -83,19 +83,20 @@ where deleted_at is null
 order by is_used DESC, created_at desc;";
 
   my $ary = $self->{dbh}->selectall_arrayref($sql) || $self->errorMessage("DB:Error",1);
-  foreach (@$ary)
-  {
-    my $info = {
-      id        => $_->[0],
-      file_name => $_->[1],
-      is_used   => $_->[2],
-      created_at => $_->[3],
-      deleted_at => $_->[4],
-    };
-    push @infos, $info;
+  if(@$ary){
+    foreach (@$ary)
+    {
+      my $info = {
+        id        => $_->[0],
+        file_name => $_->[1],
+        is_used   => $_->[2],
+        created_at => $_->[3],
+        deleted_at => $_->[4],
+      };
+      push @infos, $info;
+    }
+    $self->{t}->{infos} = \@infos;
   }
-
-  $self->{t}->{infos} = \@infos;
 }
 
 sub setupFileinfo {

@@ -488,7 +488,6 @@ ul.back-nav:after{
 
 .description{
   margin: 10px;
-  padding: 5px;
   font-size: 11pt;
 }
 .description .revision{
@@ -498,8 +497,12 @@ ul.back-nav:after{
 }
 
 .description .download-link{
-  display: block;
-  
+  display: block;  
+}
+
+.no-file{
+  margin: 10px;
+  color: #888;
 }
 
 form#docx-upload{
