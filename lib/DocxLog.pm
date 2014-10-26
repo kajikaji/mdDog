@@ -125,6 +125,11 @@ sub gitLog {
     my $obj = eval {$_};
     $obj->{message} =~ s/\n/<br>/g;
     $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
+    $obj->{message} =~ s/</&lt;/g;
+    $obj->{message} =~ s/>/&gt;/g;
+
+    $obj->{attr}->{author} =~ s/</&lt;/g;
+    $obj->{attr}->{author} =~ s/>/&gt;/g;
 
     $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
     $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
