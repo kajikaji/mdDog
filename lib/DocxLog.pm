@@ -162,11 +162,12 @@ sub uploadFile {
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
+  my $author = $self->getAuthor($self->{s}->param('login'));
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   $git->init();
   $self->setDocx2Txt($fid);
   $git->add($filename);
-  $git->commit({message => "新規追加"});
+  $git->commit({message => "新規追加", author => $author});
 
   $self->dbCommit();
 }
@@ -192,10 +193,11 @@ sub commitFile {
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
+  my $author = $self->getAuthor($self->{s}->param('login'));
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   if($git->diff()){
     $git->add($filename);
-    $git->commit({message => $self->qParam('detail')});
+    $git->commit({message => $self->qParam('detail'), author => $author});
   }else{
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
@@ -303,6 +305,15 @@ sub downloadFile {
   close DF;
 
   $git->checkout("master");
+}
+
+sub getAuthor {
+  my $self = shift;
+  my $uid = shift;
+
+  my $sql = "select account || ' <' || mail || '>' from docx_users where id = $uid;";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return $ary[0];
 }
 
 1;
