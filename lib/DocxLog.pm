@@ -34,13 +34,11 @@ sub setupConfig {
 sub login {
   my $self = shift;
 
-  my $id = $self->{s}->param("login");
-
   if($self->qParam('login')){
     my $account = $self->qParam('account');
     my $password = $self->qParam('password');
 
-    my $sql = "select id from docx_users where account = '$account' and password = md5('$password');";
+    my $sql = "select id from docx_users where account = '$account' and password = md5('$password') and is_used = true;";
     my @ary = $self->{dbh}->selectrow_array($sql);
     if(@ary){
       $self->{s}->param("login", $ary[0]);
@@ -53,6 +51,20 @@ sub login {
     $self->{s}->close;
     $self->{s}->delete;
   }
+
+  my $id = $self->{s}->param("login");
+  if($id){
+    my $sql = "select account,mail,nic_name,may_admin,may_approve,may_delete from docx_users where id = ${id} and is_used = true;";
+    my $ha = $self->{dbh}->selectrow_hashref($sql);
+    $self->{user} = {
+      account     => $ha->{account},
+      mail        => $ha->{mail},
+      nic_name    => $ha->{nic_name},
+      may_admin   => $ha->{may_admin},
+      may_approve => $ha->{may_approve},
+      may_delete  => $ha->{may_delete},
+    };
+  }
 }
 
 
@@ -64,6 +76,11 @@ sub printPage {
 
   if($self->{s}->param("login")){
     $self->{t}->{login} = $self->{s}->param("login");
+  }
+  if($self->{user}){
+    $self->{t}->{is_admin} = $self->{user}->{may_admin};
+    $self->{t}->{is_approve} = $self->{user}->{may_approve};
+    $self->{t}->{is_delete} = $self->{user}->{may_delete};
   }
 
   $self->SUPER::printPage();
@@ -177,10 +194,15 @@ sub uploadFile {
   $self->dbCommit();
 }
 
+###################################################
+# ユーザーのブランチにコミットする
+#
 sub commitFile {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
+  my $uid = $self->{s}->param("login");
+  my $branch = "user_${uid}";
 
   my $hF = $self->{q}->upload('docxfile');
   my $filename = basename($hF);
@@ -193,16 +215,25 @@ sub commitFile {
     return;
   }
 
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+  my @branches = $git->branch;
+  my $flg = MYUTIL::isInclude(@branches, $branch);
+  if($flg){
+    $git->checkout(${branch});
+  }else{
+    $git->checkout({b => ${branch}});
+  }
+
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   if($git->diff()){
     $git->add($filename);
     $git->commit({message => $self->qParam('detail'), author => $author});
+    $git->checkout("master");
   }else{
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }

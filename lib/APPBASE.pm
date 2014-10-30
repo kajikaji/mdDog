@@ -55,6 +55,7 @@ sub setupConfig {
 
   #セッションの準備
   $self->{s} = new CGI::Session("driver:File", $self->{q}, {Directory=>$self->{sessiondir}});
+  $self->{s}->expire('+1h');
   $self->{cookie} = $self->{q}->cookie(-name => 'CGISESSID', -value => $self->{s}->id);
 
   #テンプレートの準備

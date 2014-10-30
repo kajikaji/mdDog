@@ -23,6 +23,7 @@
     <td class="info">
 
 [% UNLESS info.deleted_at %]
+[% IF is_delete || is_admin %]
 <div class="file-ctrl">
 <form action="" method="post">
 [% IF info.is_used %]<input type="submit" name="unuse" value="使用しない">
@@ -33,6 +34,7 @@
 <input type="hidden" name="fid" value="[% info.id %]">
 </form>
 </div>
+[% END %]
 [% END %]
 
       [% IF info.deleted_at %]

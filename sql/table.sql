@@ -14,5 +14,8 @@ mail text,
 nicname text,
 is_used boolean default true,
 user_type int default 0,
+may_admin boolean default false,
+may_approve boolean default false,
+may_delete boolean default false,
 created_at timestamp
 );

@@ -28,4 +28,23 @@ sub adjustDiffLine {
   return $ret;
 }
 
+sub isInclude {
+  my @ary = shift;
+  my $val = shift;
+  my $ret = undef;
+
+  my $cnt = @ary;
+  my $i = 0;
+  while ($i < $cnt) {
+    my $_val =~ s/^\s*(.*)\s*$/\1/;
+    if($_val == $val){
+      $ret = 1;
+      last;
+    }
+    $i++;
+  }
+
+  return $ret;
+}
+
 1;
