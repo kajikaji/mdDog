@@ -598,57 +598,31 @@ table.file-list tr td .file-ctrl input[type="submit"]{
   -moz-border-radius: 4px;
 }
 
+table.gitlog thead tr th,
 table.gitlog tbody tr td {
-  padding: 3px 5px;
-}
-
-table.gitlog tbody tr td ul {
-  margin-left: 0;
-  margin-bottom: 0;
-  list-style: none;
-}
-
-table.gitlog tbody tr td ul li{
-  float: left;
-  font-size: 9pt;
-  padding: 2px;
-  margin-right: 20px;
-}
-
-table.gitlog tbody tr td ul li .data{
-  font-weight: bold;
-  margin-left: 3px;
-}
-
-table.gitlog tbody tr td ul:before{
-  display: table;
-  content: "";
-  line-height: 0;
-}
-table.gitlog tbody tr td ul:after{
-  display: table;
-  content: "";
-  line-height: 0;
-  clear: both;
-}
-table.gitlog tbody tr td div.id{
   padding: 3px;
-  background-color: #555;
-  color: #eee;
+  font-size: 10pt;
+}
+table.gitlog tbody tr td.date {
+  width: 160px;
+}
+table.gitlog tbody tr td.author {
+  width: 200px;
+}
+table.gitlog tbody tr td.ctrl{
+  width: 80px;
+}
+table.gitlog tbody tr.master{
+  background-color: #fff;
+}
+table.gitlog tbody tr.user-branch{
+  background-color: #e0ffff;
 }
 
-table.gitlog tbody tr td .ctrl{
-  
-}
-
-table.gitlog tbody tr td .ctrl .diff{
-  margin-left: 30px;
-}
-
-table.gitlog tbody tr td .ctrl .download-link a,
-table.gitlog tbody tr td .ctrl .download-link a:hover,
-table.gitlog tbody tr td .ctrl .download-link a:link,
-table.gitlog tbody tr td .ctrl .download-link a:visited{
+table.gitlog tbody tr td.ctrl .download-link a,
+table.gitlog tbody tr td.ctrl .download-link a:hover,
+table.gitlog tbody tr td.ctrl .download-link a:link,
+table.gitlog tbody tr td.ctrl .download-link a:visited{
   font-size: 8pt;
   color: #000;
   border: 1px solid #00a;
@@ -660,13 +634,6 @@ table.gitlog tbody tr td .ctrl .download-link a:visited{
 }
 
 table.gitlog tbody tr td div.message{
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff8dc;
-  border: 3px solid #deb887;
-  border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
 }
 
 

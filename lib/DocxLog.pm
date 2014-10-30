@@ -16,6 +16,7 @@ sub new {
   my $base = $pkg->SUPER::new(@_);
 
   my $hash = {
+    repo_prefix => "user_",
   };
   @{$base}{keys %{$hash}} = values %{$hash};
 
@@ -134,8 +135,11 @@ sub gitLog {
   my $self = shift;
 
   my $fid = $self->qParam("fid");
+  my $uid = $self->{s}->param("login");
+  my $branch = "$self->{repo_prefix}${uid}";
+
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  my @loglist;
+  my %loghash;
   my $cnt = 0;
   for ($git->log)
   {
@@ -151,11 +155,34 @@ sub gitLog {
     $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
     $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
 
-    push @loglist, $obj;
+    my $rev = $obj->{id};
+    $loghash{$rev} = $obj;
     $cnt++;
   }
-  $loglist[$cnt - 1]->{is_first} = 1;
-  $self->{t}->{loglist} = \@loglist;
+  for($git->log($branch)){
+    my $obj = eval {$_};
+    my $rev = $obj->{id};
+    if(!$loghash{$rev}){
+      $obj->{message} =~ s/\n/<br>/g;
+      $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
+      $obj->{message} =~ s/</&lt;/g;
+      $obj->{message} =~ s/>/&gt;/g;
+
+      $obj->{attr}->{author} =~ s/</&lt;/g;
+      $obj->{attr}->{author} =~ s/>/&gt;/g;
+
+      $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
+      $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
+
+      $obj->{local} = 1;
+
+      $loghash{$rev} = $obj;
+    }
+  }
+
+
+#  $loglist[$cnt - 1]->{is_first} = 1;
+  $self->{t}->{loglist} = [values %loghash];
 }
 
 sub uploadFile {
@@ -202,7 +229,7 @@ sub commitFile {
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
-  my $branch = "user_${uid}";
+  my $branch = "$self->{repo_prefix}${uid}";
 
   my $hF = $self->{q}->upload('docxfile');
   my $filename = basename($hF);

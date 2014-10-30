@@ -9,7 +9,7 @@
 <h2>[% file_name %]</h2>
 <div class="description">
 <span class="download-link"><a href="download.cgi?fid=[% fid %]">最新版DL</a></span>
-ファイルのコミット履歴です。
+<h3>更新履歴</h3>
 </div>
 
 [% IF login %]
@@ -22,24 +22,26 @@
   </div>
 </form>
 [% END %]
-
 <table class="gitlog">
+<thead>
+  <tr>
+    <th class="date">更新年月日</th>
+    <th class="message">詳細</th>
+    <th class="author">更新者</th>
+    <th class="ctrl">操作</th>
+  </tr>
+</thead>
 <tbody>
 [% FOREACH log IN loglist %]
-  <tr>
-    <td>
-      <ul class="info">
-        <li>rev:<span class="data">[% log.id %]</span></li>
-        <li>author:<span class="data">[% log.attr.author %]</span></li>
-        <li>date:<span class="data">[% log.attr.date %]</span></li>
-      </ul>
-      <div class="message">[% log.message %]</div>
-      <div class="ctrl">
+  <tr class="[% IF log.local %]user-branch[% ELSE %]master[% END %]">
+    <td class="date">[% log.attr.date %]</td>
+    <td class="message">[% log.message %]</td>
+    <td class="author">[% log.attr.author %]</td>
+    <td class="ctrl">
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
-        [% UNLESS log.is_first %]
-          <span class="diff"*>&gt;&gt; <a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">diff</a></spa>
+        [% UNLESS loop.last %]
+          <br><span class="diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">diff</a></spa>
         [% END %]
-      </div>
     </td>
   </tr>
 [% END %]
