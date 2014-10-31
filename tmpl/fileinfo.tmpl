@@ -40,7 +40,10 @@
     <td class="ctrl">
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS loop.last %]
-          <br><span class="diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">diff</a></spa>
+          <br><span class="diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+        [% END %]
+        [% IF log.local %]
+          <br><span class="master-diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
         [% END %]
     </td>
   </tr>

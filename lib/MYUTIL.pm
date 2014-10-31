@@ -29,19 +29,18 @@ sub adjustDiffLine {
 }
 
 sub isInclude {
-  my @ary = shift;
+  my $branches = shift;
   my $val = shift;
   my $ret = undef;
 
-  my $cnt = @ary;
-  my $i = 0;
-  while ($i < $cnt) {
-    my $_val =~ s/^\s*(.*)\s*$/\1/;
-    if($_val == $val){
+  my @ary = @$branches;
+  foreach(@ary) {
+    my $branch = $_;
+    $branch =~ s/^\s*(.*)\s*$/\1/;
+    if($branch =~ m/${val}/){
       $ret = 1;
       last;
     }
-    $i++;
   }
 
   return $ret;

@@ -136,24 +136,27 @@ sub gitLog {
 
   my $fid = $self->qParam("fid");
   my $uid = $self->{s}->param("login");
-  my $branch = "$self->{repo_prefix}${uid}";
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   my %loghash;
 
-  for ($git->log)
-  {
+  for ($git->log) {
     my $obj = eval {$_};
     my $rev = $obj->{id};
     $loghash{$rev} = $self->adjustLog($obj);
   }
   if($uid){
-    for($git->log($branch)){
-      my $obj = eval {$_};
-      my $rev = $obj->{id};
-      if(!$loghash{$rev}){
-        $obj->{local} = 1;
-        $loghash{$rev} = $self->adjustLog($obj);
+    my $branch = "$self->{repo_prefix}${uid}";
+    my @branches = $git->branch;
+
+    if(MYUTIL::isInclude(\@branches, $branch)){
+      for($git->log($branch)){
+        my $obj = eval {$_};
+        my $rev = $obj->{id};
+        if(!$loghash{$rev}){
+          $obj->{local} = 1;
+          $loghash{$rev} = $self->adjustLog($obj);
+        }
       }
     }
   }
@@ -220,9 +223,9 @@ sub commitFile {
 
   my $author = $self->getAuthor($self->{s}->param('login'));
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+
   my @branches = $git->branch;
-  my $flg = MYUTIL::isInclude(@branches, $branch);
-  if($flg){
+  if(MYUTIL::isInclude(\@branches, $branch)){
     $git->checkout(${branch});
   }else{
     $git->checkout({b => ${branch}});
@@ -246,13 +249,16 @@ sub gitDiff{
   my $self = shift;
   my $fid = $self->qParam('fid');
   my $ver = $self->qParam('revision');
+  my $dist = $self->qParam('dist');
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   my @difflist;
   my $flg = 0;
   my $cnt = 1;
 
-  for ($git->diff("$ver^..$ver"))
+  $dist = "${ver}^" unless($dist);
+
+  for ($git->diff("$dist..$ver"))
   {
     my $line = eval {$_};
     next if(length($line) == 0);

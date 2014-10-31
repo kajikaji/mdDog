@@ -603,6 +603,10 @@ table.gitlog tbody tr td {
   padding: 3px;
   font-size: 10pt;
 }
+table.gitlog thead tr th {
+  background-color: #696969;
+  color: #fff;
+}
 table.gitlog tbody tr td.date {
   width: 160px;
 }
@@ -616,7 +620,7 @@ table.gitlog tbody tr.master{
   background-color: #fff;
 }
 table.gitlog tbody tr.user-branch{
-  background-color: #e0ffff;
+  background-color: #fffaf0;
 }
 
 table.gitlog tbody tr td.ctrl .download-link a,
