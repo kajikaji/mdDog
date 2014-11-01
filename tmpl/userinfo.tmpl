@@ -1,0 +1,8 @@
+[% IF login %]
+<section class="userinfo">
+  <span class="user account">ユーザーアカウント：[% account %]</span>
+  [% IF is_admin %]
+    <span class="user admin"><a href="admin.cgi">[管理ページ]</a></span>
+  [% END %]
+</section>
+[% END %]

@@ -79,6 +79,7 @@ sub printPage {
     $self->{t}->{login} = $self->{s}->param("login");
   }
   if($self->{user}){
+    $self->{t}->{account} = $self->{user}->{account};
     $self->{t}->{is_admin} = $self->{user}->{may_admin};
     $self->{t}->{is_approve} = $self->{user}->{may_approve};
     $self->{t}->{is_delete} = $self->{user}->{may_delete};
