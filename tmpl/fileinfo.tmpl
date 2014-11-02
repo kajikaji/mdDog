@@ -41,10 +41,13 @@
     <td class="ctrl">
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS loop.last %]
-          <br><span class="diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+          <br><span class="diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
         [% END %]
         [% IF log.local %]
-          <br><span class="master-diff"*><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
+          <br><span class="master-diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
+          [% IF is_approve %]
+            <br><span class="commit-approve"><a href="approve.cgi?fuid=[% fid %]&revision=[% log.id %]">ここまでを承認する</a></span>
+          [% END %]
         [% END %]
     </td>
   </tr>
