@@ -122,14 +122,19 @@ sub setupFileinfo {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
+  my $branch = $self->qParam('branch');
+  my $ver = $self->qParam('revision');
   return unless($fid);
 
   my $sql = "select id, file_name, is_used, created_at, deleted_at from docx_infos where id = $fid;";
   my @ary = $self->{dbh}->selectrow_array($sql);
   if(@ary) {
-    $self->{t}->{fid} = $ary[0];
     $self->{t}->{file_name} = $ary[1];
   }
+
+  $self->{t}->{fid} = $fid;
+  $self->{t}->{branch} = $branch;
+  $self->{t}->{revision} = $ver if($ver);
 }
 
 sub gitLog {
@@ -141,22 +146,45 @@ sub gitLog {
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   my %loghash;
 
-  for ($git->log) {
+  #共有リポジトリ(master)
+  for ($git->log("master")) {
     my $obj = eval {$_};
     my $rev = $obj->{id};
+    $obj->{branch} = "master";
     $loghash{$rev} = $self->adjustLog($obj);
   }
-  if($uid){
-    my $branch = "$self->{repo_prefix}${uid}";
-    my @branches = $git->branch;
 
-    if(MYUTIL::isInclude(\@branches, $branch)){
-      for($git->log($branch)){
-        my $obj = eval {$_};
-        my $rev = $obj->{id};
-        if(!$loghash{$rev}){
-          $obj->{local} = 1;
-          $loghash{$rev} = $self->adjustLog($obj);
+  if($uid){
+    if($self->{user}->{may_approve}){
+      #承認者
+      my @branches = $git->branch;
+      foreach (@branches){
+        my $branch = $_;
+        $branch =~ s/^\s*(.*)\s*/\1/;
+        next if($branch =~ m/ master/);
+        for($git->log($branch)){
+          my $obj = eval {$_};
+          my $rev = $obj->{id};
+          if(!$loghash{$rev}){
+            $obj->{local} = 1;
+            $obj->{branch} = $branch;
+            $loghash{$rev} = $self->adjustLog($obj);
+          }
+        }
+      }
+    }else{
+      #一般ユーザー
+      my $branch = "$self->{repo_prefix}${uid}";
+      my @branches = $git->branch;
+      if(MYUTIL::isInclude(\@branches, $branch)){
+        for($git->log($branch)){
+          my $obj = eval {$_};
+          my $rev = $obj->{id};
+          if(!$loghash{$rev}){
+            $obj->{local} = 1;
+            $obj->{branch} = $branch;
+            $loghash{$rev} = $self->adjustLog($obj);
+          }
         }
       }
     }
@@ -165,6 +193,66 @@ sub gitLog {
   $self->{t}->{loglist} = [sort {$b->{attr}->{date} cmp $a->{attr}->{date}} values %loghash];
 }
 
+###################################################
+# 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
+#
+sub setApproveList {
+  my $self = shift;
+
+  my $fid = $self->qParam("fid");
+  my $revision = $self->qParam("revision");
+  my $uid = $self->{s}->param("login");
+#  my $branch = "$self->{repo_prefix}${uid}";
+  my $branch = $self->qParam("branch");
+
+  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+  my %loghash;
+
+  my $flg = undef;
+  for($git->log("master.." . $branch)){
+    my $obj = eval {$_};
+    my $rev = $obj->{id};
+    if($flg
+       || (!$flg && ${rev} eq ${revision}) ){
+      $loghash{$rev} = $self->adjustLog($obj);
+      $flg = 1 unless($flg);
+    }
+  }
+
+  $self->{t}->{loglist} = [sort {$b->{attr}->{date} cmp $a->{attr}->{date}} values %loghash];
+}
+
+###################################################
+#
+#
+sub docApprove {
+  my $self = shift;
+
+  my $fid = $self->qParam("fid");
+  my $revision = $self->qParam("revision");
+  my $uid = $self->{s}->param("login");
+#  my $branch = "$self->{repo_prefix}${uid}";
+  my $branch = $self->qParam("branch");
+
+  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+  $git->checkout("master");
+  my $cnt = 0;
+  for($git->log("master.." . $branch)){
+    my $obj = eval {$_};
+    my $rev = $obj->{id};
+    if($rev eq $revision){
+      last;
+    }
+    $cnt++;
+  }
+  $git->merge($branch . "~${cnt}");
+}
+
+
+###################################################
+# 新規でdocxファイルを登録する
+# その際にアップロードしたユーザーブランチを作成
+#
 sub uploadFile {
   my $self = shift;
 
@@ -191,12 +279,15 @@ sub uploadFile {
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
-  my $author = $self->getAuthor($self->{s}->param('login'));
+  my $uid = $self->{s}->param("login");
+  my $branch = "$self->{repo_prefix}${uid}";
+  my $author = $self->getAuthor(${uid});
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   $git->init();
   $self->setDocx2Txt($fid);
   $git->add($filename);
   $git->commit({message => "新規追加", author => $author});
+  $git->branch($branch);
 
   $self->dbCommit();
 }
@@ -281,7 +372,6 @@ sub gitDiff{
     }
   }
   $self->{t}->{difflist} = \@difflist;
-  $self->{t}->{revision} = $ver;
 }
 
 sub setDocx2Txt {

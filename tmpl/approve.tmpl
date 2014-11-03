@@ -6,13 +6,40 @@
 
 <ul class="back-nav">
 <li><a href="index.cgi">ファイル一覧に戻る</a></li>
+<li><a href="fileinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
 </ul>
 
 <h2>[% file_name %]</h2>
 <div class="description">
 コミットされたファイルの承認
 </div>
-
+  
+<table class="gitlog">
+<thead>
+  <tr>
+    <th class="date">更新年月日</th>
+    <th class="message">詳細</th>
+    <th class="author">更新者</th>
+  </tr>
+</thead>
+<tbody>
+[% FOREACH log IN loglist %]
+  <tr class="[% IF log.local %]user-branch[% ELSE %]master[% END %]">
+    <td class="date">[% log.attr.date %]</td>
+    <td class="message">[% log.message %]</td>
+    <td class="author">[% log.attr.author %]</td>
+  </tr>
+[% END %]
+</tbody>
+</table>
+<form class="approve-form" action="?fid=[% fid %]&branch=[% branch %]&revision=[% revision %]" method="post">
+  <div class="">上記のコミットを承認します</div>
+  <input type="submit" name="approve" value="OK">
+  <a href="fileinfo.cgi?fid=[% fid %]&branch=[% branch %]&revision=[% revision %]">キャンセル</a>
+  <input type="hidden" name="fid" value="[% fid %]">
+  <input type="hidden" name="revision" value="[% revision %]">
+  <input type="hidden" name="branch" value="[% branch %]">
+</form>
 
 </body>
 </html>
