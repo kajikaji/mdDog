@@ -554,28 +554,40 @@ form#docx-upload .subject{
   font-size: 115%;
 }
 
+
+section.gitlog{
+  margin-bottom: 30px;
+}
+
 table.file-list,
 table.gitlog{
   margin: 10px;
   width: 97%;
   box-sizing: border-box;
 }
+section.gitlog .subject{
+  margin-left: 10px;
+  font-weight: bold;
+}
+section.gitlog .description{
+  margin-left :10px;
+  font-size: 80%;
+}
+section.gitlog .description.alert{
+  color: #f00;
+}
 
 table.file-list tr.nonactive {
   background-color: #ccc;
 }
-
 table.file-list tr.nonactive.deleted {
   background-color: #aaa;
 }
-
 table.file-list tr td .file-detail{
   font-size: 8pt;
 }
-
 table.file-list tr td .download-link{
 }
-
 table.file-list tr td .download-link a,
 table.file-list tr td .download-link a:hover,
 table.file-list tr td .download-link a:link,
@@ -589,13 +601,10 @@ table.file-list tr td .download-link a:visited{
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-
-
 table.file-list tr td a{
   display: table;
   margin: 5px;
 }
-
 table.file-list tr td .file-detail div{
   float: left;
   margin-left: 5px;
@@ -610,13 +619,11 @@ table.file-list tr td .file-detail:after{
 table.file-list tr td .file-detail:after{
   clear: both;
 }
-
 table.file-list tr td .file-ctrl{
   float: right;
   font-size: 8pt;
   padding: 3px;
 }
-
 table.file-list tr td .file-ctrl input[type="submit"]{
   background-color: #cd5c5c;
   color: #fff;
@@ -652,7 +659,9 @@ table.gitlog tbody tr.master{
 table.gitlog tbody tr.user-branch{
   background-color: #fffaf0;
 }
-
+table.gitlog tbody tr.user-branch.old{
+  background-color: #aaaaaa;
+}
 table.gitlog tbody tr td.ctrl .download-link a,
 table.gitlog tbody tr td.ctrl .download-link a:hover,
 table.gitlog tbody tr td.ctrl .download-link a:link,
@@ -666,7 +675,6 @@ table.gitlog tbody tr td.ctrl .download-link a:visited{
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;  
 }
-
 table.gitlog tbody tr td div.message{
 }
 

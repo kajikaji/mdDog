@@ -144,53 +144,94 @@ sub gitLog {
   my $uid = $self->{s}->param("login");
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  my %loghash;
+  my @logary;
+  my @userary;
+  my $latest_rev = undef;
 
   #共有リポジトリ(master)
   for ($git->log("master")) {
     my $obj = eval {$_};
     my $rev = $obj->{id};
+    $latest_rev = $rev unless($latest_rev);
     $obj->{branch} = "master";
-    $loghash{$rev} = $self->adjustLog($obj);
+    push @logary, $self->adjustLog($obj);
   }
+  $self->{t}->{loglist} = \@logary;
 
-  if($uid){
+  if($uid){ #ユーザーリポジトリ
+    #自分のリポジトリ
+    my $my_branch = "$self->{repo_prefix}${uid}";
+    my @branches = $git->branch;
+    if(MYUTIL::isInclude(\@branches, $my_branch)){
+      push @userary, $self->getUserLoglist($git, $my_branch, $uid, $self->{user}->{account}, $latest_rev);
+
+#print "Content-type: text/html\n\n";
+#my $tmp = $userary[0]->{loglist};
+#print Dumper $tmp;
+#exit;
+
+    }
+
     if($self->{user}->{may_approve}){
       #承認者
-      my @branches = $git->branch;
       foreach (@branches){
         my $branch = $_;
-        $branch =~ s/^\s*(.*)\s*/\1/;
-        next if($branch =~ m/ master/);
-        for($git->log($branch)){
-          my $obj = eval {$_};
-          my $rev = $obj->{id};
-          if(!$loghash{$rev}){
-            $obj->{local} = 1;
-            $obj->{branch} = $branch;
-            $loghash{$rev} = $self->adjustLog($obj);
-          }
-        }
-      }
-    }else{
-      #一般ユーザー
-      my $branch = "$self->{repo_prefix}${uid}";
-      my @branches = $git->branch;
-      if(MYUTIL::isInclude(\@branches, $branch)){
-        for($git->log($branch)){
-          my $obj = eval {$_};
-          my $rev = $obj->{id};
-          if(!$loghash{$rev}){
-            $obj->{local} = 1;
-            $obj->{branch} = $branch;
-            $loghash{$rev} = $self->adjustLog($obj);
-          }
+        $branch =~ s/^[\s\*]*(.*)\s*/\1/;
+        next if($branch =~ m/master/);
+        next if($branch eq $my_branch);
+        my $uuid = $branch;
+        $uuid =~ s/$self->{repo_prefix}([0-9]*)/\1/;
+        my $userlog = $self->getUserLoglist($git, $branch, $uuid, $self->getAccount($uuid), $latest_rev);
+#print "Content-type: text/html\n\n";
+#print Dumper $userlog->{loglist};
+#exit;
+        if($userlog->{is_live} && ($userlog->{loglist})){ # Todo: loglistがない場合の判定は死んでます！
+          push @userary, $userlog;
         }
       }
     }
   }
+  $self->{t}->{userlist} = \@userary;
+}
 
-  $self->{t}->{loglist} = [sort {$b->{attr}->{date} cmp $a->{attr}->{date}} values %loghash];
+###################################################
+#
+sub getBranchRoot{
+  my $self = shift;
+  my $git = shift;
+  my $branch = shift;
+
+  my @branches = $git->show_branch({"sha1-name" => 1}, master, $branch);
+  my $last = @branches;
+  my $ret = ${branches}[$last - 1];
+  $ret =~ s/.* \[([a-z0-9]+)\].*/\1/;
+
+  return $ret;
+}
+
+###################################################
+#
+sub getUserLoglist {
+  my $self = shift;
+  my $git = shift;
+  my $branch = shift;
+  my $uid = shift;
+  my $account = shift;
+  my $latest_rev = shift;
+  my $branch_root = $self->getBranchRoot($git, $branch);
+
+  my @logary;
+  for($git->log("master.." . $branch)){
+    my $obj = eval {$_};
+    push @logary, ($self->adjustLog($obj));
+  }
+  return {
+    id       => $uid,
+    name     => $account,
+    branch   => $branch,
+    is_live  => $latest_rev =~ m/^$branch_root[0-9a-z]+/ ?1:0,
+    loglist  => \@logary,
+  };
 }
 
 ###################################################
@@ -245,7 +286,7 @@ sub docApprove {
     }
     $cnt++;
   }
-  $git->merge($branch . "~${cnt}");
+  $git->rebase($branch . "~${cnt}");
 }
 
 
@@ -443,6 +484,15 @@ sub downloadFile {
   $git->checkout("master");
 }
 
+sub getAccount {
+  my $self = shift;
+  my $uid = shift;
+
+  my $sql = "select account from docx_users where id = $uid;";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return $ary[0];
+}
+
 sub getAuthor {
   my $self = shift;
   my $uid = shift;
@@ -456,16 +506,16 @@ sub adjustLog {
   my $self = shift;
   my $obj = shift;
 
-    $obj->{message} =~ s/</&lt;/g;
-    $obj->{message} =~ s/>/&gt;/g;
-    $obj->{message} =~ s/\n/<br>/g;
-    $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
+  $obj->{message} =~ s/</&lt;/g;
+  $obj->{message} =~ s/>/&gt;/g;
+  $obj->{message} =~ s/\n/<br>/g;
+  $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
 
-    $obj->{attr}->{author} =~ s/</&lt;/g;
-    $obj->{attr}->{author} =~ s/>/&gt;/g;
+  $obj->{attr}->{author} =~ s/</&lt;/g;
+  $obj->{attr}->{author} =~ s/>/&gt;/g;
 
-    $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
-    $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
+  $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
+  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
 
   return $obj;
 }

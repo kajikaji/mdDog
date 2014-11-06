@@ -23,6 +23,49 @@
   </div>
 </form>
 [% END %]
+
+[% FOREACH user IN userlist %]
+<section class="gitlog user">
+<div class="subject">[% user.name %]さんの編集履歴</div>
+[%UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にコミットした際に古い編集履歴は削除されます</div>[% END %]
+[% IF user.loglist.size == 0 %]
+<div class="gitlog description">編集履歴はありません</div>
+[% ELSE %]
+<table class="gitlog user-branch">
+<thead>
+  <tr>
+    <th class="date">更新年月日</th>
+    <th class="message">詳細</th>
+    <th class="author">更新者</th>
+    <th class="ctrl">操作</th>
+  </tr>
+</thead>
+<tbody>
+[% FOREACH log IN user.loglist %]
+  <tr class="user-branch [% UNLESS user.is_live %]old[% END %]">
+    <td class="date">[% log.attr.date %]</td>
+    <td class="message">[% log.message %]</td>
+    <td class="author">[% log.attr.author %]</td>
+    <td class="ctrl">
+        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
+        [% UNLESS loop.last %]
+          <br><span class="diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+        [% END %]
+        <br><span class="master-diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
+        [% IF is_approve && user.is_live %]
+            <br><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&branch=[% user.branch %]&revision=[% log.id %]">ここまでを承認する</a></span>
+        [% END %]
+    </td>
+  </tr>
+[% END %]
+</tbody>
+</table>
+[% END %]<!-- if user.loglist -->
+</section><!-- gitlog.user -->
+[% END %]<!-- foreach userlist -->
+
+<section class="gitlog master">
+<div class="subject">承認された編集履歴</div>
 <table class="gitlog">
 <thead>
   <tr>
@@ -54,6 +97,7 @@
 [% END %]
 </tbody>
 </table>
+</section><!-- gitlog.master -->
 
 </body>
 </html>
