@@ -164,12 +164,6 @@ sub gitLog {
     my @branches = $git->branch;
     if(MYUTIL::isInclude(\@branches, $my_branch)){
       push @userary, $self->getUserLoglist($git, $my_branch, $uid, $self->{user}->{account}, $latest_rev);
-
-#print "Content-type: text/html\n\n";
-#my $tmp = $userary[0]->{loglist};
-#print Dumper $tmp;
-#exit;
-
     }
 
     if($self->{user}->{may_approve}){
@@ -182,10 +176,7 @@ sub gitLog {
         my $uuid = $branch;
         $uuid =~ s/$self->{repo_prefix}([0-9]*)/\1/;
         my $userlog = $self->getUserLoglist($git, $branch, $uuid, $self->getAccount($uuid), $latest_rev);
-#print "Content-type: text/html\n\n";
-#print Dumper $userlog->{loglist};
-#exit;
-        if($userlog->{is_live} && ($userlog->{loglist})){ # Todo: loglistがない場合の判定は死んでます！
+        if($userlog->{is_live} && (@{$userlog->{loglist}} > 0)){
           push @userary, $userlog;
         }
       }
@@ -272,7 +263,6 @@ sub docApprove {
   my $fid = $self->qParam("fid");
   my $revision = $self->qParam("revision");
   my $uid = $self->{s}->param("login");
-#  my $branch = "$self->{repo_prefix}${uid}";
   my $branch = $self->qParam("branch");
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
@@ -286,7 +276,11 @@ sub docApprove {
     }
     $cnt++;
   }
-  $git->rebase($branch . "~${cnt}");
+
+  my $branch_rebase = $branch;
+  $branch_rebase .= "~${cnt}" if($cnt > 0);
+
+  $git->rebase($branch_rebase);
 }
 
 
@@ -359,6 +353,13 @@ sub commitFile {
 
   my @branches = $git->branch;
   if(MYUTIL::isInclude(\@branches, $branch)){
+    my $latest_rev  = $self->getBranchRoot($git, "master");
+    my $branch_root = $self->getBranchRoot($git, $branch);
+    if($latest_rev ne $branch_root){
+      #ユーザーの古い履歴は不要なので削除
+      $git->branch("-D", $branch);
+      $git->branch($branch);
+    }
     $git->checkout(${branch});
   }else{
     $git->checkout({b => ${branch}});
