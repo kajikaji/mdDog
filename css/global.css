@@ -578,6 +578,21 @@ section.gitlog .description{
 section.gitlog .description.alert{
   color: #f00;
 }
+section.gitlog ul.mdfile-toolbar{
+  list-style: none;
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+section.gitlog ul.mdfile-toolbar li{
+  float: left;
+  margin-right: 5px;
+}
+section.gitlog ul.mdfile-toolbar:after{
+  clear: both;
+  display: table;
+  line-height: 0;
+  content: "";
+}
 
 table.file-list tr.nonactive {
   background-color: #ccc;
@@ -712,7 +727,14 @@ table.gitlog tbody tr td div.message{
   content: "";
   line-height: 0;
 }
-
 .diff-view .canvas .line:after{
   clear: both;
+}
+
+.document {
+  margin: 0 10px 30px;
+  padding: 10px;
+  width: 95%;
+  border: 1px solid #ccc;
+  background-color: #fff;
 }

@@ -8,4 +8,5 @@ gitを利用したdocxファイルの履歴管理ツールです。
 - docx2txt
 - PostgreSQL
 - Git::Wrapper
+- Text::Markdown::Discount
 -その他たくさんのperlのモジュール

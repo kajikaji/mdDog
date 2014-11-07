@@ -24,10 +24,19 @@
 </form>
 [% END %]
 
-[% FOREACH user IN userlist %]
+<section class="gitlog user">
+</section>
+
+[%FOREACH user IN userlist %]
 <section class="gitlog user">
 <div class="subject">[% user.name %]さんの編集履歴</div>
-[%UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にコミットした際に古い編集履歴は削除されます</div>[% END %]
+[% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にコミットした際に古い編集履歴は削除されます</div>[% END %]
+[% IF user.id == login && is_mdfile %]
+<ul class="mdfile-toolbar">
+  <li>[<a href="mdfile_edit.cgi?fid=[% fid %]">編集</a>]</li>
+  <li>[<a href="mdfile_view.cgi?fid=[% fid %]">閲覧</a>]</li>
+</ul>
+[% END %]
 [% IF user.loglist.size == 0 %]
 <div class="gitlog description">編集履歴はありません</div>
 [% ELSE %]

@@ -8,6 +8,7 @@ use File::Copy;
 use File::Basename;
 use File::Path;
 use Date::Manip;
+use Text::Markdown::Discount qw(markdown);
 use NKF;
 use MYUTIL;
 
@@ -130,12 +131,14 @@ sub setupFileinfo {
   my @ary = $self->{dbh}->selectrow_array($sql);
   if(@ary) {
     $self->{t}->{file_name} = $ary[1];
+    $self->{t}->{is_mdfile} = 1 if($ary[1] =~ m/.*\.md/);
   }
 
   $self->{t}->{fid} = $fid;
   $self->{t}->{branch} = $branch;
   $self->{t}->{revision} = $ver if($ver);
 }
+
 
 sub gitLog {
   my $self = shift;
@@ -164,6 +167,8 @@ sub gitLog {
     my @branches = $git->branch;
     if(MYUTIL::isInclude(\@branches, $my_branch)){
       push @userary, $self->getUserLoglist($git, $my_branch, $uid, $self->{user}->{account}, $latest_rev);
+    }else{
+      push @userary, { id => $uid, name => $self->{user}->{account}, branch => $my_branch, is_live => 1, loglist  => [], };
     }
 
     if($self->{user}->{may_approve}){
@@ -556,5 +561,32 @@ sub adjustLog {
   return $obj;
 }
 
+
+############################################################
+# MDドキュメントをテンプレートにセットする
+sub setMDdocument{
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $document;
+
+  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
+  $git->checkout("$self->{repo_prefix}${uid}");
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $document, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+  $git->checkout("master");
+
+  $self->{t}->{document} = markdown($document);
+}
 
 1;
