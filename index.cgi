@@ -11,6 +11,8 @@ $docxlog->login();
 
 if($docxlog->qParam('docxfile')){
   $docxlog->uploadFile();
+}elsif($docxlog->qParam('create')){
+    $docxlog->createFile();
 }elsif($docxlog->qParam('unuse')){
   $docxlog->changeFileInfo('unuse');
 }elsif($docxlog->qParam('use')){

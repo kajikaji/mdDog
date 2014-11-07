@@ -535,7 +535,8 @@ ul.back-nav:after{
   color: #888;
 }
 
-form#docx-upload{
+form#docx-upload,
+form#docx-create{
   margin: 10px;
   margin-bottom: 30px;
   padding: 10px;
@@ -545,11 +546,12 @@ form#docx-upload{
   -moz-border-radius: 5px;
   background-color: #e6e6fa;
 }
-form#docx-upload > div{
+form#docx-upload > div,
+form#docx-create > div{
   margin-bottom: 10px;
 }
-
-form#docx-upload .subject{
+form#docx-upload .subject,
+form#docx-create .subject{
   font-weight: bold;
   font-size: 115%;
 }

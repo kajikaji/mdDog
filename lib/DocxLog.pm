@@ -287,34 +287,71 @@ sub docApprove {
 ###################################################
 # 新規でdocxファイルを登録する
 # その際にアップロードしたユーザーブランチを作成
-#
+# 同名のファイルを許容する
 sub uploadFile {
   my $self = shift;
 
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
   my $hF = $self->{q}->upload('docxfile');
   my $filename = basename($hF);
-  my $sql_check = "select count(*) from docx_infos where file_name = '$filename' and is_used = true;";
-  my @ary_check = $self->{dbh}->selectrow_array($sql_check);
-  if($ary_check[0] > 0){
-    close($hF);
-    $self->{t}->{error} = "同名のファイルが既に登録済です。";
-    return;
-  }
-
-  my $sql_insert = "insert into docx_infos(file_name,created_at) values('$filename',now());";
-  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error uploadFile", 1);
-  my $sql_newfile = "select id from docx_infos where file_name = '$filename' and is_used = true;";
-  my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
-  my $fid = $ary_id[0];
-  mkdir("./$self->{repodir}/$fid",0776)
-    || die "Error:uploadFile can't make a directory($self->{repodir}/$fid)";
+  my $fid = $self->setupNewFile($filename);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
+  $self->gitInitWith1stCommit($uid, $fid, $filename);
+  $self->dbCommit();
+}
+
+###################################################
+# MDファイルを作る
+sub createFile {
+  my $self = shift;
   my $uid = $self->{s}->param("login");
+  
+  my $docname = nkf("-w", $self->qParam('docname'));
+  $docname =~ s/^\s*(.*)\s*$/\1/;
+  $docname =~ s/\s/_/g;
+  $docname =~ s/^(.*)\..*$/\1/;
+  return unless($docname);
+
+  my $filename = $docname . "\.md";
+  my $fid = $self->setupNewFile($filename);
+  my $filepath = $self->{repodir}. "/$fid/$filename";
+  open my $hF, ">", $filepath || die "Create Error!. $filepath";
+  close($hF);
+
+  $self->gitInitWith1stCommit($uid, $fid, $filename);
+  $self->dbCommit();
+}
+
+###################################################
+#
+sub setupNewFile{
+  my $self = shift;
+  my $filename = shift;
+
+ my $sql_insert = "insert into docx_infos(file_name,created_at) values('$filename',now());";
+  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error uploadFile", 1);
+  my $sql_newfile = "select currval('docx_infos_id_seq');";
+  my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
+  my $fid = $ary_id[0];
+  mkdir("./$self->{repodir}/$fid",0776)
+    || die "Error:uploadFile can't make a directory($self->{repodir}/$fid)";
+  return $fid;
+}
+
+###################################################
+#
+sub gitInitWith1stCommit{
+  my $self = shift;
+  my $uid = shift;
+  my $fid = shift;
+  my $filename = shift;
+
   my $branch = "$self->{repo_prefix}${uid}";
   my $author = $self->getAuthor(${uid});
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
@@ -323,8 +360,6 @@ sub uploadFile {
   $git->add($filename);
   $git->commit({message => "新規追加", author => $author});
   $git->branch($branch);
-
-  $self->dbCommit();
 }
 
 ###################################################
