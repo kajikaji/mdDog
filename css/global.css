@@ -470,8 +470,8 @@ hr {
   margin-right: 15px;
 }
 
-h2{
-  padding-left: 10px;
+h1,h2,h3,h4,h5{
+  margin-left: 10px;
 }
 
 .userinfo{
@@ -525,9 +525,11 @@ ul.back-nav:after{
   margin-left: 3px;
   margin-right: 3px;
 }
-
 .description .download-link{
   display: block;  
+}
+.description .mdfile-toolbar{
+  display: block;
 }
 
 .no-file{
@@ -577,21 +579,6 @@ section.gitlog .description{
 }
 section.gitlog .description.alert{
   color: #f00;
-}
-section.gitlog ul.mdfile-toolbar{
-  list-style: none;
-  margin-left: 10px;
-  margin-bottom: 5px;
-}
-section.gitlog ul.mdfile-toolbar li{
-  float: left;
-  margin-right: 5px;
-}
-section.gitlog ul.mdfile-toolbar:after{
-  clear: both;
-  display: table;
-  line-height: 0;
-  content: "";
 }
 
 table.file-list tr.nonactive {
@@ -737,4 +724,16 @@ table.gitlog tbody tr td div.message{
   width: 95%;
   border: 1px solid #ccc;
   background-color: #fff;
+}
+
+form.mdfile-editor {
+  margin :10px 30px 10px 10px;
+}
+form.mdfile-editor .canvas {
+  margin-bottom: 10px;
+}
+form.mdfile-editor .canvas textarea{
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
 }

@@ -8,6 +8,14 @@
 <li><a href="fileinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
 </ul>
 
+<div class="description">
+[% IF login %]
+<div class="mdfile-toolbar">
+<a href="mdfile_edit.cgi?fid=[% fid %]">編集</a>
+</div>
+[% END %]
+</div>
+
 <h2>[% file_name %]</h2>
 
 <section class="document">

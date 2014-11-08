@@ -6,10 +6,21 @@
 <ul class="back-nav">
 <li><a href="index.cgi">ファイル一覧に戻る</a></li> 
 <li><a href="fileinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+<li><a href="mdfile_view.cgi?fid=[% fid %]">閲覧に戻る</a></li>
 </ul>
 
 <h2>[% file_name %]</h2>
+<h3>編集モード</h3>
 
+<form class="mdfile-editor" action="?fid=[% fid %]" method="post">
+  <div class="canvas"><textarea rows="20" name="row_document">[% row_document %]</textarea></div>
+  <div class="ctrl">
+    <input type="submit" name="update" value="一時保存">
+    <input type="submit" name="commit" value="変更を反映">
+    変更履歴：<input type="text" name="comment" size="30">
+    <input type="hidden" name="fid" value="[% fid %]">  
+  </div>
+</form>
 
 </body>
 </html>

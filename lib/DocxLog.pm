@@ -12,6 +12,7 @@ use Text::Markdown::Discount qw(markdown);
 use NKF;
 use MYUTIL;
 
+
 sub new {
   my $pkg = shift;
   my $base = $pkg->SUPER::new(@_);
@@ -147,6 +148,7 @@ sub gitLog {
   my $uid = $self->{s}->param("login");
 
   my $git = Git::Wrapper->new("$self->{repodir}/$fid");
+  $git->checkout("master");
   my @logary;
   my @userary;
   my $latest_rev = undef;
@@ -176,8 +178,9 @@ sub gitLog {
       foreach (@branches){
         my $branch = $_;
         $branch =~ s/^[\s\*]*(.*)\s*/\1/;
-        next if($branch =~ m/master/);
-        next if($branch eq $my_branch);
+        next if($branch =~ m/master/
+                || $branch eq $my_branch
+                || $branch =~ m/.*_tmp/ );
         my $uuid = $branch;
         $uuid =~ s/$self->{repo_prefix}([0-9]*)/\1/;
         my $userlog = $self->getUserLoglist($git, $branch, $uuid, $self->getAccount($uuid), $latest_rev);
@@ -413,10 +416,10 @@ sub commitFile {
   if($git->diff()){
     $git->add($filename);
     $git->commit({message => $self->qParam('detail'), author => $author});
-    $git->checkout("master");
   }else{
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
+  $git->checkout("master");
 }
 
 sub gitDiff{
@@ -567,7 +570,41 @@ sub adjustLog {
 sub setMDdocument{
   my $self = shift;
 
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $document;
+  
   my $uid = $self->{s}->param("login");
+  my $branch = "$self->{repo_prefix}${uid}" if($uid);
+  $branch = "master" unless($branch);
+
+  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
+  my @branches = $git->branch;
+  $branch = "master" unless(MYUTIL::isInclude(\@branches, $branch));
+  $git->checkout($branch);
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $document, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+  $git->checkout("master") if($branch !~ m/master/);
+
+  $self->{t}->{document} = markdown($document);
+}
+
+############################################################
+# MDドキュメントの編集バッファをテンプレートにセットする
+sub setMDdocument_buffer{
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+
   my $fid = $self->qParam('fid');
   my $sql = "select file_name from docx_infos where id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
@@ -577,16 +614,94 @@ sub setMDdocument{
   my $document;
 
   my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
-  $git->checkout("$self->{repo_prefix}${uid}");
+  my $branch = "$self->{repo_prefix}${uid}";
+  my @branches = $git->branch;
+  if(MYUTIL::isInclude(\@branches, "${branch}_tmp")){
+    $git->checkout("${branch}_tmp");
+  }elsif(MYUTIL::isInclude(\@branches, "${branch}")){
+    $git->checkout($branch);
+  }
+
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;
   while (my $length = sysread $hF, $document, 1024, $pos) {
     $pos += $length;
   }
   close $hF;
-  $git->checkout("master");
+  $self->{t}->{row_document} = $document;
 
-  $self->{t}->{document} = markdown($document);
+  $git->checkout("master");
 }
 
+############################################################
+# MDドキュメントの編集バッファを更新する
+sub updateMDdocument_buffer {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $document = $self->qParam('row_document');
+
+  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
+  my $branch = "$self->{repo_prefix}${uid}";
+  my $branch_tmp = "$self->{repo_prefix}${uid}_tmp";
+  my @branches = $git->branch;
+  if(MYUTIL::isInclude(\@branches, $branch_tmp)){
+    $git->checkout($branch_tmp);
+  }else{
+    $git->checkout($branch) if(MYUTIL::isInclude(\@branches, $branch));
+    $git->checkout({b => $branch_tmp});
+  }
+
+  #ファイル書き込み
+  open my $hF, '>', $filepath || die "failed to read ${filepath}";
+  syswrite $hF, $document;
+  close $hF;
+
+  if($git->diff()){
+    my $author = $self->getAuthor($self->{s}->param('login'));
+    $git->add($filename);
+    $git->commit({message => "一時保存", author => $author});
+  }
+  $git->checkout("master");
+}
+
+############################################################
+# MDドキュメントの編集バッファをフィックスする
+sub fixMDdocument_buffer {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  my $fid = $self->qParam('fid');
+  my $comment = $self->qParam('comment');
+  return 0 unless($uid && $fid && $comment);
+
+  $self->updateMDdocument_buffer();
+
+  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
+  my $branch = "$self->{repo_prefix}${uid}";
+  my $branch_tmp = "${branch}_tmp";
+
+  my @logs_tmp = ($git->log($branch . ".." . $branch_tmp));
+  if(@logs_tmp > 0){
+    my $cnt = @logs_tmp;
+    my $author = $self->getAuthor(${uid});
+
+    $git->checkout($branch_tmp);
+    $git->reset({soft => 1}, "HEAD~${cnt}");
+    $git->commit({message => $comment, author => $author});
+    $git->checkout($branch);
+    $git->rebase($branch_tmp);
+    $git->checkout("master");
+  }
+  $git->branch("-D", $branch_tmp);
+
+  return 1;
+}
 1;
