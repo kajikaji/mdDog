@@ -32,13 +32,13 @@
 [% END %]
 </tbody>
 </table>
-<form class="approve-form" action="?fid=[% fid %]&branch=[% branch %]&revision=[% revision %]" method="post">
+<form class="approve-form" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
   <div class="">上記のコミットを承認します</div>
   <input type="submit" name="approve" value="OK">
-  <a href="fileinfo.cgi?fid=[% fid %]&branch=[% branch %]&revision=[% revision %]">キャンセル</a>
+  <a href="fileinfo.cgi?fid=[% fid %]&user=[% user %]&revision=[% revision %]">キャンセル</a>
   <input type="hidden" name="fid" value="[% fid %]">
   <input type="hidden" name="revision" value="[% revision %]">
-  <input type="hidden" name="branch" value="[% branch %]">
+  <input type="hidden" name="user" value="[% user %]">
 </form>
 
 </body>

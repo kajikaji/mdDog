@@ -11,6 +11,7 @@ use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
 use NKF;
 use MYUTIL;
+use DocxLog::GitCtrl;
 
 sub new {
   my $pkg = shift;
@@ -18,6 +19,7 @@ sub new {
 
   my $hash = {
     repo_prefix => "user_",
+    git         => undef,
   };
   @{$base}{keys %{$hash}} = values %{$hash};
 
@@ -26,6 +28,11 @@ sub new {
 
 sub setupConfig {
   my $self = shift;
+
+  if($self->qParam('fid')){
+    my $workdir = "$self->{repodir}/" . $self->qParam('fid');
+    $self->{git} = GitCtrl->new($workdir);
+  }
 
   $self->SUPER::setupConfig();
 }
@@ -90,9 +97,9 @@ sub printPage {
 }
 
 ############################################################
-#登録されたファイル一覧の取得
+#登録されたドキュメント一覧の取得してテンプレートにセット
 #
-sub listupFile {
+sub listupDocuments {
   my $self = shift;
   my @infos;
 
@@ -119,11 +126,13 @@ order by is_used DESC, created_at desc;";
   }
 }
 
-sub setupFileinfo {
+############################################################
+# ドキュメント情報を取得してテンプレートにセット
+sub setDocumentInfo {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
-  my $branch = $self->qParam('branch');
+  my $user = $self->qParam('user');
   my $ver = $self->qParam('revision');
   return unless($fid);
 
@@ -135,53 +144,54 @@ sub setupFileinfo {
   }
 
   $self->{t}->{fid} = $fid;
-  $self->{t}->{branch} = $branch;
+  $self->{t}->{user} = $user;
   $self->{t}->{revision} = $ver if($ver);
 }
 
 
+############################################################
+#
 sub gitLog {
   my $self = shift;
 
   my $fid = $self->qParam("fid");
   my $uid = $self->{s}->param("login");
-
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  my @logary;
   my @userary;
   my $latest_rev = undef;
+  my $gitctrl = $self->{git};
 
   #共有リポジトリ(master)
-  for ($git->log("master")) {
-    my $obj = eval {$_};
-    my $rev = $obj->{id};
-    $latest_rev = $rev unless($latest_rev);
-    $obj->{branch} = "master";
-    push @logary, $self->adjustLog($obj);
-  }
-  $self->{t}->{loglist} = \@logary;
+  $self->{t}->{sharedlist} = $gitctrl->getSharedLogs();
+  $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
   if($uid){ #ユーザーリポジトリ
     #自分のリポジトリ
-    my $my_branch = "$self->{repo_prefix}${uid}";
-    my @branches = $git->branch;
-    if(MYUTIL::isInclude(\@branches, $my_branch)){
-      push @userary, $self->getUserLoglist($git, $my_branch, $uid, $self->{user}->{account}, $latest_rev);
+    my $mylog = {
+      uid     => $uid,
+      name    => $self->{user}->{account},
+      loglist => [],
+    };
+    if($gitctrl->isExistUserBranch($uid)){
+      $mylog->{loglist} = $gitctrl->getUserLogs($uid);
+      my $user_root = $gitctrl->getBranchRoot($uid);
+      $mylog->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }else{
-      push @userary, { id => $uid, name => $self->{user}->{account}, branch => $my_branch, is_live => 1, loglist  => [], };
+      $mylog->{is_live} = 1;
     }
+    push @userary, $mylog;
 
     if($self->{user}->{may_approve}){
       #承認者
-      foreach (@branches){
-        my $branch = $_;
-        $branch =~ s/^[\s\*]*(.*)\s*/\1/;
-        next if($branch =~ m/master/);
-        next if($branch eq $my_branch);
-        my $uuid = $branch;
-        $uuid =~ s/$self->{repo_prefix}([0-9]*)/\1/;
-        my $userlog = $self->getUserLoglist($git, $branch, $uuid, $self->getAccount($uuid), $latest_rev);
-        if($userlog->{is_live} && (@{$userlog->{loglist}} > 0)){
+      foreach($gitctrl->getOtherUsers($uid)){
+        my $userlog = {
+          uid       => $_,
+          name      => $self->getAccount($_),
+          loglist   => $gitctrl->getUserLogs($_),
+        };
+
+        my $userRoot = $gitctrl->getBranchRoot($_);
+        if($latest_rev =~ m/${userRoot}[0-9a-z]+/ && (@{$userlog->{loglist}})) {
+          $userlog->{is_live} = 1;
           push @userary, $userlog;
         }
       }
@@ -191,101 +201,46 @@ sub gitLog {
 }
 
 ###################################################
-#
-sub getBranchRoot{
-  my $self = shift;
-  my $git = shift;
-  my $branch = shift;
-
-  my @branches = $git->show_branch({"sha1-name" => 1}, master, $branch);
-  my $last = @branches;
-  my $ret = ${branches}[$last - 1];
-  $ret =~ s/.* \[([a-z0-9]+)\].*/\1/;
-
-  return $ret;
-}
-
-###################################################
-#
-sub getUserLoglist {
-  my $self = shift;
-  my $git = shift;
-  my $branch = shift;
-  my $uid = shift;
-  my $account = shift;
-  my $latest_rev = shift;
-  my $branch_root = $self->getBranchRoot($git, $branch);
-
-  my @logary;
-  for($git->log("master.." . $branch)){
-    my $obj = eval {$_};
-    push @logary, ($self->adjustLog($obj));
-  }
-  return {
-    id       => $uid,
-    name     => $account,
-    branch   => $branch,
-    is_live  => $latest_rev =~ m/^$branch_root[0-9a-z]+/ ?1:0,
-    loglist  => \@logary,
-  };
-}
-
-###################################################
 # 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
 sub setApproveList {
   my $self = shift;
 
+  my $uid = $self->{s}->param("login");
   my $fid = $self->qParam("fid");
   my $revision = $self->qParam("revision");
-  my $uid = $self->{s}->param("login");
-#  my $branch = "$self->{repo_prefix}${uid}";
-  my $branch = $self->qParam("branch");
+  my $user = $self->qParam("user");
+  return unless($uid && $fid && $revision && $user);
+  my $branch = "$self->{repo_prefix}${user}";
 
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  my %loghash;
-
+  my @logs;
   my $flg = undef;
-  for($git->log("master.." . $branch)){
-    my $obj = eval {$_};
+  my $branches = $self->{git}->getUserLogs($user);
+  for (@$branches){
+    my $obj = eval {($_)};
     my $rev = $obj->{id};
     if($flg
-       || (!$flg && ${rev} eq ${revision}) ){
-      $loghash{$rev} = $self->adjustLog($obj);
+       || (!$flg && $obj->{id} eq ${revision}) ){
+      push @logs, $obj;
       $flg = 1 unless($flg);
     }
   }
-
-  $self->{t}->{loglist} = [sort {$b->{attr}->{date} cmp $a->{attr}->{date}} values %loghash];
+  $self->{t}->{loglist} = \@logs;
 }
 
 ###################################################
-#
+# 指定のユーザーの指定のリヴィジョンを承認して共有化
 #
 sub docApprove {
   my $self = shift;
 
+  my $uid = $self->{s}->param("login");
   my $fid = $self->qParam("fid");
   my $revision = $self->qParam("revision");
-  my $uid = $self->{s}->param("login");
-  my $branch = $self->qParam("branch");
+  my $user = $self->qParam("user");
+  return unless($uid && $fid && $revision && $user);
 
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  $git->checkout("master");
-  my $cnt = 0;
-  for($git->log("master.." . $branch)){
-    my $obj = eval {$_};
-    my $rev = $obj->{id};
-    if($rev eq $revision){
-      last;
-    }
-    $cnt++;
-  }
-
-  my $branch_rebase = $branch;
-  $branch_rebase .= "~${cnt}" if($cnt > 0);
-
-  $git->rebase($branch_rebase);
+  $self->{git}->approve($user, $revision);
 }
 
 
@@ -307,7 +262,9 @@ sub uploadFile {
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
-  $self->gitInitWith1stCommit($uid, $fid, $filename);
+  $self->{git} = GitCtrl->new("$self->{repodir}/${fid}");
+  $self->{git}->init($fid, $filename, $self->getAuthor($uid));
+
   $self->dbCommit();
 }
 
@@ -329,7 +286,9 @@ sub createFile {
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
   close($hF);
 
-  $self->gitInitWith1stCommit($uid, $fid, $filename);
+  $self->{git} = GitCtrl->new("$self->{repodir}/${fid}");
+  $self->{git}->init($fid, $filename, $self->getAuthor($uid));
+
   $self->dbCommit();
 }
 
@@ -349,23 +308,6 @@ sub setupNewFile{
   return $fid;
 }
 
-###################################################
-#
-sub gitInitWith1stCommit{
-  my $self = shift;
-  my $uid = shift;
-  my $fid = shift;
-  my $filename = shift;
-
-  my $branch = "$self->{repo_prefix}${uid}";
-  my $author = $self->getAuthor(${uid});
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  $git->init();
-  $self->setDocx2Txt($fid);
-  $git->add($filename);
-  $git->commit({message => "新規追加", author => $author});
-  $git->branch($branch);
-}
 
 ###################################################
 # ユーザーのブランチにコミットする
@@ -377,6 +319,7 @@ sub commitFile {
   my $uid = $self->{s}->param("login");
   my $branch = "$self->{repo_prefix}${uid}";
 
+  my $message = $self->qParam('detail');
   my $hF = $self->{q}->upload('docxfile');
   my $filename = basename($hF);
 
@@ -388,35 +331,17 @@ sub commitFile {
     return;
   }
 
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-
-  my @branches = $git->branch;
-  if(MYUTIL::isInclude(\@branches, $branch)){
-    my $latest_rev  = $self->getBranchRoot($git, "master");
-    my $branch_root = $self->getBranchRoot($git, $branch);
-    if($latest_rev ne $branch_root){
-      #ユーザーの古い履歴は不要なので削除
-      $git->branch("-D", $branch);
-      $git->branch($branch);
-    }
-    $git->checkout(${branch});
-  }else{
-    $git->checkout({b => ${branch}});
-  }
+  $self->{git}->attachLocal($uid);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
-  if($git->diff()){
-    $git->add($filename);
-    $git->commit({message => $self->qParam('detail'), author => $author});
-    $git->checkout("master");
-  }else{
+  if(!$self->{git}->commit($filename, $self->getAuthor($uid), $message)){
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
+  $self->{git}->detachLocal();
 }
 
 sub gitDiff{
@@ -456,23 +381,21 @@ sub gitDiff{
   $self->{t}->{difflist} = \@difflist;
 }
 
-sub setDocx2Txt {
+###################################################
+#
+sub getBranchRoot{
   my $self = shift;
-  my $fid = shift;
+  my $git = shift;
+  my $branch = shift;
 
-  my $gitd = "$self->{repodir}/$fid/.git";
-  my $attr = "$gitd/info/attributes";
-  my $conf = "$gitd/config";
+  my @branches = $git->show_branch({"sha1-name" => 1}, master, $branch);
+  my $last = @branches;
+  my $ret = ${branches}[$last - 1];
+  $ret =~ s/^.*\[([a-z0-9]+)\].*/\1/;
 
-  open(FILE, "> $attr") || die "Error: file can't create.($attr)";
-  print FILE "*.docx diff=wordx";
-  close(FILE);
-
-  open(FILE, ">> $conf") || die "Error: file can't open. ($conf)";
-  print FILE "\n[diff \"wordx\"]\n";
-  print FILE "    textconv = docx2txt\n";
-  close(FILE);
+  return $ret;
 }
+
 
 sub changeFileInfo {
   my $self = shift;

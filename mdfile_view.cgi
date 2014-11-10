@@ -13,7 +13,7 @@ if(!$docxlog->qParam('fid')) {
   $docxlog->{t}->{error} = "違法なアクセスです";
 } else {
   $docxlog->setMDdocument();
-  $docxlog->setupFileinfo();
+  $docxlog->setDocumentInfo();
 }
 
 $docxlog->printPage();

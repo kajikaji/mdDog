@@ -17,7 +17,7 @@ if(!$docxlog->qParam('fid')) {
   }
 
   $docxlog->gitLog();
-  $docxlog->setupFileinfo();
+  $docxlog->setDocumentInfo();
 }
 
 $docxlog->printPage();

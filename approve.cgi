@@ -11,7 +11,7 @@ $docxlog->login();
 
 if(!$docxlog->qParam('fid')
   || !$docxlog->qParam('revision')
-  || !$docxlog->qParam('branch')) {
+  || !$docxlog->qParam('user')) {
   $docxlog->{t}->{error} = "違法なアクセスです";
 } else {
   #正常系の処理
@@ -22,7 +22,7 @@ if(!$docxlog->qParam('fid')
     exit();
   }
 
-  $docxlog->setupFileinfo();
+  $docxlog->setDocumentInfo();
   $docxlog->setApproveList();
 }
 

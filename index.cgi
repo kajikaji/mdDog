@@ -21,7 +21,7 @@ if($docxlog->qParam('docxfile')){
   $docxlog->changeFileInfo('delete');
 }
 
-$docxlog->listupFile();
+$docxlog->listupDocuments();
 
 $docxlog->printPage();
 exit();

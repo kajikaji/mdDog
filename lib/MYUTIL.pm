@@ -3,6 +3,7 @@ package MYUTIL;
 use strict;
 use NKF;
 use Encode qw/encode decode/;
+use Data::Dumper;
 
 sub adjustDiffLine {
   my $line = shift;
@@ -44,6 +45,19 @@ sub isInclude {
   }
 
   return $ret;
+}
+
+sub DebugExit {
+  my $obj    = shift;
+  my $dumper = shift;
+
+  print "Content-type: text/html\n\n";
+  if($dumper){
+    print Dumper $obj;
+  }else{
+    print $obj;
+  }
+  exit;
 }
 
 1;
