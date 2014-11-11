@@ -18,7 +18,7 @@ if(!$docxlog->qParam('fid')
   if($docxlog->qParam('approve')){
     $docxlog->docApprove();
 
-    print "Location: fileinfo.cgi?fid=".$docxlog->qParam('fid') . "&revision=" . $docxlog->qParam('revision') . "\n\n";
+    print "Location: docinfo.cgi?fid=".$docxlog->qParam('fid') . "&revision=" . $docxlog->qParam('revision') . "\n\n";
     exit();
   }
 

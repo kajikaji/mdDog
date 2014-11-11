@@ -46,7 +46,7 @@
       [% IF info.deleted_at %]
         [% info.file_name %]
       [% ELSIF info.is_used %]
-        <a href="fileinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+        <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
         <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
       [% ELSE %]
         [% info.file_name %]

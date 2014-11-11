@@ -27,6 +27,8 @@ sub new {
   return bless $base, $pkg;
 }
 
+###################################################
+#
 sub setupConfig {
   my $self = shift;
 
@@ -318,7 +320,6 @@ sub commitFile {
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
-  my $branch = "$self->{repo_prefix}${uid}";
 
   my $author = $self->getAuthor($uid);
   my $message = $self->qParam('detail');
@@ -333,7 +334,7 @@ sub commitFile {
     return;
   }
 
-  $self->{git}->attachLocal($uid);
+  $self->{git}->attachLocal($uid, 1);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
@@ -346,59 +347,18 @@ sub commitFile {
   $self->{git}->detachLocal();
 }
 
+###################################################
+#
 sub gitDiff{
   my $self = shift;
-  my $fid = $self->qParam('fid');
   my $ver = $self->qParam('revision');
   my $dist = $self->qParam('dist');
 
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
-  my @difflist;
-  my $flg = 0;
-  my $cnt = 1;
-
-  $dist = "${ver}^" unless($dist);
-
-  for ($git->diff("$dist..$ver"))
-  {
-    my $line = eval {$_};
-    next if(length($line) == 0);
-    next if($line =~ m/^diff --git.*/);
-    if($line =~ m/^index /){
-      $flg = 0;
-      next;
-    }
-    if($flg == 0 && $line =~ m/--- .*/){
-      next;
-    }elsif($flg == 0 && $line =~ m/\+\+\+ .*/){
-      $flg = 1;
-      next;
-    }
-    if($flg == 1){
-      push @difflist, {no => $cnt, content => "$line<br>"};
-#    push @difflist, MYUTIL::adjustDiffLine($obj);
-      $cnt++;
-    }
-  }
-  $self->{t}->{difflist} = \@difflist;
+  $self->{t}->{difflist} = $self->{git}->getDiff($ver, $dist);
 }
 
-###################################################
+############################################################
 #
-sub getBranchRoot{
-  my $self = shift;
-  my $git = shift;
-  my $branch = shift;
-
-  my @branches = $git->show_branch({"sha1-name" => 1}, master, $branch);
-  my $last = @branches;
-  my $ret = ${branches}[$last - 1];
-  $ret =~ s/^.*\[([a-z0-9]+)\].*/\1/;
-
-  return $ret;
-}
-
-
 sub changeFileInfo {
   my $self = shift;
   my $ope = shift;
@@ -420,6 +380,8 @@ sub changeFileInfo {
   $self->dbCommit();
 }
 
+############################################################
+#
 sub downloadFile {
   my $self = shift;
   my $fid = shift;
@@ -450,6 +412,8 @@ sub downloadFile {
   $git->checkout("master");
 }
 
+############################################################
+#
 sub getAccount {
   my $self = shift;
   my $uid = shift;
@@ -459,6 +423,8 @@ sub getAccount {
   return $ary[0];
 }
 
+############################################################
+#
 sub getAuthor {
   my $self = shift;
   my $uid = shift;
@@ -468,28 +434,10 @@ sub getAuthor {
   return $ary[0];
 }
 
-sub adjustLog {
-  my $self = shift;
-  my $obj = shift;
-
-  $obj->{message} =~ s/</&lt;/g;
-  $obj->{message} =~ s/>/&gt;/g;
-  $obj->{message} =~ s/\n/<br>/g;
-  $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
-
-  $obj->{attr}->{author} =~ s/</&lt;/g;
-  $obj->{attr}->{author} =~ s/>/&gt;/g;
-
-  $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
-  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
-
-  return $obj;
-}
-
 
 ############################################################
 # MDドキュメントをテンプレートにセットする
-sub setMDdocument{
+sub setMD{
   my $self = shift;
 
   my $fid = $self->qParam('fid');
@@ -499,29 +447,25 @@ sub setMDdocument{
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document;
-  
   my $uid = $self->{s}->param("login");
-  my $branch = "$self->{repo_prefix}${uid}" if($uid);
-  $branch = "master" unless($branch);
 
-  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
-  my @branches = $git->branch;
-  $branch = "master" unless(MYUTIL::isInclude(\@branches, $branch));
-  $git->checkout($branch);
+  $self->{git}->attachLocal($uid);
+
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;
   while (my $length = sysread $hF, $document, 1024, $pos) {
     $pos += $length;
   }
   close $hF;
-  $git->checkout("master") if($branch !~ m/master/);
+
+  $self->{git}->detachLocal();
 
   $self->{t}->{document} = markdown($document);
 }
 
 ############################################################
 # MDドキュメントの編集バッファをテンプレートにセットする
-sub setMDdocument_buffer{
+sub setMD_buffer{
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -533,17 +477,10 @@ sub setMDdocument_buffer{
   return unless(@ary);
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  $self->{git}->attachLocal_tmp($uid);
+
   my $document;
-
-  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
-  my $branch = "$self->{repo_prefix}${uid}";
-  my @branches = $git->branch;
-  if(MYUTIL::isInclude(\@branches, "${branch}_tmp")){
-    $git->checkout("${branch}_tmp");
-  }elsif(MYUTIL::isInclude(\@branches, "${branch}")){
-    $git->checkout($branch);
-  }
-
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;
   while (my $length = sysread $hF, $document, 1024, $pos) {
@@ -552,12 +489,12 @@ sub setMDdocument_buffer{
   close $hF;
   $self->{t}->{row_document} = $document;
 
-  $git->checkout("master");
+  $self->{git}->detachLocal();
 }
 
 ############################################################
 # MDドキュメントの編集バッファを更新する
-sub updateMDdocument_buffer {
+sub updateMD_buffer {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -570,33 +507,21 @@ sub updateMDdocument_buffer {
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document = $self->qParam('row_document');
 
-  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
-  my $branch = "$self->{repo_prefix}${uid}";
-  my $branch_tmp = "$self->{repo_prefix}${uid}_tmp";
-  my @branches = $git->branch;
-  if(MYUTIL::isInclude(\@branches, $branch_tmp)){
-    $git->checkout($branch_tmp);
-  }else{
-    $git->checkout($branch) if(MYUTIL::isInclude(\@branches, $branch));
-    $git->checkout({b => $branch_tmp});
-  }
+  $self->{git}->attachLocal_tmp($uid, 1);
 
   #ファイル書き込み
   open my $hF, '>', $filepath || die "failed to read ${filepath}";
   syswrite $hF, $document;
   close $hF;
 
-  if($git->diff()){
-    my $author = $self->getAuthor($self->{s}->param('login'));
-    $git->add($filename);
-    $git->commit({message => "一時保存", author => $author});
-  }
-  $git->checkout("master");
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  $self->{git}->commit($filename, $author, "temp saved");
+  $self->{git}->detachLocal();
 }
 
 ############################################################
 # MDドキュメントの編集バッファをフィックスする
-sub fixMDdocument_buffer {
+sub fixMD_buffer {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -604,26 +529,8 @@ sub fixMDdocument_buffer {
   my $comment = $self->qParam('comment');
   return 0 unless($uid && $fid && $comment);
 
-  $self->updateMDdocument_buffer();
-
-  my $git = Git::Wrapper->new("$self->{repodir}/${fid}");
-  my $branch = "$self->{repo_prefix}${uid}";
-  my $branch_tmp = "${branch}_tmp";
-
-  my @logs_tmp = ($git->log($branch . ".." . $branch_tmp));
-  if(@logs_tmp > 0){
-    my $cnt = @logs_tmp;
-    my $author = $self->getAuthor(${uid});
-
-    $git->checkout($branch_tmp);
-    $git->reset({soft => 1}, "HEAD~${cnt}");
-    $git->commit({message => $comment, author => $author});
-    $git->checkout($branch);
-    $git->rebase($branch_tmp);
-    $git->checkout("master");
-  }
-  $git->branch("-D", $branch_tmp);
-
+  $self->updateMD_buffer();
+  $self->{git}->fixTmp($uid, $self->getAuthor($uid), $comment);
   return 1;
 }
 1;

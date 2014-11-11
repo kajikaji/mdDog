@@ -11,7 +11,7 @@
 <div class="description">
 <span class="download-link"><a href="download.cgi?fid=[% fid %]">最新版DL</a></span>
 [% IF is_mdfile %]
-<span class="mdfile-toolbar"><a href="mdfile_view.cgi?fid=[% fid %]">閲覧</a></span>
+<span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %]">閲覧</a></span>
 [% END %]
 </div>
 
@@ -55,9 +55,9 @@
     <td class="ctrl">
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS loop.last %]
-          <br><span class="diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
         [% END %]
-        <br><span class="master-diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
+        <br><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
         [% IF is_approve && user.is_live %]
             <br><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&user=[% user.uid %]&revision=[% log.id %]">ここまでを承認する</a></span>
         [% END %]
@@ -90,7 +90,7 @@
     <td class="ctrl">
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS loop.last %]
-          <br><span class="diff"><a href="filediff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
         [% END %]
     </td>
   </tr>

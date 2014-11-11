@@ -21,6 +21,12 @@ sub new {
   return bless $hash, $pkg;
 }
 
+############################################################
+#ユーザーリポジトリを作成
+# @param1 fid
+# @param2 "filename"
+# @param3 "author"
+#
 sub init{
   my $self = shift;
   my $fid = shift;
@@ -34,6 +40,9 @@ sub init{
 }
 
 
+############################################################
+#共有リポジトリの履歴を返す
+#
 sub getSharedLogs {
   my $self = shift;
   my @logs;
@@ -46,6 +55,10 @@ sub getSharedLogs {
 }
 
 
+############################################################
+#ユーザーがリポジトリを所有するか確認
+# @param1 uid
+#
 sub isExistUserBranch {
   my $self = shift;
   my $uid = shift;
@@ -55,6 +68,10 @@ sub isExistUserBranch {
   return MYUTIL::isInclude(\@branches, $branch);
 }
 
+############################################################
+#指定のユーザーの共有リポジトリ分岐後の履歴を返す
+# @param1 uid
+#
 sub getUserLogs {
   my $self = shift;
   my $uid = shift;
@@ -69,6 +86,10 @@ sub getUserLogs {
   return \@userlogs;
 }
 
+############################################################
+#編集リポジトリを所有するユーザー一覧を返す
+# @param uid
+#
 sub getOtherUsers {
   my $self = shift;
   my $uid = shift;
@@ -88,22 +109,34 @@ sub getOtherUsers {
 }
 
 
+############################################################
+#共有リポジトリから分岐したリヴィジョンを返す
+# @param1 uid
+# @param2 編集バッファフラグ:無指定だと通常のユーザーリポジトリを精査
+#
 sub getBranchRoot {
   my $self = shift;
   my $uid = shift;
+  my $isTmp = shift;
 
   my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
-#  if($uid) { $branch = "$self->{branch_prefix}${uid}"; }
-#  else { $branch= "master" };
+  $branch .= "_tmp" if($uid && $isTmp);
+  my @branches = $self->{git}->branch;
+  return 0 if(!MYUTIL::isInclude(\@branches, $branch));
 
-  my @branches = $self->{git}->show_branch({"sha1-name" => 1}, "master", $branch);
-  my $last = @branches;
-  my $ret = ${branches}[$last - 1];
+  my @show_branches = $self->{git}->show_branch({"sha1-name" => 1}, "master", $branch);
+  my $last = @show_branches;
+  my $ret = ${show_branches}[$last - 1];
   $ret =~ s/^.*\[([a-z0-9]+)\].*/\1/;
 
   return $ret;
 }
 
+############################################################
+#ドキュメントを承認して共有する
+# @param1 uid
+# @param2 revision
+#
 sub approve {
   my $self = shift;
   my $uid = shift;
@@ -128,6 +161,53 @@ sub approve {
   $gitctrl->rebase($branch_rebase);
 }
 
+############################################################
+#リヴィジョン間のdiffを取って結果をリストで返す
+# @param1 "バージョン"
+# @param2 "比較対象のバージョン":無指定だと前バージョン
+#
+sub getDiff {
+  my $self = shift;
+  my $ver = shift;
+  my $dist = shift;
+
+  my $gitctrl = $self->{git};
+  my @difflist;
+  my $flg = 0;
+  my $cnt = 1;
+
+  $dist = "${ver}^" unless($dist);
+
+  for ($gitctrl->diff("$dist..$ver"))
+  {
+    my $line = eval {$_};
+    next if(length($line) == 0);
+    next if($line =~ m/^diff --git.*/);
+    if($line =~ m/^index /){
+      $flg = 0;
+      next;
+    }
+    if($flg == 0 && $line =~ m/--- .*/){
+      next;
+    }elsif($flg == 0 && $line =~ m/\+\+\+ .*/){
+      $flg = 1;
+      next;
+    }
+    if($flg == 1){
+      push @difflist, {no => $cnt, content => "$line<br>"};
+#    push @difflist, MYUTIL::adjustDiffLine($obj);
+      $cnt++;
+    }
+  }
+  return \@difflist;
+}
+
+############################################################
+#リポジトリにコミット
+# @param1 filename
+# @param2 "author"
+# @param3 "commit message"
+#
 sub commit {
   my $self = shift;
   my $filename = shift;
@@ -143,28 +223,80 @@ sub commit {
   return 0;
 }
 
+############################################################
+#ユーザーリポジトリを用意する
+# @param1 uid
+# @param2 isCreate: 1だと強制でリポジトリ作成
+#
 sub attachLocal {
   my $self = shift;
   my $uid = shift;
+  my $isCreate = shift;
 
   my $gitctrl = $self->{git};
   my @branches = $gitctrl->branch;
-  my $branch = "$self->{branch_prefix}${uid}";
+  my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
 
   if(MYUTIL::isInclude(\@branches, $branch)){
-    my $latest_rev  = $self->getBranchRoot();
-    my $branch_root = $self->getBranchRoot($uid);
-    if($latest_rev ne $branch_root){
-      #ユーザーの古い履歴は不要なので削除
-      $gitctrl->branch("-D", $branch);
-      $gitctrl->branch($branch);
+    if($isCreate){
+      my $latest_rev  = $self->getBranchRoot();
+      my $branch_root = $self->getBranchRoot($uid);
+      if($latest_rev ne $branch_root){
+        #ユーザーの古い履歴は不要なので削除
+        $gitctrl->branch("-D", $branch);
+        $gitctrl->branch($branch);
+      }
     }
     $gitctrl->checkout(${branch});
-  }else{
+  }elsif($isCreate){
     $gitctrl->checkout({b => ${branch}});
   }
 }
 
+############################################################
+#編集バッファを用意する
+# @param1 uid
+# @param2 isCreate: 1だと編集バッファを強制で作成
+#
+sub attachLocal_tmp {
+  my $self = shift;
+  my $uid = shift;
+  my $isCreate = shift;
+
+  my $gitctrl = $self->{git};
+  my @branches = $gitctrl->branch;
+  my $branch     = "$self->{branch_prefix}${uid}";
+  my $branch_tmp = "$self->{branch_prefix}${uid}_tmp";
+
+  my $flg = MYUTIL::isInclude(\@branches, $branch);
+  my $flg_tmp = MYUTIL::isInclude(\@branches, $branch_tmp);
+
+  if($flg && $flg_tmp){
+    if($self->getBranchRoot($uid) ne $self->getBranchRoot($uid, 1)){
+      $gitctrl->branch("-D", $branch_tmp);
+      $gitctrl->checkout($branch);
+      $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+    }else{
+      $gitctrl->checkout($branch_tmp);
+    }
+  }elsif($flg && !$flg_tmp){
+    $gitctrl->checkout($branch);
+    $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+  }elsif(!$flg && $flg_tmp){
+    if($self->getBranchRoot() ne $self->getBranchRoot($uid, 1)){
+      $gitctrl->branch("-D", $branch_tmp);
+      $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+    }else{
+      $gitctrl->checkout($branch_tmp);
+    }
+  }else{
+    $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+  }
+}
+
+############################################################
+#attachLocalまたはattachLocal_tmpの呼出し後、処理の最後に必ず呼ぶこと
+#
 sub detachLocal {
   my $self = shift;
 
@@ -172,6 +304,43 @@ sub detachLocal {
   $self->{git}->checkout("master");
 }
 
+############################################################
+#編集バッファをユーザーリポジトリに反映
+# @param1 uid 
+# @param2 "author"
+# @param3 "commit message"
+#
+sub fixTmp {
+  my $self = shift;
+  my $uid = shift;
+  my $author = shift;
+  my $message = shift;
+
+  my $branch = "$self->{branch_prefix}${uid}";
+  my $branch_tmp = "${branch}_tmp";
+  my $gitctrl = $self->{git};
+
+  my @branches = $gitctrl->branch;
+  return unless(MYUTIL::isInclude(\@branches, $branch_tmp));
+  $gitctrl->branch($branch) unless(MYUTIL::isInclude(\@branches, $branch));
+
+  my @logs_tmp = ($gitctrl->log($branch . ".." . $branch_tmp));
+  if(@logs_tmp > 0){
+    my $cnt = @logs_tmp;
+    $gitctrl->checkout($branch_tmp);
+    $gitctrl->reset({soft => 1}, "HEAD~${cnt}");
+    $gitctrl->commit({message => $message, author => $author});
+    $gitctrl->checkout($branch);
+    $gitctrl->rebase($branch_tmp);
+    $gitctrl->checkout("master");
+  }
+  $gitctrl->branch("-D", $branch_tmp);
+}
+
+############################################################
+#gitのログを適切な文字列に整形
+# @param1 ログオブジェクト
+#
 sub adjustLog {
   my $self = shift;
   my $obj = shift;
@@ -190,6 +359,10 @@ sub adjustLog {
   return $obj;
 }
 
+############################################################
+#gitリポジトリでdocxモジュールを使う準備
+# @param1 fid
+#
 sub setDocx2Txt {
   my $self = shift;
   my $fid = shift;

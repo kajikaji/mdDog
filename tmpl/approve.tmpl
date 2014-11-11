@@ -6,7 +6,7 @@
 
 <ul class="back-nav">
 <li><a href="index.cgi">ファイル一覧に戻る</a></li>
-<li><a href="fileinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+<li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
 </ul>
 
 <h2>[% file_name %]</h2>
@@ -35,7 +35,7 @@
 <form class="approve-form" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
   <div class="">上記のコミットを承認します</div>
   <input type="submit" name="approve" value="OK">
-  <a href="fileinfo.cgi?fid=[% fid %]&user=[% user %]&revision=[% revision %]">キャンセル</a>
+  <a href="docinfo.cgi?fid=[% fid %]&user=[% user %]&revision=[% revision %]">キャンセル</a>
   <input type="hidden" name="fid" value="[% fid %]">
   <input type="hidden" name="revision" value="[% revision %]">
   <input type="hidden" name="user" value="[% user %]">

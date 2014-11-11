@@ -14,17 +14,17 @@ if(!$docxlog->qParam('fid')) {
 } else {
   if($docxlog->qParam('update')){
     #一時保存
-    $docxlog->updateMDdocument_buffer();
+    $docxlog->updateMD_buffer();
   }elsif($docxlog->qParam('commit')){
     #変更を反映 変更履歴は必須
-    #Todo: ユーザーリポジトリに反映してmdfile_view.cgiにリダイレクト
-    if($docxlog->fixMDdocument_buffer()){
-	print "Location: mdfile_view.cgi?fid=" . $docxlog->qParam('fid') . "\n\n";
+    #Todo: ユーザーリポジトリに反映してmd_view.cgiにリダイレクト
+    if($docxlog->fixMD_buffer()){
+	print "Location: md_view.cgi?fid=" . $docxlog->qParam('fid') . "\n\n";
 	exit();
     }
   }
-  $docxlog->setMDdocument_buffer();
-  $docxlog->setupFileinfo();
+  $docxlog->setMD_buffer();
+  $docxlog->setDocumentInfo();
 }
 
 $docxlog->printPage();
