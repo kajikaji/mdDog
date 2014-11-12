@@ -1,0 +1,331 @@
+$corner_b: 5px;
+@mixin _border_radius ($radius) {
+  border-radius: $radius;
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+}
+@mixin list_table() {
+  margin: 10px;
+  width: 97%;
+  box-sizing: border-box;
+}
+@mixin clearfix() {
+  &:after{
+    clear: both;
+  }
+  &:after,&:before{
+    display: table;
+    content: "";
+    line-height: 0;
+  }
+}
+
+.app-header{
+  border-bottom: 3px double #4169e1;
+  margin-top: 5px;
+  padding-left: 10px;
+
+  >div {
+    float: left;
+  }
+
+  .login-form{
+    float: right;
+  }
+  @include clearfix();
+
+  .title{
+    font-size: 48pt;
+    a,
+    a:hover,
+    a:visited,
+    a:link,
+    a:active{
+      color: #000;
+      font-style: none;
+    }
+  }
+
+  .login-form{
+    text-align: right;
+    margin: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 10pt;
+
+    form input{
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+    }
+    Formo span{
+      margin-right: 15px;
+    }
+  }
+}
+
+
+h1,h2,h3,h4,h5{
+  margin-left: 10px;
+}
+
+.userinfo{
+  background-color: #4169e1;
+  color: #fff;
+  font-size: 9pt;
+  padding: 3px 0;
+
+  .user{
+    margin-left: 10px;
+  }
+
+  .admin{
+    a,
+    a:hover,
+    a:visited,
+    a:link,
+    a:active{
+      color: #fff;
+    }
+    a:hover{
+      text-decoration: underline;
+    }
+  }
+}
+
+ul.back-nav{
+  list-style: none;
+  margin: 0;
+  margin-left: 10px;
+
+  li{
+    float: left;
+    margin-right: 20px;
+    a:before {
+      content: "<< ";
+    }
+  }
+  @include clearfix();
+}
+
+
+.description{
+  margin: 10px;
+  font-size: 11pt;
+
+  .revision{
+    font-weight: bold;
+    margin-left: 3px;
+    margin-right: 3px;
+  }
+  .download-link{
+    display: block;  
+  }
+  .mdfile-toolbar{
+    display: block;
+  }
+}
+
+.no-file{
+  margin: 10px;
+  color: #888;
+}
+
+form#docx-upload,
+form#docx-create{
+  margin: 10px;
+  margin-bottom: 30px;
+  padding: 10px;
+  border: 3px solid #778899;
+  background-color: #e6e6fa;
+  @include _border_radius($corner_b);
+
+  > div{
+    margin-bottom: 10px;
+  }
+  .subject{
+    font-weight: bold;
+    font-size: 115%;
+  }
+}
+
+
+section.gitlog{
+  margin-bottom: 30px;
+}
+
+
+section.gitlog{
+ .subject{
+    margin-left: 10px;
+    font-weight: bold;
+  }
+  .description{
+    margin-left :10px;
+    font-size: 80%;
+    &.alert{
+      color: #f00;
+    }
+  }
+}
+
+
+table.file-list{
+  @include list_table;
+
+  tr{
+    &.nonactive {
+      background-color: #ccc;
+      &.deleted {
+        background-color: #aaa;
+      }
+    }
+    td{
+      .file-detail{
+          font-size: 8pt;
+      }
+      .download-link{
+          a,
+          a:hover,
+          a:link,
+          a:visited{
+              font-size: 8pt;
+              color: #000;
+              border: 1px solid #00a;
+              background-color: #aaf;
+              padding: 2p;
+              @include _border_radius(3px);
+          }
+      }
+      a{
+          display: table;
+          margin: 5px;
+      }
+      .file-detail{
+        div{
+          float: left;
+          margin-left: 5px;
+          margin-right: 20px;
+        }
+        @include clearfix();
+      }
+
+      .file-ctrl{
+        float: right;
+        font-size: 8pt;
+        padding: 3px;
+        input[type="submit"]{
+              background-color: #cd5c5c;
+              color: #fff;
+              text-align: center;
+              padding-top: 4px;
+              border: none;
+              @include _border_radius($corner_b);
+        }
+      }
+    }
+  }
+}
+
+table.gitlog{
+  @include list_table;
+
+  thead tr th,
+  tbody tr td {
+      padding: 3px;
+      font-size: 10pt;
+  }
+  thead tr th {
+      background-color: #696969;
+      color: #fff;
+  }
+  tbody{
+    tr{
+      &.master{
+          background-color: #fff;
+      }
+      &.user-branch{
+          background-color: #fffaf0;
+      }
+      &.user-branch.old{
+          background-color: #aaaaaa;
+      }
+
+      td{
+          div.message{
+          }
+          &.date {
+              width: 160px;
+          }
+          &.author {
+              width: 200px;
+          }
+          &.ctrl{
+            width: 80px;
+            .download-link{
+                  a,
+                  a:hover,
+                  a:link,
+                  a:visited{
+                      font-size: 8pt;
+                      color: #000;
+                      border: 1px solid #00a;
+                      background-color: #aaf;
+                      padding: 2p;
+                      border-radius: 3px;
+                      -webkit-border-radius: 3px;
+                      -moz-border-radius: 3px;  
+                  }
+            }
+          }
+      }
+    }
+  }
+}
+
+.diff-view {
+  padding: 10px;
+  .canvas{
+    padding: 5px;
+    border: 1px solid #333;
+    font-size: 10pt;
+    .line{
+        .no, .content{
+          float: left;
+        }
+        .no {
+          width: 50px;
+          padding: 1px 5px 1px 0;
+          margin-right: 10px;
+          text-align: right;
+          background-color: #aaa;
+          color: #eee;
+          font-size: 8pt;
+        }
+        @include clearfix();
+    }
+  }
+}
+
+
+
+.document {
+  margin: 0 10px 30px;
+  padding: 10px;
+  width: 95%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+form.mdfile-editor {
+  margin :10px 30px 10px 10px;
+  .canvas {
+    margin-bottom: 10px;
+    textarea{
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+  }
+}
+
