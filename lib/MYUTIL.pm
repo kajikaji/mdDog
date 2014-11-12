@@ -37,8 +37,8 @@ sub isInclude {
   my @ary = @$branches;
   foreach(@ary) {
     my $branch = $_;
-    $branch =~ s/^\s*(.*)\s*$/\1/;
-    if($branch =~ m/${val}/){
+    $branch =~ s/^[\s\*]*(.*)\s*$/\1/;
+    if($branch =~ m/^${val}$/){
       $ret = 1;
       last;
     }
