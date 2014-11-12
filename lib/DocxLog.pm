@@ -488,8 +488,8 @@ sub setMD_buffer{
   }
   close $hF;
   $self->{t}->{row_document} = $document;
-
   $self->{git}->detachLocal();
+  $self->{t}->{style} = "source";
 }
 
 ############################################################

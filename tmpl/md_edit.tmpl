@@ -10,8 +10,13 @@
 </ul>
 
 <h2>[% file_name %]</h2>
-<h3>編集モード</h3>
-
+<h3>編集バッファ</h3>
+[% SWITCH style %]
+[% CASE source %]
+<ul class="md_menu">
+  <li class="active">ソース</li>
+  <li><a href="?style=preview">プレビュー</a></li>
+</ul>
 <form class="mdfile-editor" action="?fid=[% fid %]" method="post">
   <div class="canvas"><textarea rows="20" name="row_document">[% row_document %]</textarea></div>
   <div class="ctrl">
@@ -21,6 +26,12 @@
     <input type="hidden" name="fid" value="[% fid %]">  
   </div>
 </form>
+[% CASE preview %]
+<ul class="md_menu">
+  <li><a href="?style=source">ソース</a></li>
+  <li class="active">プレビュー</li>
+</ul>
+[% END %]
 
 </body>
 </html>

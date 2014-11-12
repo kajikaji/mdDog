@@ -23,7 +23,11 @@ if(!$docxlog->qParam('fid')) {
 	exit();
     }
   }
-  $docxlog->setMD_buffer();
+
+  if($docxlog->qParam('style') eq "preview"){
+  }else{
+    $docxlog->setMD_buffer();
+  }
   $docxlog->setDocumentInfo();
 }
 

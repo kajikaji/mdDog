@@ -307,18 +307,8 @@ table.gitlog{
   }
 }
 
-
-
-.document {
-  margin: 0 10px 30px;
-  padding: 10px;
-  width: 95%;
-  border: 1px solid #ccc;
-  background-color: #fff;
-}
-
 form.mdfile-editor {
-  margin :10px 30px 10px 10px;
+  margin :0 30px 10px 10px;
   .canvas {
     margin-bottom: 10px;
     textarea{
@@ -329,3 +319,62 @@ form.mdfile-editor {
   }
 }
 
+ul.md_menu{
+  list-style: none;
+  margin: 0 0 0 10px;
+  li {
+    float: left;
+    width: 120px;
+    text-align: center;
+    border: 1px solid #333;
+    border-bottom: none;
+    background-color: #dfdfdf;
+    font-size: 12px;
+    padding: 2px;
+
+    &:first-child {
+      border-right: none;
+    }
+    &.active {
+      background-color: #fff;
+    }
+    a,
+    a:hover,
+    a:link,
+    a.visited {
+      display: block;
+      width: 100%;
+      color: #333;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    a:hover{
+      background-color: #fee;
+    }
+  }
+  @include clearfix();
+}
+
+.document {
+  margin: 0 10px 30px;
+  padding: 10px;
+  width: 95%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+
+  h1,h2,h3,h4,h5,h6,h7{
+    margin: 0 0 10px 0;
+    padding: 0;
+  }
+  h1{ font-size: 40px; }
+  h2{ font-size: 28px; }
+  h3{ font-size: 20px; }
+  h4{ font-size: 16px; }
+  p{
+    margin: 0 0 10px 0;
+    padding: 0;
+  }
+  ol,ul{
+    margin-left: 28px;
+  }
+}

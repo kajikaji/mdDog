@@ -223,18 +223,68 @@ table.gitlog {
       content: "";
       line-height: 0; }
 
-.document {
-  margin: 0 10px 30px;
-  padding: 10px;
-  width: 95%;
-  border: 1px solid #ccc;
-  background-color: #fff; }
-
 form.mdfile-editor {
-  margin: 10px 30px 10px 10px; }
+  margin: 0 30px 10px 10px; }
   form.mdfile-editor .canvas {
     margin-bottom: 10px; }
     form.mdfile-editor .canvas textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 10px; }
+
+ul.md_menu {
+  list-style: none;
+  margin: 0 0 0 10px; }
+  ul.md_menu li {
+    float: left;
+    width: 120px;
+    text-align: center;
+    border: 1px solid #333;
+    border-bottom: none;
+    background-color: #dfdfdf;
+    font-size: 12px;
+    padding: 2px; }
+    ul.md_menu li:first-child {
+      border-right: none; }
+    ul.md_menu li.active {
+      background-color: #fff; }
+    ul.md_menu li a,
+    ul.md_menu li a:hover,
+    ul.md_menu li a:link,
+    ul.md_menu li a.visited {
+      display: block;
+      width: 100%;
+      color: #333;
+      font-weight: bold;
+      text-decoration: none; }
+    ul.md_menu li a:hover {
+      background-color: #fee; }
+  ul.md_menu:after {
+    clear: both; }
+  ul.md_menu:after, ul.md_menu:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+
+.document {
+  margin: 0 10px 30px;
+  padding: 10px;
+  width: 95%;
+  border: 1px solid #ccc;
+  background-color: #fff; }
+  .document h1, .document h2, .document h3, .document h4, .document h5, .document h6, .document h7 {
+    margin: 0 0 10px 0;
+    padding: 0; }
+  .document h1 {
+    font-size: 40px; }
+  .document h2 {
+    font-size: 28px; }
+  .document h3 {
+    font-size: 20px; }
+  .document h4 {
+    font-size: 16px; }
+  .document p {
+    margin: 0 0 10px 0;
+    padding: 0; }
+  .document ol, .document ul {
+    margin-left: 28px; }
