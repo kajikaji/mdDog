@@ -3,14 +3,13 @@
 use strict; no strict "refs";
 use lib './lib/';
 use DocxLog;
-use Data::Dumper;
 
 my $docxlog =DocxLog->new();
 $docxlog->setupConfig();
 $docxlog->login();
 
 if(!$docxlog->qParam('fid')) {
-  $docxlog->{t}->{error} = "違法なアクセスです";
+  $docxlog->{t}->{error} = "mdドキュメントが指定されていません<br>md_edit.cgi:err01<br>";
 } else {
   if($docxlog->qParam('update')){
     #一時保存
@@ -25,6 +24,7 @@ if(!$docxlog->qParam('fid')) {
   }
 
   if($docxlog->qParam('style') eq "preview"){
+    $docxlog->setMD_buffer(1);
   }else{
     $docxlog->setMD_buffer();
   }

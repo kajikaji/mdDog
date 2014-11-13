@@ -1,7 +1,6 @@
 [% INCLUDE header.tmpl %]
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
-[% INCLUDE error.tmpl %]
 
 <ul class="back-nav">
 <li><a href="index.cgi">ファイル一覧に戻る</a></li> 
@@ -11,27 +10,42 @@
 
 <h2>[% file_name %]</h2>
 <h3>編集バッファ</h3>
-[% SWITCH style %]
-[% CASE source %]
-<ul class="md_menu">
-  <li class="active">ソース</li>
-  <li><a href="?style=preview">プレビュー</a></li>
-</ul>
-<form class="mdfile-editor" action="?fid=[% fid %]" method="post">
-  <div class="canvas"><textarea rows="20" name="row_document">[% row_document %]</textarea></div>
-  <div class="ctrl">
-    <input type="submit" name="update" value="一時保存">
-    <input type="submit" name="commit" value="変更を反映">
-    変更履歴：<input type="text" name="comment" size="30">
+<section class="md_buffer">
+  [% SWITCH style %]
+  [% CASE "source" %]
+  <form class="md-editor" action="?fid=[% fid %]" method="post">
+    <div class="md-buffer-fix">
+      <input type="submit" name="commit" value="バッファをコミット">
+      コメント：<input type="text" name="comment" size="30">
+      <input type="hidden" name="fid" value="[% fid %]">  
+    </div>
+
+    <ul class="md_menu">
+      <li class="active">ソース</li>
+      <li><a href="?fid=[% fid %]&style=preview">プレビュー</a></li>
+    </ul>
+
+    <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
+    <div class="ctrl">
+      <input type="submit" name="update" value="一時保存">
+      <input type="hidden" name="fid" value="[% fid %]">  
+    </div>
+  </form>
+  [% CASE "preview" %]
+  <form class="md-buffer-fix" action="?id=fid=[% fid %]" method="post">
+    <input type="submit" name="commit" value="バッファをコミット">
+    コメント：<input type="text" name="comment" size="30">
     <input type="hidden" name="fid" value="[% fid %]">  
+  </form>
+  <ul class="md_menu">
+    <li><a href="?fid=[% fid %]&style=source">ソース</a></li>
+    <li class="active">プレビュー</li>
+  </ul>
+  <div class="document">
+    [% document %]
   </div>
-</form>
-[% CASE preview %]
-<ul class="md_menu">
-  <li><a href="?style=source">ソース</a></li>
-  <li class="active">プレビュー</li>
-</ul>
-[% END %]
+  [% END %]
+</section>
 
 </body>
 </html>

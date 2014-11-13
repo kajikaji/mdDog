@@ -23,6 +23,7 @@ sub new {
     sessiondir  => './sess/',
     templatedir  => './tmpl/',
     tmplfile    => undef,
+    tmpl_error  => "error.tmpl",
     t           => undef,
 
     dbh         => undef,
@@ -108,9 +109,16 @@ sub printPage {
 
   $self->destroy();
 
+  my $tmplfile;
+  if($self->{t}->{error}){
+    $tmplfile = $self->{tmpl_error};
+  }else{
+    $tmplfile = $self->{tmplfile};
+  }
+
   my $tmplobj = Template->new({INCLUDE_PATH => $self->{templatedir}});
   print $self->{q}->header(-charset => 'utf-8', -cookie => $self->{cookie});
-  $tmplobj->process($self->{tmplfile}, $self->{t} ) || die;
+  $tmplobj->process($tmplfile, $self->{t} ) || die;
 }
 
 # =============================================================================#

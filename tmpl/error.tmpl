@@ -1,5 +1,12 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
 [% IF error %]
-<div>
-[% error %]
-</div>
+<section class="error">
+  <h1>ERROR</h1>
+  <div class="error">[% error %]</div>
+</section>
 [% END %]
+
+</body>
+</html>

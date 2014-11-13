@@ -10,7 +10,7 @@ $docxlog->setupConfig();
 $docxlog->login();
 
 if(!$docxlog->qParam('fid')) {
-  $docxlog->{t}->{error} = "違法なアクセスです";
+  $docxlog->{t}->{error} = "mdドキュメントが指定されていません<br>md_view.cgi:err01<br>";
 } else {
   $docxlog->setMD();
   $docxlog->setDocumentInfo();

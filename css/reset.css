@@ -65,7 +65,7 @@ body {
 }
 
 a {
-    color: #24890d;
+    color: #4169e0;
     text-decoration: none;
 }
 
@@ -80,7 +80,7 @@ a:active {
 
 a:active,
 a:hover {
-    color: #41a62a;
+    color: #ff6437;
 }
 
 h1,
@@ -270,7 +270,7 @@ dd {
 ul,
 ol {
     list-style: none;
-    margin: 0 0 24px 20px;
+    margin: 0;
 }
 
 ul {
@@ -411,14 +411,14 @@ hr {
  * to achieve a better experience. See http://core.trac.wordpress.org/ticket/25898.
  */
 ::selection {
-    background: #24890d;
-    color: #fff;
+    background: #b0c4de;
+    color: #000;
     text-shadow: none;
 }
 
 ::-moz-selection {
-    background: #24890d;
-    color: #fff;
+    background: #b0c4de;
+    color: #000;
     text-shadow: none;
 }
 

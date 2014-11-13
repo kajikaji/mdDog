@@ -1,5 +1,5 @@
 $corner_b: 5px;
-@mixin _border_radius ($radius) {
+@mixin round-corner ($radius) {
   border-radius: $radius;
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
@@ -17,6 +17,29 @@ $corner_b: 5px;
     display: table;
     content: "";
     line-height: 0;
+  }
+}
+
+form{
+  input[type=submit], input[type=button], button{
+    padding: 4px 6px;
+    text-align: center;
+    line-height: 1.0em;
+    font-size: 85%;
+    font-weight: bold;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    color: #555;
+
+    @include round-corner(5px);
+  }
+  input[type=submit]:hover, input[type=button]:hover, button:hover{
+    background-color: #f5deb3;
+    color: #222;
+  }
+  input[type=text], textarea {
+    font-size: 85%;
+    @include round-corner(5px);
   }
 }
 
@@ -67,6 +90,23 @@ $corner_b: 5px;
 
 h1,h2,h3,h4,h5{
   margin-left: 10px;
+}
+
+section{
+  >p,>div,>table,>ul,>ou,>form {
+    margin-left: 10px;
+    margin-right: 10px;
+    box-sizing: border-box;
+  }
+}
+
+section.error{
+  div.error{
+    border: 3px solid #b22222;
+    background-color: #ffd0db;
+    padding: 10px;
+    @include round-corner($corner_b);
+  }
 }
 
 .userinfo{
@@ -138,7 +178,7 @@ form#docx-create{
   padding: 10px;
   border: 3px solid #778899;
   background-color: #e6e6fa;
-  @include _border_radius($corner_b);
+  @include round-corner($corner_b);
 
   > div{
     margin-bottom: 10px;
@@ -194,7 +234,7 @@ table.file-list{
               border: 1px solid #00a;
               background-color: #aaf;
               padding: 2p;
-              @include _border_radius(3px);
+              @include round-corner(3px);
           }
       }
       a{
@@ -220,7 +260,7 @@ table.file-list{
               text-align: center;
               padding-top: 4px;
               border: none;
-              @include _border_radius($corner_b);
+              @include round-corner($corner_b);
         }
       }
     }
@@ -307,54 +347,6 @@ table.gitlog{
   }
 }
 
-form.mdfile-editor {
-  margin :0 30px 10px 10px;
-  .canvas {
-    margin-bottom: 10px;
-    textarea{
-      width: 100%;
-      box-sizing: border-box;
-      padding: 10px;
-    }
-  }
-}
-
-ul.md_menu{
-  list-style: none;
-  margin: 0 0 0 10px;
-  li {
-    float: left;
-    width: 120px;
-    text-align: center;
-    border: 1px solid #333;
-    border-bottom: none;
-    background-color: #dfdfdf;
-    font-size: 12px;
-    padding: 2px;
-
-    &:first-child {
-      border-right: none;
-    }
-    &.active {
-      background-color: #fff;
-    }
-    a,
-    a:hover,
-    a:link,
-    a.visited {
-      display: block;
-      width: 100%;
-      color: #333;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    a:hover{
-      background-color: #fee;
-    }
-  }
-  @include clearfix();
-}
-
 .document {
   margin: 0 10px 30px;
   padding: 10px;
@@ -377,4 +369,69 @@ ul.md_menu{
   ol,ul{
     margin-left: 28px;
   }
+  blockquote{
+    padding: 5px;
+    font-size:  80%;
+    border: 1px solid #aaa;
+  }
+}
+
+.md_buffer{
+    form.md-buffer-fix{
+      margin-bottom: 30px;
+    }
+
+    form.md-editor {
+      .md-buffer-fix{
+        margin-bottom: 30px;
+      }
+        .canvas {
+            margin-bottom: 10px;
+            textarea{
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px;
+                border: 2px solid #800000;
+                border-radius: 0;
+                -webkit-border-radius: 0;
+                -moz-border-radius: 0;
+            }
+        }
+    }
+
+    ul.md_menu{
+        list-style: none;
+        margin-bottom: 0;
+        li {
+            float: left;
+            width: 120px;
+            text-align: center;
+            border: 1px solid #333;
+            border-bottom: none;
+            background-color: #dfdfdf;
+            font-size: 12px;
+            padding: 2px;
+
+            &:first-child {
+                border-right: none;
+            }
+            &.active {
+                background-color: #fff;
+            }
+            a,
+            a:hover,
+            a:link,
+            a.visited {
+                display: block;
+                width: 100%;
+                color: #333;
+                font-weight: bold;
+                text-decoration: none;
+            }
+            a:hover{
+                background-color: #b0c4de;
+            }
+        }
+        @include clearfix();
+    }
 }

@@ -467,6 +467,7 @@ sub setMD{
 # MDドキュメントの編集バッファをテンプレートにセットする
 sub setMD_buffer{
   my $self = shift;
+  my $preview = shift;
 
   my $uid = $self->{s}->param("login");
   return unless($uid);
@@ -487,9 +488,15 @@ sub setMD_buffer{
     $pos += $length;
   }
   close $hF;
-  $self->{t}->{row_document} = $document;
   $self->{git}->detachLocal();
-  $self->{t}->{style} = "source";
+
+  unless($preview){
+    $self->{t}->{document} = $document;
+    $self->{t}->{style} = "source";
+  }else {
+    $self->{t}->{document} = markdown($document);
+    $self->{t}->{style} = "preview";
+  }
 }
 
 ############################################################
@@ -505,7 +512,7 @@ sub updateMD_buffer {
   return unless(@ary);
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $document = $self->qParam('row_document');
+  my $document = $self->qParam('document');
 
   $self->{git}->attachLocal_tmp($uid, 1);
 

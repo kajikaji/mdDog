@@ -10,7 +10,7 @@ $docxlog->setupConfig();
 $docxlog->login();
 
 if(!$docxlog->qParam('fid')) {
-  $docxlog->{t}->{error} = "違法なアクセスです";
+  $docxlog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>docinfo.cgi<br>Err001";
 } else {
   if($docxlog->qParam('docxfile')){
     $docxlog->commitFile();
