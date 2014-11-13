@@ -1,7 +1,7 @@
-package DocxLogAdmin;
+package mdDogAdmin;
 
 use strict; no strict "subs";
-use base DocxLog;
+use base mdDog;
 
 sub login4admin{
   my $self = shift;

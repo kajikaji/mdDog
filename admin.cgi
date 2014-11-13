@@ -2,18 +2,18 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLogAdmin;
+use mdDogAdmin;
 use Data::Dumper;
 
-my $docxlog =DocxLogAdmin->new();
-$docxlog->setupConfig();
-if(!$docxlog->login4admin()){
+my $dog =mdDogAdmin->new();
+$dog->setupConfig();
+if(!$dog->login4admin()){
   #管理者でない場合、index.cgiにリダイレクト
   print "Location: index.cgi\n\n";
   exit();
 }
 
-$docxlog->setUserInfos();
+$dog->setUserInfos();
 
-$docxlog->printPage();
+$dog->printPage();
 exit();

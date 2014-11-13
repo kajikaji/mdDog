@@ -2,23 +2,23 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLog;
+use mdDog;
 use Data::Dumper;
 
-my $docxlog =DocxLog->new();
-$docxlog->setupConfig();
-$docxlog->login();
+my $dog =mdDog->new();
+$dog->setupConfig();
+$dog->login();
 
-if(!$docxlog->qParam('fid')) {
-  $docxlog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>docinfo.cgi<br>Err001";
+if(!$dog->qParam('fid')) {
+  $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>docinfo.cgi<br>Err001";
 } else {
-  if($docxlog->qParam('docxfile')){
-    $docxlog->commitFile();
+  if($dog->qParam('docxfile')){
+    $dog->commitFile();
   }
 
-  $docxlog->gitLog();
-  $docxlog->setDocumentInfo();
+  $dog->gitLog();
+  $dog->setDocumentInfo();
 }
 
-$docxlog->printPage();
+$dog->printPage();
 exit();

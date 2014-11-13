@@ -2,29 +2,29 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLog;
+use mdDog;
 use Data::Dumper;
 
-my $docxlog =DocxLog->new();
-$docxlog->setupConfig();
-$docxlog->login();
+my $dog =mdDog->new();
+$dog->setupConfig();
+$dog->login();
 
-if(!$docxlog->qParam('fid')
-  || !$docxlog->qParam('revision')
-  || !$docxlog->qParam('user')) {
-  $docxlog->{t}->{error} = "違法なアクセスです";
+if(!$dog->qParam('fid')
+  || !$dog->qParam('revision')
+  || !$dog->qParam('user')) {
+  $dog->{t}->{error} = "違法なアクセスです";
 } else {
   #正常系の処理
-  if($docxlog->qParam('approve')){
-    $docxlog->docApprove();
+  if($dog->qParam('approve')){
+    $dog->docApprove();
 
-    print "Location: docinfo.cgi?fid=".$docxlog->qParam('fid') . "&revision=" . $docxlog->qParam('revision') . "\n\n";
+    print "Location: docinfo.cgi?fid=".$dog->qParam('fid') . "&revision=" . $dog->qParam('revision') . "\n\n";
     exit();
   }
 
-  $docxlog->setDocumentInfo();
-  $docxlog->setApproveList();
+  $dog->setDocumentInfo();
+  $dog->setApproveList();
 }
 
-$docxlog->printPage();
+$dog->printPage();
 exit();

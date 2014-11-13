@@ -1,4 +1,4 @@
-package DocxLog;
+package mdDog;
 
 use strict; no strict "subs";
 use base APPBASE;
@@ -11,7 +11,7 @@ use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
 use NKF;
 use MYUTIL;
-use DocxLog::GitCtrl;
+use mdDog::GitCtrl;
 
 
 sub new {

@@ -2,16 +2,16 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLog;
+use mdDog;
 use Data::Dumper;
 
-my $docxlog =DocxLog->new();
-$docxlog->setupConfig();
+my $dog =mdDog->new();
+$dog->setupConfig();
 
-my $fid = $docxlog->qParam('fid');
-my $rev = $docxlog->qParam('rev');
+my $fid = $dog->qParam('fid');
+my $rev = $dog->qParam('rev');
 
 exit() unless($fid);
 
-$docxlog->downloadFile($fid, $rev);
+$dog->downloadFile($fid, $rev);
 exit();

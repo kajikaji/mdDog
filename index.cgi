@@ -2,10 +2,10 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLog;
+use mdDog;
 use Data::Dumper;
 
-my $docxlog =DocxLog->new();
+my $docxlog =mdDog->new();
 $docxlog->setupConfig();
 $docxlog->login();
 

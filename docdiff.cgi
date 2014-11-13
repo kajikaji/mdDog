@@ -2,22 +2,22 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use DocxLog;
+use mdDog;
 use Data::Dumper;
 
-my $docxlog =DocxLog->new();
-$docxlog->setupConfig();
-$docxlog->login();
+my $dog =mdDog->new();
+$dog->setupConfig();
+$dog->login();
 
-if(!$docxlog->qParam('fid')) {
-  $docxlog->{t}->{error} = "違法なアクセスです";
+if(!$dog->qParam('fid')) {
+  $dog->{t}->{error} = "違法なアクセスです";
 } else {
-  if($docxlog->qParam('revision')){
-    $docxlog->gitDiff();
+  if($dog->qParam('revision')){
+    $dog->gitDiff();
   }
 
-  $docxlog->setDocumentInfo();
+  $dog->setDocumentInfo();
 }
 
-$docxlog->printPage();
+$dog->printPage();
 exit();
