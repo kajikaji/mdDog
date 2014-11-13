@@ -3,67 +3,72 @@
 [% INCLUDE userinfo.tmpl %]
 <div>[% debug %]</div>
 
-<div class="description">
-管理されているファイル一覧です
-</div>
+<section class="top">
 
-[% IF login %]
-<form action="" method="post" id="docx-upload" class="" enctype="multipart/form-data">
-  <div class="subject">docxファイルの追加フォーム</div>
-  <div>docxファイル：<input type="file" name="docxfile"></div>
-  <div><input type="submit" name="upload" value="アップロード"></div>
-</form>
-<form action="" method="post" id="docx-create" class="">
-  <div class="subject">MDドキュメントの追加</div>
-  <div>ドキュメント名：<input type="text" size="20" name="docname"></div>
-  <div><input type="submit" name="create" value="新規作成"></div>
-</form>
-[% END %]
-
-[% IF infos %]
-<table class="file-list">
-<tbody>
-  [% FOREACH info IN infos %]
-  <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
-    <td class="info">
-
-[% UNLESS info.deleted_at %]
-[% IF is_delete || is_admin %]
-<div class="file-ctrl">
-<form action="" method="post">
-[% IF info.is_used %]<input type="submit" name="unuse" value="使用しない">
-[% ELSE %]
-<input type="submit" name="use" value="使用する">
-<input type="submit" name="delete" value="削除する">
-[% END %]
-<input type="hidden" name="fid" value="[% info.id %]">
-</form>
-</div>
-[% END %]
-[% END %]
-
-      [% IF info.deleted_at %]
-        [% info.file_name %]
-      [% ELSIF info.is_used %]
-        <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
-        <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
-      [% ELSE %]
-        [% info.file_name %]
-        <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
-      [% END %]
-      <div class="file-detail">
-        <div class="create-at">作成日：[% info.created_at %]</div>
-      </div>
-    </td>
-  </tr>
+<div class="top-menu">
+  [% IF login %]
+    <a href="create.cgi" class="subject">■ドキュメントの新規追加</a>
+  [% ELSE %]
+    <span class="subject disable">■&ensp;ドキュメントの新規追加</span><span class="caution">(本機能はログインすると使えるようになります)</span>
   [% END %]
-</tbody>
-</table>
-[% ELSE %]
-<div class="no-file">
-ファイルは登録されていません
 </div>
-[% END %]
+<div class="top-menu">
+  [% IF login %]
+    <a href="upload_docx.cgi" class="subject">■&ensp;docxドキュメントの登録</a>
+  [% ELSE %]
+    <span class="subject disable">■&ensp;docxドキュメントの登録</span><span class="caution">(本機能はログインすると使えるようになります)</span>
+  [% END %]
+</div>
+
+<div class="top-menu">
+  <div class="subject">■&ensp;登録ドキュメント一覧</div>
+  [% IF infos %]
+  <table class="file-list">
+    <tbody>
+      [% FOREACH info IN infos %]
+      <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
+        <td class="info">
+
+          [% UNLESS info.deleted_at %]
+          [% IF is_delete || is_admin %]
+          <div class="file-ctrl">
+            <form action="" method="post">
+              [% IF info.is_used %]<input type="submit" name="unuse" value="使用しない">
+              [% ELSE %]
+              <input type="submit" name="use" value="使用する">
+              <input type="submit" name="delete" value="削除する">
+              [% END %]
+              <input type="hidden" name="fid" value="[% info.id %]">
+            </form>
+          </div>
+          [% END %]
+          [% END %]
+
+          [% IF info.deleted_at %]
+          [% info.file_name %]
+          [% ELSIF info.is_used %]
+          <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+          <a href="download.cgi?fid=[% info.id %]"><i class="download-alt"></i></a>
+          [% ELSE %]
+          [% info.file_name %]
+          <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
+          [% END %]
+          <div class="file-detail">
+            <div class="create-at">作成日：[% info.created_at %]</div>
+          </div>
+        </td>
+      </tr>
+      [% END %]
+    </tbody>
+  </table>
+  [% ELSE %]
+  <div class="no-file">
+    ファイルは登録されていません
+  </div>
+  [% END %]
+</div><!-- top-menu -->
+
+</section>
 
 </body>
 </html>

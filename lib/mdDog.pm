@@ -76,7 +76,9 @@ sub login {
       may_approve => $ha->{may_approve},
       may_delete  => $ha->{may_delete},
     };
+    return 1;
   }
+  return 0;
 }
 
 

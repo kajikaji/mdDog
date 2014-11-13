@@ -3,25 +3,24 @@
 use strict; no strict "refs";
 use lib './lib/';
 use mdDog;
-use Data::Dumper;
 
-my $docxlog =mdDog->new();
-$docxlog->setupConfig();
-$docxlog->login();
+my $dog =mdDog->new();
+$dog->setupConfig();
+$dog->login();
 
-if($docxlog->qParam('docxfile')){
-  $docxlog->uploadFile();
-}elsif($docxlog->qParam('create')){
-    $docxlog->createFile();
-}elsif($docxlog->qParam('unuse')){
-  $docxlog->changeFileInfo('unuse');
-}elsif($docxlog->qParam('use')){
-  $docxlog->changeFileInfo('use');
-}elsif($docxlog->qParam('delete')){
-  $docxlog->changeFileInfo('delete');
+if($dog->qParam('docxfile')){
+  $dog->uploadFile();
+}elsif($dog->qParam('create')){
+    $dog->createFile();
+}elsif($dog->qParam('unuse')){
+  $dog->changeFileInfo('unuse');
+}elsif($dog->qParam('use')){
+  $dog->changeFileInfo('use');
+}elsif($dog->qParam('delete')){
+  $dog->changeFileInfo('delete');
 }
 
-$docxlog->listupDocuments();
+$dog->listupDocuments();
 
-$docxlog->printPage();
+$dog->printPage();
 exit();

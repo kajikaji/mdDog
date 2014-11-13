@@ -5,8 +5,8 @@ $corner_b: 5px;
   -moz-border-radius: $radius;
 }
 @mixin list_table() {
-  margin: 10px;
-  width: 97%;
+  margin: 0;
+  width: 100%;
   box-sizing: border-box;
 }
 @mixin clearfix() {
@@ -45,17 +45,22 @@ form{
 
 .app-header{
   border-bottom: 3px double #4169e1;
-  margin-top: 5px;
-  padding-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  &.user-menu{
+    margin-bottom: 0;
+  }
 
-  >div {
+  .row > div {
     float: left;
-  }
 
-  .login-form{
-    float: right;
+    &.login-form{
+      float: right;
+    }
   }
-  @include clearfix();
+  .row{
+    @include clearfix();
+  }
 
   .title{
     font-size: 48pt;
@@ -94,7 +99,7 @@ h1,h2,h3,h4,h5{
 
 section{
   >p,>div,>table,>ul,>ou,>form {
-    margin-left: 10px;
+    margin-left: 30px;
     margin-right: 10px;
     box-sizing: border-box;
   }
@@ -114,11 +119,16 @@ section.error{
   color: #fff;
   font-size: 9pt;
   padding: 3px 0;
+  margin-bottom: 30px;
 
-  .user{
-    margin-left: 10px;
+  ul {
+    list-style: none;
+    li {
+      float: left;
+      margin-right: 30px;
+    }
+    @include clearfix();
   }
-
   .admin{
     a,
     a:hover,
@@ -210,61 +220,88 @@ section.gitlog{
 }
 
 
-table.file-list{
-  @include list_table;
+section.top{
+  .top-menu{
+    margin-top: 10px;
+    margin-bottom: 20px;;
 
-  tr{
-    &.nonactive {
-      background-color: #ccc;
-      &.deleted {
-        background-color: #aaa;
+    .subject {
+      font-weight: bold;
+      &.disable{
+        color: #888;
+      }
+      +.caution {
+        font-size: 60%;
+        margin-left: 10px;
+        color: #f00;
       }
     }
-    td{
-      .file-detail{
-          font-size: 8pt;
-      }
-      .download-link{
-          a,
-          a:hover,
-          a:link,
-          a:visited{
-              font-size: 8pt;
-              color: #000;
-              border: 1px solid #00a;
-              background-color: #aaf;
-              padding: 2p;
-              @include round-corner(3px);
-          }
-      }
-      a{
-          display: table;
-          margin: 5px;
-      }
-      .file-detail{
-        div{
-          float: left;
-          margin-left: 5px;
-          margin-right: 20px;
-        }
-        @include clearfix();
-      }
+    table.file-list{
+        @include list_table;
 
-      .file-ctrl{
-        float: right;
-        font-size: 8pt;
-        padding: 3px;
-        input[type="submit"]{
-              background-color: #cd5c5c;
-              color: #fff;
-              text-align: center;
-              padding-top: 4px;
-              border: none;
-              @include round-corner($corner_b);
+        tr{
+            &.nonactive {
+                background-color: #ccc;
+                &.deleted {
+                    background-color: #aaa;
+                }
+            }
+            td{
+                .file-detail{
+                    font-size: 8pt;
+                }
+                .download-link{
+                    a,
+                    a:hover,
+                    a:link,
+                    a:visited{
+                        font-size: 8pt;
+                        color: #000;
+                        border: 1px solid #00a;
+                        background-color: #aaf;
+                        padding: 2p;
+                        @include round-corner(3px);
+                    }
+                }
+                i.download-alt{
+                    width: 24px;
+                    height: 24px;
+                    display: table;
+                    background-color: transparent;
+                    background-repeat: no-repeat;
+                    background-image: url("../img/181_download_alt.png");
+                }
+
+                a{
+                    display: table;
+                    margin: 5px;
+                }
+                .file-detail{
+                    div{
+                        float: left;
+                        margin-left: 5px;
+                        margin-right: 20px;
+                    }
+                    @include clearfix();
+                }
+
+                .file-ctrl{
+                    float: right;
+                    font-size: 8pt;
+                    padding: 3px;
+                    input[type="submit"]{
+                        background-color: #cd5c5c;
+                        color: #fff;
+                        text-align: center;
+                        padding-top: 4px;
+                        border: none;
+                        @include round-corner($corner_b);
+                    }
+                }
+            }
         }
-      }
     }
-  }
+  } // .top-menu
 }
 
 table.gitlog{

@@ -21,15 +21,17 @@ form input[type=text], form textarea {
 
 .app-header {
   border-bottom: 3px double #4169e1;
-  margin-top: 5px;
-  padding-left: 10px; }
-  .app-header > div {
+  margin-top: 10px;
+  margin-bottom: 30px; }
+  .app-header.user-menu {
+    margin-bottom: 0; }
+  .app-header .row > div {
     float: left; }
-  .app-header .login-form {
-    float: right; }
-  .app-header:after {
+    .app-header .row > div.login-form {
+      float: right; }
+  .app-header .row:after {
     clear: both; }
-  .app-header:after, .app-header:before {
+  .app-header .row:after, .app-header .row:before {
     display: table;
     content: "";
     line-height: 0; }
@@ -59,7 +61,7 @@ h1, h2, h3, h4, h5 {
   margin-left: 10px; }
 
 section > p, section > div, section > table, section > ul, section > ou, section > form {
-  margin-left: 10px;
+  margin-left: 30px;
   margin-right: 10px;
   box-sizing: border-box; }
 
@@ -75,9 +77,19 @@ section.error div.error {
   background-color: #4169e1;
   color: #fff;
   font-size: 9pt;
-  padding: 3px 0; }
-  .userinfo .user {
-    margin-left: 10px; }
+  padding: 3px 0;
+  margin-bottom: 30px; }
+  .userinfo ul {
+    list-style: none; }
+    .userinfo ul li {
+      float: left;
+      margin-right: 30px; }
+    .userinfo ul:after {
+      clear: both; }
+    .userinfo ul:after, .userinfo ul:before {
+      display: table;
+      content: "";
+      line-height: 0; }
   .userinfo .admin a,
   .userinfo .admin a:hover,
   .userinfo .admin a:visited,
@@ -149,58 +161,76 @@ section.gitlog .description {
   section.gitlog .description.alert {
     color: #f00; }
 
-table.file-list {
-  margin: 10px;
-  width: 97%;
-  box-sizing: border-box; }
-  table.file-list tr.nonactive {
-    background-color: #ccc; }
-    table.file-list tr.nonactive.deleted {
-      background-color: #aaa; }
-  table.file-list tr td .file-detail {
-    font-size: 8pt; }
-  table.file-list tr td .download-link a,
-  table.file-list tr td .download-link a:hover,
-  table.file-list tr td .download-link a:link,
-  table.file-list tr td .download-link a:visited {
-    font-size: 8pt;
-    color: #000;
-    border: 1px solid #00a;
-    background-color: #aaf;
-    padding: 2p;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px; }
-  table.file-list tr td a {
-    display: table;
-    margin: 5px; }
-  table.file-list tr td .file-detail div {
-    float: left;
-    margin-left: 5px;
-    margin-right: 20px; }
-  table.file-list tr td .file-detail:after {
-    clear: both; }
-  table.file-list tr td .file-detail:after, table.file-list tr td .file-detail:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  table.file-list tr td .file-ctrl {
-    float: right;
-    font-size: 8pt;
-    padding: 3px; }
-    table.file-list tr td .file-ctrl input[type="submit"] {
-      background-color: #cd5c5c;
-      color: #fff;
-      text-align: center;
-      padding-top: 4px;
-      border: none;
-      border-radius: 5px;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 5px; }
+section.top .top-menu {
+  margin-top: 10px;
+  margin-bottom: 20px; }
+  section.top .top-menu .subject {
+    font-weight: bold; }
+    section.top .top-menu .subject.disable {
+      color: #888; }
+    section.top .top-menu .subject + .caution {
+      font-size: 60%;
+      margin-left: 10px;
+      color: #f00; }
+  section.top .top-menu table.file-list {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box; }
+    section.top .top-menu table.file-list tr.nonactive {
+      background-color: #ccc; }
+      section.top .top-menu table.file-list tr.nonactive.deleted {
+        background-color: #aaa; }
+    section.top .top-menu table.file-list tr td .file-detail {
+      font-size: 8pt; }
+    section.top .top-menu table.file-list tr td .download-link a,
+    section.top .top-menu table.file-list tr td .download-link a:hover,
+    section.top .top-menu table.file-list tr td .download-link a:link,
+    section.top .top-menu table.file-list tr td .download-link a:visited {
+      font-size: 8pt;
+      color: #000;
+      border: 1px solid #00a;
+      background-color: #aaf;
+      padding: 2p;
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px; }
+    section.top .top-menu table.file-list tr td i.download-alt {
+      width: 24px;
+      height: 24px;
+      display: table;
+      background-color: transparent;
+      background-repeat: no-repeat;
+      background-image: url("../img/181_download_alt.png"); }
+    section.top .top-menu table.file-list tr td a {
+      display: table;
+      margin: 5px; }
+    section.top .top-menu table.file-list tr td .file-detail div {
+      float: left;
+      margin-left: 5px;
+      margin-right: 20px; }
+    section.top .top-menu table.file-list tr td .file-detail:after {
+      clear: both; }
+    section.top .top-menu table.file-list tr td .file-detail:after, section.top .top-menu table.file-list tr td .file-detail:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.top .top-menu table.file-list tr td .file-ctrl {
+      float: right;
+      font-size: 8pt;
+      padding: 3px; }
+      section.top .top-menu table.file-list tr td .file-ctrl input[type="submit"] {
+        background-color: #cd5c5c;
+        color: #fff;
+        text-align: center;
+        padding-top: 4px;
+        border: none;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px; }
 
 table.gitlog {
-  margin: 10px;
-  width: 97%;
+  margin: 0;
+  width: 100%;
   box-sizing: border-box; }
   table.gitlog thead tr th,
   table.gitlog tbody tr td {
