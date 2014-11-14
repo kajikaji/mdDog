@@ -6,28 +6,66 @@
 <li><a href="index.cgi">ファイル一覧に戻る</a></li>
 </ul>
 
-<h2>[% file_name %]</h2>
+<section class="docinfo">
+<h1>ドキュメントの詳細</h1>
+<h2><a href="download.cgi?fid=[% fid %]" class="glyph download-alt"></a> [% file_name %]</h2>
 <div class="description">
-<span class="download-link"><a href="download.cgi?fid=[% fid %]">最新版DL</a></span>
-[% IF is_mdfile %]
-<span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %]">閲覧</a></span>
-[% END %]
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
 </div>
 
-<h3>更新履歴</h3>
 [% IF login %]
-<form action="?fid=[% fid %]" method="post" id="docx-upload" class="" enctype="multipart/form-data">
-  <div>docxファイル：<input type="file" name="docxfile"></div>
-  <div>詳細：<input type="text" size="100" name="detail"></div>
-  <div>
-    <input type="submit" name="upload" value="アップロード">
-    <input type="hidden" name="fid" value="[% fid %]">
-  </div>
-</form>
+<div class="user-action">
+<ul class="menu">
+<li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集</a></li>
+<li>
+  <form action="?fid=[% fid %]" method="post" id="docx-upload" class="doc-upload-form" enctype="multipart/form-data">
+    <div class="upload">ファイルアップロード</div>
+    <div><label></label><input type="file" name="docxfile" /></div>
+    <div><label>詳細：</label><input type="text" size="50" name="detail"></div>
+    <div>
+      <input type="submit" name="upload" value="アップロード">
+      <input type="hidden" name="fid" value="[% fid %]">
+    </div>
+  </form>
+</li>
+</ul>
+</div>
 [% END %]
+</section><!-- docinfo -->
 
-<section class="gitlog user">
-</section>
+<section class="gitlog master">
+<h3 class="subject">編集履歴</h3>
+<table class="gitlog">
+<thead>
+  <tr>
+    <th class="date">更新年月日</th>
+    <th class="message">詳細</th>
+    <th class="author">更新者</th>
+    <th class="ctrl">操作</th>
+  </tr>
+</thead>
+<tbody>
+[% FOREACH log IN sharedlist %]
+  <tr class="master">
+    <td class="date">[% log.attr.date %]</td>
+    <td class="message">[% log.message %]</td>
+    <td class="author">[% log.attr.author %]</td>
+    <td class="ctrl">
+
+        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
+        [% UNLESS loop.last %]
+          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
+        [% END %]
+    </td>
+  </tr>
+[% END %]
+</tbody>
+</table>
+</section><!-- gitlog.master -->
+
 
 [%FOREACH user IN userlist %]
 <section class="gitlog user">
@@ -52,6 +90,10 @@
     <td class="message">[% log.message %]</td>
     <td class="author">[% log.attr.author %]</td>
     <td class="ctrl">
+[% IF is_mdfile %]
+<span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %]">閲覧</a></span>
+[% END %]
+
         <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
         [% UNLESS loop.last %]
           <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
@@ -68,35 +110,6 @@
 [% END %]<!-- if user.loglist -->
 </section><!-- gitlog.user -->
 [% END %]<!-- foreach userlist -->
-
-<section class="gitlog master">
-<div class="subject">承認された編集履歴</div>
-<table class="gitlog">
-<thead>
-  <tr>
-    <th class="date">更新年月日</th>
-    <th class="message">詳細</th>
-    <th class="author">更新者</th>
-    <th class="ctrl">操作</th>
-  </tr>
-</thead>
-<tbody>
-[% FOREACH log IN sharedlist %]
-  <tr class="master">
-    <td class="date">[% log.attr.date %]</td>
-    <td class="message">[% log.message %]</td>
-    <td class="author">[% log.attr.author %]</td>
-    <td class="ctrl">
-        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
-        [% UNLESS loop.last %]
-          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
-        [% END %]
-    </td>
-  </tr>
-[% END %]
-</tbody>
-</table>
-</section><!-- gitlog.master -->
 
 </body>
 </html>

@@ -1,3 +1,45 @@
+/*
+ * GLYPH-ICON
+ */
+i.glyph {
+  width: 26px;
+  height: 26px;
+  display: table;
+  background-color: transparent;
+  background-repeat: no-repeat; }
+
+.glyph.download-alt {
+  background-image: url("../img/181_download_alt.png"); }
+
+.glyph.bin {
+  background-image: url("../img/016_bin.png"); }
+
+.glyph.ok {
+  background-image: url("../img/198_ok.png"); }
+
+.glyph.ban {
+  background-image: url("../img/199_ban.png"); }
+
+a.glyph {
+  display: table;
+  float: left; }
+  a.glyph:after {
+    clear: both; }
+  a.glyph:after, a.glyph:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+
+a.glyph, input[type=submit].glyph {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  width: 26px;
+  height: 26px; }
+  a.glyph:hover, input[type=submit].glyph:hover {
+    background-color: transparent; }
+
 form input[type=submit], form input[type=button], form button {
   padding: 4px 6px;
   text-align: center;
@@ -19,12 +61,31 @@ form input[type=text], form textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
 
+a.btn {
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border: 1px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  display: table;
+  float: left;
+  font-size: 85%;
+  font-weight: bold;
+  color: #000; }
+  a.btn:hover {
+    background-color: #f5deb3;
+    color: #222; }
+  a.btn:after {
+    clear: both; }
+  a.btn:after, a.btn:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+
 .app-header {
   border-bottom: 3px double #4169e1;
-  margin-top: 10px;
-  margin-bottom: 30px; }
-  .app-header.user-menu {
-    margin-bottom: 0; }
+  margin-top: 10px; }
   .app-header .row > div {
     float: left; }
     .app-header .row > div.login-form {
@@ -60,7 +121,7 @@ form input[type=text], form textarea {
 h1, h2, h3, h4, h5 {
   margin-left: 10px; }
 
-section > p, section > div, section > table, section > ul, section > ou, section > form {
+body > section > h1, body > section > h2, body > section > h3, body > section > h4, body > section > h5, body > section > h6, body > section > p, body > section > div, body > section > table, body > section > ul, body > section > ou, body > section > form {
   margin-left: 30px;
   margin-right: 10px;
   box-sizing: border-box; }
@@ -77,8 +138,7 @@ section.error div.error {
   background-color: #4169e1;
   color: #fff;
   font-size: 9pt;
-  padding: 3px 0;
-  margin-bottom: 30px; }
+  padding: 3px 0; }
   .userinfo ul {
     list-style: none; }
     .userinfo ul li {
@@ -101,8 +161,8 @@ section.error div.error {
 
 ul.back-nav {
   list-style: none;
-  margin: 0;
-  margin-left: 10px; }
+  font-size: 11px;
+  margin: 3px 0 30px 30px; }
   ul.back-nav li {
     float: left;
     margin-right: 20px; }
@@ -115,23 +175,19 @@ ul.back-nav {
     content: "";
     line-height: 0; }
 
-.description {
-  margin: 10px;
-  font-size: 11pt; }
-  .description .revision {
-    font-weight: bold;
-    margin-left: 3px;
-    margin-right: 3px; }
-  .description .download-link {
-    display: block; }
-  .description .mdfile-toolbar {
-    display: block; }
+.description .revision {
+  font-weight: bold;
+  margin-left: 3px;
+  margin-right: 3px; }
+.description .download-link {
+  display: block; }
+.description .mdfile-toolbar {
+  display: block; }
 
 .no-file {
   margin: 10px;
   color: #888; }
 
-form#docx-upload,
 form#docx-create {
   margin: 10px;
   margin-bottom: 30px;
@@ -141,95 +197,106 @@ form#docx-create {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
-  form#docx-upload > div,
   form#docx-create > div {
     margin-bottom: 10px; }
-  form#docx-upload .subject,
   form#docx-create .subject {
     font-weight: bold;
     font-size: 115%; }
 
 section.gitlog {
   margin-bottom: 30px; }
-
-section.gitlog .subject {
-  margin-left: 10px;
-  font-weight: bold; }
-section.gitlog .description {
-  margin-left: 10px;
-  font-size: 80%; }
-  section.gitlog .description.alert {
-    color: #f00; }
-
-section.top .top-menu {
-  margin-top: 10px;
-  margin-bottom: 20px; }
-  section.top .top-menu .subject {
-    font-weight: bold; }
-    section.top .top-menu .subject.disable {
-      color: #888; }
-    section.top .top-menu .subject + .caution {
-      font-size: 60%;
-      margin-left: 10px;
+  section.gitlog .description {
+    font-size: 80%; }
+    section.gitlog .description.alert {
       color: #f00; }
-  section.top .top-menu table.file-list {
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box; }
-    section.top .top-menu table.file-list tr.nonactive {
-      background-color: #ccc; }
-      section.top .top-menu table.file-list tr.nonactive.deleted {
-        background-color: #aaa; }
-    section.top .top-menu table.file-list tr td .file-detail {
-      font-size: 8pt; }
-    section.top .top-menu table.file-list tr td .download-link a,
-    section.top .top-menu table.file-list tr td .download-link a:hover,
-    section.top .top-menu table.file-list tr td .download-link a:link,
-    section.top .top-menu table.file-list tr td .download-link a:visited {
-      font-size: 8pt;
-      color: #000;
-      border: 1px solid #00a;
-      background-color: #aaf;
-      padding: 2p;
-      border-radius: 3px;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px; }
-    section.top .top-menu table.file-list tr td i.download-alt {
-      width: 24px;
-      height: 24px;
-      display: table;
-      background-color: transparent;
-      background-repeat: no-repeat;
-      background-image: url("../img/181_download_alt.png"); }
-    section.top .top-menu table.file-list tr td a {
-      display: table;
-      margin: 5px; }
-    section.top .top-menu table.file-list tr td .file-detail div {
-      float: left;
-      margin-left: 5px;
-      margin-right: 20px; }
-    section.top .top-menu table.file-list tr td .file-detail:after {
-      clear: both; }
-    section.top .top-menu table.file-list tr td .file-detail:after, section.top .top-menu table.file-list tr td .file-detail:before {
-      display: table;
-      content: "";
-      line-height: 0; }
-    section.top .top-menu table.file-list tr td .file-ctrl {
-      float: right;
-      font-size: 8pt;
-      padding: 3px; }
-      section.top .top-menu table.file-list tr td .file-ctrl input[type="submit"] {
-        background-color: #cd5c5c;
-        color: #fff;
-        text-align: center;
-        padding-top: 4px;
-        border: none;
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px; }
+
+section.top {
+  margin-top: 30px; }
+  section.top .top-menu {
+    margin-top: 10px;
+    margin-bottom: 20px; }
+    section.top .top-menu .subject {
+      font-weight: bold; }
+      section.top .top-menu .subject.disable {
+        color: #888; }
+      section.top .top-menu .subject + .caution {
+        font-size: 60%;
+        margin-left: 10px;
+        color: #f00; }
+    section.top .top-menu table.doc-list {
+      width: 100%;
+      box-sizing: border-box; }
+      section.top .top-menu table.doc-list tr.nonactive {
+        background-color: #ddd; }
+        section.top .top-menu table.doc-list tr.nonactive.deleted {
+          background-color: #aaa; }
+      section.top .top-menu table.doc-list tr td > .doc-subject {
+        float: left;
+        padding: 5px; }
+        section.top .top-menu table.doc-list tr td > .doc-subject .download-alt {
+          margin-left: 10px;
+          margin-right: 20px; }
+      section.top .top-menu table.doc-list tr td > .doc-ctrl {
+        float: right;
+        padding: 5px; }
+        section.top .top-menu table.doc-list tr td > .doc-ctrl input.glyph {
+          margin-left: 5px; }
+      section.top .top-menu table.doc-list tr td .doc-detail {
+        clear: both;
+        font-size: 8pt;
+        border-top: 1px dashed rgba(0, 0, 0, 0.1); }
+        section.top .top-menu table.doc-list tr td .doc-detail div {
+          float: left;
+          margin-left: 20px; }
+        section.top .top-menu table.doc-list tr td .doc-detail:after {
+          clear: both; }
+        section.top .top-menu table.doc-list tr td .doc-detail:after, section.top .top-menu table.doc-list tr td .doc-detail:before {
+          display: table;
+          content: "";
+          line-height: 0; }
+
+section.docinfo h1 {
+  margin-top: 0;
+  color: #f4a460; }
+section.docinfo h2 {
+  margin-top: 0; }
+  section.docinfo h2 .download-alt {
+    margin-right: 10px; }
+section.docinfo > .description {
+  font-size: 11px;
+  margin-bottom: 10px; }
+  section.docinfo > .description > div {
+    float: left;
+    margin-right: 10px; }
+  section.docinfo > .description:after {
+    clear: both; }
+  section.docinfo > .description:after, section.docinfo > .description:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+section.docinfo .user-action {
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border: 1px solid #555;
+  padding: 10px; }
+  section.docinfo .user-action ul.menu {
+    list-style: none;
+    margin-bottom: 20px; }
+    section.docinfo .user-action ul.menu li form.doc-upload-form {
+      margin: 0;
+      padding: 0; }
+      section.docinfo .user-action ul.menu li form.doc-upload-form > div {
+        float: left;
+        margin-right: 10px; }
+      section.docinfo .user-action ul.menu li form.doc-upload-form:after {
+        clear: both; }
+      section.docinfo .user-action ul.menu li form.doc-upload-form:after, section.docinfo .user-action ul.menu li form.doc-upload-form:before {
+        display: table;
+        content: "";
+        line-height: 0; }
 
 table.gitlog {
-  margin: 0;
   width: 100%;
   box-sizing: border-box; }
   table.gitlog thead tr th,

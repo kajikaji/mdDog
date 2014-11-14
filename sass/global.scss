@@ -5,7 +5,6 @@ $corner_b: 5px;
   -moz-border-radius: $radius;
 }
 @mixin list_table() {
-  margin: 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -19,6 +18,47 @@ $corner_b: 5px;
     line-height: 0;
   }
 }
+
+/*
+ * GLYPH-ICON
+ */
+i.glyph{
+    width: 26px;
+    height: 26px;
+    display: table;
+    background-color: transparent;
+    background-repeat: no-repeat;
+}
+.glyph.download-alt{
+    background-image: url("../img/181_download_alt.png");
+}
+.glyph.bin{
+    background-image: url("../img/016_bin.png");
+}
+.glyph.ok{
+    background-image: url("../img/198_ok.png");
+}
+.glyph.ban{
+    background-image: url("../img/199_ban.png");
+}
+a.glyph {
+  display: table;
+  float: left;
+  @include clearfix();
+}
+a.glyph, input[type=submit].glyph{
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  width: 26px;
+  height: 26px;
+
+  &:hover{
+    background-color: transparent;
+  }
+}
+
 
 form{
   input[type=submit], input[type=button], button{
@@ -43,13 +83,28 @@ form{
   }
 }
 
+a.btn{
+  @include round-corner(4px);
+  border: 1px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  display: table;
+  float: left;
+  font-size: 85%;
+  font-weight: bold;
+  color: #000;
+  
+  &:hover{
+    background-color: #f5deb3;
+    color: #222;
+  }
+
+  @include clearfix();
+}
+
 .app-header{
   border-bottom: 3px double #4169e1;
   margin-top: 10px;
-  margin-bottom: 30px;
-  &.user-menu{
-    margin-bottom: 0;
-  }
 
   .row > div {
     float: left;
@@ -97,8 +152,8 @@ h1,h2,h3,h4,h5{
   margin-left: 10px;
 }
 
-section{
-  >p,>div,>table,>ul,>ou,>form {
+body > section{
+  >h1,>h2,>h3,>h4,>h5,>h6,>p,>div,>table,>ul,>ou,>form {
     margin-left: 30px;
     margin-right: 10px;
     box-sizing: border-box;
@@ -119,7 +174,6 @@ section.error{
   color: #fff;
   font-size: 9pt;
   padding: 3px 0;
-  margin-bottom: 30px;
 
   ul {
     list-style: none;
@@ -145,8 +199,8 @@ section.error{
 
 ul.back-nav{
   list-style: none;
-  margin: 0;
-  margin-left: 10px;
+  font-size: 11px;
+  margin: 3px 0 30px 30px;
 
   li{
     float: left;
@@ -160,8 +214,6 @@ ul.back-nav{
 
 
 .description{
-  margin: 10px;
-  font-size: 11pt;
 
   .revision{
     font-weight: bold;
@@ -181,7 +233,6 @@ ul.back-nav{
   color: #888;
 }
 
-form#docx-upload,
 form#docx-create{
   margin: 10px;
   margin-bottom: 30px;
@@ -199,19 +250,10 @@ form#docx-create{
   }
 }
 
-
 section.gitlog{
   margin-bottom: 30px;
-}
 
-
-section.gitlog{
- .subject{
-    margin-left: 10px;
-    font-weight: bold;
-  }
   .description{
-    margin-left :10px;
     font-size: 80%;
     &.alert{
       color: #f00;
@@ -221,6 +263,7 @@ section.gitlog{
 
 
 section.top{
+  margin-top: 30px;
   .top-menu{
     margin-top: 10px;
     margin-bottom: 20px;;
@@ -236,67 +279,43 @@ section.top{
         color: #f00;
       }
     }
-    table.file-list{
+    table.doc-list{
         @include list_table;
 
         tr{
             &.nonactive {
-                background-color: #ccc;
+                background-color: #ddd;
                 &.deleted {
                     background-color: #aaa;
                 }
             }
             td{
-                .file-detail{
-                    font-size: 8pt;
+                >.doc-subject {
+                  float:left;
+                  padding: 5px;
+                  .download-alt{
+                      margin-left: 10px;
+                      margin-right: 20px;
+                  }
+                  .name {
+                  }
                 }
-                .download-link{
-                    a,
-                    a:hover,
-                    a:link,
-                    a:visited{
-                        font-size: 8pt;
-                        color: #000;
-                        border: 1px solid #00a;
-                        background-color: #aaf;
-                        padding: 2p;
-                        @include round-corner(3px);
+                >.doc-ctrl{
+                    float: right;
+                    padding: 5px;
+                    input.glyph{
+                        margin-left: 5px;
                     }
                 }
-                i.download-alt{
-                    width: 24px;
-                    height: 24px;
-                    display: table;
-                    background-color: transparent;
-                    background-repeat: no-repeat;
-                    background-image: url("../img/181_download_alt.png");
-                }
-
-                a{
-                    display: table;
-                    margin: 5px;
-                }
-                .file-detail{
+                .doc-detail{
+                    clear: both;
+                    font-size: 8pt;
+                    border-top: 1px dashed rgba(0,0,0,0.1);
                     div{
                         float: left;
-                        margin-left: 5px;
-                        margin-right: 20px;
+                        margin-left: 20px;
                     }
                     @include clearfix();
-                }
-
-                .file-ctrl{
-                    float: right;
-                    font-size: 8pt;
-                    padding: 3px;
-                    input[type="submit"]{
-                        background-color: #cd5c5c;
-                        color: #fff;
-                        text-align: center;
-                        padding-top: 4px;
-                        border: none;
-                        @include round-corner($corner_b);
-                    }
                 }
             }
         }
@@ -304,8 +323,64 @@ section.top{
   } // .top-menu
 }
 
+section.docinfo{
+  h1{
+    margin-top: 0;
+    color: #f4a460;
+  }
+  h2{
+    margin-top: 0;
+    .download-alt{
+      margin-right: 10px;
+    }
+  }
+
+  >.description{
+    font-size: 11px;
+    margin-bottom: 10px;
+    >div{
+      float: left;
+      margin-right: 10px;
+    }
+    @include clearfix();
+  }
+
+  .user-action{
+    @include round-corner(5px);
+    border: 1px solid #555;
+    padding: 10px;
+    ul.menu{
+        list-style: none;
+        margin-bottom: 20px;
+        li{
+            float: left;
+            form.doc-upload-form{
+                margin: 0;
+                padding: 0;
+                >div {
+                    float: left;
+                    margin-right: 10px;
+                    label{
+font-size: 9px;
+                    }
+
+input[type="file"] {
+  font-size: 9px;
+  margin: 0;
+}
+
+                }
+                @include clearfix();
+
+            }
+        }
+        @inlcude clearfix();
+    }
+  }
+}
+
 table.gitlog{
-  @include list_table;
+  @include list_table();
 
   thead tr th,
   tbody tr td {

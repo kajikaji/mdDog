@@ -23,7 +23,7 @@
 <div class="top-menu">
   <div class="subject">■&ensp;登録ドキュメント一覧</div>
   [% IF infos %]
-  <table class="file-list">
+  <table class="doc-list">
     <tbody>
       [% FOREACH info IN infos %]
       <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
@@ -31,30 +31,36 @@
 
           [% UNLESS info.deleted_at %]
           [% IF is_delete || is_admin %]
-          <div class="file-ctrl">
+          <div class="doc-ctrl">
             <form action="" method="post">
-              [% IF info.is_used %]<input type="submit" name="unuse" value="使用しない">
+              [% IF info.is_used %]
+               <input type="submit" name="unuse" value=" " class="glyph ban">
               [% ELSE %]
-              <input type="submit" name="use" value="使用する">
-              <input type="submit" name="delete" value="削除する">
+              <input type="submit" name="use" value=" " class="glyph ok">
+              <input type="submit" name="delete" value=" " class="glyph bin">
               [% END %]
               <input type="hidden" name="fid" value="[% info.id %]">
             </form>
           </div>
-          [% END %]
-          [% END %]
-
+          [% END %] <!-- IF is_delete || is_admin -->
+          [% END %] <!-- UNLESS info.deleted_at -->
+          
+          <div class="doc-subject">
           [% IF info.deleted_at %]
-          [% info.file_name %]
+            <span class="name">[% info.file_name %]</span>
           [% ELSIF info.is_used %]
-          <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
-          <a href="download.cgi?fid=[% info.id %]"><i class="download-alt"></i></a>
+            <a href="download.cgi?fid=[% info.id %]" class="glyph download-alt"></a>
+            <span class="name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></span>
           [% ELSE %]
-          [% info.file_name %]
-          <span class="download-link"><a href="download.cgi?fid=[% info.id %]">最新版DL</a></span>
+            <a href="download.cgi?fid=[% info.id %]" class="glyph download-alt"></a>
+            <span class="name">[% info.file_name %]</span>
           [% END %]
-          <div class="file-detail">
-            <div class="create-at">作成日：[% info.created_at %]</div>
+          </div> <!-- doc-subject -->
+          <div class="doc-detail">
+            <div class="create-at">作成日時：[% info.created_at %]</div>
+            <div class="created-by">作成者：</div>
+            <div class="last-approved-at">最終承認日時：</div>
+            <div class="filesize">最終ファイルサイズ：</div>
           </div>
         </td>
       </tr>
