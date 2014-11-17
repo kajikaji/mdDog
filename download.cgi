@@ -9,7 +9,7 @@ my $dog =mdDog->new();
 $dog->setupConfig();
 
 my $fid = $dog->qParam('fid');
-my $rev = $dog->qParam('rev');
+my $rev = $dog->qParam('revision');
 
 exit() unless($fid);
 

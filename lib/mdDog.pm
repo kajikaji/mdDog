@@ -395,9 +395,8 @@ sub downloadFile {
   my $filename = $ary[0];
   my $filepath = "./$self->{repodir}/$fid/$filename";
 
-  my $git = Git::Wrapper->new("$self->{repodir}/$fid");
   if($rev){
-    $git->checkout($rev);
+    $self->{git}->checkoutVersion($rev);
   }
 
   print "Content-type:application/octet-stream\n";
@@ -411,7 +410,7 @@ sub downloadFile {
   }
   close DF;
 
-  $git->checkout("master");
+  $self->{git}->detachLocal() if($rev);
 }
 
 ############################################################
@@ -446,12 +445,15 @@ sub setMD{
   my $sql = "select file_name from docx_infos where id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
   return unless(@ary);
+
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document;
-  my $uid = $self->{s}->param("login");
+  my $user = $self->qParam('user');
+  my $revision = $self->qParam('revision');
 
-  $self->{git}->attachLocal($uid);
+#  my $uid = $self->{s}->param("login");
+  $self->{git}->attachLocal($user);
 
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;

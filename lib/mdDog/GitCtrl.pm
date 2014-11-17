@@ -80,6 +80,7 @@ sub getUserLogs {
   my $branch = "$self->{branch_prefix}${uid}";
   for($self->{git}->log("master.." . $branch)){
     my $obj = eval {$_};
+    $obj->{user} = $uid;
     push @userlogs, $self->adjustLog($obj);
   }
 
@@ -304,6 +305,7 @@ sub detachLocal {
   $self->{git}->checkout("master");
 }
 
+
 ############################################################
 #編集バッファをユーザーリポジトリに反映
 # @param1 uid 
@@ -335,6 +337,19 @@ sub fixTmp {
     $gitctrl->checkout("master");
   }
   $gitctrl->branch("-D", $branch_tmp);
+}
+
+############################################################
+#指定のリヴィジョンにリポジトリを変更する
+#使用後にはdetachLocalを呼ぶこと
+#
+# @param1 リヴィジョン
+#
+sub checkoutVersion {
+  my $self = shift;
+  my $rev = shift;
+  
+  $self->{git}->checkout($rev);
 }
 
 ############################################################

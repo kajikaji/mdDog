@@ -204,7 +204,7 @@ h1,h2,h3,h4,h5{
 body > section{
   >h1,>h2,>h3,>h4,>h5,>h6,>p,>div,>table,>ul,>ou,>form {
     margin-left: 30px;
-    margin-right: 10px;
+    margin-right: 30px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -315,29 +315,44 @@ section.gitlog{
       color: #f00;
     }
   }
+  
+  .logtable > .description{
+    padding: 3px;
+    border: 1px solid #000;
+    border-width: 1px 1px 0 1px;
+    background-color: #f00;
+    color: #fff;
+  }
 
   ul.buffer-list {
       list-style: none;
       font-size: 11px;
       li{
-	  float: left;
-	  border-top: 1px solid #555;
-	  border-left: 1px solid #555;
-	  border-right: 1px solid #555;
-	  &:first-child{
-	      border-right: none;
-	  }
-	  a{
-	      display: block;
-	      background-color: #fff;
-	      padding: 3px 6px;
-	      text-align: center;
-	      color: #000;
-	      &:hover{
-		  color: #000;
-		  background-color: #b0c4de;
+	      float: left;
+	      border-top: 1px solid #555;
+	      border-left: 1px solid #555;
+	      border-right: 1px solid #555;
+	      &:first-child{
+	          border-right: none;
 	      }
-	  }
+          &.active{
+              font-weight: bold;
+              a:hover{
+                  background-color: #fff;
+              }
+          }
+
+	      a{
+	          display: block;
+	          background-color: #fff;
+	          padding: 3px 6px;
+	          text-align: center;
+	          color: #000;
+              cursor: pointer;
+	          &:hover{
+		          background-color: #b0c4de;
+	          }
+	      }
       }
       @include clearfix();
   }
@@ -347,15 +362,15 @@ section.gitlog{
 
       tbody{
 	  tr{
-	      &.master{
-		  background-color: #fff;
-	      }
-	      &.user-branch{
-		  background-color: #fffaf0;
-	      }
-	      &.user-branch.old{
-		  background-color: #aaaaaa;
-	      }
+          background-color: #fff;
+          &.log{
+              &.old{
+		          background-color: #ccc;
+              }
+              &.user{
+                  background-color: #e6e6fa;
+              }
+          }
 	  }
       }
   }

@@ -8,6 +8,7 @@
 
 <section class="docinfo">
 <h1>ドキュメントの詳細</h1>
+
 <h2><a href="download.cgi?fid=[% fid %]" class="glyph download-alt"></a> [% file_name %]</h2>
 <div class="description">
   <div class="created-at">作成日時：</div>
@@ -34,89 +35,40 @@
 </ul>
 </div>
 [% END %]
+
 </section><!-- docinfo -->
 
 <section class="gitlog">
-<h3 class="subject">更新履歴</h3>
+  <h3 class="subject">更新履歴</h3>
 
-<ul class="buffer-list">
-[%FOREACH user IN userlist %]
-  <li><a onclick="">[% user.name %]さんの編集バッファ</a></li>
-[% END %]
-  <li><a onclick="">承認済</a></li>
-</ul>
+  <ul id="buffer-list" class="buffer-list">
+    [%FOREACH user IN userlist %]
+    <li id="buffer-[% user.uid %]"><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
+    [% END %]
+    <li id="buffer-0" class="active"><a onclick="javascript:showLog(0);">承認済</a></li>
+  </ul>
 
-<div id="log-buffer-master" class="gitlog">
-  <table class="gitlog">
-    <thead>
-      <tr>
-	<th class="date">更新年月日</th>
-	<th class="message">詳細</th>
-	<th class="author">更新者</th>
-	<th class="ctrl">操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      [% FOREACH log IN sharedlist %]
-      <tr class="master">
-	<td class="date">[% log.attr.date %]</td>
-	<td class="message">[% log.message %]</td>
-	<td class="author">[% log.attr.author %]</td>
-	<td class="ctrl">
+  <div id="log-buffer-0" class="logtable master">
+    [% SET loglist = sharedlist %]
+    [% SET is_live = 1 %]
+    [% INCLUDE table_gitlog.tmpl %]
+  </div>
 
-          <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
-          [% UNLESS loop.last %]
-          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
-          [% END %]
-        </td>
-      </tr>
-      [% END %]
-    </tbody>
-  </table>
-</div>
+  [%FOREACH user IN userlist %]
+  [% IF user.loglist.size == 0 %]
+  <div id="log-buffer-[% user.uid %]" class="logtable user" style="display: none;">
+    <div class="description">編集履歴はありません</div>
+  </div>
+  [% ELSE %]
+  <div id="log-buffer-[% user.uid %]" class="logtable user" style="display: none;">
+    [% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
 
-[%FOREACH user IN userlist %]
-[% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にコミットした際に古い編集履歴は削除されます</div>[% END %]
-[% IF user.loglist.size == 0 %]
-<div class="gitlog description">編集履歴はありません</div>
-[% ELSE %]
-<div id="log-buffer-[% user.uid %]" class="gitlog">
-<table class="gitlog user-branch">
-<thead>
-  <tr>
-    <th class="date">更新年月日</th>
-    <th class="message">詳細</th>
-    <th class="author">更新者</th>
-    <th class="ctrl">操作</th>
-  </tr>
-</thead>
-<tbody>
-[% FOREACH log IN user.loglist %]
-  <tr class="user-branch [% UNLESS user.is_live %]old[% END %]">
-    <td class="date">[% log.attr.date %]</td>
-    <td class="message">[% log.message %]</td>
-    <td class="author">[% log.attr.author %]</td>
-    <td class="ctrl">
-[% IF is_mdfile %]
-<span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %]">閲覧</a></span>
-[% END %]
-
-        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
-        [% UNLESS loop.last %]
-          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
-        [% END %]
-        <br><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
-        [% IF is_approve && user.is_live %]
-            <br><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&user=[% user.uid %]&revision=[% log.id %]">ここまでを承認する</a></span>
-        [% END %]
-    </td>
-  </tr>
-[% END %]
-</tbody>
-</table>
-</div>
-[% END %]<!-- if user.loglist -->
-[% END %]<!-- foreach userlist -->
+    [% SET loglist = user.loglist %]
+    [% SET is_live = user.is_live %]
+    [% INCLUDE table_gitlog.tmpl %]
+  </div>
+  [% END %]<!-- if user.loglist -->
+  [% END %]<!-- foreach userlist -->
 </section><!-- gitlog -->
 
 </body>
