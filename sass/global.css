@@ -124,7 +124,7 @@ h1, h2, h3, h4, h5 {
 
 body > section > h1, body > section > h2, body > section > h3, body > section > h4, body > section > h5, body > section > h6, body > section > p, body > section > div, body > section > table, body > section > ul, body > section > ou, body > section > form {
   margin-left: 30px;
-  margin-right: 30px;
+  margin-right: 10px;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -215,34 +215,24 @@ section.gitlog {
     font-size: 80%; }
     section.gitlog .description.alert {
       color: #f00; }
-  section.gitlog .logtable > .description {
-    padding: 3px;
-    border: 1px solid #000;
-    border-width: 1px 1px 0 1px;
-    background-color: #f00;
-    color: #fff; }
   section.gitlog ul.buffer-list {
     list-style: none;
     font-size: 11px; }
     section.gitlog ul.buffer-list li {
       float: left;
-      border-top: 1px solid #555;
-      border-left: 1px solid #555;
-      border-right: 1px solid #555; }
+      border-style: solid;
+      border-width: 1px 1px 0 0;
+      border-color: #555; }
       section.gitlog ul.buffer-list li:first-child {
-        border-right: none; }
-      section.gitlog ul.buffer-list li.active {
-        font-weight: bold; }
-        section.gitlog ul.buffer-list li.active a:hover {
-          background-color: #fff; }
+        border-left: 1px solid #555; }
       section.gitlog ul.buffer-list li a {
         display: block;
         background-color: #fff;
         padding: 3px 6px;
         text-align: center;
-        color: #000;
-        cursor: pointer; }
+        color: #000; }
         section.gitlog ul.buffer-list li a:hover {
+          color: #000;
           background-color: #b0c4de; }
     section.gitlog ul.buffer-list:after {
       clear: both; }
@@ -281,12 +271,12 @@ section.gitlog {
         border-radius: 3px;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px; }
-    section.gitlog table.gitlog tbody tr {
+    section.gitlog table.gitlog tbody tr.master {
       background-color: #fff; }
-      section.gitlog table.gitlog tbody tr.log.old {
-        background-color: #ccc; }
-      section.gitlog table.gitlog tbody tr.log.user {
-        background-color: #e6e6fa; }
+    section.gitlog table.gitlog tbody tr.user-branch {
+      background-color: #fffaf0; }
+    section.gitlog table.gitlog tbody tr.user-branch.old {
+      background-color: #aaaaaa; }
 
 section.top {
   margin-top: 30px; }
