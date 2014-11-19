@@ -1,18 +1,27 @@
 [% INCLUDE header.tmpl %]
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
-<div>[% debug %]</div>
 
 <ul class="back-nav">
 <li><a href="index.cgi">ファイル一覧に戻る</a></li>
 <li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
 </ul>
 
+<section class="docinfo">
+<h1>ドキュメントの承認</h1>
 <h2>[% file_name %]</h2>
 <div class="description">
-コミットされたファイルの承認
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
 </div>
-  
+</section><!-- docinfo -->
+
+<section class="gitlog">
+  <h3 class="subject">更新履歴</h3>
+
+<div class="gitlog">  
 <table class="gitlog">
 <thead>
   <tr>
@@ -31,6 +40,7 @@
 [% END %]
 </tbody>
 </table>
+</div>
 <form class="approve-form" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
   <div class="">上記のコミットを承認します</div>
   <input type="submit" name="approve" value="OK">
@@ -39,7 +49,7 @@
   <input type="hidden" name="revision" value="[% revision %]">
   <input type="hidden" name="user" value="[% user %]">
 </form>
-
+</section> <!-- gitlog -->
 </body>
 </html>
 

@@ -16,9 +16,8 @@ if(!$dog->qParam('fid')) {
     $dog->updateMD_buffer();
   }elsif($dog->qParam('commit')){
     #変更を反映 変更履歴は必須
-    #Todo: ユーザーリポジトリに反映してmd_view.cgiにリダイレクト
     if($dog->fixMD_buffer()){
-	print "Location: md_view.cgi?fid=" . $dog->qParam('fid') . "\n\n";
+	print "Location: md_view.cgi?fid=" . $dog->qParam('fid') . "&user=" . $dog->{s}->param("login") . "\n\n";
 	exit();
     }
   }

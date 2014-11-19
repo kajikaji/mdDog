@@ -134,6 +134,24 @@ sub getBranchRoot {
 }
 
 ############################################################
+# 最新版のリヴィジョン番号を返す
+#
+sub getBranchLatest {
+  my $self = shift;
+  my $uid = shift;
+  my $isTmp = shift;
+
+  my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
+  $branch .= "_tmp" if($uid && $isTmp);
+  my @branches = $self->{git}->branch;
+  return 0 if(!MYUTIL::isInclude(\@branches, $branch));
+
+  my @log_branch = $self->{git}->log($branch, "-n1");
+  return $log_branch[0]->id;
+}
+
+
+############################################################
 #ドキュメントを承認して共有する
 # @param1 uid
 # @param2 revision
@@ -353,6 +371,20 @@ sub checkoutVersion {
 }
 
 ############################################################
+#
+sub oneLog {
+  my $self = shift;
+  my $revision = shift;
+
+  my @logs = $self->{git}->log($revision, "-n1");
+  for (@logs) {
+    my $obj = eval {$_};
+    return $obj;
+  }
+  return undef;
+}
+
+############################################################
 #gitのログを適切な文字列に整形
 # @param1 ログオブジェクト
 #
@@ -369,7 +401,8 @@ sub adjustLog {
   $obj->{attr}->{author} =~ s/>/&gt;/g;
 
   $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
-  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
+#  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
+  $obj->{attr}->{date} = MYUTIL::formatDate2(ParseDate($obj->{attr}->{date}));
 
   return $obj;
 }

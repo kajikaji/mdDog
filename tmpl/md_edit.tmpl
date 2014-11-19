@@ -8,8 +8,18 @@
 <li><a href="md_view.cgi?fid=[% fid %]">閲覧に戻る</a></li>
 </ul>
 
-<h2>[% file_name %]</h2>
-<h3>編集バッファ</h3>
+<section class="docinfo">
+<h1>ドキュメント編集</h1>
+<h2>[% file_name %]<span class="supplement">--&ensp;editing&ensp;--</span></h2>
+<div class="description">
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
+</div>
+
+</section> <!-- docinfo -->
+
 <section class="md_buffer">
   [% SWITCH style %]
   [% CASE "source" %]

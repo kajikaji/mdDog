@@ -438,6 +438,8 @@ sub getAuthor {
 
 ############################################################
 # MDドキュメントをテンプレートにセットする
+# またドキュメントの情報もテンプレートにセットする
+#
 sub setMD{
   my $self = shift;
 
@@ -449,11 +451,21 @@ sub setMD{
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document;
-  my $user = $self->qParam('user');
-  my $revision = $self->qParam('revision');
+  my $user = $self->qParam('user');         # 'user'指定無しだとmasterへ
+  my $revision = $self->qParam('revision'); # 'revision'指定無しだと最新リヴィジョンへ
 
-#  my $uid = $self->{s}->param("login");
-  $self->{git}->attachLocal($user);
+  my $gitctrl = $self->{git};
+
+  my $user_root = $gitctrl->getBranchLatest($user);
+  $revision = $user_root unless($revision);
+  $self->{t}->{git_is_latest} = $revision =~ m/^${user_root}$/ ?1:0;
+  $self->{t}->{is_buffer} = $user?1:0;
+  my $oneLog = $gitctrl->oneLog($revision);
+  $self->{t}->{git_comment} = $oneLog->{message};
+  $self->{t}->{git_commit_date} = MYUTIL::formatDate1($oneLog->{attr}->{date});
+
+  $gitctrl->attachLocal($user);
+  $gitctrl->checkoutVersion($revision);
 
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;
@@ -462,8 +474,9 @@ sub setMD{
   }
   close $hF;
 
-  $self->{git}->detachLocal();
+  $gitctrl->detachLocal();
 
+  $self->{t}->{revision} = $revision;
   $self->{t}->{document} = markdown($document);
 }
 

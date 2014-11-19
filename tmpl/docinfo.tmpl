@@ -7,7 +7,7 @@
 </ul>
 
 <section class="docinfo">
-<h1>ドキュメントの詳細</h1>
+<h1>ドキュメント情報</h1>
 
 <h2><a href="download.cgi?fid=[% fid %]" class="glyph download-alt"></a> [% file_name %]</h2>
 <div class="description">
@@ -19,6 +19,8 @@
 
 [% IF login %]
 <div class="user-action">
+<h3>編集バッファに可能な操作</h3>
+<div class="description">編集バッファの最終版に対してドキュメントの編集を行なうことが出来ます。編集を行なう際は以下の『編集』ボタン、もしくはファイルアップロードから行なってください。</div>
 <ul class="menu">
 <li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集</a></li>
 <li>

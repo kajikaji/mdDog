@@ -124,7 +124,7 @@ h1, h2, h3, h4, h5 {
 
 body > section > h1, body > section > h2, body > section > h3, body > section > h4, body > section > h5, body > section > h6, body > section > p, body > section > div, body > section > table, body > section > ul, body > section > ou, body > section > form {
   margin-left: 30px;
-  margin-right: 10px;
+  margin-right: 30px;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -211,9 +211,12 @@ section.gitlog {
   margin-bottom: 30px; }
   section.gitlog h3 {
     margin-bottom: 10px; }
-  section.gitlog .description {
-    font-size: 80%; }
-    section.gitlog .description.alert {
+  section.gitlog .logtable .description {
+    font-size: 80%;
+    padding: 5px;
+    border: 1px solid #000;
+    background-color: #fff; }
+    section.gitlog .logtable .description.alert {
       color: #f00; }
   section.gitlog ul.buffer-list {
     list-style: none;
@@ -225,9 +228,12 @@ section.gitlog {
       border-color: #555; }
       section.gitlog ul.buffer-list li:first-child {
         border-left: 1px solid #555; }
+      section.gitlog ul.buffer-list li.active a {
+        font-weight: bold;
+        background-color: #fff; }
       section.gitlog ul.buffer-list li a {
         display: block;
-        background-color: #fff;
+        background-color: #dfdfdf;
         padding: 3px 6px;
         text-align: center;
         color: #000; }
@@ -329,6 +335,10 @@ section.docinfo h2 {
   color: #f4a460; }
   section.docinfo h2 .download-alt {
     margin-right: 10px; }
+  section.docinfo h2 .supplement {
+    color: #000;
+    font-size: 12px;
+    margin-left: 10px; }
 section.docinfo > .description {
   font-size: 11px;
   margin-bottom: 20px;
@@ -343,7 +353,15 @@ section.docinfo > .description {
     content: "";
     line-height: 0; }
 section.docinfo .user-action {
-  margin-bottom: 30px; }
+  margin-bottom: 20px; }
+  section.docinfo .user-action h3 {
+    font-size: 15px;
+    margin: 0 0 3px;
+    padding: 6px 3px 3px;
+    background-color: #fff;
+    border-bottom: 3px solid #888; }
+  section.docinfo .user-action h3 + .description {
+    font-size: 10px; }
   section.docinfo .user-action ul.menu {
     list-style: none;
     margin-bottom: 20px; }
@@ -429,31 +447,55 @@ table.gitlog {
       line-height: 0; }
 
 .document {
-  margin: 0 10px 30px;
-  padding: 10px;
-  width: 95%;
-  border: 1px solid #ccc;
-  background-color: #fff; }
-  .document h1, .document h2, .document h3, .document h4, .document h5, .document h6, .document h7 {
-    margin: 0 0 10px 0;
-    padding: 0; }
-  .document h1 {
-    font-size: 40px; }
-  .document h2 {
-    font-size: 28px; }
-  .document h3 {
-    font-size: 20px; }
-  .document h4 {
-    font-size: 16px; }
-  .document p {
-    margin: 0 0 10px 0;
-    padding: 0; }
-  .document ol, .document ul {
-    margin-left: 28px; }
-  .document blockquote {
-    padding: 5px;
-    font-size: 80%;
-    border: 1px solid #aaa; }
+  margin-bottom: 50px; }
+  .document > ul.property {
+    list-style: none;
+    font-size: 10px;
+    margin-bottom: 0;
+    background-color: #333;
+    color: #fff; }
+    .document > ul.property li {
+      padding: 3px 7px;
+      border-bottom: 1px solid #888; }
+      .document > ul.property li:last-child {
+        border-bottom-width: 0; }
+      .document > ul.property li > div {
+        float: left; }
+      .document > ul.property li:after {
+        clear: both; }
+      .document > ul.property li:after, .document > ul.property li:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      .document > ul.property li .subject {
+        width: 100px; }
+      .document > ul.property li.status {
+        font-size: 17px;
+        padding: 5px 7px; }
+  .document > .canvas {
+    padding: 10px;
+    border: 2px solid #888;
+    background-color: #fff; }
+    .document > .canvas h1, .document > .canvas h2, .document > .canvas h3, .document > .canvas h4, .document > .canvas h5, .document > .canvas h6, .document > .canvas h7 {
+      margin: 0 0 10px 0;
+      padding: 0; }
+    .document > .canvas h1 {
+      font-size: 40px; }
+    .document > .canvas h2 {
+      font-size: 28px; }
+    .document > .canvas h3 {
+      font-size: 20px; }
+    .document > .canvas h4 {
+      font-size: 16px; }
+    .document > .canvas p {
+      margin: 0 0 10px 0;
+      padding: 0; }
+    .document > .canvas ol, .document > .canvas ul {
+      margin-left: 28px; }
+    .document > .canvas blockquote {
+      padding: 5px;
+      font-size: 80%;
+      border: 1px solid #aaa; }
 
 .md_buffer form.md-buffer-fix {
   margin-bottom: 30px; }
@@ -502,3 +544,30 @@ table.gitlog {
     display: table;
     content: "";
     line-height: 0; }
+.md_buffer .document {
+  background-color: #fff;
+  border: 2px solid #888;
+  padding: 10px;
+  padding: 10px;
+  border: 2px solid #888;
+  background-color: #fff; }
+  .md_buffer .document h1, .md_buffer .document h2, .md_buffer .document h3, .md_buffer .document h4, .md_buffer .document h5, .md_buffer .document h6, .md_buffer .document h7 {
+    margin: 0 0 10px 0;
+    padding: 0; }
+  .md_buffer .document h1 {
+    font-size: 40px; }
+  .md_buffer .document h2 {
+    font-size: 28px; }
+  .md_buffer .document h3 {
+    font-size: 20px; }
+  .md_buffer .document h4 {
+    font-size: 16px; }
+  .md_buffer .document p {
+    margin: 0 0 10px 0;
+    padding: 0; }
+  .md_buffer .document ol, .md_buffer .document ul {
+    margin-left: 28px; }
+  .md_buffer .document blockquote {
+    padding: 5px;
+    font-size: 80%;
+    border: 1px solid #aaa; }

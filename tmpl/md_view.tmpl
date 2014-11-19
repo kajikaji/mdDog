@@ -7,18 +7,61 @@
 <li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
 </ul>
 
+<section class="docinfo">
+<h1>ドキュメント閲覧</h1>
+
+<h2><a href="download.cgi?fid=[% fid %]&revision=[% revision %]" class="glyph download-alt"></a> [% file_name %]</h2>
 <div class="description">
-[% IF login %]
-<div class="mdfile-toolbar">
-<a href="md_edit.cgi?fid=[% fid %]">編集</a>
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
 </div>
+
+[% IF login %]
+<div class="user-action">
+[% IF is_buffer && git_is_latest %]
+<h3>編集バッファに可能な操作</h3>
+<div class="description">編集バッファの最終版に対してドキュメントの編集を行なうことが出来ます。編集を行なう際は以下の『編集』ボタン、もしくはファイルアップロードから行なってください。</div>
+<ul class="menu">
+<li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集</a></li>
+<li>
+  <form action="?fid=[% fid %]" method="post" id="docx-upload" class="doc-upload-form" enctype="multipart/form-data">
+    <div class="subject">ファイルアップロード</div>
+    <div><label></label><input type="file" name="docxfile" /></div>
+    <div><label>詳細：</label><input type="text" size="60" name="detail"></div>
+    <div>
+      <input type="submit" name="upload" value="アップロード">
+      <input type="hidden" name="fid" value="[% fid %]">
+    </div>
+  </form>
+</li>
+</ul>
 [% END %]
 </div>
-
-<h2>[% file_name %]</h2>
+[% END %]
+</section><!-- docinfo -->
 
 <section class="document">
-[% document %]
+<div class="property">
+</div>
+  <ul class="property">
+<li class="status">
+[% IF is_buffer &&  git_is_latest %]
+この編集バッファは編集可能です。編集する場合は上記の『編集』ボタンを押下してください。
+[% ELSE %]
+  [% UNLESS is_buffer %]
+  共有されたドキュメントなので編集できません
+  [% ELSE %]
+  この編集バッファは古いバージョンなので編集できません
+  [% END %]
+[% END %]
+</li>
+    <li><div class="subject">コメント</div><div class="value">[% git_comment %]</div></li>
+    <li><div class="subject">コミット日時</div><div class="value">[% git_commit_date %]</span></li>
+<li class="revision"><div class="subject">Rev.</div><div class="value">[% revision %]</div></li>
+  </ul>
+  <div class="canvas">[% document %]</div>
 </section>
 
 </body>

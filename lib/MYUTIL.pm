@@ -3,6 +3,7 @@ package MYUTIL;
 use strict;
 use NKF;
 use Encode qw/encode decode/;
+use Date::Manip;
 use Data::Dumper;
 
 sub adjustDiffLine {
@@ -27,6 +28,18 @@ sub adjustDiffLine {
   }
 
   return $ret;
+}
+
+sub formatDate1 {
+  my $date = shift;
+  $date =~ s/^(.*) \+0900/\1/;
+  return  UnixDate(ParseDate($date), "%Y-%m-%d %H:%M:%S");
+}
+
+sub formatDate2 {
+  my $date = shift;
+  $date =~ s/^(.*) \+0900/\1/;
+  return  UnixDate(ParseDate($date), "%Y年%m月%d日 %H時%M分%S秒");
 }
 
 sub isInclude {
