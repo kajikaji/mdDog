@@ -511,7 +511,8 @@ sub setMD_buffer{
     $self->{t}->{document} = $document;
     $self->{t}->{style} = "source";
   }else {
-    $self->{t}->{document} = markdown($document);
+    $self->{t}->{document} = $document;
+    $self->{t}->{markdown} = markdown($document);
     $self->{t}->{style} = "preview";
   }
 }

@@ -475,23 +475,48 @@ table.gitlog {
   .document > .canvas {
     padding: 10px;
     border: 2px solid #888;
-    background-color: #fff; }
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.2em; }
     .document > .canvas h1, .document > .canvas h2, .document > .canvas h3, .document > .canvas h4, .document > .canvas h5, .document > .canvas h6, .document > .canvas h7 {
-      margin: 0 0 10px 0;
+      margin: 30px 0 10px 0;
       padding: 0; }
+    .document > .canvas h1:first-child, .document > .canvas h2:first-child, .document > .canvas h3:first-child {
+      margin-top: 20px; }
     .document > .canvas h1 {
+      margin-top: 70px;
       font-size: 40px; }
     .document > .canvas h2 {
+      margin-top: 40px;
       font-size: 28px; }
     .document > .canvas h3 {
-      font-size: 20px; }
+      font-size: 18px; }
     .document > .canvas h4 {
-      font-size: 16px; }
-    .document > .canvas p {
+      font-size: 14px; }
+    .document > .canvas p, .document > .canvas div {
       margin: 0 0 10px 0;
       padding: 0; }
     .document > .canvas ol, .document > .canvas ul {
       margin-left: 28px; }
+      .document > .canvas ol li, .document > .canvas ul li {
+        margin-bottom: 10px; }
+    .document > .canvas table thead {
+      background-color: #888;
+      color: #Fff;
+      font-size: 85%; }
+    .document > .canvas table tr td, .document > .canvas table tr th {
+      padding: 3px;
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 0 0 1px; }
+    .document > .canvas table th:last-child, .document > .canvas table td:last-child {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 0 1px; }
+    .document > .canvas table tr:last-child td {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 1px 1px; }
     .document > .canvas blockquote {
       padding: 5px;
       font-size: 80%;
@@ -550,23 +575,48 @@ table.gitlog {
   padding: 10px;
   padding: 10px;
   border: 2px solid #888;
-  background-color: #fff; }
+  background-color: #fff;
+  font-size: 14px;
+  line-height: 1.2em; }
   .md_buffer .document h1, .md_buffer .document h2, .md_buffer .document h3, .md_buffer .document h4, .md_buffer .document h5, .md_buffer .document h6, .md_buffer .document h7 {
-    margin: 0 0 10px 0;
+    margin: 30px 0 10px 0;
     padding: 0; }
+  .md_buffer .document h1:first-child, .md_buffer .document h2:first-child, .md_buffer .document h3:first-child {
+    margin-top: 20px; }
   .md_buffer .document h1 {
+    margin-top: 70px;
     font-size: 40px; }
   .md_buffer .document h2 {
+    margin-top: 40px;
     font-size: 28px; }
   .md_buffer .document h3 {
-    font-size: 20px; }
+    font-size: 18px; }
   .md_buffer .document h4 {
-    font-size: 16px; }
-  .md_buffer .document p {
+    font-size: 14px; }
+  .md_buffer .document p, .md_buffer .document div {
     margin: 0 0 10px 0;
     padding: 0; }
   .md_buffer .document ol, .md_buffer .document ul {
     margin-left: 28px; }
+    .md_buffer .document ol li, .md_buffer .document ul li {
+      margin-bottom: 10px; }
+  .md_buffer .document table thead {
+    background-color: #888;
+    color: #Fff;
+    font-size: 85%; }
+  .md_buffer .document table tr td, .md_buffer .document table tr th {
+    padding: 3px;
+    border-color: #555;
+    border-style: solid;
+    border-width: 1px 0 0 1px; }
+  .md_buffer .document table th:last-child, .md_buffer .document table td:last-child {
+    border-color: #555;
+    border-style: solid;
+    border-width: 1px 1px 0 1px; }
+  .md_buffer .document table tr:last-child td {
+    border-color: #555;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px; }
   .md_buffer .document blockquote {
     padding: 5px;
     font-size: 80%;

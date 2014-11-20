@@ -68,30 +68,62 @@ $corner_b: 5px;
 }
 
 @mixin markdown-set{
-      padding: 10px;
-      border: 2px solid #888;
-      background-color: #fff;
+    padding: 10px;
+    border: 2px solid #888;
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.2em;
 
-      h1,h2,h3,h4,h5,h6,h7{
-          margin: 0 0 10px 0;
-          padding: 0;
+    h1,h2,h3,h4,h5,h6,h7{
+        margin: 30px 0 10px 0;
+        padding: 0;
+    }
+    h1:first-child,h2:first-child,h3:first-child{ margin-top: 20px;}
+    h1{ margin-top: 70px; font-size: 40px; }
+    h2{ margin-top: 40px; font-size: 28px; }
+    h3{ font-size: 18px; }
+    h4{ font-size: 14px; }
+    p,div{
+        margin: 0 0 10px 0;
+        padding: 0;
+    }
+    ol,ul{
+        margin-left: 28px;
+      li{
+        margin-bottom: 10px;
       }
-      h1{ font-size: 40px; }
-      h2{ font-size: 28px; }
-      h3{ font-size: 20px; }
-      h4{ font-size: 16px; }
-      p{
-          margin: 0 0 10px 0;
-          padding: 0;
-      }
-      ol,ul{
-          margin-left: 28px;
-      }
-      blockquote{
-          padding: 5px;
-          font-size:  80%;
-          border: 1px solid #aaa;
-      }
+    }
+    table{
+        thead{
+            background-color: #888;
+            color: #Fff;
+            font-size: 85%;
+        }
+        tr{
+            td,th{
+                padding: 3px;
+                border-color: #555;
+                border-style: solid;
+                border-width: 1px 0 0 1px;
+            }
+        }
+        th:last-child,td:last-child{
+            border-color: #555;
+            border-style: solid;
+            border-width: 1px 1px 0 1px;
+        }
+
+        tr:last-child td{
+            border-color: #555;
+            border-style: solid;
+            border-width: 1px 1px 1px 1px;
+        }
+    }
+    blockquote{
+        padding: 5px;
+        font-size:  80%;
+        border: 1px solid #aaa;
+    }
 }
 
 /*
@@ -588,7 +620,7 @@ table.gitlog {
       }
   }
   >.canvas{
-@include markdown-set;
+    @include markdown-set;
   }
 }
 
@@ -652,10 +684,10 @@ table.gitlog {
     }
 
     .document{
-background-color: #fff;
-border: 2px solid #888;
-padding: 10px;
+        background-color: #fff;
+        border: 2px solid #888;
+        padding: 10px;
 
-@include markdown-set;
+        @include markdown-set;
     }
 }
