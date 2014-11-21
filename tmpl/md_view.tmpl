@@ -46,6 +46,7 @@
 <div class="property">
 </div>
   <ul class="property">
+[% IF login %]
 <li class="status">
 [% IF is_buffer &&  git_is_latest %]
 この編集バッファは編集可能です。編集する場合は上記の『編集』ボタンを押下してください。
@@ -57,6 +58,7 @@
   [% END %]
 [% END %]
 </li>
+[% END %]
     <li><div class="subject">コメント</div><div class="value">[% git_comment %]</div></li>
     <li><div class="subject">コミット日時</div><div class="value">[% git_commit_date %]</span></li>
 <li class="revision"><div class="subject">Rev.</div><div class="value">[% revision %]</div></li>

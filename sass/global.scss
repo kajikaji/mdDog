@@ -75,20 +75,21 @@ $corner_b: 5px;
     line-height: 1.2em;
 
     h1,h2,h3,h4,h5,h6,h7{
-        margin: 30px 0 10px 0;
-        padding: 0;
+        margin: 0;
+        padding: 30px 0 10px 0;
     }
-    h1:first-child,h2:first-child,h3:first-child{ margin-top: 20px;}
-    h1{ margin-top: 70px; font-size: 40px; }
-    h2{ margin-top: 40px; font-size: 28px; }
+    h1:first-child,h2:first-child,h3:first-child{ padding-top: 20px;}
+    h1{ padding-top: 70px; font-size: 40px; }
+    h2{ padding-top: 40px; font-size: 28px; }
     h3{ font-size: 18px; }
     h4{ font-size: 14px; }
     p,div{
-        margin: 0 0 10px 0;
-        padding: 0;
+        margin: 0;
+        padding: 3px 3px 10px 3px;
     }
     ol,ul{
-        margin-left: 28px;
+      margin-left: 0;
+      padding-left: 28px;
       li{
         margin-bottom: 10px;
       }
@@ -687,6 +688,13 @@ table.gitlog {
         background-color: #fff;
         border: 2px solid #888;
         padding: 10px;
+
+        >.forcus{
+            background-color: #b0c4de;
+            border: 2px solid #b0c4de-#111;;
+cursor: pointer;
+            @include round-corner(3px);
+        }
 
         @include markdown-set;
     }

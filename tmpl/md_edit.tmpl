@@ -46,7 +46,8 @@
     <input type="submit" name="commit" value="バッファをコミット">
     コメント：<input type="text" name="comment" size="30">
     <input type="hidden" name="fid" value="[% fid %]">  
-    <textarea name="document" style="display: none;">[% document %]</textarea>
+    <textarea name="document" class="rowdata" style="display: none;">[% document %]</textarea>
+    <div class="rowdata" style="display: none;">[% rowdata %]</div>
   </form>
   <ul class="md_menu">
     <li><a href="?fid=[% fid %]&style=source">ソース</a></li>

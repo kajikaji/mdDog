@@ -511,7 +511,48 @@ sub setMD_buffer{
     $self->{t}->{document} = $document;
     $self->{t}->{style} = "source";
   }else {
+=pod
+      my $rowdata;
+      my $block = 0;
+      my $blockquote = 0;
+      my $quote = 0;
+      my $cnt = 0;
+      foreach(split(/\n/, $document)){
+          if( $blockquote && $_ !~ m/^> .*/ ){
+              $blockquote = 0;
+              $rowdata .= "</div>\n";
+              $cnt++;
+          }
+
+          if( !$block && !$blockquote ){
+              if ( $_ =~ m/^.+\r$/ ) {
+                  $block = 1;
+                  $rowdata .= "<div id=\"elm-${cnt}\">\n";
+              }
+          } else {
+              if ( $_ =~ m/^\s*\r$/ ) {
+                  $block = 0;
+                  $rowdata .= "</div>\n";
+                  $cnt++;
+              }elsif( !$blockquote && $_ =~ m/^> .*/ ){
+                $blockquote = 1;
+                $block = 0;
+                $rowdata .= "</div>\n";
+                $cnt++;
+                $rowdata .= "<div id=\"elm-${cnt}\">\n";
+            }
+          }
+          $rowdata .= $_ . "\n";
+
+          if( $block && $_ =~ m/^(====|----).*/ ){
+              $block = 0;
+              $rowdata .= "</div>\n";
+              $cnt++;
+          }
+      }
+=cut
     $self->{t}->{document} = $document;
+#    $self->{t}->{rowdata} = $rowdata;
     $self->{t}->{markdown} = markdown($document);
     $self->{t}->{style} = "preview";
   }
@@ -531,6 +572,8 @@ sub updateMD_buffer {
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document = $self->qParam('document');
+  $document =~ s#<div>\n##g;
+  $document =~ s#</div>\n##g;
 
   $self->{git}->attachLocal_tmp($uid, 1);
 
