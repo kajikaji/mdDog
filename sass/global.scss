@@ -390,14 +390,15 @@ section.gitlog{
 	  &:first-child{
 	      border-left: 1px solid #555;
 	  }
-&.active a{
-font-weight: bold;
-background-color: #fff;
+&.active{
+  font-weight: bold;
+  a {
+    background-color: #fff;
+  }
 }
-
 	  a{
 	      display: block;
-	      background-color: #dfdfdf;
+	      background-color: #dedede;
 	      padding: 3px 6px;
 	      text-align: center;
 	      color: #000;

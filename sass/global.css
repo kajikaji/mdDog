@@ -228,12 +228,13 @@ section.gitlog {
       border-color: #555; }
       section.gitlog ul.buffer-list li:first-child {
         border-left: 1px solid #555; }
-      section.gitlog ul.buffer-list li.active a {
-        font-weight: bold;
-        background-color: #fff; }
+      section.gitlog ul.buffer-list li.active {
+        font-weight: bold; }
+        section.gitlog ul.buffer-list li.active a {
+          background-color: #fff; }
       section.gitlog ul.buffer-list li a {
         display: block;
-        background-color: #dfdfdf;
+        background-color: #dedede;
         padding: 3px 6px;
         text-align: center;
         color: #000; }
