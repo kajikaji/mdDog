@@ -6,6 +6,7 @@ use Date::Manip;
 
 sub param {
     my $hash = shift;
+    my $relative = shift;
 
     my $myhash = {
         maintitle   => 'docxLog',
@@ -16,7 +17,7 @@ sub param {
         program     => 'docxlog',
         version     => 20141021,
         company     => '',
-        repodir     => 'work',
+        repodir     => "${relative}work",
     };
 
     $hash = {%{$hash}, %{$myhash}};

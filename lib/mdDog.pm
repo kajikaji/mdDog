@@ -10,6 +10,7 @@ use File::Path;
 use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
 use NKF;
+use JSON;
 use MYUTIL;
 use mdDog::GitCtrl;
 
@@ -488,72 +489,28 @@ sub setMD_buffer{
 
   my $uid = $self->{s}->param("login");
   return unless($uid);
-
   my $fid = $self->qParam('fid');
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-
-  $self->{git}->attachLocal_tmp($uid);
-
-  my $document;
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
-  $self->{git}->detachLocal();
+  my $document = $self->getUserDocument($uid, $fid);
 
   unless($preview){
     $self->{t}->{document} = $document;
     $self->{t}->{style} = "source";
   }else {
-=pod
-      my $rowdata;
-      my $block = 0;
-      my $blockquote = 0;
-      my $quote = 0;
-      my $cnt = 0;
-      foreach(split(/\n/, $document)){
-          if( $blockquote && $_ !~ m/^> .*/ ){
-              $blockquote = 0;
-              $rowdata .= "</div>\n";
-              $cnt++;
-          }
+    my ($rowdata, @partsAry) = $self->split4MD($document);
+    my $md;
+    my $cnt = 0;
 
-          if( !$block && !$blockquote ){
-              if ( $_ =~ m/^.+\r$/ ) {
-                  $block = 1;
-                  $rowdata .= "<div id=\"elm-${cnt}\">\n";
-              }
-          } else {
-              if ( $_ =~ m/^\s*\r$/ ) {
-                  $block = 0;
-                  $rowdata .= "</div>\n";
-                  $cnt++;
-              }elsif( !$blockquote && $_ =~ m/^> .*/ ){
-                $blockquote = 1;
-                $block = 0;
-                $rowdata .= "</div>\n";
-                $cnt++;
-                $rowdata .= "<div id=\"elm-${cnt}\">\n";
-            }
-          }
-          $rowdata .= $_ . "\n";
+    foreach (@partsAry) {
+      my $conv = markdown($_);
+      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\">/;
+      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" />#;
+      $md .= $conv;
+      $cnt++;
+    }
 
-          if( $block && $_ =~ m/^(====|----).*/ ){
-              $block = 0;
-              $rowdata .= "</div>\n";
-              $cnt++;
-          }
-      }
-=cut
-    $self->{t}->{document} = $document;
-#    $self->{t}->{rowdata} = $rowdata;
-    $self->{t}->{markdown} = markdown($document);
+    $self->{t}->{document} = $document; # hidden要素用
+    $self->{t}->{rowdata} = $rowdata;
+    $self->{t}->{markdown} = $md;
     $self->{t}->{style} = "preview";
   }
 }
@@ -574,6 +531,7 @@ sub updateMD_buffer {
   my $document = $self->qParam('document');
   $document =~ s#<div>\n##g;
   $document =~ s#</div>\n##g;
+  $document =~ s/\r\n/\n/g;
 
   $self->{git}->attachLocal_tmp($uid, 1);
 
@@ -601,4 +559,180 @@ sub fixMD_buffer {
   $self->{git}->fixTmp($uid, $self->getAuthor($uid), $comment);
   return 1;
 }
+
+############################################################
+# JSONを返す
+sub api_getJSON {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid');
+  my $eid = $self->qParam('eid');
+  my $document = $self->getUserDocument($uid, $fid);
+  my ($rowdata, @partsAry) = $self->split4MD($document);
+  my $cnt = 0;
+  my $data;
+
+  foreach (@partsAry) {
+    if($eid){
+      if($eid == $cnt){
+        $data = [{eid => ${cnt}, data => $_}];
+        last;
+      }
+    }else{
+      push @$data, { eid => ${cnt}, data => $_ };
+    }
+    $cnt++;
+  }
+
+  my $json = JSON->new();
+  return $json->encode($data);
+}
+
+############################################################
+#
+sub api_postData {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+  my $eid = $self->qParam('eid') + 0;
+  my $data = $self->qParam('data');
+  my $document = $self->getUserDocument($uid, $fid);
+  my ($rowdata, @partsAry) = $self->split4MD($document);
+
+  $self->{git}->attachLocal_tmp($uid, 1);
+
+  #ファイル書き込み
+  # TODO: ファイル名取得ルーチンが重複！
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  open my $hF, '>', $filepath || return undef;
+  my $cnt = 0;
+  my @newAry;
+  my $line;
+  foreach(@partsAry) {
+    if($eid == $cnt){
+      $line = $data . "\n";
+    }else{
+      $line = $_ . "\n";
+    }
+    syswrite $hF, $line, length($line);
+    $cnt++;
+  }
+  close $hF;
+
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  $self->{git}->commit($filename, $author, "temp saved");
+  $self->{git}->detachLocal();
+
+  my $json = JSON->new();
+  my $md = markdown($data);
+  return $json->encode({eid => ${eid}, data => ${data}, md => ${md}});
+}
+
+
+############################################################
+#
+sub getUserDocument {
+  my $self = shift;
+  my $uid  = shift;
+  my $fid  = shift;
+
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  $self->{git}->attachLocal_tmp($uid);
+
+  my $document;
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $document, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+  $self->{git}->detachLocal();
+
+  return $document;
+}
+
+############################################################
+#
+sub split4MD {
+  my $self = shift;
+  my $document = shift;
+
+  my @partsAry;
+  my $parts = "";
+  my $rowdata = "";
+  my $block = 0;
+  my $blockquote = 0;
+  my $quote = 0;
+  my $cnt = 0;
+  foreach (split(/\n/, $document)) {
+    if ( $blockquote && $_ !~ m/^> .*/ ) {
+      $blockquote = 0;
+      push @partsAry, $parts;
+      $rowdata .= "${parts}</div>";
+      $parts = "";
+      $cnt++;
+    }
+
+    if ( !$block && !$blockquote ) {
+      if ( $_ =~ m/^.+$/ ) {
+        $block = 1;
+        $rowdata .= "<div id=\"elm-${cnt}\">";
+      }
+    } else {
+      if ( $_ =~ m/^\s*$/ ) {
+        $blockquote = 0;
+        $block = 0;
+        push @partsAry, $parts;
+        $rowdata .= "${parts}</div>";
+        $parts = "";
+        $cnt++;
+      } elsif ( !$blockquote && $_ =~ m/^> .*/) {
+        $blockquote = 1;
+        $block = 0;
+        push @partsAry, $parts;
+        $rowdata .= "${parts}</div>";
+        $parts = "";
+        $cnt++;
+        $rowdata .= "<div id=\"elm-${cnt}\">";
+      } elsif ( $block && $_ =~ m/^#+/ ) {
+        push @partsAry, $parts;
+        $rowdata .= "${parts}</div>";
+        $parts = "";
+        $cnt++;
+        $rowdata .= "<div id=\"elm-${cnt}\">";
+      }
+    }
+
+    if ($block || $blockquote || $quote) {
+      $parts .= $_ . "\n";
+    }
+
+    if ( $block && $_ =~ m/^(====|----|#+).*/ ) {
+      $block = 0;
+      push @partsAry, $parts;
+      $rowdata .= "${parts}</div>";
+      $parts = "";
+      $cnt++;
+    }
+  }
+  if ($block || $blockquote || $quote) {
+    push @partsAry, $parts;
+    $rowdata .= "${parts}</div>";
+  }
+
+  return ($rowdata, @partsAry);
+}
+
 1;

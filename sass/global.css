@@ -587,6 +587,17 @@ table.gitlog {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px; }
+  .md_buffer .document .editform textarea.editdata {
+    width: 100%;
+    box-sizing: boder-box;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px; }
+  .md_buffer .document .editform button {
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px; }
   .md_buffer .document h1, .md_buffer .document h2, .md_buffer .document h3, .md_buffer .document h4, .md_buffer .document h5, .md_buffer .document h6, .md_buffer .document h7 {
     margin: 0;
     padding: 30px 0 10px 0; }

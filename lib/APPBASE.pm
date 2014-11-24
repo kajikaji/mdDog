@@ -13,6 +13,15 @@ use SCONFIG;
 
 sub new {
   my $pkg = shift;
+  my $dir = shift;
+
+  my $relative = "";
+  if($dir){
+    $dir =~ s/^\/(.*)$/\1/;
+    foreach(split(/\//, $dir)){
+      $relative .= "../";
+    }
+  }
 
   my $hash = {
     q           => new CGI,
@@ -20,8 +29,8 @@ sub new {
     cookie      => undef,
     cginame     => undef,
     basename    => undef,
-    sessiondir  => './sess/',
-    templatedir  => './tmpl/',
+    sessiondir  => "${relative}sess/",
+    templatedir  => "${relative}tmpl/",
     tmplfile    => undef,
     tmpl_error  => "error.tmpl",
     t           => undef,
@@ -32,7 +41,7 @@ sub new {
     dpass       => undef,       # you must edit into 'SCONFIG';
   };
 
-  $hash = DEFINE::param($hash);
+  $hash = DEFINE::param($hash, $relative);
   $hash = SCONFIG::param($hash);
 
   return bless $hash, $pkg;

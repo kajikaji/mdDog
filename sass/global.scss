@@ -697,6 +697,18 @@ cursor: pointer;
             @include round-corner(3px);
         }
 
+	.editform{
+	    textarea.editdata{
+		width: 100%;
+		box-sizing: boder-box;
+		margin-bottom: 5px;
+		@include round-corner(5px);
+	    }
+	    button{
+		@include round-corner(3px);
+	    }
+	}
+
         @include markdown-set;
     }
 }
