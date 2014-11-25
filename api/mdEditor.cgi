@@ -16,18 +16,20 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     print "Content-type: application/json; charset=utf-8\n\n";
     print $dog->api_getJSON();
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
-    ## ?fid=[fid]&eid=[eid]&data=[data]
+    ## ?fid=[fid]&eid=[eid]&action=[action]
     return unless($dog->qParam('fid')
                   || $dog->qParam('eid')
-                  || $dog->qParam('data'));
+                  || $dog->qParam('action'));
 
-    my $updateData = $dog->api_postData();
-    print "Content-type: application/json; charset=utf-8\n\n";
-    print $updateData;
-
-} elsif( $ENV{'REQUEST_METHOD'} eq 'DELETE' ) {
-  ## ?fid=[fid]&eid=[eid]
+    if($dog->qParam('action') eq 'update' &&  $dog->qParam('data')){
+        my $updateData = $dog->api_postData();
+        print "Content-type: application/json; charset=utf-8\n\n";
+        print $updateData;
+    }elsif($dog->qParam('action') eq 'delete' ) {
+        my $ret = $dog->api_deleteData();
+        print "Content-type: application/json; charset=utf-8\n\n";
+        print $ret;
+    }
 }
-
 
 exit();

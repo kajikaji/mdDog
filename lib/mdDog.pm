@@ -635,6 +635,47 @@ sub api_postData {
   return $json->encode({eid => ${eid}, data => ${data}, md => ${md}});
 }
 
+############################################################
+#
+sub api_deleteData {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+  my $eid = $self->qParam('eid') + 0;
+
+  my $document = $self->getUserDocument($uid, $fid);
+  my ($rowdata, @partsAry) = $self->split4MD($document);
+
+  $self->{git}->attachLocal_tmp($uid, 1);
+
+  #ファイル書き込み
+  # TODO: ファイル名取得ルーチンが重複！
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  open my $hF, '>', $filepath || return undef;
+  my $cnt = 0;
+  foreach(@partsAry) {
+    if($eid != $cnt){
+      my $line = $_ . "\n";
+      syswrite $hF, $line, length($line);
+    }
+    $cnt++;
+  }
+  close $hF;
+
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  $self->{git}->commit($filename, $author, "temp saved");
+  $self->{git}->detachLocal();
+
+  my $json = JSON->new();
+  return $json->encode({eid => ${eid}});
+}
+
 
 ############################################################
 #

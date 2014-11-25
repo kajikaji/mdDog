@@ -37,63 +37,108 @@ function getParam(key) {
     return null;
 }
 
+var mdEditForm = function(obj){
+    this.src = obj;
+    this.id;
+    this.elmId;
+    this.mdId;
+    this.formId;
+    this.formtmpl = 'editform';
+    this.api = 'api/mdEditor.cgi';
+};
+mdEditForm.prototype = {
+    init: function() {
+        this.id = this.src.attr('id').slice(2);
+        this.elmId = 'elm-' + this.id;
+        this.mdId = 'md' + this.id;
+        this.formId = 'edit-' + this.id;
+
+        var newForm = $('#' + this.formtmpl).clone().attr('id', this.formId);
+        var data= $('#' + this.elmId).text();
+        var n = data.match(/\n/g).length + 1;
+        newForm.find('textarea.editdata').text(data).attr('rows', n);
+        this.src.after(newForm);
+        newForm.show(); this.src.hide();
+
+        this.attachButton();
+    },
+
+    attachButton: function(){
+        $('#' + this.formId).find('button.update').click($.proxy(function(){
+            this.btnUpdate();
+        }, this));
+        $('#' + this.formId).find('button.delete').click($.proxy(function(){
+            this.btnDelete();
+        }, this));
+        $('#' + this.formId).find('button.cancel').click($.proxy(function(){
+            this.btnCancel();
+        }, this));
+    },
+
+    btnUpdate: function(){
+		var fid = getParam("fid");
+		var editdata = $('#' + this.formId).find('textarea.editdata').val();
+		$.ajax({
+		    url: this.api,
+		    type: 'POST',
+		    data:{
+                fid: fid, 
+                eid: this.id,
+                action: 'update', 
+                data: editdata
+            }
+		}).done($.proxy(function(res){
+            this.updateSuccess(res);
+		}, this));
+	},
+    btnDelete: function(){
+		var fid = getParam("fid");
+		$.ajax({
+		    url: this.api,
+		    type: 'POST',
+		    data:{
+                fid: fid, 
+                eid: this.id,
+                action: 'delete',
+            }
+		}).done($.proxy(function(res){
+            this.deleteSuccess(res);
+		}, this));
+    },
+    btnCancel: function(){
+		$('#' + this.formId).remove();
+		$(this.src).show();
+    },
+
+    updateSuccess: function(res){
+		$('#' + this.formId).remove();
+		var $newObj = $(res.md);
+        $('#' + this.mdId).attr('id', this.mdId + 'org');
+		$newObj.attr('id', this.mdId);
+		$('#' + this.mdId + 'org').after($newObj);
+		$('#' + this.mdId + 'org').remove();
+		$newObj.show();
+		$('#' + this.elmId).text(res.data);
+    },
+    deleteSuccess: function(res) {
+		$('#' + this.formId).remove();
+        $('#' + this.mdId).remove();
+        $('#' + this.elmId).remove();
+    }
+};
+
 /***********************************************
  * 初回実行
  ***********************************************/
 $(function(){
-
     $('div.document').children().each(function(){
         $(this).hover(
-            function(){ $(this).addClass('forcus'); },
-            function(){ $(this).removeClass('forcus'); }
+            function(){ $(this).addClass('focus'); },
+            function(){ $(this).removeClass('focus'); }
         );
         $(this).click(function(){
-            var obj = $(this);
-            var id = obj.attr('id').slice(2); // id='md*'
-	    var data = $('#elm-' + id).text();
-	    var editform = $('#editform').clone().attr('id','edit-' + id);
-	    var ta = editform.find('textarea.editdata');
-            ta.text(data);
-	    var n = data.match(/\n/g).length + 1;
-	    ta.attr('rows', n);
-	    editform.show();
-	    obj.after(editform);
-	    obj.hide();
-
-            //更新
-	    editform.find('button.update').click(function(){
-		var editform = $(this).parent();
-		var fid = getParam("fid");
-		var eid = editform.attr('id').slice(5);
-		var data = editform.find('textarea.editdata').val();
-		$.ajax({
-		    url: 'api/mdEditor.cgi',
-		    type: 'POST',
-		    data:{fid: fid, eid: eid, data: data}
-		}).done(function(res){
-		    $('#edit-' + res.eid).remove();
-		    var $newObj = $(res.md);
-                    $('#md' + res.eid).attr('id', 'md' + res.eid + 'org');
-		    $newObj.attr('id', 'md' + res.eid);
-		    $('#md' + res.eid + 'org').after($newObj);
-		    $('#md' + res.eid + 'org').remove();
-		    $newObj.show();
-		    $('#elm-' + res.eid).text(res.data);
-		});
-	    });
-
-            //削除
-	    editform.find('button.delete').click(function(){
-
-	    });
-
-            //キャンセル
-	    editform.find('button.cancel').click(function(){
-		var editform = $(this).parent();
-		var id = editform.attr('id').slice(5);		
-		editform.remove();
-		$('#md' + id).show();
-	    });
+            var eForm = new mdEditForm($(this));
+            eForm.init();
         });
     });
 });
