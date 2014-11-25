@@ -76,52 +76,52 @@ mdEditForm.prototype = {
     },
 
     btnUpdate: function(){
-		var fid = getParam("fid");
-		var editdata = $('#' + this.formId).find('textarea.editdata').val();
-		$.ajax({
-		    url: this.api,
-		    type: 'POST',
-		    data:{
+	var fid = getParam("fid");
+	var editdata = $('#' + this.formId).find('textarea.editdata').val();
+	$.ajax({
+	    url: this.api,
+	    type: 'POST',
+	    data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'update', 
                 data: editdata
             }
-		}).done($.proxy(function(res){
+	}).done($.proxy(function(res){
             this.updateSuccess(res);
-		}, this));
-	},
+	}, this));
+    },
     btnDelete: function(){
-		var fid = getParam("fid");
-		$.ajax({
-		    url: this.api,
-		    type: 'POST',
-		    data:{
+	var fid = getParam("fid");
+	$.ajax({
+	    url: this.api,
+	    type: 'POST',
+	    data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'delete',
             }
-		}).done($.proxy(function(res){
+	}).done($.proxy(function(res){
             this.deleteSuccess(res);
-		}, this));
+	}, this));
     },
     btnCancel: function(){
-		$('#' + this.formId).remove();
-		$(this.src).show();
+	$('#' + this.formId).remove();
+	$(this.src).show();
     },
 
     updateSuccess: function(res){
-		$('#' + this.formId).remove();
-		var $newObj = $(res.md);
+	$('#' + this.formId).remove();
+	var $newObj = $(res.md);
         $('#' + this.mdId).attr('id', this.mdId + 'org');
-		$newObj.attr('id', this.mdId);
-		$('#' + this.mdId + 'org').after($newObj);
-		$('#' + this.mdId + 'org').remove();
-		$newObj.show();
-		$('#' + this.elmId).text(res.data);
+	$newObj.attr('id', this.mdId);
+	$('#' + this.mdId + 'org').after($newObj);
+	$('#' + this.mdId + 'org').remove();
+	$newObj.show();
+	$('#' + this.elmId).text(res.data);
     },
     deleteSuccess: function(res) {
-		$('#' + this.formId).remove();
+	$('#' + this.formId).remove();
         $('#' + this.mdId).remove();
         $('#' + this.elmId).remove();
     }
