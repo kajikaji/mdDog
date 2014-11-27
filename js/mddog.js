@@ -112,13 +112,32 @@ mdEditForm.prototype = {
 
     updateSuccess: function(res){
 	$('#' + this.formId).remove();
-	var $newObj = $(res.md);
         $('#' + this.mdId).attr('id', this.mdId + 'org');
-	$newObj.attr('id', this.mdId);
+	var $newObj = $(res.md);
 	$('#' + this.mdId + 'org').after($newObj);
 	$('#' + this.mdId + 'org').remove();
-	$newObj.show();
 	$('#' + this.elmId).text(res.data);
+
+	var cnt = 0;
+	$newObj.each($.proxy(function(index, elm){
+	    if( !$(elm).html() ) return;
+	    if(cnt == 0){
+		$(elm).attr('id', this.mdId);
+	    }else{
+		$(elm).attr('id', this.mdId + '-' + cnt);
+	    }
+	    cnt++;
+	}, this));
+
+//	$newObj.attr('id', this.mdId);
+	$newObj.hover(
+            function(){ $(this).addClass('focus'); },
+            function(){ $(this).removeClass('focus'); }
+	);
+	$newObj.click(function(){
+            var eForm = new mdEditForm($(this));
+            eForm.init();
+	});
     },
     deleteSuccess: function(res) {
 	$('#' + this.formId).remove();
