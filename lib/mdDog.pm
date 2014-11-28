@@ -631,8 +631,17 @@ sub api_postData {
   $self->{git}->detachLocal();
 
   my $json = JSON->new();
-  my $md = markdown($data);
-  return $json->encode({eid => ${eid}, data => ${data}, md => ${md}});
+  my $md;# = markdown($data);
+  my ($row, @parts) = $self->split4MD($data, $eid);
+  $cnt = 0;
+  foreach(@parts){
+    my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
+    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${eid}-${cnt}\">/;
+    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${eid}-{cnt}\" />#;
+    $md .= $conv;
+    $cnt++;
+  }
+  return $json->encode({eid => ${eid}, md => ${md}, row => ${row}});
 }
 
 ############################################################
@@ -642,7 +651,7 @@ sub api_deleteData {
   my $uid = $self->{s}->param("login");
   return unless($uid);
   my $fid = $self->qParam('fid') + 0;
-  my $eid = $self->qParam('eid') + 0;
+  my $eid = $self->qParam('eid');
 
   my $document = $self->getUserDocument($uid, $fid);
   my ($rowdata, @partsAry) = $self->split4MD($document);
@@ -709,6 +718,7 @@ sub getUserDocument {
 sub split4MD {
   my $self = shift;
   my $document = shift;
+  my $subindex = shift;
 
   my @partsAry;
   my $parts = "";
@@ -729,7 +739,11 @@ sub split4MD {
     if ( !$block && !$blockquote ) {
       if ( $_ =~ m/^.+$/ ) {
         $block = 1;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
+        if($subindex){
+          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
+        }else{
+          $rowdata .= "<div id=\"elm-${cnt}\">";
+        }
       }
     } else {
       if ( $_ =~ m/^\s*$/ ) {
@@ -746,13 +760,21 @@ sub split4MD {
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
+        if($subindex){
+          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
+        }else{
+          $rowdata .= "<div id=\"elm-${cnt}\">";
+        }
       } elsif ( $block && $_ =~ m/^#+/ ) {
         push @partsAry, $parts;
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
+        if($subindex){
+          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
+        }else{
+          $rowdata .= "<div id=\"elm-${cnt}\">";
+        }
       }
     }
 

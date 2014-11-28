@@ -76,71 +76,62 @@ mdEditForm.prototype = {
     },
 
     btnUpdate: function(){
-	var fid = getParam("fid");
-	var editdata = $('#' + this.formId).find('textarea.editdata').val();
-	$.ajax({
-	    url: this.api,
-	    type: 'POST',
-	    data:{
+	    var fid = getParam("fid");
+	    var editdata = $('#' + this.formId).find('textarea.editdata').val();
+	    $.ajax({
+	        url: this.api,
+	        type: 'POST',
+	        data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'update', 
                 data: editdata
             }
-	}).done($.proxy(function(res){
+	    }).done($.proxy(function(res){
             this.updateSuccess(res);
-	}, this));
+	    }, this));
     },
     btnDelete: function(){
-	var fid = getParam("fid");
-	$.ajax({
-	    url: this.api,
-	    type: 'POST',
-	    data:{
+	    var fid = getParam("fid");
+	    $.ajax({
+	        url: this.api,
+	        type: 'POST',
+	        data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'delete',
             }
-	}).done($.proxy(function(res){
+	    }).done($.proxy(function(res){
             this.deleteSuccess(res);
-	}, this));
+  	    }, this));
     },
     btnCancel: function(){
-	$('#' + this.formId).remove();
-	$(this.src).show();
+	    $('#' + this.formId).remove();
+	    $(this.src).show();
     },
 
     updateSuccess: function(res){
-	$('#' + this.formId).remove();
+	    $('#' + this.formId).remove();
         $('#' + this.mdId).attr('id', this.mdId + 'org');
-	var $newObj = $(res.md);
-	$('#' + this.mdId + 'org').after($newObj);
-	$('#' + this.mdId + 'org').remove();
-	$('#' + this.elmId).text(res.data);
+	    var $newObj = $(res.md);
+	    $('#' + this.mdId + 'org').after($newObj);
+	    $('#' + this.mdId + 'org').remove();
+	    $('#' + this.elmId).attr('id', this.elmId + 'org');
+        var $elmObj = $(res.row);
+        $('#' + this.elmId + 'org').after($elmObj);
+        $('#' + this.elmId + 'org').remove();
 
-	var cnt = 0;
-	$newObj.each($.proxy(function(index, elm){
-	    if( !$(elm).html() ) return;
-	    if(cnt == 0){
-		$(elm).attr('id', this.mdId);
-	    }else{
-		$(elm).attr('id', this.mdId + '-' + cnt);
-	    }
-	    cnt++;
-	}, this));
-
-//	$newObj.attr('id', this.mdId);
-	$newObj.hover(
+	    $newObj.hover(
             function(){ $(this).addClass('focus'); },
             function(){ $(this).removeClass('focus'); }
-	);
-	$newObj.click(function(){
+	    );
+	    $newObj.click(function(){
             var eForm = new mdEditForm($(this));
             eForm.init();
-	});
+	    });
     },
     deleteSuccess: function(res) {
-	$('#' + this.formId).remove();
+        $('#' + this.formId).remove();
         $('#' + this.mdId).remove();
         $('#' + this.elmId).remove();
     }
