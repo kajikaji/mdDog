@@ -1,0 +1,45 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ファイル一覧に戻る</a></li> 
+<li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+<li><a href="md_view.cgi?fid=[% fid %]">閲覧に戻る</a></li>
+</ul>
+
+<section class="docinfo">
+<h1>編集バッファ</h1>
+<h2>[% file_name %]<span class="supplement">--&ensp;(ソースファイル)&ensp;--</span></h2>
+<div class="description">
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
+</div>
+
+</section> <!-- docinfo -->
+
+<section class="md_buffer">
+  <form class="md-editor" action="?fid=[% fid %]" method="post">
+    <div class="edit-menu">
+      <div class="md-buffer-fix">
+	<input type="submit" name="commit" value="バッファをコミット">
+	コメント：<input type="text" name="comment" size="30">
+	<input type="hidden" name="fid" value="[% fid %]">  
+      </div>
+      <ul>
+	<li><a href="md_edit.cgi?fid=[% fid %]">エディタに戻る</a></li>
+      </ul>
+    </div>
+
+    <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
+    <div class="ctrl">
+      <input type="submit" name="update" value="一時保存">
+      <input type="hidden" name="fid" value="[% fid %]">  
+    </div>
+  </form>
+</section>
+
+</body>
+</html>

@@ -329,17 +329,24 @@ section.top {
           content: "";
           line-height: 0; }
 
-section.docinfo h1 {
+section.docinfo h1, section.docinfo h2 {
   margin-top: 0; }
-section.docinfo h2 {
-  margin-top: 0;
-  color: #f4a460; }
-  section.docinfo h2 .download-alt {
-    margin-right: 10px; }
-  section.docinfo h2 .supplement {
-    color: #000;
-    font-size: 12px;
-    margin-left: 10px; }
+section.docinfo h1 {
+  color: #b0601c;
+  font-size: 14px;
+  margin-bottom: 5px; }
+section.docinfo h2 .download-alt {
+  margin-right: 10px; }
+section.docinfo h2 .supplement {
+  color: #000;
+  font-size: 12px;
+  margin-left: 10px; }
+section.docinfo:after {
+  clear: both; }
+section.docinfo:after, section.docinfo:before {
+  display: table;
+  content: "";
+  line-height: 0; }
 section.docinfo > .description {
   font-size: 11px;
   margin-bottom: 20px;
@@ -525,9 +532,7 @@ table.gitlog {
       border: 1px solid #aaa; }
 
 .md_buffer form.md-buffer-fix {
-  margin-bottom: 30px; }
-.md_buffer form.md-editor .md-buffer-fix {
-  margin-bottom: 30px; }
+  margin-bottom: 10px; }
 .md_buffer form.md-editor .canvas {
   margin-bottom: 10px; }
   .md_buffer form.md-editor .canvas textarea {
@@ -538,6 +543,40 @@ table.gitlog {
     border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0; }
+.md_buffer .edit-menu .md-buffer-fix {
+  float: left;
+  margin-bottom: 0; }
+.md_buffer .edit-menu ul {
+  float: right;
+  list-style: none;
+  margin-top: 10px; }
+  .md_buffer .edit-menu ul li {
+    float: left;
+    border: 1px solid #aaa;
+    border-bottom: none;
+    font-size: 12px; }
+    .md_buffer .edit-menu ul li a,
+    .md_buffer .edit-menu ul li a:hover,
+    .md_buffer .edit-menu ul li a:link,
+    .md_buffer .edit-menu ul li a.visited {
+      display: block;
+      padding: 3px 10px;
+      color: #333;
+      text-decoration: none; }
+    .md_buffer .edit-menu ul li a:hover {
+      background-color: #b0c4de; }
+  .md_buffer .edit-menu ul:after {
+    clear: both; }
+  .md_buffer .edit-menu ul:after, .md_buffer .edit-menu ul:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+.md_buffer .edit-menu:after {
+  clear: both; }
+.md_buffer .edit-menu:after, .md_buffer .edit-menu:before {
+  display: table;
+  content: "";
+  line-height: 0; }
 .md_buffer ul.md_menu {
   list-style: none;
   margin-bottom: 0; }

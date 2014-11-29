@@ -9,8 +9,8 @@
 </ul>
 
 <section class="docinfo">
-<h1>ドキュメント編集</h1>
-<h2>[% file_name %]<span class="supplement">--&ensp;editing&ensp;--</span></h2>
+<h1>編集バッファ</h1>
+<h2>[% file_name %]</h2>
 <div class="description">
   <div class="created-at">作成日時：</div>
   <div class="created-by">作成者：</div>
@@ -21,38 +21,22 @@
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
-  [% SWITCH style %]
-  [% CASE "source" %]
-  <form class="md-editor" action="?fid=[% fid %]" method="post">
-    <div class="md-buffer-fix">
+  <div class="edit-menu">
+
+    <form class="md-buffer-fix" action="?id=fid=[% fid %]" method="post">
       <input type="submit" name="commit" value="バッファをコミット">
       コメント：<input type="text" name="comment" size="30">
       <input type="hidden" name="fid" value="[% fid %]">  
-    </div>
+      <textarea name="document" class="rowdata" style="display: none;">[% document %]</textarea>
+      <div class="rowdata" style="display: none;">[% rowdata %]</div>
+    </form>
 
-    <ul class="md_menu">
-      <li class="active">ソース</li>
-      <li><a href="?fid=[% fid %]&style=preview">プレビュー</a></li>
+    <ul>
+      <li><a href="md_source.cgi?fid=[% fid %]">ソースの編集</a></li>
     </ul>
+  </div>
 
-    <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
-    <div class="ctrl">
-      <input type="submit" name="update" value="一時保存">
-      <input type="hidden" name="fid" value="[% fid %]">  
-    </div>
-  </form>
-  [% CASE "preview" %]
-  <form class="md-buffer-fix" action="?id=fid=[% fid %]" method="post">
-    <input type="submit" name="commit" value="バッファをコミット">
-    コメント：<input type="text" name="comment" size="30">
-    <input type="hidden" name="fid" value="[% fid %]">  
-    <textarea name="document" class="rowdata" style="display: none;">[% document %]</textarea>
-    <div class="rowdata" style="display: none;">[% rowdata %]</div>
-  </form>
-  <ul class="md_menu">
-    <li><a href="?fid=[% fid %]&style=source">ソース</a></li>
-    <li class="active">プレビュー</li>
-  </ul>
+
   <div class="document">
     [% markdown %]
   </div>
@@ -62,7 +46,6 @@
     <button class="delete">削除</button>
     <button class="cancel">キャンセル</button>
   </div>
-  [% END %]
 </section>
 
 </body>

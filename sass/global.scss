@@ -493,12 +493,15 @@ box-sizing: border-box;
 }
 
 section.docinfo{
-  h1{
+  h1, h2{
     margin-top: 0;
   }
+  h1{
+    color: #f4a460 - #444;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
   h2{
-    margin-top: 0;
-    color: #f4a460;
     .download-alt{
       margin-right: 10px;
     }
@@ -508,6 +511,7 @@ section.docinfo{
         margin-left: 10px;
     }
   }
+  @include clearfix();
 
   >.description{
     font-size: 11px;
@@ -628,13 +632,10 @@ table.gitlog {
 
 .md_buffer{
     form.md-buffer-fix{
-      margin-bottom: 30px;
+      margin-bottom: 10px;
     }
 
     form.md-editor {
-      .md-buffer-fix{
-        margin-bottom: 30px;
-      }
         .canvas {
             margin-bottom: 10px;
             textarea{
@@ -647,6 +648,40 @@ table.gitlog {
                 -moz-border-radius: 0;
             }
         }
+    }
+
+    .edit-menu{
+	.md-buffer-fix{
+	    float: left;
+            margin-bottom: 0;
+	}
+	ul{
+	    float: right;
+	    list-style: none;
+            margin-top: 10px;
+	    li{
+		float: left;
+		border: 1px solid #aaa;
+                border-bottom: none;
+		font-size: 12px;
+
+            a,
+            a:hover,
+            a:link,
+            a.visited {
+                display: block;
+		padding: 3px 10px;
+                color: #333;
+                text-decoration: none;
+            }
+            a:hover{
+                background-color: #b0c4de;
+            }
+
+	    }
+	    @include clearfix();
+	}
+	@include clearfix();
     }
 
     ul.md_menu{

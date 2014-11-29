@@ -22,7 +22,7 @@ if(!$dog->qParam('fid')) {
     }
   }
 
-  $dog->setMD_buffer(1);
+  $dog->setMD_buffer();
   $dog->setDocumentInfo();
 }
 
