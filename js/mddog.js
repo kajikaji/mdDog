@@ -29,10 +29,10 @@ function getParam(key) {
     var param = url.split("?");
     var params = param[1].split("&");
     for( var i=0; i < params.length; i++ ){
-	var pCols = params[i].split("=");
-	if(pCols[0] === key){
-	    return pCols[1];
-	}
+        var pCols = params[i].split("=");
+        if(pCols[0] === key){
+            return pCols[1];
+        }
     }
     return null;
 }
@@ -76,64 +76,87 @@ mdEditForm.prototype = {
     },
 
     btnUpdate: function(){
-	    var fid = getParam("fid");
-	    var editdata = $('#' + this.formId).find('textarea.editdata').val();
-	    $.ajax({
-	        url: this.api,
-	        type: 'POST',
-	        data:{
+            var fid = getParam("fid");
+            var editdata = $('#' + this.formId).find('textarea.editdata').val();
+            $.ajax({
+                url: this.api,
+                type: 'POST',
+                data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'update', 
                 data: editdata
             }
-	    }).done($.proxy(function(res){
+            }).done($.proxy(function(res){
             this.updateSuccess(res);
-	    }, this));
+            }, this));
     },
     btnDelete: function(){
-	    var fid = getParam("fid");
-	    $.ajax({
-	        url: this.api,
-	        type: 'POST',
-	        data:{
+            var fid = getParam("fid");
+            $.ajax({
+                url: this.api,
+                type: 'POST',
+                data:{
                 fid: fid, 
                 eid: this.id,
                 action: 'delete',
             }
-	    }).done($.proxy(function(res){
+            }).done($.proxy(function(res){
             this.deleteSuccess(res);
-  	    }, this));
+            }, this));
     },
     btnCancel: function(){
-	    $('#' + this.formId).remove();
-	    $(this.src).show();
+            $('#' + this.formId).remove();
+            $(this.src).show();
     },
 
     updateSuccess: function(res){
-	    $('#' + this.formId).remove();
+        $('#' + this.formId).remove();
+
         $('#' + this.mdId).attr('id', this.mdId + 'org');
-	    var $newObj = $(res.md);
-	    $('#' + this.mdId + 'org').after($newObj);
-	    $('#' + this.mdId + 'org').remove();
-	    $('#' + this.elmId).attr('id', this.elmId + 'org');
+        var $newObj = $(res.md);
+        $('#' + this.mdId + 'org').after($newObj);
+        $('#' + this.mdId + 'org').remove();
+	var leng = $newObj.length;
+	if(leng > 1){
+	    this.resetTreeId($newObj.last().next(), leng - 1, 'md');
+        }
+
+        $('#' + this.elmId).attr('id', this.elmId + 'org');
         var $elmObj = $(res.row);
         $('#' + this.elmId + 'org').after($elmObj);
         $('#' + this.elmId + 'org').remove();
+	var eLeng = $elmObj.length;
+	if(eLeng > 1){
+	    this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm-');
+        }
 
-	    $newObj.hover(
+        $newObj.hover(
             function(){ $(this).addClass('focus'); },
             function(){ $(this).removeClass('focus'); }
-	    );
-	    $newObj.click(function(){
+        );
+        $newObj.click(function(){
             var eForm = new mdEditForm($(this));
             eForm.init();
-	    });
+        });
     },
     deleteSuccess: function(res) {
         $('#' + this.formId).remove();
+	var $nextMd = $('#' + this.mdId).next();
         $('#' + this.mdId).remove();
+	this.resetTreeId($nextMd, -1, 'md');
+	var $nextElm = $('#' + this.elmId).next();
         $('#' + this.elmId).remove();
+	this.resetTreeId($nextElm, -1, 'elm-');
+    },
+    resetTreeId: function(obj, inc, prefix) {
+	    while(obj.length > 0){
+		var id = obj.attr('id');
+		id = Number(id.substr(prefix.length));
+		id += inc;
+		obj.attr('id', prefix + id);
+		obj = obj.next();
+	    }
     }
 };
 

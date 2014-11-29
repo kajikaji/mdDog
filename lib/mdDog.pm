@@ -598,6 +598,8 @@ sub api_postData {
   my $fid = $self->qParam('fid') + 0;
   my $eid = $self->qParam('eid') + 0;
   my $data = $self->qParam('data');
+  $data .= "\n" if( $data !~ m/(.*)\n$/);
+  $data .= "\n" if( $data !~ m/(.*)\n\n$/);
   my $document = $self->getUserDocument($uid, $fid);
   my ($rowdata, @partsAry) = $self->split4MD($document);
 
@@ -633,11 +635,12 @@ sub api_postData {
   my $json = JSON->new();
   my $md;# = markdown($data);
   my ($row, @parts) = $self->split4MD($data, $eid);
-  $cnt = 0;
+  $cnt = $eid;
   foreach(@parts){
     my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
-    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${eid}-${cnt}\">/;
-    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${eid}-{cnt}\" />#;
+    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\">/;
+    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" />#;
+    $conv =~ s/^(.*)\n$/\1/;
     $md .= $conv;
     $cnt++;
   }
@@ -718,7 +721,7 @@ sub getUserDocument {
 sub split4MD {
   my $self = shift;
   my $document = shift;
-  my $subindex = shift;
+  my $index = shift;
 
   my @partsAry;
   my $parts = "";
@@ -726,7 +729,7 @@ sub split4MD {
   my $block = 0;
   my $blockquote = 0;
   my $quote = 0;
-  my $cnt = 0;
+  my $cnt = $index?$index:0;
   foreach (split(/\n/, $document)) {
     if ( $blockquote && $_ !~ m/^> .*/ ) {
       $blockquote = 0;
@@ -739,11 +742,7 @@ sub split4MD {
     if ( !$block && !$blockquote ) {
       if ( $_ =~ m/^.+$/ ) {
         $block = 1;
-        if($subindex){
-          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
-        }else{
-          $rowdata .= "<div id=\"elm-${cnt}\">";
-        }
+        $rowdata .= "<div id=\"elm-${cnt}\">";
       }
     } else {
       if ( $_ =~ m/^\s*$/ ) {
@@ -760,21 +759,13 @@ sub split4MD {
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        if($subindex){
-          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
-        }else{
-          $rowdata .= "<div id=\"elm-${cnt}\">";
-        }
+        $rowdata .= "<div id=\"elm-${cnt}\">";
       } elsif ( $block && $_ =~ m/^#+/ ) {
         push @partsAry, $parts;
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        if($subindex){
-          $rowdata .= "<div id=\"elm-${subindex}-${cnt}\">";
-        }else{
-          $rowdata .= "<div id=\"elm-${cnt}\">";
-        }
+        $rowdata .= "<div id=\"elm-${cnt}\">";
       }
     }
 

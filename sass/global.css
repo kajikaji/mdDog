@@ -580,6 +580,8 @@ table.gitlog {
   background-color: #fff;
   font-size: 14px;
   line-height: 1.2em; }
+  .md_buffer .document > * {
+    border: 3px solid #fff; }
   .md_buffer .document > .focus {
     background-color: #b0c4de;
     border: 3px solid #9fb3cd;
