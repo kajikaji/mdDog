@@ -1,0 +1,65 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ファイル一覧に戻る</a></li> 
+<li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+</ul>
+
+<section class="docinfo">
+<h1>アウトライン</h1>
+<h2>[% file_name %]</h2>
+<div class="description">
+  <div class="created-at">作成日時：</div>
+  <div class="created-by">作成者：</div>
+  <div class="last-approved-at">最終承認日時：</div>
+  <div class="filesize">ファイルサイズ：</div>
+</div>
+</section> <!-- docinfo -->
+
+<section class="outline">
+<div class="cover">
+  <div class="title">[% file_name %]</div>
+  <div class="revision">[% revision %]</div>
+</div>
+
+<div class="history">
+<div class="subject">更新履歴</div>
+<table class="gitlog">
+  <thead>
+    <tr>
+	  <th class="date">更新年月日</th>
+          <th class="rev">Rev</th>
+	  <th class="message">詳細</th>
+	  <th class="author">更新者</th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOREACH log IN loglist %]
+    <tr class="log">
+       <td class="date">[% log.attr.date %]</td>
+       <td class="rev">[% log.id %]</td>
+       <td class="message">[% log.message %]</td>
+       <td class="author">[% log.attr.author %]</td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
+</div>
+
+<div class="contents">
+  <div class="subject">目次</div>
+  <ul>
+    [% FOR content IN contents %]
+    <li class="level[% content.level %]">[% content.line %]</li>
+    [% END %]
+  </ul>
+</div>
+
+<div class="document">[% document %]</div>
+
+</section>
+
+</body>
+</html>

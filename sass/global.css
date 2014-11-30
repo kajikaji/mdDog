@@ -399,6 +399,90 @@ section.docinfo .user-action {
       content: "";
       line-height: 0; }
 
+section.outline {
+  background-color: #fff;
+  padding-bottom: 30px; }
+  section.outline > div .subject {
+    font-weight: bold;
+    font-size: 22px;
+    text-align: center; }
+  section.outline .document {
+    padding: 10px;
+    border: 2px solid #888;
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.2em; }
+    section.outline .document h1, section.outline .document h2, section.outline .document h3, section.outline .document h4, section.outline .document h5, section.outline .document h6, section.outline .document h7 {
+      margin: 0;
+      padding: 30px 0 10px 0; }
+    section.outline .document h1:first-child, section.outline .document h2:first-child, section.outline .document h3:first-child {
+      padding-top: 20px; }
+    section.outline .document h1 {
+      padding-top: 70px;
+      font-size: 40px; }
+    section.outline .document h2 {
+      padding-top: 40px;
+      font-size: 28px; }
+    section.outline .document h3 {
+      font-size: 18px; }
+    section.outline .document h4 {
+      font-size: 14px; }
+    section.outline .document p, section.outline .document div {
+      margin: 0;
+      padding: 3px 3px 10px 3px; }
+    section.outline .document ol, section.outline .document ul {
+      margin-left: 0;
+      padding-left: 28px; }
+      section.outline .document ol li, section.outline .document ul li {
+        margin-bottom: 10px; }
+    section.outline .document table thead {
+      background-color: #888;
+      color: #Fff;
+      font-size: 85%; }
+    section.outline .document table tr td, section.outline .document table tr th {
+      padding: 3px;
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 0 0 1px; }
+    section.outline .document table th:last-child, section.outline .document table td:last-child {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 0 1px; }
+    section.outline .document table tr:last-child td {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 1px 1px; }
+    section.outline .document blockquote {
+      padding: 5px;
+      font-size: 80%;
+      border: 1px solid #aaa; }
+  section.outline .cover {
+    text-align: center; }
+    section.outline .cover .title {
+      font-size: 36px;
+      font-weight: bold;
+      padding: 30px 0; }
+    section.outline .cover .revision {
+      font-size: 12px; }
+  section.outline .contents {
+    margin-bottom: 30px; }
+    section.outline .contents > ul {
+      margin-left: 30px;
+      font-size: 18px;
+      list-style: none; }
+      section.outline .contents > ul li.level1 {
+        margin-top: 10px;
+        border-bottom: 1px dashed #aaa; }
+      section.outline .contents > ul li.level2 {
+        font-size: 80%;
+        padding-left: 50px; }
+      section.outline .contents > ul li.level3 {
+        font-size: 70%;
+        padding-left: 80px; }
+      section.outline .contents > ul li.level4 {
+        font-size: 70%;
+        padding-left: 100px; }
+
 table.gitlog {
   font-size: 11px;
   line-heigth: 1.1em;

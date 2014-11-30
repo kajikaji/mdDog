@@ -436,6 +436,72 @@ sub getAuthor {
   return $ary[0];
 }
 
+############################################################
+# MDドキュメントをアウトライン用整形してテンプレートにセットする
+# またドキュメントの情報もテンプレートにセットする
+#
+sub setOutline{
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $md;
+  my $user = undef;
+  my $revision = undef;
+
+  my $gitctrl = $self->{git};
+=pod
+  my $user_root = $gitctrl->getBranchLatest($user);
+  $revision = $user_root unless($revision);
+  $self->{t}->{git_is_latest} = $revision =~ m/^${user_root}$/ ?1:0;
+  $self->{t}->{is_buffer} = $user?1:0;
+  my $oneLog = $gitctrl->oneLog($revision);
+  $self->{t}->{git_comment} = $oneLog->{message};
+  $self->{t}->{git_commit_date} = MYUTIL::formatDate1($oneLog->{attr}->{date});
+=cut
+
+  #MDファイルの更新履歴の整形
+  $self->{t}->{loglist} = $gitctrl->getSharedLogs();
+
+  $gitctrl->attachLocal($user);
+  $gitctrl->checkoutVersion($revision);
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $md, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+  $gitctrl->detachLocal();
+
+  my $document = markdown($md);
+  my @contents;
+  my $line;
+  foreach(split(/\n/, $document)) {
+    $line = $_;
+    if( $line =~ m/<h1.*>/){
+      $line =~ s#<h1.*>(.*)</h1>#\1#;
+      push @contents, {level => 1, line => $line};
+    }elsif( $line =~ m/<h2.*>/ ){
+      $line =~ s#<h2.*>(.*)</h2>#\1#;
+      push @contents, {level => 2, line => $line};
+    }elsif( $line =~ m/<h3.*>/ ){
+      $line =~ s#<h3.*>(.*)</h3>#\1#;
+      push @contents, {level => 3, line => $line};
+    }elsif( $line =~ m/<h4.*>/ ){
+      $line =~ s#<h4.*>(.*)</h4>#\1#;
+      push @contents, {level => 4, line => $line};
+    }
+  }
+
+  $self->{t}->{revision} = $revision;
+  $self->{t}->{contents} = \@contents;
+  $self->{t}->{document} = $document;
+}
 
 ############################################################
 # MDドキュメントをテンプレートにセットする
