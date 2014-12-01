@@ -110,21 +110,36 @@ sub listupDocuments {
   my @infos;
 
   my $sql = "select
-  id,file_name,is_used,to_char(created_at,'YYYY-MM-DD hh:mm:ss'),to_char(deleted_at,'YYYY-MM-DD hh:mm:ss')
-from docx_infos
-where deleted_at is null
-order by is_used DESC, created_at desc;";
+  di.*,
+  du.nic_name as nic_name,
+  du.account as account,
+  du.mail as mail
+from docx_infos di
+join docx_users du on du.id = di.created_by
+where di.deleted_at is null
+order by di.is_used DESC, di.created_at desc;";
+=pod
+  id,
+  file_name,
+  is_used,
+  to_char(created_at,'YYYY-MM-DD hh:mm:ss') as created_at,
+  to_char(deleted_at,'YYYY-MM-DD hh:mm:ss') as deleted_at,
+=cut
 
-  my $ary = $self->{dbh}->selectall_arrayref($sql) || $self->errorMessage("DB:Error",1);
+  my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}}) || $self->errorMessage("DB:Error",1);
   if(@$ary){
     foreach (@$ary)
     {
+      my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->getSharedLogs();
       my $info = {
-        id        => $_->[0],
-        file_name => $_->[1],
-        is_used   => $_->[2],
-        created_at => $_->[3],
-        deleted_at => $_->[4],
+        id        => $_->{id},
+        file_name => $_->{file_name},
+        is_used   => $_->{is_used},
+        created_at => MYUTIL::formatDate2($_->{created_at}),
+        deleted_at => !$_->{deleted_at}?undef:MYUTIL::formatDate2($_->{deleted_at}),
+        created_by => $_->{nic_name},
+        file_size => MYUTIL::numUnit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
+        last_updated_at => ${logs}[0][0]->{attr}->{date},
       };
       push @infos, $info;
     }
@@ -142,11 +157,23 @@ sub setDocumentInfo {
   my $ver = $self->qParam('revision');
   return unless($fid);
 
-  my $sql = "select id, file_name, is_used, created_at, deleted_at from docx_infos where id = $fid;";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  if(@ary) {
-    $self->{t}->{file_name} = $ary[1];
-    $self->{t}->{is_mdfile} = 1 if($ary[1] =~ m/.*\.md/);
+  my $sql = "select
+  di.*,
+  du.nic_name as nic_name,
+  du.account as account,
+  du.mail as mail
+from docx_infos di
+join docx_users du on di.created_by = du.id and du.is_used = 't'
+where di.id = $fid;";
+  my $ary = $self->{dbh}->selectrow_hashref($sql);
+  if($ary) {
+    $self->{t}->{file_name} = $ary->{file_name};
+    $self->{t}->{is_mdfile} = 1 if($ary->{file_name} =~ m/.*\.md/);
+    $self->{t}->{created_at} = MYUTIL::formatDate2($ary->{created_at});
+    $self->{t}->{created_by} = $ary->{nic_name};
+    my @logs = $self->{git}->getSharedLogs();
+    $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
+    $self->{t}->{file_size} = MYUTIL::numUnit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
   }
 
   $self->{t}->{fid} = $fid;
@@ -185,7 +212,6 @@ sub gitLog {
       $mylog->{is_live} = 1;
     }
     push @userary, $mylog;
-
     if($self->{user}->{may_approve}){
       #承認者
       foreach($gitctrl->getOtherUsers($uid)){

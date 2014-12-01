@@ -6,22 +6,15 @@
 <section class="top">
 
 <div class="top-menu">
+  <div class="subject">
+    <span class="title">ドキュメント一覧</span>
   [% IF login %]
-    <a href="create.cgi" class="subject">■ドキュメントの新規追加</a>
-  [% ELSE %]
-    <span class="subject disable">■&ensp;ドキュメントの新規追加</span><span class="caution">(本機能はログインすると使えるようになります)</span>
+    <div class="menu">
+      <a href="create.cgi" class="button"><i class="glyph plus"></i>新規追加</a>
+      <a href="upload_docx.cgi" class="button"><i class="glyph inbox_plus"></i>docx登録</a>
+    </div>
   [% END %]
-</div>
-<div class="top-menu">
-  [% IF login %]
-    <a href="upload_docx.cgi" class="subject">■&ensp;docxドキュメントの登録</a>
-  [% ELSE %]
-    <span class="subject disable">■&ensp;docxドキュメントの登録</span><span class="caution">(本機能はログインすると使えるようになります)</span>
-  [% END %]
-</div>
-
-<div class="top-menu">
-  <div class="subject">■&ensp;登録ドキュメント一覧</div>
+  </div>
   [% IF infos %]
   <table class="doc-list">
     <tbody>
@@ -46,21 +39,24 @@
           [% END %] <!-- UNLESS info.deleted_at -->
           
           <div class="doc-subject">
-          [% IF info.deleted_at %]
-            <span class="name">[% info.file_name %]</span>
-          [% ELSIF info.is_used %]
-            <a href="download.cgi?fid=[% info.id %]" class="glyph download-alt"></a>
-            <span class="name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></span>
-          [% ELSE %]
-            <a href="download.cgi?fid=[% info.id %]" class="glyph download-alt"></a>
-            <span class="name">[% info.file_name %]</span>
-          [% END %]
+            [% IF info.deleted_at %]
+              <div class="name">[% info.file_name %]</div>
+            [% ELSIF info.is_used %]
+              <div class="name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></div>
+            [% ELSE %]
+              <div class="name">[% info.file_name %]</div>
+            [% END %]
           </div> <!-- doc-subject -->
+
           <div class="doc-detail">
-            <div class="create-at">作成日時：[% info.created_at %]</div>
-            <div class="created-by">作成者：</div>
-            <div class="last-approved-at">最終承認日時：</div>
-            <div class="filesize">最終ファイルサイズ：</div>
+          [% IF !info.deleted_at and info.is_used %]
+            <div class="">[<a href="md_output.cgi?fid=[% info.id %]">最新版アウトライン</a>]</div>
+            <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
+          [% END %]
+            <div class="create-at">作成日時:[% info.created_at %]</div>
+            <div class="created-by">作成者:[% info.created_by %]</div>
+            <div class="last-approved-at">最終承認日時:[% info.last_updated_at %]</div>
+            <div class="filesize">最終ファイルサイズ:[% info.file_size %]byte</div>
           </div>
         </td>
       </tr>

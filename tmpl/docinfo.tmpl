@@ -3,22 +3,18 @@
 [% INCLUDE userinfo.tmpl %]
 
 <ul class="back-nav">
-<li><a href="index.cgi">ファイル一覧に戻る</a></li>
+<li><a href="index.cgi">ドキュメント一覧</a></li>
 </ul>
 
 <section class="docinfo">
-<h1>ドキュメント情報</h1>
-
-<h2><a href="download.cgi?fid=[% fid %]" class="glyph download-alt"></a> [% file_name %]</h2>
+<h1><span class="title">[情報]</span><span class="">[% file_name %]</span></h1>
 <div class="description">
-  <div class="created-at">作成日時：</div>
-  <div class="created-by">作成者：</div>
-  <div class="last-approved-at">最終承認日時：</div>
-  <div class="filesize">ファイルサイズ：</div>
-</div>
-
-<div class="">
-<a href="md_output.cgi?fid=[% fid %]">アウトライン</a>
+  [% IF is_mdfile %]<div class="">[<a href="md_output.cgi?fid=[% fid %]">最新版アウトライン</a>]</div>[% END %]
+  <div class="">[<a href="download.cgi?fid=[% fid %]">最新版DL</a>]</div>
+  <div class="created-at">作成日時:[% created_at %]</div>
+  <div class="created-by">作成者:[% created_by %]</div>
+  <div class="last-approved-at">最終承認日時:[% last_updated_at %]</div>
+  <div class="filesize">ファイルサイズ:[% file_size %]byte</div>
 </div>
 
 [% IF login %]

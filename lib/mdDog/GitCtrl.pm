@@ -102,7 +102,8 @@ sub getOtherUsers {
      next if($branch =~ m/master/);
 
      $branch =~ s/$self->{branch_prefix}(.*)/\1/;
-     $branch =~ s/([0-9]+)_tmp/\1/;
+     next if($branch =~ m/[0-9]+_tmp/ );
+#     $branch =~ s/([0-9]+)_tmp/\1/;
      next if($branch eq $uid);
      push @users, $branch;
   }
