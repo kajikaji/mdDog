@@ -1,0 +1,25 @@
+<h1>
+[%UNLESS SUBMENU %]
+<span class="title">[情報]</span>
+[% ELSE %]
+<span class="title">[<a href="docinfo.cgi?fid=[% fid %]">情報</a>::[% SUBMENU %]]</span>
+[% END %]
+<span class="">[% file_name %]</span></h1>
+<div class="description">
+  [% IF is_mdfile %]<div class="">[<a href="md_output.cgi?fid=[% fid %]">最新版アウトライン</a>]</div>[% END %]
+  <div class="">[<a href="download.cgi?fid=[% fid %]">最新版DL</a>]</div>
+  <div class="created-at">作成日時:[% created_at %]</div>
+  <div class="created-by">作成者:[% created_by %]</div>
+  <div class="last-approved-at">最終承認日時:[% last_updated_at %]</div>
+  <div class="filesize">ファイルサイズ:[% file_size %]byte</div>
+</div>
+
+[% IF login %]
+<ul class="doc-ctrl">
+  <li [%IF SUBMENU == "編集バッファ" %]class="selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
+  <li [%IF SUBMENU == "アップロード" %]class="selected"[% END %]><a href="docupload.cgi?fid=[% fid %]" class="btn">アップロード</a></li>
+  <li [%IF SUBMENU == "アウトライン" %]class="selected"[% END %]><a href="md_outline.cgi?fid=[% fid %]" class="btn">アウトライン</a></li>
+  [%IF is_approve %]
+    <li [%IF SUBMENU == "承認" %]class="selected"[% END %]><a href="docapprove.cgi?fid=[% fid %]" class="btn">承認</a></li>[% END %]
+</ul>
+[% END %]
