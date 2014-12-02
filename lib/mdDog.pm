@@ -258,6 +258,7 @@ sub setApproveList {
     }
   }
   $self->{t}->{loglist} = \@logs;
+  $self->{t}->{approve_pre} = 1;
 }
 
 ###################################################

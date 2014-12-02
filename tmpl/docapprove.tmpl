@@ -1,0 +1,89 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ドキュメント一覧</a></li>
+<li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
+</ul>
+
+<section class="docinfo">
+<h1><span class="title">[<a href="docinfo.cgi?fid=[% fid %]">情報</a>::承認]</span><span class="">[% file_name %]</span></h1>
+<div class="description">
+  [% IF is_mdfile %]<div class="">[<a href="md_output.cgi?fid=[% fid %]">最新版アウトライン</a>]</div>[% END %]
+  <div class="">[<a href="download.cgi?fid=[% fid %]">最新版DL</a>]</div>
+  <div class="created-at">作成日時:[% created_at %]</div>
+  <div class="created-by">作成者:[% created_by %]</div>
+  <div class="last-approved-at">最終承認日時:[% last_updated_at %]</div>
+  <div class="filesize">ファイルサイズ:[% file_size %]byte</div>
+</div>
+
+[% IF login %]
+<ul class="doc-ctrl">
+  <li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
+  <li><a href="docupload.cgi?fid=[% fid %]" class="btn">アップロード</a></li>
+  <li><a href="md_outline.cgi?fid=[% fid %]" class="btn">アウトライン</a></li>
+  <li class="selected"><a href="docapprove.cgi?fid=[% fid %]" class="btn">承認</a></li>
+</ul>
+[% END %]
+
+</section><!-- docinfo -->
+
+<section class="gitlog">
+[% IF approve_pre %]
+<table class="gitlog">
+  <thead>
+    <tr>
+      <th class="date">更新年月日</th>
+      <th class="message">詳細</th>
+      <th class="author">更新者</th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOREACH log IN loglist %]
+    <tr class="[% IF log.local %]user-branch[% ELSE %]master[% END %]">
+      <td class="date">[% log.attr.date %]</td>
+      <td class="message">[% log.message %]</td>
+      <td class="author">[% log.attr.author %]</td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
+</div>
+<form class="approve-form" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
+  <div class="">上記のコミットを承認します</div>
+  <input type="submit" name="approve" value="OK">
+  <a href="docinfo.cgi?fid=[% fid %]&user=[% user %]&revision=[% revision %]">キャンセル</a>
+  <input type="hidden" name="fid" value="[% fid %]">
+  <input type="hidden" name="revision" value="[% revision %]">
+  <input type="hidden" name="user" value="[% user %]">
+</form>
+[% ELSE %]<!-- approve_pre -->
+  <h3 class="subject">更新履歴</h3>
+
+  <ul id="buffer-list" class="buffer-list">
+    [%FOREACH user IN userlist %]
+    <li id="buffer-[% user.uid %]" [%IF loop.first %]class="active"[% END %]><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
+    [% END %]
+  </ul>
+
+  [%FOREACH user IN userlist %]
+  [% IF user.loglist.size == 0 %]
+  <div id="log-buffer-[% user.uid %]" class="logtable user" [%UNLESS loop.first %]style="display: none;"[%END%]>
+    <div class="description">編集履歴はありません</div>
+  </div>
+  [% ELSE %]
+  <div id="log-buffer-[% user.uid %]" class="logtable user" [%UNLESS loop.first %]style="display: none;"[% END %]>
+    [% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
+
+    [% SET loglist = user.loglist %]
+    [% SET is_live = user.is_live %]
+    [% INCLUDE table_gitlog.tmpl %]
+  </div>
+  [% END %]<!-- if user.loglist -->
+  [% END %]<!-- foreach userlist -->
+[% END %]<!-- approve_pre -->
+</section>
+
+</body>
+</html>

@@ -289,6 +289,9 @@ section.gitlog {
       width: 200px; }
     section.gitlog table.gitlog tbody tr td.ctrl {
       width: 80px; }
+      section.gitlog table.gitlog tbody tr td.ctrl > ul {
+        list-style: none;
+        margin-left: 0; }
       section.gitlog table.gitlog tbody tr td.ctrl .download-link a,
       section.gitlog table.gitlog tbody tr td.ctrl .download-link a:hover,
       section.gitlog table.gitlog tbody tr td.ctrl .download-link a:link,
@@ -389,7 +392,7 @@ section.docinfo:after, section.docinfo:before {
   line-height: 0; }
 section.docinfo > .description {
   font-size: 11px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   color: #555; }
   section.docinfo > .description > div {
     float: left;
@@ -400,6 +403,25 @@ section.docinfo > .description {
   section.docinfo > .description:after {
     clear: both; }
   section.docinfo > .description:after, section.docinfo > .description:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+section.docinfo > ul.doc-ctrl {
+  list-style: none;
+  margin-bottom: 20px; }
+  section.docinfo > ul.doc-ctrl li {
+    float: left;
+    margin-right: 5px; }
+    section.docinfo > ul.doc-ctrl li:fist-child {
+      margin-right: 0; }
+    section.docinfo > ul.doc-ctrl li.selected a.btn {
+      background-color: #6d562b;
+      color: #fff;
+      cursor: default;
+      font-weight: normal; }
+  section.docinfo > ul.doc-ctrl:after {
+    clear: both; }
+  section.docinfo > ul.doc-ctrl:after, section.docinfo > ul.doc-ctrl:before {
     display: table;
     content: "";
     line-height: 0; }
@@ -545,6 +567,9 @@ table.gitlog {
     width: 200px; }
   table.gitlog tbody tr td.ctrl {
     width: 80px; }
+    table.gitlog tbody tr td.ctrl > ul {
+      list-style: none;
+      margin-left: 0; }
     table.gitlog tbody tr td.ctrl .download-link a,
     table.gitlog tbody tr td.ctrl .download-link a:hover,
     table.gitlog tbody tr td.ctrl .download-link a:link,

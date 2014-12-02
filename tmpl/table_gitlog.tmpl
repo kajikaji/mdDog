@@ -14,22 +14,29 @@
        <td class="message">[% log.message %]</td>
        <td class="author">[% log.attr.author %]</td>
        <td class="ctrl">
-
- [% IF is_mdfile %]
- <span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %][% IF log.user %]&user=[% log.user %][% END %]&revision=[% log.id %]">閲覧</a></span>
-[% END %]
-
-        <span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span>
-        [% UNLESS loop.last %]
-          <br><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></spa>
-        [% END %]
-        [% IF log.user > 0 %]
-          <br><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa>
-        [% END %]
-        [% IF is_approve && is_live && log.user > 0  %]
-            <br><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&user=[% log.user %]&revision=[% log.id %]">ここまでを承認する</a></span>
-        [% END %]
-     </td>
+         <ul>
+           [% IF is_mdfile %]
+           <li><span class="mdfile-toolbar"><a href="md_view.cgi?fid=[% fid %][% IF log.user %]&user=[% log.user %][% END %]&revision=[% log.id %]">閲覧</a></span></li>
+           [% END %]
+           <li><span class="download-link"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span></li>
+           [% UNLESS loop.last %]
+           <li><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></span></li>
+           [% END %]
+           [% IF log.user > 0 %]
+           <li><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa></li>
+           [% END %]
+           [% IF is_approve && is_live && log.user > 0  %]
+           <li><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&user=[% log.user %]&revision=[% log.id %]">ここまでを承認する</a></span>
+<form class="approve-form" method="post">
+<input type="hidden" name="fid" value="[% fid %]">
+<input type="hidden" name="user" value="[% log.user %]">
+<input type="hidden" name="revision" value="[% log.id %]">
+<input type="submit" name="approve_pre" value="承認" class="btn">
+</form>
+           </li>
+           [% END %]
+         </ul>
+       </td>
     </tr>
     [% END %]
   </tbody>

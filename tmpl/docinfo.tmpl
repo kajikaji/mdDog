@@ -18,24 +18,12 @@
 </div>
 
 [% IF login %]
-<div class="user-action">
-<h3>編集バッファに可能な操作</h3>
-<div class="description">編集バッファの最終版に対してドキュメントの編集を行なうことが出来ます。編集を行なう際は以下の『編集』ボタン、もしくはファイルアップロードから行なってください。</div>
-<ul class="menu">
-<li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集</a></li>
-<li>
-  <form action="?fid=[% fid %]" method="post" id="docx-upload" class="doc-upload-form" enctype="multipart/form-data">
-    <div class="subject">ファイルアップロード</div>
-    <div><label></label><input type="file" name="docxfile" /></div>
-    <div><label>詳細：</label><input type="text" size="60" name="detail"></div>
-    <div>
-      <input type="submit" name="upload" value="アップロード">
-      <input type="hidden" name="fid" value="[% fid %]">
-    </div>
-  </form>
-</li>
+<ul class="doc-ctrl">
+  <li><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
+  <li><a href="docupload.cgi?fid=[% fid %]" class="btn">アップロード</a></li>
+  <li><a href="md_outline.cgi?fid=[% fid %]" class="btn">アウトライン</a></li>
+  <li><a href="docapprove.cgi?fid=[% fid %]" class="btn">承認</a></li>
 </ul>
-</div>
 [% END %]
 
 </section><!-- docinfo -->

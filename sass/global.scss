@@ -46,6 +46,10 @@ $corner_b: 5px;
           }
           &.ctrl{
             width: 80px;
+>ul{
+  list-style: none;
+  margin-left: 0;
+}
             .download-link{
                   a,
                   a:hover,
@@ -561,7 +565,7 @@ section.docinfo{
 
   >.description{
     font-size: 11px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     color: #555;
     >div{
       float: left;
@@ -569,6 +573,27 @@ section.docinfo{
       .active{
           font-weight: bold;
           text-decoration: underline;
+      }
+    }
+    @include clearfix();
+  }
+
+  >ul.doc-ctrl{
+    list-style: none;
+    margin-bottom: 20px;
+    li{
+      float : left;
+      margin-right: 5px;
+      &:fist-child{
+       margin-right: 0;
+      }
+      &.selected{
+        a.btn{
+            background-color: #f5deb3 - #888;
+            color: #fff;
+            cursor: default;
+            font-weight: normal;
+        }
       }
     }
     @include clearfix();
