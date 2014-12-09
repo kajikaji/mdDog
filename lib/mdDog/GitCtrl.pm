@@ -244,6 +244,24 @@ sub commit {
 }
 
 ############################################################
+#画像ファイルのアップロード
+#
+sub addImage {
+  my $self = shift;
+  my $imagepath = shift;
+  my $author = shift;
+
+  my $gitctrl = $self->{git};
+  if ( -f $imagepath ){
+  $imagepath =~ s#$self->{workdir}/(.*)$#\1#;
+    $gitctrl->add($imagepath);
+    $gitctrl->commit({message => "image upload",author => $author});
+    return 1;
+  }
+  return 0;
+}
+
+############################################################
 #ユーザーリポジトリを用意する
 # @param1 uid
 # @param2 isCreate: 1だと強制でリポジトリ作成

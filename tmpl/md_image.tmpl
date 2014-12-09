@@ -1,0 +1,40 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ドキュメント一覧</a></li> 
+<li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
+</ul>
+
+<section class="docinfo">
+[%SET SUBMENU = "編集バッファ" %]
+[%INCLUDE docinfo_header.tmpl %]
+</section> <!-- docinfo -->
+
+<section class="md_buffer">
+  <div class="edit-menu">
+    <h3>画像ファイル</h3>
+    <ul>
+      <li><a href="md_edit.cgi?fid=[% fid %]">エディタ</a></li>
+      <li><a href="md_source.cgi?fid=[% fid %]">ソースの編集</a></li>
+    </ul>
+  </div>
+
+  <div class="image_manager">
+    <form class="image_uploader" method="post" action="?fid=[% fid %]" enctype="multipart/form-data">
+      <input type="file" name="imagefile" />
+      <input type="submit" name="upload" value="アップロード">
+      <input type="hidden" name="fid" value="[% fid %]">
+    </form>
+<ul>
+[% FOREACH image IN images %]
+<li><img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1"></li>
+[% END %]
+</ul>
+  </div>
+
+</section>
+
+</body>
+</html>

@@ -10,6 +10,7 @@ use File::Path;
 use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
 use NKF;
+use Cwd;
 use JSON;
 use MYUTIL;
 use mdDog::GitCtrl;
@@ -482,15 +483,6 @@ sub setOutline{
   my $revision = undef;
 
   my $gitctrl = $self->{git};
-=pod
-  my $user_root = $gitctrl->getBranchLatest($user);
-  $revision = $user_root unless($revision);
-  $self->{t}->{git_is_latest} = $revision =~ m/^${user_root}$/ ?1:0;
-  $self->{t}->{is_buffer} = $user?1:0;
-  my $oneLog = $gitctrl->oneLog($revision);
-  $self->{t}->{git_comment} = $oneLog->{message};
-  $self->{t}->{git_commit_date} = MYUTIL::formatDate1($oneLog->{attr}->{date});
-=cut
 
   #MDファイルの更新履歴の整形
   $self->{t}->{loglist} = $gitctrl->getSharedLogs();
@@ -652,6 +644,104 @@ sub fixMD_buffer {
   $self->{git}->fixTmp($uid, $self->getAuthor($uid), $comment);
   return 1;
 }
+
+############################################################
+# MDドキュメントで管理している画像一覧を取得
+#
+sub setMD_image{
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid');
+
+  my $imgdir = "$self->{repodir}/${fid}/image";
+
+  unless(-d $imgdir){
+    mkdir $imgdir, 0774 || die "can't make image directory.";
+  }
+
+  $self->{git}->attachLocal_tmp($uid);
+  my @images = glob "$imgdir/*";
+  $self->{git}->detachLocal();
+
+  my @imgpaths;
+  foreach (@images) {
+    my $path = $_;
+    $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
+    push @imgpaths, $path;
+  }
+
+  $self->{t}->{images} = \@imgpaths;
+  $self->{t}->{uid} = $self->{s}->param("login");
+}
+
+############################################################
+# 画像をアップロードしてユーザーの編集バッファにコミット
+#
+sub upload_image {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+
+  my $imgdir = "$self->{repodir}/${fid}/image";
+  unless(-d $imgdir){
+    mkdir $imgdir, 0774 || die "can't make image directory.";
+  }
+
+  my $hF = $self->{q}->upload('imagefile');
+  my $filename = basename($hF);
+
+
+  $self->{git}->attachLocal_tmp($uid);
+
+  my $tmppath = $self->{q}->tmpFileName($hF);
+  my $filepath = "${imgdir}/${filename}";
+  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
+  close($hF);
+
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  $self->{git}->addImage($filepath, $author);
+
+  $self->{git}->detachLocal();
+}
+
+############################################################
+#
+sub printImage {
+  my $self = shift;
+
+  my $tmp = $self->qParam('tmp');
+  my $fid = $self->qParam('fid');
+  my $uid = $self->qParam("uid");
+  my $image = $self->qParam('image');
+
+  return unless($image);
+
+  my $imgpath = "$self->{repodir}/${fid}/image/${image}";
+
+  if($tmp){
+    $self->{git}->attachLocal_tmp($uid);
+  }else{
+    $self->{git}->attachLocal($uid);
+  }
+
+  if( -f $imgpath ){
+    my $type = $imgpath;
+    $type =~ s/.*\.(.*)$/\1/;
+    $type =~ tr/A-Z/a-z/;
+
+    print "Content-type: image/${type}\n\n";
+    open(IMG, $imgpath) || die "can't open image file(${imgpath})";
+    binmode(IMG);
+    print <IMG>;
+    close(IMG);
+  }
+  $self->{git}->detachLocal();
+}
+
 
 ############################################################
 # JSONを返す
