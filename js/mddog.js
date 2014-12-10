@@ -179,11 +179,11 @@ $(function(){
     var page;
 
     function recursivePage(className, obj, innerHeight, pageHeight, cHeight) {
-        var objHeight = $(obj).height();
+        var objHeight = $(obj).outerHeight(true);
         if(objHeight + cHeight > innerHeight) {
             if($(obj).children().length === 0) {
-                var mmMargin = (innerHeight - cHeight) * 297 / pageHeight + 80;
-                $(obj).prev().append($('<div>').css({"margin-bottom" : mmMargin + "mm"}));
+                var mmMargin = (innerHeight - cHeight) * 299 / pageHeight + 82;
+                $(obj).prev().css({"margin-bottom" : mmMargin + "mm"});
                 page++;
                 cHeight = objHeight;
             }else{
@@ -192,11 +192,11 @@ $(function(){
                     if(disp === 'block' || disp === 'table' || disp === 'list-item') {
                         cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
                     }else{
-                        var mmMargin = (innerHeight - cHeight) * 297 / pageHeight + 80;
-                        $(this).prev.after($('<div>').css({"margin-bottom" : mmMargin + "mm"}));
+                        var mmMargin = (innerHeight - cHeight) * 299 / pageHeight + 82;
+                        $(obj).prev.css({"margin-bottom" : mmMargin + "mm"});
                         page++;
                         cHeight = objHeight;
-                        return;
+                        return false;
                     }
                 });
             }
@@ -209,19 +209,15 @@ $(function(){
     //目次・履歴のページ分割
     function adjustPage(className, obj) {
         var innerHeight = $(obj).height();
-        var pageHeight = $(obj).innerHeight();  //297mm
+        var pageHeight = $(obj).outerHeight();  //297mm
         var cHeight = 0.0;
 
         $(obj).children().each(function(){
-            var disp = $(this).css('display');
-            if(disp === 'block' || disp === 'table' || disp === 'inline-block') {
-                cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
-            }else{
-            }
+            cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
         });
 
         for(var i=0; i < page; i++) {
-            $('.page.' + className).after($('<div>').addClass(className).addClass('page'));
+            $(obj).after($('<div>').addClass(className).addClass('page'));
         }
     };
 
