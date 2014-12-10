@@ -466,11 +466,23 @@ section.docinfo .user-action {
 
 section.outline {
   background-color: #fff;
-  padding-bottom: 30px; }
+  padding: 30px 0;
+  font-size: 12pt;
+  line-height: 1.2em; }
   section.outline > div .subject {
     font-weight: bold;
-    font-size: 22px;
+    font-size: 24pt;
+    line-height: 1.5em;
     text-align: center; }
+  section.outline > div.page {
+    height: 297mm;
+    width: 210mm;
+    margin-bottom: 10mm;
+    border: 2pt solid #555;
+    box-shadow: 1px 1.5px 1px 1px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 1px 1.5px 1px 1px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 1px 1.5px 1px 1px rgba(0, 0, 0, 0.4);
+    padding: 30mm 10mm 40mm; }
   section.outline .document {
     padding: 10px;
     border: 2px solid #888;
@@ -529,11 +541,17 @@ section.outline {
       padding: 30px 0; }
     section.outline .cover .revision {
       font-size: 12px; }
+  section.outline .history {
+    font-size: 10pt;
+    line-height: 1.0em; }
+    section.outline .history table.gitlog .date, section.outline .history table.gitlog .rev {
+      width: 28mm; }
   section.outline .contents {
     margin-bottom: 30px; }
     section.outline .contents > ul {
       margin-left: 30px;
-      font-size: 18px;
+      font-size: 10pt;
+      line-height: 1.0em;
       list-style: none; }
       section.outline .contents > ul li.level1 {
         margin-top: 10px;

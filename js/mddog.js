@@ -160,6 +160,7 @@ mdEditForm.prototype = {
     }
 };
 
+
 /***********************************************
  * 初回実行
  ***********************************************/
@@ -173,5 +174,95 @@ $(function(){
             var eForm = new mdEditForm($(this));
             eForm.init();
         });
+    });
+
+    var page;
+
+    function recursivePage(className, obj, innerHeight, pageHeight, cHeight) {
+        var objHeight = $(obj).height();
+        if(objHeight + cHeight > innerHeight) {
+            if($(obj).children().length === 0) {
+                var mmMargin = (innerHeight - cHeight) * 297 / pageHeight + 80;
+                $(obj).prev().append($('<div>').css({"margin-bottom" : mmMargin + "mm"}));
+                page++;
+                cHeight = objHeight;
+            }else{
+                $(obj).children().each(function(){
+                    var disp = $(this).css('display');
+                    if(disp === 'block' || disp === 'table' || disp === 'list-item') {
+                        cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
+                    }else{
+                        var mmMargin = (innerHeight - cHeight) * 297 / pageHeight + 80;
+                        $(this).prev.after($('<div>').css({"margin-bottom" : mmMargin + "mm"}));
+                        page++;
+                        cHeight = objHeight;
+                        return;
+                    }
+                });
+            }
+        }else{
+            cHeight += objHeight;
+        }
+        return cHeight;
+    };
+
+    //目次・履歴のページ分割
+    function adjustPage(className, obj) {
+        var innerHeight = $(obj).height();
+        var pageHeight = $(obj).innerHeight();  //297mm
+        var cHeight = 0.0;
+
+        $(obj).children().each(function(){
+            var disp = $(this).css('display');
+            if(disp === 'block' || disp === 'table' || disp === 'inline-block') {
+                cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
+            }else{
+            }
+        });
+
+        for(var i=0; i < page; i++) {
+            $('.page.' + className).after($('<div>').addClass(className).addClass('page'));
+        }
+    };
+
+    // 本文のページ分割
+    function adjustDocumentPage(className, obj) {
+        var innerHeight = $(obj).height();
+        var cHeight = 0.0;
+        var newpage = 0;
+
+        $(obj).after($('<div>').addClass(className).addClass("page").addClass("p" + page));
+
+        $(obj).children().each(function(){
+            if(newpage === 1){
+                $("." + className + ".page.p" + page).after(
+                     $('<div>').addClass(className).addClass("page").addClass("p" + (page + 1))
+                );
+                page++;
+                newpage = 0;
+            }
+
+            $("." + className + ".page.p" + page).append($(this).clone());
+
+            var objHeight = $(this).outerHeight(true);
+            if( cHeight + objHeight >= innerHeight ) {
+                cHeight = objHeight;
+                newpage = 1;
+            }else{
+                cHeight += objHeight;
+            }
+        });
+    };
+
+    $('.outline').find('.page').each(function(){
+        var className = this.className.split(" ")[0];
+        page = 0;
+        console.log(this.tagName + ":" + this.className);
+        if(className === 'document'){
+            adjustDocumentPage(className, this);
+            $(this).remove();
+        }else{
+            adjustPage(className, this);
+        }
     });
 });

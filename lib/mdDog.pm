@@ -127,10 +127,10 @@ order by di.is_used DESC, di.created_at desc;";
   to_char(deleted_at,'YYYY-MM-DD hh:mm:ss') as deleted_at,
 =cut
 
-  my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}}) || $self->errorMessage("DB:Error",1);
+  my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
+     || $self->errorMessage("DB:Error",1);
   if(@$ary){
-    foreach (@$ary)
-    {
+    foreach (@$ary) {
       my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->getSharedLogs();
       my $info = {
         id        => $_->{id},
@@ -315,7 +315,7 @@ sub createFile {
   return unless($docname);
 
   my $filename = $docname . "\.md";
-  my $fid = $self->setupNewFile($filename);
+  my $fid = $self->setupNewFile($filename, $uid);
   my $filepath = $self->{repodir}. "/$fid/$filename";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
   close($hF);
@@ -331,8 +331,9 @@ sub createFile {
 sub setupNewFile{
   my $self = shift;
   my $filename = shift;
+  my $uid = shift;
 
- my $sql_insert = "insert into docx_infos(file_name,created_at) values('$filename',now());";
+ my $sql_insert = "insert into docx_infos(file_name,created_at,created_by) values('$filename',now(),$uid);";
   $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error uploadFile", 1);
   my $sql_newfile = "select currval('docx_infos_id_seq');";
   my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);

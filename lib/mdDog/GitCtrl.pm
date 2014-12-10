@@ -411,6 +411,9 @@ sub adjustLog {
   my $self = shift;
   my $obj = shift;
 
+  $obj->{sha1_name} = $obj->{id};
+  $obj->{sha1_name} =~ s/^(.{7}).*/\1/;
+
   $obj->{message} =~ s/</&lt;/g;
   $obj->{message} =~ s/>/&gt;/g;
   $obj->{message} =~ s/\n/<br>/g;
@@ -421,7 +424,9 @@ sub adjustLog {
 
   $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
 #  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
-  $obj->{attr}->{date} = MYUTIL::formatDate2(ParseDate($obj->{attr}->{date}));
+  my $date = $obj->{attr}->{date};
+  $obj->{attr}->{date} = MYUTIL::formatDate2(ParseDate($date));
+  $obj->{cdate} = MYUTIL::formatDate3(ParseDate($date));
 
   return $obj;
 }

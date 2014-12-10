@@ -17,48 +17,53 @@
   <div class="last-approved-at">最終承認日時:[% last_updated_at %]</div>
   <div class="filesize">ファイルサイズ:[% file_size %]byte</div>
 </div>
+
+
+アウトライン(全ページ表示・ページ単位)
+見出しマップ
+
 </section> <!-- docinfo -->
 
 <section class="outline">
-<div class="cover">
-  <div class="title">[% file_name %]</div>
-  <div class="revision">[% revision %]</div>
-</div>
+  <div class="cover page">
+    <div class="title">[% file_name %]</div>
+    <div class="revision">[% revision %]</div>
+  </div>
 
-<div class="history">
-<div class="subject">更新履歴</div>
-<table class="gitlog">
-  <thead>
-    <tr>
-	  <th class="date">更新年月日</th>
+  <div class="history page">
+    <div class="subject">更新履歴</div>
+    <table class="gitlog">
+      <thead>
+        <tr>
+	      <th class="date">更新年月日</th>
           <th class="rev">Rev</th>
-	  <th class="message">詳細</th>
-	  <th class="author">更新者</th>
-    </tr>
-  </thead>
-  <tbody>
-    [% FOREACH log IN loglist %]
-    <tr class="log">
-       <td class="date">[% log.attr.date %]</td>
-       <td class="rev">[% log.id %]</td>
-       <td class="message">[% log.message %]</td>
-       <td class="author">[% log.attr.author %]</td>
-    </tr>
-    [% END %]
-  </tbody>
-</table>
-</div>
+	      <th class="message">詳細</th>
+	      <th class="author">更新者</th>
+        </tr>
+      </thead>
+      <tbody>
+        [% FOREACH log IN loglist %]
+        <tr class="log">
+          <td class="date">[% log.cdate %]</td>
+          <td class="rev">[% log.sha1_name %]</td>
+          <td class="message">[% log.message %]</td>
+          <td class="author">[% log.attr.author %]</td>
+        </tr>
+        [% END %]
+      </tbody>
+    </table>
+  </div>
 
-<div class="contents">
-  <div class="subject">目次</div>
-  <ul>
-    [% FOR content IN contents %]
-    <li class="level[% content.level %]">[% content.line %]</li>
-    [% END %]
-  </ul>
-</div>
+  <div class="contents page">
+    <div class="subject">目次</div>
+    <ul>
+      [% FOR content IN contents %]
+      <li class="level[% content.level %]">[% content.line %]</li>
+      [% END %]
+    </ul>
+  </div>
 
-<div class="document">[% document %]</div>
+  <div class="document page">[% document %]</div>
 
 </section>
 

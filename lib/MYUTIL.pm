@@ -42,6 +42,12 @@ sub formatDate2 {
   return  UnixDate(ParseDate($date), "%Y年%m月%d日 %H時%M分%S秒");
 }
 
+sub formatDate3 {
+  my $date = shift;
+  $date =~ s/^(.*) \+0900/\1/;
+  return  UnixDate(ParseDate($date), "%Y年%m月%d日");
+}
+
 sub numUnit {
   my $num = shift;
   $num =~ s/(\d{1,3})(?=(?:\d{3})+(?!\d))/$1,/g;
