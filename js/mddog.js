@@ -176,24 +176,42 @@ $(function(){
         });
     });
 
-    var page;
+    function addPage (className, cPage, depth, obj){
+        var newPage = $('<div>').addClass(className).addClass('page');
+        var blk = obj;
+	var ch = undefined;
+        for(var i=0; i < depth; i++){
+            var pObj = $(blk).parent().get(0);
+            var pNewObj = $('<' + pObj.tagName + '>');
+	    if(ch !== undefined){
+  	        pNewObj.append(ch);
+	    }
+	    ch = pNewObj;
+	    blk = pObj;
+        }
+        newPage.prepend(ch);
+        $('.' + className + '.page.p' + cPage).after(newPage.addClass('p' + (cPage + 1)));
+        $(obj).prev().addClass("adjust-block");
+    };
 
-    function recursivePage(className, obj, innerHeight, pageHeight, cHeight) {
+    var page;
+    function recursivePage(className, obj, innerHeight, pageHeight, cHeight, depth) {
         var objHeight = $(obj).outerHeight(true);
         if(objHeight + cHeight > innerHeight) {
             if($(obj).children().length === 0) {
-                var mmMargin = (innerHeight - cHeight) * 299 / pageHeight + 82;
-                $(obj).prev().css({"margin-bottom" : mmMargin + "mm"});
+                addPage(className, page, depth, obj);
                 page++;
                 cHeight = objHeight;
             }else{
-                $(obj).children().each(function(){
+                $(obj).children().each(function(index){
                     var disp = $(this).css('display');
                     if(disp === 'block' || disp === 'table' || disp === 'list-item') {
-                        cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
+                        if(index === 0){
+                            $('.' + className + '.page.p' + page).append($('<' + obj.tagName + '>'));
+                        }
+                        cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight, depth + 1);
                     }else{
-                        var mmMargin = (innerHeight - cHeight) * 299 / pageHeight + 82;
-                        $(obj).prev.css({"margin-bottom" : mmMargin + "mm"});
+                        addPage(className, page, depth, this);
                         page++;
                         cHeight = objHeight;
                         return false;
@@ -201,8 +219,14 @@ $(function(){
                 });
             }
         }else{
+            if(depth === 0){
+                $('.' + className + '.page.p' + page).append($(obj).clone());
+            }else{  // TODO: １階層しか対応していない 2014/12/12
+                $('.' + className + '.page.p' + page).children().last().append($(obj).clone());
+            }
             cHeight += objHeight;
         }
+
         return cHeight;
     };
 
@@ -212,13 +236,13 @@ $(function(){
         var pageHeight = $(obj).outerHeight();  //297mm
         var cHeight = 0.0;
 
-        $(obj).children().each(function(){
-            cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight);
-        });
+        var newPage = $('<div>').addClass(className).addClass('page');
+        $('.' + className + '.page').after(newPage.addClass('p' + page));
 
-        for(var i=0; i < page; i++) {
-            $(obj).after($('<div>').addClass(className).addClass('page'));
-        }
+        $(obj).children().each(function(){
+            cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight, 0);
+        });
+	$(obj).remove();
     };
 
     // 本文のページ分割
@@ -259,6 +283,33 @@ $(function(){
             $(this).remove();
         }else{
             adjustPage(className, this);
+        }
+    });
+
+    var $outline = false;
+    $('#printOutline').on("click", function(){
+        $outline = true;
+
+        $('body').children().each(function(){
+            if(!$(this).hasClass('outline')){
+                $(this).slideUp('100');
+            }else{
+                $(this).addClass('print-format');
+            }
+        });
+    });
+
+    $(window).keydown(function(ev){
+        if($outline){
+            $outline = false;
+
+            $('body').children().each(function(){
+                if(!$(this).hasClass('outline')){
+                    $(this).slideDown('100');
+                }else{
+                    $(this).removeClass('print-format');
+                }
+            });
         }
     });
 });

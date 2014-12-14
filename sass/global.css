@@ -464,6 +464,17 @@ section.docinfo .user-action {
       content: "";
       line-height: 0; }
 
+section.outline.print-format {
+  padding: 0; }
+  section.outline.print-format > div.page {
+    margin: 0;
+    margin-bottom: -1px;
+    border: none;
+    border-bottom: 1px solid #aaa;
+    box-shadown: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none; }
+
 section.outline {
   background-color: #fff;
   padding: 30px 0;
