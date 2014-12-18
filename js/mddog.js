@@ -37,6 +37,16 @@ function getParam(key) {
     return null;
 }
 
+function commitBuffer() {
+    var $document = "";
+    $('form.md-buffer-fix .rowdata').find('.elm').each(function(){
+        $document += $(this).text();
+        $document += "\n";
+    });
+    $('form.md-buffer-fix').find('textarea.document').text($document);
+    document.commitForm.submit();   
+}
+
 var mdEditForm = function(obj){
     this.src = obj;
     this.id;
@@ -117,18 +127,18 @@ mdEditForm.prototype = {
         var $newObj = $(res.md);
         $('#' + this.mdId + 'org').after($newObj);
         $('#' + this.mdId + 'org').remove();
-	var leng = $newObj.length;
-	if(leng > 1){
-	    this.resetTreeId($newObj.last().next(), leng - 1, 'md');
+	    var leng = $newObj.length;
+	    if(leng > 1){
+	        this.resetTreeId($newObj.last().next(), leng - 1, 'md');
         }
 
         $('#' + this.elmId).attr('id', this.elmId + 'org');
         var $elmObj = $(res.row);
         $('#' + this.elmId + 'org').after($elmObj);
         $('#' + this.elmId + 'org').remove();
-	var eLeng = $elmObj.length;
-	if(eLeng > 1){
-	    this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm-');
+	    var eLeng = $elmObj.length;
+	    if(eLeng > 1){
+	        this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm-');
         }
 
         $newObj.hover(
@@ -150,13 +160,15 @@ mdEditForm.prototype = {
 	this.resetTreeId($nextElm, -1, 'elm-');
     },
     resetTreeId: function(obj, inc, prefix) {
-	    while(obj.length > 0){
-		var id = obj.attr('id');
-		id = Number(id.substr(prefix.length));
-		id += inc;
-		obj.attr('id', prefix + id);
-		obj = obj.next();
-	    }
+        while(obj.length > 0){
+            var id = obj.attr('id');
+            if(id){
+                id = Number(id.substr(prefix.length));
+                id += inc;
+                obj.attr('id', prefix + id);
+            }
+            obj = obj.next();
+        }
     }
 };
 

@@ -15,11 +15,11 @@
 <section class="md_buffer">
   <div class="edit-menu">
     <h3>MDエディタ</h3>
-    <form class="md-buffer-fix" action="?id=fid=[% fid %]" method="post">
-      <input type="submit" name="commit" value="バッファをコミット">
-      コメント：<input type="text" name="comment" size="30">
-      <input type="hidden" name="fid" value="[% fid %]">  
-      <textarea name="document" class="rowdata" style="display: none;">[% document %]</textarea>
+    <form class="md-buffer-fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
+      コメント：<textarea name="comment" rows="3" cols="70"></textarea>
+      <input type="button" name="commit" value="バッファをコミット" onClick="commitBuffer();">
+      <input type="hidden" name="fid" value="[% fid %]">
+      <textarea name="document" class="document" style="display: none;"></textarea>
       <div class="rowdata" style="display: none;">[% rowdata %]</div>
     </form>
 

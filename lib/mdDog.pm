@@ -588,13 +588,12 @@ sub setMD_buffer{
 
     foreach (@partsAry) {
       my $conv = markdown($_);
-      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\">/;
-      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" />#;
+      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"md\">/;
+      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"md\" />#;
       $md .= $conv;
       $cnt++;
     }
 
-    $self->{t}->{document} = $document; # hidden要素用
     $self->{t}->{rowdata} = $rowdata;
     $self->{t}->{markdown} = $md;
     $self->{t}->{style} = "preview";
@@ -822,8 +821,8 @@ sub api_postData {
   $cnt = $eid;
   foreach(@parts){
     my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
-    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\">/;
-    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" />#;
+    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"md\">/;
+    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"md\" />#;
     $conv =~ s/^(.*)\n$/\1/;
     $md .= $conv;
     $cnt++;
@@ -925,8 +924,12 @@ sub split4MD {
 
     if ( !$block && !$blockquote ) {
       if ( $_ =~ m/^.+$/ ) {
-        $block = 1;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
+          unless( $_ =~ m/^> .+/ ){
+              $block = 1;
+          }else{
+              $blockquote = 1;
+          }
+          $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
       }
     } else {
       if ( $_ =~ m/^\s*$/ ) {
@@ -943,13 +946,13 @@ sub split4MD {
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
-      } elsif ( $block && $_ =~ m/^#+/ ) {
+        $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
+      } elsif ( $block && $_ =~ m/^(====|----|#+).*/ ) {
         push @partsAry, $parts;
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\">";
+        $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
       }
     }
 
