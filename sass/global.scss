@@ -734,6 +734,61 @@ section.outline{
     }  
 }
 
+section.outline_editor{
+    .document{
+        background-color: #fff;
+        border: 2px solid #888;
+        padding: 10px;
+
+        #blk-tmpl{
+            display: none;
+        }
+
+        .blk{
+            a.btn_expand{
+                cursor: pointer;
+            }
+
+            .tagname {
+                border: 2px solid #ff4500;
+                background-color: #f5deb3;
+                @include round-corner(3px);
+                font-size: 9pt;
+                font-weight: bold;
+                padding: 2px 5px;
+            }
+
+            .digest{
+                font-size: 80%;
+                margin: 0 5px;
+                &:before{
+                    content: "\"";
+                }
+                &:after{
+                    content: "... \"";
+                }  
+            }
+
+            .insert_divide{
+                font-size: 65%;
+                font-weight: bold;
+                @include round-corner(3px);
+            }
+
+            +.md{
+                padding: 10px;
+                border: 2px dashed #aaa;
+                margin-top:0;                
+                @include round-corner(5px);
+            }
+            +ul.md,+ol.md{
+                padding-left: 30px;
+            }
+
+            @include clearfix();
+        }
+    }
+}
 
 table.gitlog {
   @include table-gitlog();

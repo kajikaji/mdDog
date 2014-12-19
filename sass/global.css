@@ -577,6 +577,52 @@ section.outline {
         font-size: 70%;
         padding-left: 100px; }
 
+section.outline_editor .document {
+  background-color: #fff;
+  border: 2px solid #888;
+  padding: 10px; }
+  section.outline_editor .document #blk-tmpl {
+    display: none; }
+  section.outline_editor .document .blk a.btn_expand {
+    cursor: pointer; }
+  section.outline_editor .document .blk .tagname {
+    border: 2px solid #ff4500;
+    background-color: #f5deb3;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    font-size: 9pt;
+    font-weight: bold;
+    padding: 2px 5px; }
+  section.outline_editor .document .blk .digest {
+    font-size: 80%;
+    margin: 0 5px; }
+    section.outline_editor .document .blk .digest:before {
+      content: "\""; }
+    section.outline_editor .document .blk .digest:after {
+      content: "... \""; }
+  section.outline_editor .document .blk .insert_divide {
+    font-size: 65%;
+    font-weight: bold;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px; }
+  section.outline_editor .document .blk + .md {
+    padding: 10px;
+    border: 2px dashed #aaa;
+    margin-top: 0;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px; }
+  section.outline_editor .document .blk + ul.md, section.outline_editor .document .blk + ol.md {
+    padding-left: 30px; }
+  section.outline_editor .document .blk:after {
+    clear: both; }
+  section.outline_editor .document .blk:after, section.outline_editor .document .blk:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+
 table.gitlog {
   font-size: 11px;
   line-heigth: 1.1em;

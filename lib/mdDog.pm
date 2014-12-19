@@ -14,7 +14,7 @@ use Cwd;
 use JSON;
 use MYUTIL;
 use mdDog::GitCtrl;
-
+use mdDog::OutlineCtrl;
 
 sub new {
   my $pkg = shift;
@@ -23,6 +23,7 @@ sub new {
   my $hash = {
     repo_prefix => "user_",
     git         => undef,
+    outline     => undef,
   };
   @{$base}{keys %{$hash}} = values %{$hash};
 
@@ -37,6 +38,7 @@ sub setupConfig {
   if($self->qParam('fid')){
     my $workdir = "$self->{repodir}/" . $self->qParam('fid');
     $self->{git} = GitCtrl->new($workdir);
+    $self->{outline} = OutlineCtrl->new($workdir);
   }
 
   $self->SUPER::setupConfig();

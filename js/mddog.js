@@ -177,7 +177,7 @@ mdEditForm.prototype = {
  * 初回実行
  ***********************************************/
 $(function(){
-    $('div.document').children().each(function(){
+    $('.md_buffer div.document').children().each(function(){
         $(this).hover(
             function(){ $(this).addClass('focus'); },
             function(){ $(this).removeClass('focus'); }
@@ -186,6 +186,23 @@ $(function(){
             var eForm = new mdEditForm($(this));
             eForm.init();
         });
+    });
+
+    $('.outline_editor div.document').children().each(function(){
+        var id = $(this).attr("id");
+        if(id === "blk-tmpl"){
+            return;
+        }
+        var tag = this.tagName;
+        var digest = $(this).text().substr(0, 6);
+        $(this).hide();
+        var blk = $('#blk-tmpl').clone().removeAttr("id");
+        blk.find('.tagname').text(tag);
+        blk.find('.digest').text(digest);
+        blk.find('a.btn_expand').click(function(){
+            $('#'+id).toggle();
+        });
+        $(this).before(blk);
     });
 
     function addPage (className, cPage, depth, obj){

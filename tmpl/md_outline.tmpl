@@ -1,0 +1,30 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+
+<ul class="back-nav">
+<li><a href="index.cgi">ファイル一覧に戻る</a></li> 
+<li><a href="docinfo.cgi?fid=[% fid %]">ファイル履歴に戻る</a></li>
+</ul>
+
+<section class="docinfo">
+[%SET SUBMENU = "アウトライン" %]
+[%INCLUDE docinfo_header.tmpl %]
+</section <!-- docinfo -->
+
+<section class="outline_editor">
+  <div class="document">
+    <div id="blk-tmpl" class="blk">
+      <a class="btn_expand"><i class="glyph plus"></i></a>
+      <span class="tagname"></span>
+      <span class="digest"></span>
+          <button class="insert_divide">直後で改ページ</button>
+    </div>
+    [% markdown %]
+  </div>
+
+</section>
+
+</body>
+</html>
+
