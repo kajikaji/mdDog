@@ -262,6 +262,23 @@ sub addImage {
 }
 
 ############################################################
+#画像ファイルのアップロード
+#
+sub deleteImage {
+  my $self = shift;
+  my $images = shift;
+  my $author = shift;
+
+  my $gitctrl = $self->{git};
+
+  foreach (@$images) {
+    $gitctrl->rm('image/' . $_);
+  }
+
+  $gitctrl->commit({message => "delete images", author => $author});
+}
+
+############################################################
 #ユーザーリポジトリを用意する
 # @param1 uid
 # @param2 isCreate: 1だと強制でリポジトリ作成

@@ -27,11 +27,19 @@
       <input type="submit" name="upload" value="アップロード">
       <input type="hidden" name="fid" value="[% fid %]">
     </form>
-<ul>
-[% FOREACH image IN images %]
-<li><img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1"></li>
-[% END %]
-</ul>
+
+    <form class="image_action" method="post" action="?fid=[% fid %]">
+      <input type="submit" name="delete" value="削除">
+      <input type="hidden" name="fid" value="[% fid %]">
+      <ul class="thumbnail">
+	[% FOREACH image IN images %]
+	<li>
+	  <div class="info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
+	  <img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1&thumbnail=1">
+	</li>
+	[% END %]
+      </ul>
+    </form>
   </div>
 
 </section>

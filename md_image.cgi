@@ -14,6 +14,10 @@ if(!$dog->qParam('fid')) {
     if($dog->qParam('upload')){
         $dog->upload_image();
     }
+ 
+    if($dog->qParam('delete')){
+        $dog->delete_image();
+    }
 
     $dog->setMD_image();
     $dog->setDocumentInfo();

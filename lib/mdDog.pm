@@ -11,10 +11,13 @@ use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
 use NKF;
 use Cwd;
+use Image::Magick;
 use JSON;
 use MYUTIL;
 use mdDog::GitCtrl;
 use mdDog::OutlineCtrl;
+
+use constant THUMBNAIL_SIZE => 150;
 
 sub new {
   my $pkg = shift;
@@ -697,7 +700,7 @@ sub upload_image {
   my $filename = basename($hF);
 
 
-  $self->{git}->attachLocal_tmp($uid);
+  $self->{git}->attachLocal_tmp($uid, 1);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = "${imgdir}/${filename}";
@@ -712,6 +715,23 @@ sub upload_image {
 
 ############################################################
 #
+sub delete_image {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+
+  my @selected = ($self->qParam('select_image'));
+
+  $self->{git}->attachLocal_tmp($uid);
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  $self->{git}->deleteImage([@selected], $author);
+  $self->{git}->detachLocal();
+}
+
+############################################################
+#
 sub printImage {
   my $self = shift;
 
@@ -719,6 +739,7 @@ sub printImage {
   my $fid = $self->qParam('fid');
   my $uid = $self->qParam("uid");
   my $image = $self->qParam('image');
+  my $thumbnail = $self->qParam('thumbnail');
 
   return unless($image);
 
@@ -736,10 +757,30 @@ sub printImage {
     $type =~ tr/A-Z/a-z/;
 
     print "Content-type: image/${type}\n\n";
+
+    my $mImg = Image::Magick->new();
+    $mImg->Read($imgpath);
+    if ($thumbnail) {
+      my ($w, $h) = $mImg->Get('width','height');
+      my ($rw, $rh);
+      if ($w >= $h) {
+        $rw = THUMBNAIL_SIZE;
+        $rh = THUMBNAIL_SIZE / $w * $h;
+      } else {
+        $rh = THUMBNAIL_SIZE;
+        $rw = THUMBNAIL_SIZE / $h * $w;
+      }
+      $mImg->Resize(width=>$rw, height=> $rh);
+    }
+    binmode STDOUT;
+    $mImg->Write($type . ":-");
+
+=pod
     open(IMG, $imgpath) || die "can't open image file(${imgpath})";
     binmode(IMG);
     print <IMG>;
     close(IMG);
+=cut
   }
   $self->{git}->detachLocal();
 }

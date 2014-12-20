@@ -978,5 +978,22 @@ table.gitlog {
         background-color: #fff;
         border: 2px solid #888;
         padding: 10px;
+
+	form.image_action{
+	    margin: 30px 0;
+            ul.thumbnail{
+		list-style: none;
+
+		margin: 10px 0;
+
+		li{
+		    float: left;
+		    .info{
+			font-size: 9pt;
+		    }
+		}
+		@include clearfix();
+            }
+	}
     }
 }

@@ -25,7 +25,7 @@
            [% IF log.user > 0 %]
            <li><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa></li>
            [% END %]
-           [% IF is_approve && is_live && log.user > 0  %]
+           [% IF is_approve && is_live && log.user  %]
            <li><span class="commit-approve"><a href="approve.cgi?fid=[% fid %]&user=[% log.user %]&revision=[% log.id %]">ここまでを承認する</a></span>
 <form class="approve-form" method="post">
 <input type="hidden" name="fid" value="[% fid %]">
