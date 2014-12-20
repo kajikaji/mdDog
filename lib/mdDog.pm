@@ -47,6 +47,20 @@ sub setupConfig {
   $self->SUPER::setupConfig();
 }
 
+sub setOutline_buffer{
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+
+  $self->{git}->attachLocal_tmp($uid);
+  $self->{outline}->init();
+  $self->{git}->detachLocal();
+
+  my $divides = $self->{outline}->getDivide();
+  $self->{t}->{divides} = ($divides);
+}
+
 ############################################################
 #ログイン処理
 #
@@ -914,6 +928,45 @@ sub api_deleteData {
   return $json->encode({eid => ${eid}});
 }
 
+############################################################
+#
+sub api_outline_addDivide {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+
+  my $num = $self->qParam('num');
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  my $comment = "INSERT DIVIDE";
+  $self->{git}->attachLocal_tmp($uid, 1);
+  $self->{outline}->insertDivide($num, $comment);
+  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->detachLocal();
+  my $json = JSON->new();
+  return $json->encode({action => 'divide',num => ${num}});
+}
+
+############################################################
+#
+sub api_outline_removeDivide {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+
+  my $num = $self->qParam('num');
+  my $author = $self->getAuthor($self->{s}->param('login'));
+  my $comment = "REMOVE DIVIDE";
+  $self->{git}->attachLocal_tmp($uid, 1);
+  $self->{outline}->removeDivide($num);
+  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->detachLocal();
+  my $json = JSON->new();
+  return $json->encode({action => 'undivide',num => ${num}});
+}
 
 ############################################################
 #

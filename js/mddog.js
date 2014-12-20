@@ -188,21 +188,48 @@ $(function(){
         });
     });
 
-    $('.outline_editor div.document').children().each(function(){
+    $('.outline_editor div.document').children('.md').each(function(){
         var id = $(this).attr("id");
-        if(id === "blk-tmpl"){
+        if(id === "blk_tmpl" || id == "divide_info"){
             return;
         }
+        var num = id.substr(2);
         var tag = this.tagName;
         var digest = $(this).text().substr(0, 6);
         $(this).hide();
-        var blk = $('#blk-tmpl').clone().removeAttr("id");
+        var blk = $('#blk_tmpl').clone().removeAttr("id");
         blk.find('.tagname').text(tag);
         blk.find('.digest').text(digest);
         blk.find('a.btn_expand').click(function(){
             $('#'+id).toggle();
         });
+	blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
+	    var action = 'divide';
+	    if($(this).parent().next().next().hasClass('outline_divide')){
+		action = 'undivide';
+	    }
+	    $.ajax({
+		url: 'api/outlineEditor.cgi',
+		type: 'POST',
+		data: {
+                    fid: getParam('fid'),
+		    action: action,
+		    num: num + 1,
+		}
+	    }).done(function(res){
+		var num = res.num;
+		var target = $('#md' + num).prev('div.blk');
+		var divideObj = $('<div>').addClass('outline_divide');
+		target.before(divideObj);
+	    });
+	});
         $(this).before(blk);
+    });
+    $('.outline_editor div.document .divide_info').find('.divide').each(function(){
+	var num = $(this).text();
+	var target = $('#md' + num).prev('div.blk');
+	var divideObj = $('<div>').addClass('outline_divide');
+	target.before(divideObj);
     });
 
     function addPage (className, cPage, depth, obj){

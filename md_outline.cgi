@@ -9,10 +9,12 @@ $dog->setupConfig();
 $dog->login();
 
 if(!$dog->qParam('fid')){
-  $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_view.cgi:err01<br>";
+    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_view.cgi:err01<br>";
 }else{
-  $dog->setMD_buffer(1);
-  $dog->setDocumentInfo();
+
+    $dog->setMD_buffer(1);
+    $dog->setDocumentInfo();
+    $dog->setOutline_buffer();
 }
 
 $dog->printPage();

@@ -740,8 +740,12 @@ section.outline_editor{
         border: 2px solid #888;
         padding: 10px;
 
-        #blk-tmpl{
+        #blk_tmpl, #divide_info{
             display: none;
+        }
+
+        .outline_divide{
+            border: 2px solid #00f;
         }
 
         .blk{

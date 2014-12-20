@@ -581,8 +581,10 @@ section.outline_editor .document {
   background-color: #fff;
   border: 2px solid #888;
   padding: 10px; }
-  section.outline_editor .document #blk-tmpl {
+  section.outline_editor .document #blk_tmpl, section.outline_editor .document #divide_info {
     display: none; }
+  section.outline_editor .document .outline_divide {
+    border: 2px solid #00f; }
   section.outline_editor .document .blk a.btn_expand {
     cursor: pointer; }
   section.outline_editor .document .blk .tagname {

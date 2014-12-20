@@ -23,14 +23,16 @@ sub new {
   return bless $hash, $pkg;
 }
 
+####################################################################
+# ハッシュをクリアしてデータファイルから解析して新たに生成
 sub init {
   my $self = shift;
   my $datpath = "$self->{workdir}/$self->{filename}";
 
-  unless(-f $datpath) {
-    open my $hF, ">", $datpath || die "can't create $datpath";
-    close($hF);
+  foreach ('DIVIDE','INDENT','SIZEUP','SIZEDOWN','CENTER') {
+    $self->{$_} = undef;
   }
+  return unless(-f $datpath);
 
   my $document;
   my $pos = 0;
@@ -41,7 +43,7 @@ sub init {
   close $hF;
 
   foreach(split(/\n/, $document)){
-    my @cols = splic(/:/, $_);
+    my @cols = split(/:/, $_);
     my $num = ${cols}[0];
     my $action = ${cols}[1];
     my $comment = ${cols}[2];
@@ -50,5 +52,61 @@ sub init {
   }
 }
 
+####################################################################
+#
+sub insertDivide {
+  my $self = shift;
+  my $num = shift;
+  my $comment = shift;
+
+  #読込＆解析
+  $self->init();
+
+  unless($self->{'DIVIDE'}->{$num}){
+    my $datpath = "$self->{workdir}/$self->{filename}";
+    open my $hF, '>>', $datpath || die "can't open ${datpath}";
+    #書込み
+    my $line = "${num}:DIVIDE:${comment}\n";
+    print $hF $line;
+    close $hF;
+  }
+}
+
+####################################################################
+#
+#
+sub removeDivide {
+  my $self = shift;
+  my $num = shift;
+
+  $self->init();
+
+  if($self->{'DIVIDE'}->{$num}){
+    my $datpath = "$self->{workdir}/$self->{filename}";
+    open my $hF, '>', $datpath || die "can't open ${datpath}";
+    foreach (keys %{$self->{'DIVIDE'}}) {
+      if($_ ne $num) {
+        my $cnum = $_;
+        my $ccomment = $self->{'DIVIDE'}->{$cnum};
+        my $line = "${cnum}:DIVIDE:${ccomment}\n";
+        print $hF $line;
+      }
+    }
+    close $hF;
+  }
+}
+
+####################################################################
+#
+# !! 配列で返します
+sub getDivide {
+  my $self = shift;
+  my $ret;
+  my @divides = keys %{$self->{'DIVIDE'}};
+  for (sort { $a > $b } @divides){
+    push @$ret, $_;
+  }
+  return $ret;
+}
 
 1;

@@ -14,12 +14,20 @@
 
 <section class="outline_editor">
   <div class="document">
-    <div id="blk-tmpl" class="blk">
+    <div id="blk_tmpl" class="blk">
       <a class="btn_expand"><i class="glyph plus"></i></a>
       <span class="tagname"></span>
       <span class="digest"></span>
-          <button class="insert_divide">直後で改ページ</button>
+          <button class="divide_ctrl">直後で改ページ</button>
     </div>
+    <div id="divide_info" class="divide_info">
+      [% IF divides %]
+      [% FOREACH divide IN divides %]
+        <span class="divide">[% divide %]</span>
+      [% END %]
+      [% END %]
+    </div>
+
     [% markdown %]
   </div>
 

@@ -9,11 +9,11 @@ my $dog = mdDog->new('api');
 $dog->setupConfig();
 $dog->login();
 
+print "Content-type: application/json; charset=utf-8\n\n";
 if($ENV{'REQUEST_METHOD'} eq 'GET'){
     return unless($dog->qParam('fid'));
 
     ## ?fid=[fid](&eid=[eid])
-    print "Content-type: application/json; charset=utf-8\n\n";
     print $dog->api_getJSON();
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
     ## ?fid=[fid]&eid=[eid]&action=[action]
@@ -23,11 +23,9 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
 
     if($dog->qParam('action') eq 'update' &&  $dog->qParam('data')){
         my $updateData = $dog->api_postData();
-        print "Content-type: application/json; charset=utf-8\n\n";
         print $updateData;
     }elsif($dog->qParam('action') eq 'delete' ) {
         my $ret = $dog->api_deleteData();
-        print "Content-type: application/json; charset=utf-8\n\n";
         print $ret;
     }
 }
