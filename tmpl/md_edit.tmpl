@@ -13,17 +13,26 @@
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
-  <div class="edit-menu">
+  <div class="edit_menu">
     <h3>MDエディタ</h3>
-    <form class="md-buffer-fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
-      コメント：<textarea name="comment" rows="3" cols="70"></textarea>
-      <input type="button" name="commit" value="バッファをコミット" onClick="commitBuffer();">
-      <input type="hidden" name="fid" value="[% fid %]">
-      <textarea name="document" class="document" style="display: none;"></textarea>
-      <div class="rowdata" style="display: none;">[% rowdata %]</div>
-    </form>
+    <div>
+      <form class="md_buffer_fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
+        コメント：<textarea name="comment" rows="3" cols="70"></textarea>
+        <input type="button" name="commit" value="バッファをコミット" onClick="commitBuffer();">
+        <input type="hidden" name="fid" value="[% fid %]">
+        <textarea name="document" class="document" style="display: none;"></textarea>
+        <div class="rowdata" style="display: none;">[% rowdata %]</div>
+      </form>
+      <div>アウトラインページ</div>
+      <ul class="pagenav">
+        <li><a class="outline_page" data-elm="0">1</a></li>
+        [% FOREACH divide IN divides %]
+        <li><a class="outline_page" data-elm="[% divide %]">[% loop.index() + 2 %]</a></li>
+        [% END %]
+      </ul>
+    </div>
 
-    <ul>
+    <ul class="tabnav">
       <li><a href="md_image.cgi?fid=[% fid %]">画像ファイル</a></li>
       <li><a href="md_source.cgi?fid=[% fid %]">ソースの編集</a></li>
     </ul>

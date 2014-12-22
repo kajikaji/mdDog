@@ -57,8 +57,8 @@ sub setOutline_buffer{
   $self->{outline}->init();
   $self->{git}->detachLocal();
 
-  my $divides = $self->{outline}->getDivide();
-  $self->{t}->{divides} = ($divides);
+  my $divides = $self->{outline}->getDivides();
+  $self->{t}->{divides} = $divides;
 }
 
 ############################################################

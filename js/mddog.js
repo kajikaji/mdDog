@@ -126,6 +126,7 @@ mdEditForm.prototype = {
         $('#' + this.mdId).attr('id', this.mdId + 'org');
         var $newObj = $(res.md);
         $('#' + this.mdId + 'org').after($newObj);
+        $newObj.show();
         $('#' + this.mdId + 'org').remove();
 	    var leng = $newObj.length;
 	    if(leng > 1){
@@ -177,17 +178,90 @@ mdEditForm.prototype = {
  * 初回実行
  ***********************************************/
 $(function(){
+    /** バッファ編集ページ **/
     $('.md_buffer div.document').children().each(function(){
-        $(this).hover(
-            function(){ $(this).addClass('focus'); },
-            function(){ $(this).removeClass('focus'); }
-        );
-        $(this).click(function(){
-            var eForm = new mdEditForm($(this));
-            eForm.init();
-        });
+        if($(this).hasClass("md")){
+            $(this).hover(
+                function(){ $(this).addClass('focus'); },
+                function(){ $(this).removeClass('focus'); }
+            );
+            $(this).click(function(){
+                var eForm = new mdEditForm($(this));
+                eForm.init();
+            });
+        }else{
+            $(this).addClass("uneditable");
+        }
     });
 
+    var divide = [];
+    $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
+        divide.push($(this).data('elm'));
+        $(this).data('id', index);
+        $(this).click(function(){
+            $('.md_buffer .document .md').hide();
+
+            var id = $(this).data('id');
+            var tmp = undefined;
+            for(var i=0; i < divide.length; i++) 
+            {
+                if(i === id) {
+                    tmp = divide[i];
+                }else{
+                    if(tmp !== undefined){
+                        for(var j=tmp; j < divide[i]; j++)
+                        {
+                            $('#md' + j).show();
+                        }
+                        tmp = undefined;
+                    }
+                }
+            }
+            if(tmp !== undefined) {
+                $('.md_buffer .document').find('.md').each(function(){
+                    var objId = $(this).attr('id').substr(2);
+                    if(objId >= tmp) {
+                        $(this).show();
+                    }
+                });
+            }
+
+            //ページ番号を太字に
+            $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
+                if(index === id){
+                    $(this).addClass('active');
+                }else{
+                    $(this).removeClass('active');
+                }
+            });
+        });
+    });
+    var tmp = undefined;
+    for(var i=0; i < divide.length; i++) 
+    {
+        if(i === 0){
+            tmp = divide[i];
+        }else{
+            if(tmp !== undefined){
+                for(var j=tmp; j < divide[i]; j++)
+                {
+                    $('#md' + j).show();
+                }
+                tmp = undefined;
+            }
+        }
+    }
+    $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(){
+        var num = $(this).data('elm');
+        if(num === 0){
+            $(this).addClass('active');
+        }else{
+            $(this).removeClass('active');
+        }
+    });
+
+
+    /** アウトライン編集ページ **/
     $('.outline_editor div.document').children('.md').each(function(){
         var id = $(this).attr("id");
         if(id === "blk_tmpl" || id == "divide_info"){
@@ -203,47 +277,52 @@ $(function(){
         blk.find('a.btn_expand').click(function(){
             $('#'+id).toggle();
         });
-	blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
-	    var action = 'divide';
-	    if($(this).parent().next().next().hasClass('outline_divide')){
-		action = 'undivide';
-	    }
-	    $.ajax({
-		url: 'api/outlineEditor.cgi',
-		type: 'POST',
-		data: {
+        blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
+            var action = 'divide';
+            if($(this).parent().next().next().hasClass('outline_divide')){
+                action = 'undivide';
+            }
+            $.ajax({
+            url: 'api/outlineEditor.cgi',
+                type: 'POST',
+                data: {
                     fid: getParam('fid'),
-		    action: action,
-		    num: num + 1,
-		}
-	    }).done(function(res){
-		var num = res.num;
-		var target = $('#md' + num).prev('div.blk');
-		var divideObj = $('<div>').addClass('outline_divide');
-		target.before(divideObj);
-	    });
-	});
+                    action: action,
+                    num: parseInt(num) + 1,
+                }
+            }).done(function(res){
+                var num = res.num;
+                var target = $('#md' + num).prev('div.blk');
+                if(action === 'divide'){
+                    var divideObj = $('<div>').addClass('outline_divide');
+                    target.before(divideObj);
+                }else if(action === 'undivide'){
+                    target.prev('div.outline_divide').remove();
+                }
+            });
+        });
         $(this).before(blk);
     });
     $('.outline_editor div.document .divide_info').find('.divide').each(function(){
-	var num = $(this).text();
-	var target = $('#md' + num).prev('div.blk');
-	var divideObj = $('<div>').addClass('outline_divide');
-	target.before(divideObj);
+        var num = $(this).text();
+        var target = $('#md' + num).prev('div.blk');
+        var divideObj = $('<div>').addClass('outline_divide');
+        target.before(divideObj);
     });
 
+    /**  アウトライン出力ページ  **/
     function addPage (className, cPage, depth, obj){
         var newPage = $('<div>').addClass(className).addClass('page');
         var blk = obj;
-	var ch = undefined;
+        var ch = undefined;
         for(var i=0; i < depth; i++){
             var pObj = $(blk).parent().get(0);
             var pNewObj = $('<' + pObj.tagName + '>');
-	    if(ch !== undefined){
-  	        pNewObj.append(ch);
-	    }
-	    ch = pNewObj;
-	    blk = pObj;
+            if(ch !== undefined){
+                pNewObj.append(ch);
+            }
+            ch = pNewObj;
+            blk = pObj;
         }
         newPage.prepend(ch);
         $('.' + className + '.page.p' + cPage).after(newPage.addClass('p' + (cPage + 1)));

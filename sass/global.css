@@ -762,9 +762,9 @@ table.gitlog {
 
 .md_buffer form.md-buffer-fix {
   margin-bottom: 10px; }
-.md_buffer form.md-editor .canvas {
+.md_buffer form.md_editor .canvas {
   margin-bottom: 10px; }
-  .md_buffer form.md-editor .canvas textarea {
+  .md_buffer form.md_editor .canvas textarea {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;
@@ -772,37 +772,55 @@ table.gitlog {
     border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0; }
-.md_buffer .edit-menu .md-buffer-fix {
-  float: left;
+.md_buffer .edit_menu .md_buffer_fix {
   margin-bottom: 0; }
-.md_buffer .edit-menu ul {
+.md_buffer .edit_menu ul.pagenav {
+  list-style: none; }
+  .md_buffer .edit_menu ul.pagenav:after {
+    clear: both; }
+  .md_buffer .edit_menu ul.pagenav:after, .md_buffer .edit_menu ul.pagenav:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+  .md_buffer .edit_menu ul.pagenav li {
+    float: left;
+    margin-right: 5px;
+    padding: 5px;
+    border: 1px solid #aaa; }
+    .md_buffer .edit_menu ul.pagenav li a.outline_page {
+      cursor: pointer; }
+      .md_buffer .edit_menu ul.pagenav li a.outline_page.active {
+        font-weight: bold;
+        text-decoration: underline;
+        color: #000; }
+.md_buffer .edit_menu ul.tabnav {
   float: right;
   list-style: none;
   margin-top: 10px; }
-  .md_buffer .edit-menu ul li {
+  .md_buffer .edit_menu ul.tabnav li {
     float: left;
     border: 1px solid #aaa;
     border-bottom: none;
     font-size: 12px; }
-    .md_buffer .edit-menu ul li a,
-    .md_buffer .edit-menu ul li a:hover,
-    .md_buffer .edit-menu ul li a:link,
-    .md_buffer .edit-menu ul li a.visited {
+    .md_buffer .edit_menu ul.tabnav li a,
+    .md_buffer .edit_menu ul.tabnav li a:hover,
+    .md_buffer .edit_menu ul.tabnav li a:link,
+    .md_buffer .edit_menu ul.tabnav li a.visited {
       display: block;
       padding: 3px 10px;
       color: #333;
       text-decoration: none; }
-    .md_buffer .edit-menu ul li a:hover {
+    .md_buffer .edit_menu ul.tabnav li a:hover {
       background-color: #b0c4de; }
-  .md_buffer .edit-menu ul:after {
+  .md_buffer .edit_menu ul.tabnav:after {
     clear: both; }
-  .md_buffer .edit-menu ul:after, .md_buffer .edit-menu ul:before {
+  .md_buffer .edit_menu ul.tabnav:after, .md_buffer .edit_menu ul.tabnav:before {
     display: table;
     content: "";
     line-height: 0; }
-.md_buffer .edit-menu:after {
+.md_buffer .edit_menu:after {
   clear: both; }
-.md_buffer .edit-menu:after, .md_buffer .edit-menu:before {
+.md_buffer .edit_menu:after, .md_buffer .edit_menu:before {
   display: table;
   content: "";
   line-height: 0; }
@@ -857,6 +875,11 @@ table.gitlog {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px; }
+  .md_buffer .document > .md {
+    display: none; }
+  .md_buffer .document > .uneditable {
+    background-color: #ecc;
+    color: #888; }
   .md_buffer .document .editform textarea.editdata {
     width: 100%;
     box-sizing: boder-box;

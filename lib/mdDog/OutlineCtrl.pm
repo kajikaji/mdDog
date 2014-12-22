@@ -98,12 +98,10 @@ sub removeDivide {
 
 ####################################################################
 #
-# !! 配列で返します
-sub getDivide {
+sub getDivides {
   my $self = shift;
   my $ret;
-  my @divides = keys %{$self->{'DIVIDE'}};
-  for (sort { $a > $b } @divides){
+  for (sort { $a <=> $b } (keys %{$self->{'DIVIDE'}})) {
     push @$ret, $_;
   }
   return $ret;

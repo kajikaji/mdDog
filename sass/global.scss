@@ -862,7 +862,7 @@ table.gitlog {
       margin-bottom: 10px;
     }
 
-    form.md-editor {
+    form.md_editor {
         .canvas {
             margin-bottom: 10px;
             textarea{
@@ -877,12 +877,33 @@ table.gitlog {
         }
     }
 
-    .edit-menu{
-	.md-buffer-fix{
-	    float: left;
-            margin-bottom: 0;
+    .edit_menu{
+	.md_buffer_fix{
+        margin-bottom: 0;
 	}
-	ul{
+
+    ul.pagenav{
+        list-style: none;
+
+        @include clearfix();
+        li{
+            float: left;
+            margin-right: 5px;
+            padding: 5px;
+            border: 1px solid #aaa;
+
+a.outline_page{
+cursor: pointer;
+&.active{
+  font-weight: bold;
+text-decoration: underline;
+color: #000;
+}
+}
+        }
+    }
+
+	ul.tabnav{
 	    float: right;
 	    list-style: none;
             margin-top: 10px;
@@ -961,6 +982,14 @@ table.gitlog {
             border: 3px solid #b0c4de-#111;;
             cursor: pointer;
             @include round-corner(3px);
+        }
+
+        >.md{
+           display: none;
+        }
+        >.uneditable{
+            background-color: #ecc;
+            color: #888;
         }
 
 	.editform{

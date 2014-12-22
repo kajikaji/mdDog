@@ -19,7 +19,7 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     if($dog->qParam('action') eq 'divide' &&  $dog->qParam('num')){
         print $dog->api_outline_addDivide();
     }
-    else if($dog->qParam('action') eq 'undivide' &&  $dog->qParam('num')){
+    elsif($dog->qParam('action') eq 'undivide' &&  $dog->qParam('num')){
         print $dog->api_outline_removeDivide();
     }
 }
