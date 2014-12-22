@@ -882,51 +882,51 @@ table.gitlog {
         margin-bottom: 0;
 	}
 
-    ul.pagenav{
-        list-style: none;
+        ul.pagenav{
+            list-style: none;
 
-        @include clearfix();
-        li{
-            float: left;
-            margin-right: 5px;
-            padding: 5px;
-            border: 1px solid #aaa;
+            @include clearfix();
+            li{
+                float: left;
+                margin-right: 5px;
+                padding: 5px;
+                border: 1px solid #aaa;
 
-a.outline_page{
-cursor: pointer;
-&.active{
-  font-weight: bold;
-text-decoration: underline;
-color: #000;
-}
-}
+                a.outline_page{
+                    cursor: pointer;
+                    &.active{
+                        font-weight: bold;
+                        text-decoration: underline;
+                        color: #000;
+                    }
+                }
+            }
         }
-    }
 
-	ul.tabnav{
-	    float: right;
-	    list-style: none;
+        ul.tabnav{
+            float: right;
+            list-style: none;
             margin-top: 10px;
-	    li{
-		float: left;
-		border: 1px solid #aaa;
+            li{
+                float: left;
+                border: 1px solid #aaa;
                 border-bottom: none;
-		font-size: 12px;
+                font-size: 12px;
 
-            a,
-            a:hover,
-            a:link,
-            a.visited {
-                display: block;
-		padding: 3px 10px;
-                color: #333;
-                text-decoration: none;
-            }
-            a:hover{
-                background-color: #b0c4de;
-            }
+                a,
+                a:hover,
+                a:link,
+                a.visited {
+                    display: block;
+                    padding: 3px 10px;
+                    color: #333;
+                    text-decoration: none;
+                }
+                a:hover{
+                    background-color: #b0c4de;
+                }
 
-	    }
+            }
 	    @include clearfix();
 	}
 	@include clearfix();

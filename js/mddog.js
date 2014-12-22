@@ -39,12 +39,12 @@ function getParam(key) {
 
 function commitBuffer() {
     var $document = "";
-    $('form.md-buffer-fix .rowdata').find('.elm').each(function(){
+    $('form.md_buffer_fix .rowdata').find('.elm').each(function(){
         $document += $(this).text();
         $document += "\n";
     });
-    $('form.md-buffer-fix').find('textarea.document').text($document);
-    document.commitForm.submit();   
+    $('form.md_buffer_fix').find('textarea.document').text($document);
+    document.forms['commitForm'].submit();   
 }
 
 var mdEditForm = function(obj){
@@ -194,6 +194,42 @@ $(function(){
         }
     });
 
+    function showPage(dividesAr, id) {
+        var tmp = undefined;
+        for(var i=0; i < dividesAr.length; i++) 
+        {
+            if(i === id) {
+                tmp = dividesAr[i];
+            }else{
+                if(tmp !== undefined){
+                    for(var j=tmp; j < dividesAr[i]; j++)
+                    {
+                        $('#md' + j).show();
+                    }
+                    tmp = undefined;
+                }
+            }
+        }
+        if(tmp !== undefined) {
+            $('.md_buffer .document').find('.md').each(function(){
+                var objId = $(this).attr('id').substr(2);
+                if(objId >= tmp) {
+                    $(this).show();
+                }
+            });
+        }
+    };
+
+    function activeNum(num){
+        $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
+            if(index === num){
+                $(this).addClass('active');
+            }else{
+                $(this).removeClass('active');
+            }
+        });
+    }
+
     var divide = [];
     $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
         divide.push($(this).data('elm'));
@@ -202,63 +238,12 @@ $(function(){
             $('.md_buffer .document .md').hide();
 
             var id = $(this).data('id');
-            var tmp = undefined;
-            for(var i=0; i < divide.length; i++) 
-            {
-                if(i === id) {
-                    tmp = divide[i];
-                }else{
-                    if(tmp !== undefined){
-                        for(var j=tmp; j < divide[i]; j++)
-                        {
-                            $('#md' + j).show();
-                        }
-                        tmp = undefined;
-                    }
-                }
-            }
-            if(tmp !== undefined) {
-                $('.md_buffer .document').find('.md').each(function(){
-                    var objId = $(this).attr('id').substr(2);
-                    if(objId >= tmp) {
-                        $(this).show();
-                    }
-                });
-            }
-
-            //ページ番号を太字に
-            $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
-                if(index === id){
-                    $(this).addClass('active');
-                }else{
-                    $(this).removeClass('active');
-                }
-            });
+	    showPage(divide, id);
+	    activeNum(id);
         });
     });
-    var tmp = undefined;
-    for(var i=0; i < divide.length; i++) 
-    {
-        if(i === 0){
-            tmp = divide[i];
-        }else{
-            if(tmp !== undefined){
-                for(var j=tmp; j < divide[i]; j++)
-                {
-                    $('#md' + j).show();
-                }
-                tmp = undefined;
-            }
-        }
-    }
-    $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(){
-        var num = $(this).data('elm');
-        if(num === 0){
-            $(this).addClass('active');
-        }else{
-            $(this).removeClass('active');
-        }
-    });
+    showPage(divide, 0);
+    activeNum(0);
 
 
     /** アウトライン編集ページ **/

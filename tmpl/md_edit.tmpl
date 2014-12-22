@@ -18,7 +18,7 @@
     <div>
       <form class="md_buffer_fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
         コメント：<textarea name="comment" rows="3" cols="70"></textarea>
-        <input type="button" name="commit" value="バッファをコミット" onClick="commitBuffer();">
+        <input type="submit" name="commit" value="バッファをコミット" onClick="commitBuffer();">
         <input type="hidden" name="fid" value="[% fid %]">
         <textarea name="document" class="document" style="display: none;"></textarea>
         <div class="rowdata" style="display: none;">[% rowdata %]</div>

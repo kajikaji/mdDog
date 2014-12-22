@@ -22,7 +22,7 @@
            [% UNLESS loop.last %]
            <li><span class="diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></span></li>
            [% END %]
-           [% IF log.user > 0 %]
+           [% IF log.user %]
            <li><span class="master-diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa></li>
            [% END %]
            [% IF is_approve && is_live && log.user  %]
