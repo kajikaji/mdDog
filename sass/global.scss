@@ -161,6 +161,23 @@ i.glyph{
     background-position: 3px 3px;
     background-image: url("../img/432_plus.png");
 }
+.glyph.commit{
+    background-image: url("../img/141_database_plus.png");
+    width: 27px;
+    height: 27px;
+}
+.glyph.edit{
+    background-image: url("../img/151_edit.png");
+}
+.glyph.source{
+    background-image: url("../img/036_file.png");
+}
+.glyph.image{
+    background-image: url("../img/159_picture.png");
+}
+.glyph.outline{
+    background-image: url("../img/156_show_lines.png");
+}
 a.glyph {
   display: inline-block;
   float: left;
@@ -858,11 +875,54 @@ table.gitlog {
 }
 
 .md_buffer{
+    ul.buffer_edit_menu{
+	list-style:none;
+	>li{
+	    padding: 0;
+	    height: 32px;
+	    &:last-child{
+		border-bottom: none;
+	    }
+	    a{
+		cursor:pointer;
+		font-size: 7pt;
+font-weight: bold;
+background-color: #333;
+display: block;
+line-height: 1.0em;
+		margin-top: -10px;
+&:before, &:after{
+  content: "";
+  both: clear;
+  line-height: 0em;
+}
+
+color: #000;
+&:hover, &:link, &:visited{
+  color: #eee;
+}
+
+i.glyph, i.glyph+div{
+float: left;
+}
+i.glyph{
+margin-top: 4px;
+margin-left: 10px;
+}
+i.glyph+div{
+margin-top: 8px;
+margin-left: 5px;
+}
+	    }
+@include clearfix();
+	}
+    }
+
     form.md-buffer-fix{
       margin-bottom: 10px;
     }
 
-    form.md_editor {
+    form.md_source {
         .canvas {
             margin-bottom: 10px;
             textarea{

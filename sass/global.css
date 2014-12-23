@@ -27,6 +27,23 @@ i.glyph {
   background-position: 3px 3px;
   background-image: url("../img/432_plus.png"); }
 
+.glyph.commit {
+  background-image: url("../img/141_database_plus.png");
+  width: 27px;
+  height: 27px; }
+
+.glyph.edit {
+  background-image: url("../img/151_edit.png"); }
+
+.glyph.source {
+  background-image: url("../img/036_file.png"); }
+
+.glyph.image {
+  background-image: url("../img/159_picture.png"); }
+
+.glyph.outline {
+  background-image: url("../img/156_show_lines.png"); }
+
 a.glyph {
   display: inline-block;
   float: left; }
@@ -760,11 +777,47 @@ table.gitlog {
       font-size: 80%;
       border: 1px solid #aaa; }
 
+.md_buffer ul.buffer_edit_menu {
+  list-style: none; }
+  .md_buffer ul.buffer_edit_menu > li {
+    padding: 0;
+    height: 32px; }
+    .md_buffer ul.buffer_edit_menu > li:last-child {
+      border-bottom: none; }
+    .md_buffer ul.buffer_edit_menu > li a {
+      cursor: pointer;
+      font-size: 7pt;
+      font-weight: bold;
+      background-color: #333;
+      display: block;
+      line-height: 1.0em;
+      margin-top: -10px;
+      color: #000; }
+      .md_buffer ul.buffer_edit_menu > li a:before, .md_buffer ul.buffer_edit_menu > li a:after {
+        content: "";
+        both: clear;
+        line-height: 0em; }
+      .md_buffer ul.buffer_edit_menu > li a:hover, .md_buffer ul.buffer_edit_menu > li a:link, .md_buffer ul.buffer_edit_menu > li a:visited {
+        color: #eee; }
+      .md_buffer ul.buffer_edit_menu > li a i.glyph, .md_buffer ul.buffer_edit_menu > li a i.glyph + div {
+        float: left; }
+      .md_buffer ul.buffer_edit_menu > li a i.glyph {
+        margin-top: 4px;
+        margin-left: 10px; }
+      .md_buffer ul.buffer_edit_menu > li a i.glyph + div {
+        margin-top: 8px;
+        margin-left: 5px; }
+    .md_buffer ul.buffer_edit_menu > li:after {
+      clear: both; }
+    .md_buffer ul.buffer_edit_menu > li:after, .md_buffer ul.buffer_edit_menu > li:before {
+      display: table;
+      content: "";
+      line-height: 0; }
 .md_buffer form.md-buffer-fix {
   margin-bottom: 10px; }
-.md_buffer form.md_editor .canvas {
+.md_buffer form.md_source .canvas {
   margin-bottom: 10px; }
-  .md_buffer form.md_editor .canvas textarea {
+  .md_buffer form.md_source .canvas textarea {
     width: 100%;
     box-sizing: border-box;
     padding: 10px;

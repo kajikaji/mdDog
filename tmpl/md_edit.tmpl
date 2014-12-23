@@ -13,8 +13,17 @@
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
+
+<ul class="buffer_edit_menu">
+  <li><a><i class="glyph edit"></i><div>EDIT</div></a></li>
+  <li><a><i class="glyph image"></i><div>IMAGE</div></a></li>
+  <li><a><i class="glyph outline"></i><div>OUTLINE</div></a></li>
+  <li><a><i class="glyph source"></i><div>SOURCE</div></a></li>
+  <li><a><i class="glyph commit"></i><div>COMMIT</div></a></li>
+</ul>
+
+  <h3>MDエディタ</h3>
   <div class="edit_menu">
-    <h3>MDエディタ</h3>
     <div>
       <form class="md_buffer_fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
         コメント：<textarea name="comment" rows="3" cols="70"></textarea>
