@@ -173,28 +173,26 @@ mdEditForm.prototype = {
     }
 };
 
+var outlineDivide = function() {};
+outlineDivide.prototype = {
+    init: function () {
+        var divide = [];
+        $('.md_buffer  ul.pagenav').find('a.outline_page').each($.proxy(function(index, obj){
+            divide.push($(obj).data('elm'));
+            $(obj).data('id', index);
+            $(obj).click($.proxy(function(ev){
+                $('.md_buffer .document .md').hide();
 
-/***********************************************
- * 初回実行
- ***********************************************/
-$(function(){
-    /** バッファ編集ページ **/
-    $('.md_buffer div.document').children().each(function(){
-        if($(this).hasClass("md")){
-            $(this).hover(
-                function(){ $(this).addClass('focus'); },
-                function(){ $(this).removeClass('focus'); }
-            );
-            $(this).click(function(){
-                var eForm = new mdEditForm($(this));
-                eForm.init();
-            });
-        }else{
-            $(this).addClass("uneditable");
-        }
-    });
+                var id = $(ev.target).data('id');
+	            this.showPage(divide, id);
+	            this.activeNum(id);
+            }, this));
+        }, this));
+        this.showPage(divide, 0);
+        this.activeNum(0);
+    },
 
-    function showPage(dividesAr, id) {
+    showPage: function (dividesAr, id) {
         var tmp = undefined;
         for(var i=0; i < dividesAr.length; i++) 
         {
@@ -218,10 +216,10 @@ $(function(){
                 }
             });
         }
-    };
+    },
 
-    function activeNum(num){
-        $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
+    activeNum: function (num) {
+        $('.md_buffer ul.pagenav').find('a.outline_page').each(function(index){
             if(index === num){
                 $(this).addClass('active');
             }else{
@@ -229,74 +227,81 @@ $(function(){
             }
         });
     }
+};
 
-    var divide = [];
-    $('.md_buffer .edit_menu ul.pagenav').find('a.outline_page').each(function(index){
-        divide.push($(this).data('elm'));
-        $(this).data('id', index);
-        $(this).click(function(){
-            $('.md_buffer .document .md').hide();
-
-            var id = $(this).data('id');
-	    showPage(divide, id);
-	    activeNum(id);
-        });
-    });
-    showPage(divide, 0);
-    activeNum(0);
-
-
-    /** アウトライン編集ページ **/
-    $('.outline_editor div.document').children('.md').each(function(){
-        var id = $(this).attr("id");
-        if(id === "blk_tmpl" || id == "divide_info"){
-            return;
-        }
-        var num = id.substr(2);
-        var tag = this.tagName;
-        var digest = $(this).text().substr(0, 6);
-        $(this).hide();
-        var blk = $('#blk_tmpl').clone().removeAttr("id");
-        blk.find('.tagname').text(tag);
-        blk.find('.digest').text(digest);
-        blk.find('a.btn_expand').click(function(){
-            $('#'+id).toggle();
-        });
-        blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
-            var action = 'divide';
-            if($(this).parent().next().next().hasClass('outline_divide')){
-                action = 'undivide';
+// アウトラインエディター
+var mdOutlineEditor = function(){};
+mdOutlineEditor.prototype = {
+    init: function(){
+        $('.outline_editor div.document').children('.md').each(function(){
+            var id = $(this).attr("id");
+            if(id === "blk_tmpl" || id == "divide_info"){
+                return;
             }
-            $.ajax({
-            url: 'api/outlineEditor.cgi',
-                type: 'POST',
-                data: {
-                    fid: getParam('fid'),
-                    action: action,
-                    num: parseInt(num) + 1,
-                }
-            }).done(function(res){
-                var num = res.num;
-                var target = $('#md' + num).prev('div.blk');
-                if(action === 'divide'){
-                    var divideObj = $('<div>').addClass('outline_divide');
-                    target.before(divideObj);
-                }else if(action === 'undivide'){
-                    target.prev('div.outline_divide').remove();
-                }
+            var num = id.substr(2);
+            var tag = this.tagName;
+            var digest = $(this).text().substr(0, 6);
+            $(this).hide();
+            var blk = $('#blk_tmpl').clone().removeAttr("id");
+            blk.find('.tagname').text(tag);
+            blk.find('.digest').text(digest);
+            blk.find('a.btn_expand').click(function(){
+                $('#'+id).toggle();
             });
+            blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
+                var action = 'divide';
+                if($(this).parent().next().next().hasClass('outline_divide')){
+                    action = 'undivide';
+                }
+                $.ajax({
+                    url: 'api/outlineEditor.cgi',
+                    type: 'POST',
+                    data: {
+                        fid: getParam('fid'),
+                        action: action,
+                        num: parseInt(num) + 1,
+                    }
+                }).done(function(res){
+                    var num = res.num;
+                    var target = $('#md' + num).prev('div.blk');
+                    if(action === 'divide'){
+                        var divideObj = $('<div>').addClass('outline_divide');
+                        target.before(divideObj);
+                    }else if(action === 'undivide'){
+                        target.prev('div.outline_divide').remove();
+                    }
+                });
+            });
+            $(this).before(blk);
         });
-        $(this).before(blk);
-    });
-    $('.outline_editor div.document .divide_info').find('.divide').each(function(){
-        var num = $(this).text();
-        var target = $('#md' + num).prev('div.blk');
-        var divideObj = $('<div>').addClass('outline_divide');
-        target.before(divideObj);
-    });
+        $('.outline_editor div.document .divide_info').find('.divide').each(function(){
+            var num = $(this).text();
+            var target = $('#md' + num).prev('div.blk');
+            var divideObj = $('<div>').addClass('outline_divide');
+            target.before(divideObj);
+        });
+    }
+};
 
-    /**  アウトライン出力ページ  **/
-    function addPage (className, cPage, depth, obj){
+// アウトライン
+var mdOutline = function(){
+    this.page = undefined;
+};
+mdOutline.prototype = {
+    init: function () {
+        $('.outline').find('.page').each($.proxy(function(i, elm){
+            var className = elm.className.split(" ")[0];
+            this.page = 0;
+            if(className === 'document'){
+                this.adjustDocumentPage(className, elm);
+                $(elm).remove();
+            }else{
+                this.adjustPage(className, elm);
+            }
+        }, this));
+    },
+
+    addPage : function (className, cPage, depth, obj){
         var newPage = $('<div>').addClass(className).addClass('page');
         var blk = obj;
         var ch = undefined;
@@ -312,99 +317,109 @@ $(function(){
         newPage.prepend(ch);
         $('.' + className + '.page.p' + cPage).after(newPage.addClass('p' + (cPage + 1)));
         $(obj).prev().addClass("adjust-block");
-    };
+    },
 
-    var page;
-    function recursivePage(className, obj, innerHeight, pageHeight, cHeight, depth) {
+    recursivePage : function(className, obj, innerHeight, pageHeight, cHeight, depth) {
         var objHeight = $(obj).outerHeight(true);
         if(objHeight + cHeight > innerHeight) {
             if($(obj).children().length === 0) {
-                addPage(className, page, depth, obj);
-                page++;
+                this.addPage(className, this.page, depth, obj);
+                this.page++;
                 cHeight = objHeight;
             }else{
-                $(obj).children().each(function(index){
-                    var disp = $(this).css('display');
+                $(obj).children().each($.proxy(function(index, elm){
+                    var disp = $(elm).css('display');
                     if(disp === 'block' || disp === 'table' || disp === 'list-item') {
                         if(index === 0){
-                            $('.' + className + '.page.p' + page).append($('<' + obj.tagName + '>'));
+                            $('.' + className + '.page.p' + this.page).append($('<' + obj.tagName + '>'));
                         }
-                        cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight, depth + 1);
+                        cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, depth + 1);
                     }else{
-                        addPage(className, page, depth, this);
-                        page++;
+                        this.addPage(className, this.page, depth, elm);
+                        this.page++;
                         cHeight = objHeight;
                         return false;
                     }
-                });
+                }, this));
             }
         }else{
             if(depth === 0){
-                $('.' + className + '.page.p' + page).append($(obj).clone());
+                $('.' + className + '.page.p' + this.page).append($(obj).clone());
             }else{  // TODO: １階層しか対応していない 2014/12/12
-                $('.' + className + '.page.p' + page).children().last().append($(obj).clone());
+                $('.' + className + '.page.p' + this.page).children().last().append($(obj).clone());
             }
             cHeight += objHeight;
         }
 
         return cHeight;
-    };
+    },
 
     //目次・履歴のページ分割
-    function adjustPage(className, obj) {
+    adjustPage : function(className, obj) {
         var innerHeight = $(obj).height();
         var pageHeight = $(obj).outerHeight();  //297mm
         var cHeight = 0.0;
 
         var newPage = $('<div>').addClass(className).addClass('page');
-        $('.' + className + '.page').after(newPage.addClass('p' + page));
+        $('.' + className + '.page').after(newPage.addClass('p' + this.page));
 
-        $(obj).children().each(function(){
-            cHeight = recursivePage(className, this, innerHeight, pageHeight, cHeight, 0);
-        });
-	$(obj).remove();
-    };
+        $(obj).children().each($.proxy(function(i, elm){
+            cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, 0);
+        } ,this));
+	    $(obj).remove();
+    },
 
     // 本文のページ分割
-    function adjustDocumentPage(className, obj) {
+    adjustDocumentPage : function(className, obj) {
         var innerHeight = $(obj).height();
         var cHeight = 0.0;
         var newpage = 0;
 
-        $(obj).after($('<div>').addClass(className).addClass("page").addClass("p" + page));
+        $(obj).after($('<div>').addClass(className).addClass("page").addClass("p" + this.page));
 
-        $(obj).children().each(function(){
+        $(obj).children().each($.proxy(function(i, elm){
             if(newpage === 1){
-                $("." + className + ".page.p" + page).after(
-                     $('<div>').addClass(className).addClass("page").addClass("p" + (page + 1))
+                $("." + className + ".page.p" + this.page).after(
+                     $('<div>').addClass(className).addClass("page").addClass("p" + (this.page + 1))
                 );
-                page++;
+                this.page++;
                 newpage = 0;
             }
 
-            $("." + className + ".page.p" + page).append($(this).clone());
+            $("." + className + ".page.p" + this.page).append($(elm).clone());
 
-            var objHeight = $(this).outerHeight(true);
+            var objHeight = $(elm).outerHeight(true);
             if( cHeight + objHeight >= innerHeight ) {
                 cHeight = objHeight;
                 newpage = 1;
             }else{
                 cHeight += objHeight;
             }
-        });
-    };
+        }, this));
+    }
+};
 
-    $('.outline').find('.page').each(function(){
-        var className = this.className.split(" ")[0];
-        page = 0;
-        console.log(this.tagName + ":" + this.className);
-        if(className === 'document'){
-            adjustDocumentPage(className, this);
-            $(this).remove();
+/***********************************************
+ * 初回実行
+ ***********************************************/
+$(function(){
+    /** バッファ編集ページ **/
+    $('.md_buffer div.document').children().each(function(){
+        if($(this).hasClass("md")){
+            $(this).hover(
+                function(){ $(this).addClass('focus'); },
+                function(){ $(this).removeClass('focus'); }
+            );
+            $(this).click(function(){
+                new mdEditForm($(this)).init();;
+            });
         }else{
-            adjustPage(className, this);
+            $(this).addClass("uneditable");
         }
     });
+    new outlineDivide().init();   // 編集バッファのアウトライン
+    new mdOutlineEditor().init(); // アウトラインエディタ
+    new mdOutline().init();       // アウトライン出力
 
     var $outline = false;
     $('#printOutline').on("click", function(){

@@ -13,51 +13,39 @@
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
+  [% INCLUDE buffer_menu.tmpl %]
 
-<ul class="buffer_edit_menu">
-  <li><a><i class="glyph edit"></i><div>EDIT</div></a></li>
-  <li><a><i class="glyph image"></i><div>IMAGE</div></a></li>
-  <li><a><i class="glyph outline"></i><div>OUTLINE</div></a></li>
-  <li><a><i class="glyph source"></i><div>SOURCE</div></a></li>
-  <li><a><i class="glyph commit"></i><div>COMMIT</div></a></li>
-</ul>
+  <div class="buffer_edit">
+    <ul class="pagenav">
+      <li><a class="outline_page" data-elm="0">1</a></li>
+      [% FOREACH divide IN divides %]
+      <li><a class="outline_page" data-elm="[% divide %]">[% loop.index() + 2 %]</a></li>
+      [% END %]
+    </ul>
 
-  <h3>MDエディタ</h3>
-  <div class="edit_menu">
-    <div>
-      <form class="md_buffer_fix" name="commitForm" action="?id=fid=[% fid %]" method="post">
+    <div class="document">
+      [% markdown %]
+    </div>
+
+    <form name="commitForm" action="?fid=[% fid %]" method="post">
+      <div class="md_buffer_fix">
         コメント：<textarea name="comment" rows="3" cols="70"></textarea>
         <input type="submit" name="commit" value="バッファをコミット" onClick="commitBuffer();">
         <input type="hidden" name="fid" value="[% fid %]">
         <textarea name="document" class="document" style="display: none;"></textarea>
         <div class="rowdata" style="display: none;">[% rowdata %]</div>
-      </form>
-      <div>アウトラインページ</div>
-      <ul class="pagenav">
-        <li><a class="outline_page" data-elm="0">1</a></li>
-        [% FOREACH divide IN divides %]
-        <li><a class="outline_page" data-elm="[% divide %]">[% loop.index() + 2 %]</a></li>
-        [% END %]
-      </ul>
+      </div>
+    </form>
+
+    <div id="editform" class="editform" style="display: none;">
+      <textarea id="editdata" class="editdata" name="editdata"></textarea>
+      <button class="update">更新</button>
+      <button class="delete">削除</button>
+      <button class="cancel">キャンセル</button>
+      <button class="image_view">画像</button>
     </div>
 
-    <ul class="tabnav">
-      <li><a href="md_image.cgi?fid=[% fid %]">画像ファイル</a></li>
-      <li><a href="md_source.cgi?fid=[% fid %]">ソースの編集</a></li>
-    </ul>
-  </div>
-
-
-  <div class="document">
-    [% markdown %]
-  </div>
-  <div id="editform" class="editform" style="display: none;">
-    <textarea id="editdata" class="editdata" name="editdata"></textarea>
-    <button class="update">更新</button>
-    <button class="delete">削除</button>
-    <button class="cancel">キャンセル</button>
-    <button class="image_view">画像</button>
-  </div>
+  </div> <!-- buffer_edit -->
 </section>
 
 </body>

@@ -13,23 +13,27 @@
 </section <!-- docinfo -->
 
 <section class="outline_editor">
-  <div class="document">
-    <div id="blk_tmpl" class="blk">
-      <a class="btn_expand"><i class="glyph plus"></i></a>
-      <span class="tagname"></span>
-      <span class="digest"></span>
-          <button class="divide_ctrl">直後で改ページ</button>
-    </div>
-    <div id="divide_info" class="divide_info">
-      [% IF divides %]
-      [% FOREACH divide IN divides %]
-        <span class="divide">[% divide %]</span>
-      [% END %]
-      [% END %]
-    </div>
+  [% INCLUDE buffer_menu.tmpl %]
 
-    [% markdown %]
-  </div>
+  <div class="buffer_edit">
+    <div class="document">
+      <div id="blk_tmpl" class="blk">
+        <a class="btn_expand"><i class="glyph plus"></i></a>
+        <span class="tagname"></span>
+        <span class="digest"></span>
+        <button class="divide_ctrl">直後で改ページ</button>
+      </div>
+      <div id="divide_info" class="divide_info">
+        [% IF divides %]
+        [% FOREACH divide IN divides %]
+        <span class="divide">[% divide %]</span>
+        [% END %]
+        [% END %]
+      </div>
+
+      [% markdown %]
+    </div>
+  </div> <!-- commitForm -->
 
 </section>
 

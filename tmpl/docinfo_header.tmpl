@@ -16,9 +16,7 @@
 
 [% IF login %]
 <ul class="doc-ctrl">
-  <li [%IF SUBMENU == "編集バッファ" %]class="selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
-  <li [%IF SUBMENU == "アップロード" %]class="selected"[% END %]><a href="docupload.cgi?fid=[% fid %]" class="btn">アップロード</a></li>
-  <li [%IF SUBMENU == "アウトライン" %]class="selected"[% END %]><a href="md_outline.cgi?fid=[% fid %]" class="btn">アウトライン</a></li>
+  <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース"] %]class="selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
   [%IF is_approve %]
     <li [%IF SUBMENU == "承認" %]class="selected"[% END %]><a href="docapprove.cgi?fid=[% fid %]" class="btn">承認</a></li>[% END %]
 </ul>

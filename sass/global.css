@@ -47,12 +47,12 @@ i.glyph {
 a.glyph {
   display: inline-block;
   float: left; }
-  a.glyph:after {
-    clear: both; }
   a.glyph:after, a.glyph:before {
     display: table;
     content: "";
     line-height: 0; }
+  a.glyph:after {
+    clear: both; }
 
 a.glyph, input[type=submit].glyph {
   padding: 0;
@@ -116,12 +116,12 @@ a.btn {
   a.btn:hover {
     background-color: #f5deb3;
     color: #222; }
-  a.btn:after {
-    clear: both; }
   a.btn:after, a.btn:before {
     display: table;
     content: "";
     line-height: 0; }
+  a.btn:after {
+    clear: both; }
 
 .app-header {
   border-bottom: 3px double #4169e1;
@@ -130,12 +130,12 @@ a.btn {
     float: left; }
     .app-header .row > div.login-form {
       float: right; }
-  .app-header .row:after {
-    clear: both; }
   .app-header .row:after, .app-header .row:before {
     display: table;
     content: "";
     line-height: 0; }
+  .app-header .row:after {
+    clear: both; }
   .app-header .title {
     font-size: 48pt; }
     .app-header .title a,
@@ -187,12 +187,12 @@ section.error div.error {
     .userinfo ul li {
       float: left;
       margin-right: 30px; }
-    .userinfo ul:after {
-      clear: both; }
     .userinfo ul:after, .userinfo ul:before {
       display: table;
       content: "";
       line-height: 0; }
+    .userinfo ul:after {
+      clear: both; }
   .userinfo .admin a,
   .userinfo .admin a:hover,
   .userinfo .admin a:visited,
@@ -212,12 +212,12 @@ ul.back-nav {
     margin-right: 10px; }
     ul.back-nav li a:before {
       content: "<<    "; }
-  ul.back-nav:after {
-    clear: both; }
   ul.back-nav:after, ul.back-nav:before {
     display: table;
     content: "";
     line-height: 0; }
+  ul.back-nav:after {
+    clear: both; }
 
 .description .revision {
   font-weight: bold;
@@ -281,12 +281,12 @@ section.gitlog {
         section.gitlog ul.buffer-list li a:hover {
           color: #000;
           background-color: #b0c4de; }
-    section.gitlog ul.buffer-list:after {
-      clear: both; }
     section.gitlog ul.buffer-list:after, section.gitlog ul.buffer-list:before {
       display: table;
       content: "";
       line-height: 0; }
+    section.gitlog ul.buffer-list:after {
+      clear: both; }
   section.gitlog table.gitlog {
     font-size: 11px;
     line-heigth: 1.1em;
@@ -360,12 +360,12 @@ section.top .top-menu {
           font-weight: bold; }
           section.top .top-menu table.doc-list tr td > .doc-subject > div.name a:hover {
             color: #ff6437; }
-        section.top .top-menu table.doc-list tr td > .doc-subject > div:after {
-          clear: both; }
         section.top .top-menu table.doc-list tr td > .doc-subject > div:after, section.top .top-menu table.doc-list tr td > .doc-subject > div:before {
           display: table;
           content: "";
           line-height: 0; }
+        section.top .top-menu table.doc-list tr td > .doc-subject > div:after {
+          clear: both; }
     section.top .top-menu table.doc-list tr td > .doc-ctrl {
       float: right;
       padding: 5px; }
@@ -380,12 +380,12 @@ section.top .top-menu {
         margin-left: 20px; }
         section.top .top-menu table.doc-list tr td .doc-detail div:first-child {
           margin-left: 5px; }
-      section.top .top-menu table.doc-list tr td .doc-detail:after {
-        clear: both; }
       section.top .top-menu table.doc-list tr td .doc-detail:after, section.top .top-menu table.doc-list tr td .doc-detail:before {
         display: table;
         content: "";
         line-height: 0; }
+      section.top .top-menu table.doc-list tr td .doc-detail:after {
+        clear: both; }
 
 section.docinfo h1, section.docinfo h2 {
   margin-top: 0; }
@@ -401,12 +401,12 @@ section.docinfo h2 .supplement {
   color: #000;
   font-size: 12px;
   margin-left: 10px; }
-section.docinfo:after {
-  clear: both; }
 section.docinfo:after, section.docinfo:before {
   display: table;
   content: "";
   line-height: 0; }
+section.docinfo:after {
+  clear: both; }
 section.docinfo > .description {
   font-size: 11px;
   margin-bottom: 5px;
@@ -417,12 +417,12 @@ section.docinfo > .description {
     section.docinfo > .description > div .active {
       font-weight: bold;
       text-decoration: underline; }
-  section.docinfo > .description:after {
-    clear: both; }
   section.docinfo > .description:after, section.docinfo > .description:before {
     display: table;
     content: "";
     line-height: 0; }
+  section.docinfo > .description:after {
+    clear: both; }
 section.docinfo > ul.doc-ctrl {
   list-style: none;
   margin-bottom: 20px; }
@@ -436,12 +436,12 @@ section.docinfo > ul.doc-ctrl {
       color: #fff;
       cursor: default;
       font-weight: normal; }
-  section.docinfo > ul.doc-ctrl:after {
-    clear: both; }
   section.docinfo > ul.doc-ctrl:after, section.docinfo > ul.doc-ctrl:before {
     display: table;
     content: "";
     line-height: 0; }
+  section.docinfo > ul.doc-ctrl:after {
+    clear: both; }
 section.docinfo .user-action {
   margin-bottom: 20px; }
   section.docinfo .user-action h3 {
@@ -474,12 +474,12 @@ section.docinfo .user-action {
             font-weight: bold; }
           section.docinfo .user-action ul.menu li form.doc-upload-form > div label {
             font-size: 9px; }
-    section.docinfo .user-action ul.menu:after {
-      clear: both; }
     section.docinfo .user-action ul.menu:after, section.docinfo .user-action ul.menu:before {
       display: table;
       content: "";
       line-height: 0; }
+    section.docinfo .user-action ul.menu:after {
+      clear: both; }
 
 section.outline.print-format {
   padding: 0; }
@@ -594,6 +594,34 @@ section.outline {
         font-size: 70%;
         padding-left: 100px; }
 
+section.outline_editor ul.buffer_edit_menu {
+  position: absolute;
+  list-style: none;
+  margin-right: 0;
+  width: 140px; }
+  section.outline_editor ul.buffer_edit_menu > li a {
+    cursor: pointer;
+    font-size: 7pt;
+    font-weight: bold;
+    color: #000;
+    padding-right: 30px;
+    padding-top: 5px;
+    margin-bottom: 3px;
+    width: 80px; }
+    section.outline_editor ul.buffer_edit_menu > li a:hover {
+      color: #000;
+      background-color: #f5deb3; }
+  section.outline_editor ul.buffer_edit_menu > li.selected {
+    padding-left: 15px; }
+    section.outline_editor ul.buffer_edit_menu > li.selected a:hover, section.outline_editor ul.buffer_edit_menu > li.selected a:link, section.outline_editor ul.buffer_edit_menu > li.selected a:visited {
+      cursor: default;
+      background-color: transparent; }
+    section.outline_editor ul.buffer_edit_menu > li.selected a:before {
+      float: left;
+      border: 8px solid transparent;
+      border-left: 10px solid #000; }
+section.outline_editor .buffer_edit {
+  margin-left: 180px; }
 section.outline_editor .document {
   background-color: #fff;
   border: 2px solid #888;
@@ -635,12 +663,12 @@ section.outline_editor .document {
     -moz-border-radius: 5px; }
   section.outline_editor .document .blk + ul.md, section.outline_editor .document .blk + ol.md {
     padding-left: 30px; }
-  section.outline_editor .document .blk:after {
-    clear: both; }
   section.outline_editor .document .blk:after, section.outline_editor .document .blk:before {
     display: table;
     content: "";
     line-height: 0; }
+  section.outline_editor .document .blk:after {
+    clear: both; }
 
 table.gitlog {
   font-size: 11px;
@@ -693,12 +721,12 @@ table.gitlog {
       background-color: #aaa;
       color: #eee;
       font-size: 8pt; }
-    .diff-view .canvas .line:after {
-      clear: both; }
     .diff-view .canvas .line:after, .diff-view .canvas .line:before {
       display: table;
       content: "";
       line-height: 0; }
+    .diff-view .canvas .line:after {
+      clear: both; }
 
 .document {
   margin-bottom: 50px; }
@@ -715,12 +743,12 @@ table.gitlog {
         border-bottom-width: 0; }
       .document > ul.property li > div {
         float: left; }
-      .document > ul.property li:after {
-        clear: both; }
       .document > ul.property li:after, .document > ul.property li:before {
         display: table;
         content: "";
         line-height: 0; }
+      .document > ul.property li:after {
+        clear: both; }
       .document > ul.property li .subject {
         width: 100px; }
       .document > ul.property li.status {
@@ -777,233 +805,159 @@ table.gitlog {
       font-size: 80%;
       border: 1px solid #aaa; }
 
-.md_buffer ul.buffer_edit_menu {
-  list-style: none; }
-  .md_buffer ul.buffer_edit_menu > li {
-    padding: 0;
-    height: 32px; }
-    .md_buffer ul.buffer_edit_menu > li:last-child {
-      border-bottom: none; }
-    .md_buffer ul.buffer_edit_menu > li a {
-      cursor: pointer;
-      font-size: 7pt;
-      font-weight: bold;
-      background-color: #333;
-      display: block;
-      line-height: 1.0em;
-      margin-top: -10px;
-      color: #000; }
-      .md_buffer ul.buffer_edit_menu > li a:before, .md_buffer ul.buffer_edit_menu > li a:after {
-        content: "";
-        both: clear;
-        line-height: 0em; }
-      .md_buffer ul.buffer_edit_menu > li a:hover, .md_buffer ul.buffer_edit_menu > li a:link, .md_buffer ul.buffer_edit_menu > li a:visited {
-        color: #eee; }
-      .md_buffer ul.buffer_edit_menu > li a i.glyph, .md_buffer ul.buffer_edit_menu > li a i.glyph + div {
-        float: left; }
-      .md_buffer ul.buffer_edit_menu > li a i.glyph {
-        margin-top: 4px;
-        margin-left: 10px; }
-      .md_buffer ul.buffer_edit_menu > li a i.glyph + div {
-        margin-top: 8px;
-        margin-left: 5px; }
-    .md_buffer ul.buffer_edit_menu > li:after {
-      clear: both; }
-    .md_buffer ul.buffer_edit_menu > li:after, .md_buffer ul.buffer_edit_menu > li:before {
+section.md_buffer ul.buffer_edit_menu {
+  position: absolute;
+  list-style: none;
+  margin-right: 0;
+  width: 140px; }
+  section.md_buffer ul.buffer_edit_menu > li a {
+    cursor: pointer;
+    font-size: 7pt;
+    font-weight: bold;
+    color: #000;
+    padding-right: 30px;
+    padding-top: 5px;
+    margin-bottom: 3px;
+    width: 80px; }
+    section.md_buffer ul.buffer_edit_menu > li a:hover {
+      color: #000;
+      background-color: #f5deb3; }
+  section.md_buffer ul.buffer_edit_menu > li.selected {
+    padding-left: 15px; }
+    section.md_buffer ul.buffer_edit_menu > li.selected a:hover, section.md_buffer ul.buffer_edit_menu > li.selected a:link, section.md_buffer ul.buffer_edit_menu > li.selected a:visited {
+      cursor: default;
+      background-color: transparent; }
+    section.md_buffer ul.buffer_edit_menu > li.selected a:before {
+      float: left;
+      border: 8px solid transparent;
+      border-left: 10px solid #000; }
+section.md_buffer .buffer_edit {
+  margin-left: 180px; }
+  section.md_buffer .buffer_edit form .canvas {
+    margin-bottom: 10px; }
+    section.md_buffer .buffer_edit form .canvas textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px;
+      border: 2px solid #800000;
+      border-radius: 0;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0; }
+  section.md_buffer .buffer_edit ul.pagenav {
+    list-style: none; }
+    section.md_buffer .buffer_edit ul.pagenav li {
+      float: left;
+      margin-right: 5px;
+      padding: 5px;
+      border: 1px solid #aaa; }
+      section.md_buffer .buffer_edit ul.pagenav li a.outline_page {
+        cursor: pointer; }
+        section.md_buffer .buffer_edit ul.pagenav li a.outline_page.active {
+          font-weight: bold;
+          text-decoration: underline;
+          color: #000; }
+    section.md_buffer .buffer_edit ul.pagenav:after, section.md_buffer .buffer_edit ul.pagenav:before {
       display: table;
       content: "";
       line-height: 0; }
-.md_buffer form.md-buffer-fix {
-  margin-bottom: 10px; }
-.md_buffer form.md_source .canvas {
-  margin-bottom: 10px; }
-  .md_buffer form.md_source .canvas textarea {
-    width: 100%;
-    box-sizing: border-box;
+    section.md_buffer .buffer_edit ul.pagenav:after {
+      clear: both; }
+  section.md_buffer .buffer_edit .document {
+    background-color: #fff;
+    border: 2px solid #888;
     padding: 10px;
-    border: 2px solid #800000;
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0; }
-.md_buffer .edit_menu .md_buffer_fix {
-  margin-bottom: 0; }
-.md_buffer .edit_menu ul.pagenav {
-  list-style: none; }
-  .md_buffer .edit_menu ul.pagenav:after {
-    clear: both; }
-  .md_buffer .edit_menu ul.pagenav:after, .md_buffer .edit_menu ul.pagenav:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  .md_buffer .edit_menu ul.pagenav li {
-    float: left;
-    margin-right: 5px;
-    padding: 5px;
-    border: 1px solid #aaa; }
-    .md_buffer .edit_menu ul.pagenav li a.outline_page {
-      cursor: pointer; }
-      .md_buffer .edit_menu ul.pagenav li a.outline_page.active {
-        font-weight: bold;
-        text-decoration: underline;
-        color: #000; }
-.md_buffer .edit_menu ul.tabnav {
-  float: right;
-  list-style: none;
-  margin-top: 10px; }
-  .md_buffer .edit_menu ul.tabnav li {
-    float: left;
-    border: 1px solid #aaa;
-    border-bottom: none;
-    font-size: 12px; }
-    .md_buffer .edit_menu ul.tabnav li a,
-    .md_buffer .edit_menu ul.tabnav li a:hover,
-    .md_buffer .edit_menu ul.tabnav li a:link,
-    .md_buffer .edit_menu ul.tabnav li a.visited {
-      display: block;
-      padding: 3px 10px;
-      color: #333;
-      text-decoration: none; }
-    .md_buffer .edit_menu ul.tabnav li a:hover {
-      background-color: #b0c4de; }
-  .md_buffer .edit_menu ul.tabnav:after {
-    clear: both; }
-  .md_buffer .edit_menu ul.tabnav:after, .md_buffer .edit_menu ul.tabnav:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-.md_buffer .edit_menu:after {
-  clear: both; }
-.md_buffer .edit_menu:after, .md_buffer .edit_menu:before {
-  display: table;
-  content: "";
-  line-height: 0; }
-.md_buffer ul.md_menu {
-  list-style: none;
-  margin-bottom: 0; }
-  .md_buffer ul.md_menu li {
-    float: left;
-    width: 120px;
-    text-align: center;
-    border: 1px solid #333;
-    border-bottom: none;
-    background-color: #dfdfdf;
-    font-size: 12px;
-    padding: 2px; }
-    .md_buffer ul.md_menu li:first-child {
-      border-right: none; }
-    .md_buffer ul.md_menu li.active {
-      background-color: #fff; }
-    .md_buffer ul.md_menu li a,
-    .md_buffer ul.md_menu li a:hover,
-    .md_buffer ul.md_menu li a:link,
-    .md_buffer ul.md_menu li a.visited {
-      display: block;
+    padding: 10px;
+    border: 2px solid #888;
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.2em; }
+    section.md_buffer .buffer_edit .document > * {
+      border: 3px solid #fff; }
+    section.md_buffer .buffer_edit .document > .focus {
+      background-color: #b0c4de;
+      border: 3px solid #9fb3cd;
+      cursor: pointer;
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px; }
+    section.md_buffer .buffer_edit .document > .md {
+      display: none; }
+    section.md_buffer .buffer_edit .document > .uneditable {
+      background-color: #ecc;
+      color: #888; }
+    section.md_buffer .buffer_edit .document .editform textarea.editdata {
       width: 100%;
-      color: #333;
-      font-weight: bold;
-      text-decoration: none; }
-    .md_buffer ul.md_menu li a:hover {
-      background-color: #b0c4de; }
-  .md_buffer ul.md_menu:after {
-    clear: both; }
-  .md_buffer ul.md_menu:after, .md_buffer ul.md_menu:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-.md_buffer .document {
-  background-color: #fff;
-  border: 2px solid #888;
-  padding: 10px;
-  padding: 10px;
-  border: 2px solid #888;
-  background-color: #fff;
-  font-size: 14px;
-  line-height: 1.2em; }
-  .md_buffer .document > * {
-    border: 3px solid #fff; }
-  .md_buffer .document > .focus {
-    background-color: #b0c4de;
-    border: 3px solid #9fb3cd;
-    cursor: pointer;
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px; }
-  .md_buffer .document > .md {
-    display: none; }
-  .md_buffer .document > .uneditable {
-    background-color: #ecc;
-    color: #888; }
-  .md_buffer .document .editform textarea.editdata {
-    width: 100%;
-    box-sizing: boder-box;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px; }
-  .md_buffer .document .editform button {
-    border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px; }
-  .md_buffer .document h1, .md_buffer .document h2, .md_buffer .document h3, .md_buffer .document h4, .md_buffer .document h5, .md_buffer .document h6, .md_buffer .document h7 {
-    margin: 0;
-    padding: 30px 0 10px 0; }
-  .md_buffer .document h1:first-child, .md_buffer .document h2:first-child, .md_buffer .document h3:first-child {
-    padding-top: 20px; }
-  .md_buffer .document h1 {
-    padding-top: 70px;
-    font-size: 40px; }
-  .md_buffer .document h2 {
-    padding-top: 40px;
-    font-size: 28px; }
-  .md_buffer .document h3 {
-    font-size: 18px; }
-  .md_buffer .document h4 {
-    font-size: 14px; }
-  .md_buffer .document p, .md_buffer .document div {
-    margin: 0;
-    padding: 3px 3px 10px 3px; }
-  .md_buffer .document ol, .md_buffer .document ul {
-    margin-left: 0;
-    padding-left: 28px; }
-    .md_buffer .document ol li, .md_buffer .document ul li {
-      margin-bottom: 10px; }
-  .md_buffer .document table thead {
-    background-color: #888;
-    color: #Fff;
-    font-size: 85%; }
-  .md_buffer .document table tr td, .md_buffer .document table tr th {
-    padding: 3px;
-    border-color: #555;
-    border-style: solid;
-    border-width: 1px 0 0 1px; }
-  .md_buffer .document table th:last-child, .md_buffer .document table td:last-child {
-    border-color: #555;
-    border-style: solid;
-    border-width: 1px 1px 0 1px; }
-  .md_buffer .document table tr:last-child td {
-    border-color: #555;
-    border-style: solid;
-    border-width: 1px 1px 1px 1px; }
-  .md_buffer .document blockquote {
-    padding: 5px;
-    font-size: 80%;
-    border: 1px solid #aaa; }
-.md_buffer .image_manager {
+      box-sizing: boder-box;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px; }
+    section.md_buffer .buffer_edit .document .editform button {
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px; }
+    section.md_buffer .buffer_edit .document h1, section.md_buffer .buffer_edit .document h2, section.md_buffer .buffer_edit .document h3, section.md_buffer .buffer_edit .document h4, section.md_buffer .buffer_edit .document h5, section.md_buffer .buffer_edit .document h6, section.md_buffer .buffer_edit .document h7 {
+      margin: 0;
+      padding: 30px 0 10px 0; }
+    section.md_buffer .buffer_edit .document h1:first-child, section.md_buffer .buffer_edit .document h2:first-child, section.md_buffer .buffer_edit .document h3:first-child {
+      padding-top: 20px; }
+    section.md_buffer .buffer_edit .document h1 {
+      padding-top: 70px;
+      font-size: 40px; }
+    section.md_buffer .buffer_edit .document h2 {
+      padding-top: 40px;
+      font-size: 28px; }
+    section.md_buffer .buffer_edit .document h3 {
+      font-size: 18px; }
+    section.md_buffer .buffer_edit .document h4 {
+      font-size: 14px; }
+    section.md_buffer .buffer_edit .document p, section.md_buffer .buffer_edit .document div {
+      margin: 0;
+      padding: 3px 3px 10px 3px; }
+    section.md_buffer .buffer_edit .document ol, section.md_buffer .buffer_edit .document ul {
+      margin-left: 0;
+      padding-left: 28px; }
+      section.md_buffer .buffer_edit .document ol li, section.md_buffer .buffer_edit .document ul li {
+        margin-bottom: 10px; }
+    section.md_buffer .buffer_edit .document table thead {
+      background-color: #888;
+      color: #Fff;
+      font-size: 85%; }
+    section.md_buffer .buffer_edit .document table tr td, section.md_buffer .buffer_edit .document table tr th {
+      padding: 3px;
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 0 0 1px; }
+    section.md_buffer .buffer_edit .document table th:last-child, section.md_buffer .buffer_edit .document table td:last-child {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 0 1px; }
+    section.md_buffer .buffer_edit .document table tr:last-child td {
+      border-color: #555;
+      border-style: solid;
+      border-width: 1px 1px 1px 1px; }
+    section.md_buffer .buffer_edit .document blockquote {
+      padding: 5px;
+      font-size: 80%;
+      border: 1px solid #aaa; }
+section.md_buffer .md_buffer_fix {
+  margin-bottom: 0; }
+section.md_buffer .image_manager {
   background-color: #fff;
   border: 2px solid #888;
   padding: 10px; }
-  .md_buffer .image_manager form.image_action {
+  section.md_buffer .image_manager form.image_action {
     margin: 30px 0; }
-    .md_buffer .image_manager form.image_action ul.thumbnail {
+    section.md_buffer .image_manager form.image_action ul.thumbnail {
       list-style: none;
       margin: 10px 0; }
-      .md_buffer .image_manager form.image_action ul.thumbnail li {
+      section.md_buffer .image_manager form.image_action ul.thumbnail li {
         float: left; }
-        .md_buffer .image_manager form.image_action ul.thumbnail li .info {
+        section.md_buffer .image_manager form.image_action ul.thumbnail li .info {
           font-size: 9pt; }
-      .md_buffer .image_manager form.image_action ul.thumbnail:after {
-        clear: both; }
-      .md_buffer .image_manager form.image_action ul.thumbnail:after, .md_buffer .image_manager form.image_action ul.thumbnail:before {
+      section.md_buffer .image_manager form.image_action ul.thumbnail:after, section.md_buffer .image_manager form.image_action ul.thumbnail:before {
         display: table;
         content: "";
         line-height: 0; }
+      section.md_buffer .image_manager form.image_action ul.thumbnail:after {
+        clear: both; }

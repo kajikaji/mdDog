@@ -5,13 +5,13 @@ $corner_b: 5px;
   -moz-border-radius: $radius;
 }
 @mixin clearfix() {
-  &:after{
-    clear: both;
-  }
   &:after,&:before{
     display: table;
     content: "";
     line-height: 0;
+  }
+  &:after{
+    clear: both;
   }
 }
 
@@ -128,6 +128,46 @@ $corner_b: 5px;
         padding: 5px;
         font-size:  80%;
         border: 1px solid #aaa;
+    }
+}
+
+@mixin bufferEditMenu {
+    ul.buffer_edit_menu{
+        position: absolute;
+	    list-style:none;
+        margin-right: 0;
+        width: 140px;
+	    >li{
+	        a{
+		        cursor:pointer;
+		        font-size: 7pt;
+                font-weight: bold;
+                color: #000;
+                padding-right: 30px;
+                padding-top: 5px;
+                margin-bottom: 3px;
+                width: 80px;
+                &:hover{
+                    color: #000;
+                    background-color: #f5deb3;
+                }
+	        }
+            &.selected{
+              padding-left: 15px;
+              a{
+                  &:hover, &:link, &:visited{
+                      cursor: default;
+                      background-color: transparent;
+                  }
+                  &:before{
+                      float: left;
+                      border : 8px solid transparent;
+                      border-left : 10px solid #000;
+                  }
+               }
+            }
+
+	    }
     }
 }
 
@@ -752,6 +792,12 @@ section.outline{
 }
 
 section.outline_editor{
+    @include bufferEditMenu();
+
+    .buffer_edit {
+      margin-left: 180px;
+    }
+
     .document{
         background-color: #fff;
         border: 2px solid #888;
@@ -874,56 +920,13 @@ table.gitlog {
   }
 }
 
-.md_buffer{
-    ul.buffer_edit_menu{
-	list-style:none;
-	>li{
-	    padding: 0;
-	    height: 32px;
-	    &:last-child{
-		border-bottom: none;
-	    }
-	    a{
-		cursor:pointer;
-		font-size: 7pt;
-font-weight: bold;
-background-color: #333;
-display: block;
-line-height: 1.0em;
-		margin-top: -10px;
-&:before, &:after{
-  content: "";
-  both: clear;
-  line-height: 0em;
-}
+section.md_buffer{
+    @include bufferEditMenu();
 
-color: #000;
-&:hover, &:link, &:visited{
-  color: #eee;
-}
+    .buffer_edit{
+        margin-left: 180px;
 
-i.glyph, i.glyph+div{
-float: left;
-}
-i.glyph{
-margin-top: 4px;
-margin-left: 10px;
-}
-i.glyph+div{
-margin-top: 8px;
-margin-left: 5px;
-}
-	    }
-@include clearfix();
-	}
-    }
-
-    form.md-buffer-fix{
-      margin-bottom: 10px;
-    }
-
-    form.md_source {
-        .canvas {
+        form .canvas {
             margin-bottom: 10px;
             textarea{
                 width: 100%;
@@ -935,17 +938,9 @@ margin-left: 5px;
                 -moz-border-radius: 0;
             }
         }
-    }
-
-    .edit_menu{
-	.md_buffer_fix{
-        margin-bottom: 0;
-	}
 
         ul.pagenav{
             list-style: none;
-
-            @include clearfix();
             li{
                 float: left;
                 margin-right: 5px;
@@ -961,110 +956,53 @@ margin-left: 5px;
                     }
                 }
             }
+            @include clearfix();
         }
 
-        ul.tabnav{
-            float: right;
-            list-style: none;
-            margin-top: 10px;
-            li{
-                float: left;
-                border: 1px solid #aaa;
-                border-bottom: none;
-                font-size: 12px;
+        .document{
+            background-color: #fff;
+            border: 2px solid #888;
+            padding: 10px;
 
-                a,
-                a:hover,
-                a:link,
-                a.visited {
-                    display: block;
-                    padding: 3px 10px;
-                    color: #333;
-                    text-decoration: none;
-                }
-                a:hover{
-                    background-color: #b0c4de;
-                }
+            >*{
+                border: 3px solid #fff;;
+            }
 
-            }
-	    @include clearfix();
-	}
-	@include clearfix();
-    }
-
-    ul.md_menu{
-        list-style: none;
-        margin-bottom: 0;
-        li {
-            float: left;
-            width: 120px;
-            text-align: center;
-            border: 1px solid #333;
-            border-bottom: none;
-            background-color: #dfdfdf;
-            font-size: 12px;
-            padding: 2px;
-
-            &:first-child {
-                border-right: none;
-            }
-            &.active {
-                background-color: #fff;
-            }
-            a,
-            a:hover,
-            a:link,
-            a.visited {
-                display: block;
-                width: 100%;
-                color: #333;
-                font-weight: bold;
-                text-decoration: none;
-            }
-            a:hover{
+            >.focus{
                 background-color: #b0c4de;
+                border: 3px solid #b0c4de-#111;;
+                cursor: pointer;
+                @include round-corner(3px);
             }
+
+            >.md{
+                display: none;
+            }
+            >.uneditable{
+                background-color: #ecc;
+                color: #888;
+            }
+
+            .editform{
+                textarea.editdata{
+                    width: 100%;
+                    box-sizing: boder-box;
+                    margin-bottom: 5px;
+                    @include round-corner(5px);
+                }
+                button{
+                    @include round-corner(3px);
+                }
+            }
+
+            @include markdown-set;
         }
-        @include clearfix();
+
+
     }
 
-    .document{
-        background-color: #fff;
-        border: 2px solid #888;
-        padding: 10px;
-
-        >*{
-            border: 3px solid #fff;;
-        }
-
-        >.focus{
-            background-color: #b0c4de;
-            border: 3px solid #b0c4de-#111;;
-            cursor: pointer;
-            @include round-corner(3px);
-        }
-
-        >.md{
-           display: none;
-        }
-        >.uneditable{
-            background-color: #ecc;
-            color: #888;
-        }
-
-	.editform{
-	    textarea.editdata{
-		width: 100%;
-		box-sizing: boder-box;
-		margin-bottom: 5px;
-		@include round-corner(5px);
-	    }
-	    button{
-		@include round-corner(3px);
-	    }
-	}
-
-        @include markdown-set;
+    .md_buffer_fix{
+        margin-bottom: 0;
     }
 
     .image_manager{

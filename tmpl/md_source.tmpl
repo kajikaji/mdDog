@@ -8,31 +8,29 @@
 </ul>
 
 <section class="docinfo">
-[%SET SUBMENU = "編集バッファ" %]
+[%SET SUBMENU = "ソース" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
-  <h3>ソースエディタ</h3>
-  <form class="md_source" action="?fid=[% fid %]" method="post">
-    <div class="edit_menu">
-      <div class="md-buffer-fix">
-	コメント：<textarea name="comment" rows="3" cols="70"></textarea>
-	<input type="submit" name="commit" value="バッファをコミット">
-	<input type="hidden" name="fid" value="[% fid %]">  
-      </div>
-      <ul class="tabnav">
-        <li><a href="md_image.cgi?fid=[% fid %]">画像ファイル</a></li>
-	<li><a href="md_edit.cgi?fid=[% fid %]">エディタに戻る</a></li>
-      </ul>
-    </div>
+  [% INCLUDE buffer_menu.tmpl %]
 
-    <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
-    <div class="ctrl">
-      <input type="submit" name="update" value="一時保存">
-      <input type="hidden" name="fid" value="[% fid %]">  
-    </div>
-  </form>
+  <div class="buffer_edit">
+    <form action="?fid=[% fid %]" method="post">
+      <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></di>
+      <div class="ctrl">
+        <input type="submit" name="update" value="一時保存">
+        <input type="hidden" name="fid" value="[% fid %]">  
+      </div>
+
+      <div class="md_buffer_fix">
+        コメント：<textarea name="comment" rows="3" cols="70"></textarea>
+        <input type="submit" name="commit" value="バッファをコミット">
+        <input type="hidden" name="fid" value="[% fid %]">  
+      </div>
+
+    </form>
+  </div> <!-- commitForm -->
 </section>
 
 </body>

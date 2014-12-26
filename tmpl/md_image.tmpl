@@ -8,39 +8,38 @@
 </ul>
 
 <section class="docinfo">
-[%SET SUBMENU = "編集バッファ" %]
+[%SET SUBMENU = "画像" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
-  <div class="edit_menu">
-    <h3>画像ファイル</h3>
-    <ul class="tabnav">
-      <li><a href="md_edit.cgi?fid=[% fid %]">エディタ</a></li>
-      <li><a href="md_source.cgi?fid=[% fid %]">ソースの編集</a></li>
-    </ul>
-  </div>
+  [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="image_manager">
-    <form class="image_uploader" method="post" action="?fid=[% fid %]" enctype="multipart/form-data">
-      <input type="file" name="imagefile" />
-      <input type="submit" name="upload" value="アップロード">
-      <input type="hidden" name="fid" value="[% fid %]">
-    </form>
+  <div class="buffer_edit">
+    <div class="image_manager">
+      <form class="image_uploader" method="post" action="?fid=[% fid %]" enctype="multipart/form-data">
+        <input type="file" name="imagefile" />
+        <input type="submit" name="upload" value="アップロード">
+        <input type="hidden" name="fid" value="[% fid %]">
+      </form>
 
-    <form class="image_action" method="post" action="?fid=[% fid %]">
-      <input type="submit" name="delete" value="削除">
-      <input type="hidden" name="fid" value="[% fid %]">
-      <ul class="thumbnail">
-	[% FOREACH image IN images %]
-	<li>
-	  <div class="info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
-	  <img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1&thumbnail=1">
-	</li>
-	[% END %]
-      </ul>
-    </form>
+      [% IF images %]
+      <form class="image_action" method="post" action="?fid=[% fid %]">
+        <input type="submit" name="delete" value="削除">
+        <input type="hidden" name="fid" value="[% fid %]">
+        <ul class="thumbnail">
+	      [% FOREACH image IN images %]
+	      <li>
+	        <div class="info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
+	        <img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1&thumbnail=1">
+	      </li>
+	      [% END %]
+        </ul>
+      </form>
+      [% END %]
+    </div>
   </div>
+  </div> <!-- commitForm -->
 
 </section>
 
