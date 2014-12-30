@@ -8,22 +8,21 @@
 </ul>
 
 <section class="docinfo">
-[%SET SUBMENU = "ソース" %]
+[%SET SUBMENU = "アップロード" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 <section class="md_buffer">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="buffer_edit source">
-    <div class="ctrl">
-      <input type="submit" name="update" value="一時保存">
-      <input type="hidden" name="fid" value="[% fid %]">  
-    </div>
-    <form action="?fid=[% fid %]" method="post">
-      <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
+  <div class="upload_form">
+    <form action="" method="post" id="docx-upload" enctype="multipart/form-data">
+      <h3>ファイルの追加フォーム</h3>
+      <div>ファイル：<input type="file" name="docxfile"></div>
+      <div><input type="submit" name="upload" value="アップロード"></div>
     </form>
-  </div> <!-- buffer_edit.source -->
+  </div>
+
 </section>
 
 </body>

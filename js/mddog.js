@@ -39,14 +39,21 @@ function getParam(key) {
 
 function commitBuffer() {
     var $document = "";
-    $('form.md_buffer_fix .rowdata').find('.elm').each(function(){
+    $('form .md_buffer_fix .rowdata').find('.elm').each(function(){
         $document += $(this).text();
         $document += "\n";
     });
-    $('form.md_buffer_fix').find('textarea.document').text($document);
+    if($('.buffer_edit.source .canvas').find('textarea').length){
+	$document = $('.buffer_edit.source .canvas textarea').val();
+    }
+
+    $('form .md_buffer_fix').find('textarea.document').text($document);
     document.forms['commitForm'].submit();   
 }
 
+/*
+ * マークダウンエディタの制御クラス
+ */
 var mdEditForm = function(obj){
     this.src = obj;
     this.id;
@@ -173,6 +180,9 @@ mdEditForm.prototype = {
     }
 };
 
+/*
+ * バッファ編集エディタのアウトライン分割制御クラス
+ */
 var outlineDivide = function() {};
 outlineDivide.prototype = {
     init: function () {
@@ -229,7 +239,9 @@ outlineDivide.prototype = {
     }
 };
 
-// アウトラインエディター
+/*
+ * アウトラインエディターの制御クラス
+ */
 var mdOutlineEditor = function(){};
 mdOutlineEditor.prototype = {
     init: function(){
@@ -283,7 +295,9 @@ mdOutlineEditor.prototype = {
     }
 };
 
-// アウトライン
+/*
+ * アウトライン出力制御クラス
+ */
 var mdOutline = function(){
     this.page = undefined;
 };
@@ -403,7 +417,7 @@ mdOutline.prototype = {
  * 初回実行
  ***********************************************/
 $(function(){
-    /** バッファ編集ページ **/
+    // バッファ編集ページ
     $('.md_buffer div.document').children().each(function(){
         if($(this).hasClass("md")){
             $(this).hover(
@@ -434,6 +448,13 @@ $(function(){
         });
     });
 
+    $('#bufferCommitBtn').on('click', function(){
+	$('#bufferCommitForm').fadeToggle();
+    });
+    $('#cancel_button').click(function(){
+	$('#bufferCommitForm').fadeToggle();
+    });
+
     $(window).keydown(function(ev){
         if($outline){
             $outline = false;
@@ -447,4 +468,18 @@ $(function(){
             });
         }
     });
+
+    if($('.md_buffer').find('.buffer_edit.source').length){
+	var changeFlg = false;
+	$(window).on('beforeunload', function(){
+	    if(changeFlg){
+                 //変更があったときはAJAXで一時保存します
+//		return '!!!';
+		return;
+	    }
+	});
+	$('.canvas').find('textarea').change(function(){
+	    changeFlg = true;
+	});
+    }
 });

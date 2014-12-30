@@ -27,16 +27,6 @@
       [% markdown %]
     </div>
 
-    <form name="commitForm" action="?fid=[% fid %]" method="post">
-      <div class="md_buffer_fix">
-        コメント：<textarea name="comment" rows="3" cols="70"></textarea>
-        <input type="submit" name="commit" value="バッファをコミット" onClick="commitBuffer();">
-        <input type="hidden" name="fid" value="[% fid %]">
-        <textarea name="document" class="document" style="display: none;"></textarea>
-        <div class="rowdata" style="display: none;">[% rowdata %]</div>
-      </div>
-    </form>
-
     <div id="editform" class="editform" style="display: none;">
       <textarea id="editdata" class="editdata" name="editdata"></textarea>
       <button class="update">更新</button>

@@ -134,13 +134,13 @@ $corner_b: 5px;
 @mixin bufferEditMenu {
     ul.buffer_edit_menu{
         position: absolute;
-	    list-style:none;
+        list-style:none;
         margin-right: 0;
         width: 140px;
-	    >li{
-	        a{
-		        cursor:pointer;
-		        font-size: 7pt;
+        >li{
+            a{
+                cursor:pointer;
+                font-size: 7pt;
                 font-weight: bold;
                 color: #000;
                 padding-right: 30px;
@@ -151,23 +151,23 @@ $corner_b: 5px;
                     color: #000;
                     background-color: #f5deb3;
                 }
-	        }
+            }
             &.selected{
-              padding-left: 15px;
-              a{
-                  &:hover, &:link, &:visited{
-                      cursor: default;
-                      background-color: transparent;
-                  }
-                  &:before{
-                      float: left;
-                      border : 8px solid transparent;
-                      border-left : 10px solid #000;
-                  }
-               }
+                padding-left: 15px;
+                a{
+                    &:hover, &:link, &:visited{
+                        cursor: default;
+                        background-color: transparent;
+                    }
+                    &:before{
+                        float: left;
+                        border : 8px solid transparent;
+                        border-left : 10px solid #000;
+                    }
+                }
             }
 
-	    }
+        }
     }
 }
 
@@ -217,6 +217,9 @@ i.glyph{
 }
 .glyph.outline{
     background-image: url("../img/156_show_lines.png");
+}
+.glyph.upload{
+    background-image: url("../img/201_upload.png");
 }
 a.glyph {
   display: inline-block;
@@ -452,6 +455,7 @@ section.gitlog{
   margin-bottom: 30px;
 
   h3{
+      margin-top: 0;
       margin-bottom: 10px;
   }
 
@@ -696,6 +700,25 @@ section.docinfo{
         }
         @include clearfix();
     }
+  }
+  .output_menu{
+     margin-bottom: 20px;
+      button{
+          padding: 4px 6px;
+          text-align: center;
+          line-height: 1.0em;
+          font-size: 85%;
+          font-weight: bold;
+          background-color: #fff;
+          border: 1px solid #aaa;
+          color: #555;
+
+          @include round-corner(5px);
+      }
+      button:hover{
+          background-color: #f5deb3;
+          color: #222;
+      }  
   }
 }
 
@@ -994,11 +1017,26 @@ section.md_buffer{
                     @include round-corner(3px);
                 }
             }
-
             @include markdown-set;
         }
+    }
 
+    .buffer_edit.source{
+        .ctrl{
+            margin-bottom: 10px;
+            input[type=submit]{
+                @include round-corner(5px);
+                background-color: #fff;
+            }
+        }
+    }
 
+    .upload_form {
+        margin-left: 180px;
+        h3{
+          margin-top: 0;
+          margin-left: 0;
+        }
     }
 
     .md_buffer_fix{
@@ -1027,4 +1065,47 @@ section.md_buffer{
             }
 	}
     }
+}
+
+.bufferCommitForm{
+  position: absolute;
+  padding: 30px 40px;
+  margin: 0;
+  background-color: rgba(0,0,0,0.8);
+  width: 100%;
+  height: 100%;
+
+  .md_buffer_fix{
+    color: #fff;
+    h3{
+        margin-top: 0;
+    }
+    textarea.history{
+        width: 100%;
+        height: 100px;
+        margin-bottom: 5px;
+    }
+    .ctrl{
+        input[type=submit], a.btn, a.btn:link{
+            float: left;
+            margin-right: 5px;
+            cursor: pointer;
+            padding: 4px 6px;
+            text-align: center;
+            line-height: 1.0em;
+            font-size: 85%;
+            font-weight: bold;
+            background-color: #fff;
+            border: 1px solid #aaa;
+            color: #555;
+
+            @include round-corner(3px);
+        }
+        input[type=submit]:hover, a.btn:hover{
+            background-color: #f5deb3;
+            color: #222;
+        }
+        @include clearfix();
+    }
+  }
 }
