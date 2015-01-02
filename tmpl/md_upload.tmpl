@@ -17,9 +17,13 @@
 
   <div class="upload_form">
     <form action="" method="post" id="docx-upload" enctype="multipart/form-data">
-      <h3>ファイルの追加フォーム</h3>
-      <div>ファイル：<input type="file" name="docxfile"></div>
-      <div><input type="submit" name="upload" value="アップロード"></div>
+      <h3>MDファイルのアップロード</h3>
+      <div>ローカルで編集したMDファイルをアップロードして上書きできます。ただし同名のファイル名である必要があります。</div>
+      <div>ファイル：<input type="file" name="uploadfile"></div>
+      <div>
+        <input type="submit" name="upload" value="アップロード">
+        <input type="hidden" name="fid" value="[% fid %]">
+      </div>
     </form>
   </div>
 

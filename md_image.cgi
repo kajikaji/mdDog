@@ -12,11 +12,28 @@ if(!$dog->qParam('fid')) {
     $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_edit.cgi:err01<br>";
 } else {
     if($dog->qParam('upload')){
-        $dog->upload_image();
+        if($dog->upload_image()){
+            $dog->{t}->{message} = { "info" => "画像をアップロードしました"};
+        }else{
+            $dog->{t}->{message} = { "error" => "画像のアップロードに失敗しました"};
+        }
     }
  
     if($dog->qParam('delete')){
-        $dog->delete_image();
+        if($dog->delete_image()){
+            $dog->{t}->{message} = { "info" => "画像を削除しました"};
+        }else{
+            $dog->{t}->{message} = { "error" => "画像の削除に失敗しました"};
+        }
+    }
+
+    if($dog->qParam('commit')){
+        #変更を反映 変更履歴は必須
+        if($dog->fixMD_buffer()){
+            $dog->{t}->{message} = { "info" => "コミットしました" };
+        }else{
+            $dog->{t}->{message} = { "error" => "編集バッファのコミットに失敗しました" };
+        }
     }
 
     $dog->setMD_image();

@@ -301,12 +301,12 @@ sub docApprove {
 # 新規でdocxファイルを登録する
 # その際にアップロードしたユーザーブランチを作成
 # 同名のファイルを許容する
-sub uploadFile {
+sub uploadDOCX {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
   return unless($uid);
-  my $hF = $self->{q}->upload('docxfile');
+  my $hF = $self->{q}->upload('uploadfile');
   my $filename = basename($hF);
   my $fid = $self->setupNewFile($filename);
 
@@ -371,10 +371,11 @@ sub commitFile {
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
+  return 0 unless($fid && $uid);
 
   my $author = $self->getAuthor($uid);
   my $message = $self->qParam('detail');
-  my $hF = $self->{q}->upload('docxfile');
+  my $hF = $self->{q}->upload('uploadfile');
   my $filename = basename($hF);
 
   my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
@@ -382,7 +383,7 @@ sub commitFile {
   if(!@ary_check || $ary_check[0] != $fid){
     $self->{t}->{error} = "違うファイルがアップロードされました";
     close($hF);
-    return;
+    return 0;
   }
 
   $self->{git}->attachLocal($uid, 1);
@@ -396,6 +397,43 @@ sub commitFile {
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
   $self->{git}->detachLocal();
+  return 1;
+}
+
+###################################################
+# ユーザーのブランチにアップロードしたファイルをコミットする
+#
+sub uploadFile {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $uid = $self->{s}->param("login");
+  return 0 unless($fid && $uid);
+  my $author = $self->getAuthor($uid);
+  my $hF = $self->{q}->upload('uploadfile');
+  return 0 unless($hF);
+  my $filename = basename($hF);
+
+  my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
+  my @ary_check = $self->{dbh}->selectrow_array($sql_check);
+  if(!@ary_check || $ary_check[0] != $fid){
+    $self->{t}->{error} = "違うファイルがアップロードされました";
+    close($hF);
+    return 0;
+  }
+
+  $self->{git}->attachLocal_tmp($uid, 1);
+
+  my $tmppath = $self->{q}->tmpFileName($hF);
+  my $filepath = $self->{repodir}. "/$fid/$filename";
+  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
+  close($hF);
+
+  if(!$self->{git}->commit($filename, $author, "rewrite by an uploaded file")){
+    $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
+  }
+  $self->{git}->detachLocal();
+  return 1;
 }
 
 ###################################################
@@ -625,11 +663,11 @@ sub updateMD_buffer {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
-  return unless($uid);
   my $fid = $self->qParam('fid');
+  return 0 unless($uid && $fid);
   my $sql = "select file_name from docx_infos where id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
+  return 0 unless(@ary);
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document = $self->qParam('document');
@@ -647,6 +685,7 @@ sub updateMD_buffer {
   my $author = $self->getAuthor($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detachLocal();
+  return 1;
 }
 
 ############################################################
@@ -659,7 +698,9 @@ sub fixMD_buffer {
   my $comment = $self->qParam('comment');
   return 0 unless($uid && $fid && $comment);
 
-  $self->updateMD_buffer();
+  if($self->qParam('document')){
+    return 0 unless($self->updateMD_buffer());
+  }
   $self->{git}->fixTmp($uid, $self->getAuthor($uid), $comment);
   return 1;
 }
@@ -703,7 +744,7 @@ sub upload_image {
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
-  return unless($uid);
+  return 0 unless($fid && $uid);
 
   my $imgdir = "$self->{repodir}/${fid}/image";
   unless(-d $imgdir){
@@ -725,6 +766,7 @@ sub upload_image {
   $self->{git}->addImage($filepath, $author);
 
   $self->{git}->detachLocal();
+  return 1;
 }
 
 ############################################################
@@ -734,7 +776,7 @@ sub delete_image {
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
-  return unless($uid);
+  return 0 unless($uid && $fid);
 
   my @selected = ($self->qParam('select_image'));
 
@@ -742,6 +784,7 @@ sub delete_image {
   my $author = $self->getAuthor($self->{s}->param('login'));
   $self->{git}->deleteImage([@selected], $author);
   $self->{git}->detachLocal();
+  return 1;
 }
 
 ############################################################

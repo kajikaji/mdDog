@@ -12,7 +12,7 @@ $dog->login();
 if(!$dog->qParam('fid')) {
   $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>docinfo.cgi<br>Err001";
 } else {
-  if($dog->qParam('docxfile')){
+  if($dog->qParam('uploadfile')){
     $dog->commitFile();
   }
 

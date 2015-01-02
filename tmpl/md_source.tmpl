@@ -12,15 +12,17 @@
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
+[% INCLUDE info.tmpl %]
+
 <section class="md_buffer">
   [% INCLUDE buffer_menu.tmpl %]
 
   <div class="buffer_edit source">
-    <div class="ctrl">
-      <input type="submit" name="update" value="一時保存">
-      <input type="hidden" name="fid" value="[% fid %]">  
-    </div>
     <form action="?fid=[% fid %]" method="post">
+      <div class="ctrl">
+        <input type="submit" name="update" value="保存">
+        <input type="hidden" name="fid" value="[% fid %]">  
+      </div>
       <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
     </form>
   </div> <!-- buffer_edit.source -->
