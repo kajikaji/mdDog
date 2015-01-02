@@ -13,10 +13,8 @@ if(!$dog->qParam('fid')) {
 } else {
     $dog->setOutline();
 
-#MDファイルの目次作成
-
-#MDファイルの出力
-
+    #MDファイルの目次作成
+    #MDファイルの出力
     $dog->setDocumentInfo();
 }
 

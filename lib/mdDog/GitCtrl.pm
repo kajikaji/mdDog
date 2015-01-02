@@ -45,12 +45,18 @@ sub init{
 #
 sub getSharedLogs {
   my $self = shift;
+  my $desc = shift;
   my @logs;
 
   foreach ($self->{git}->log("master")){
     my $obj = eval {$_};
     push @logs, $self->adjustLog($obj);
   }
+
+  if($desc){
+    @logs = sort{$a->{attr}->{date} cmp $b->{attr}->{date}} @logs;
+  }
+
   return \@logs;
 }
 
@@ -436,12 +442,14 @@ sub adjustLog {
   $obj->{message} =~ s/\n/<br>/g;
   $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
 
-  $obj->{attr}->{author} =~ s/</&lt;/g;
-  $obj->{attr}->{author} =~ s/>/&gt;/g;
+$obj->{attr}->{author} =~ s/(.*) <.*>/\1/;
+#  $obj->{attr}->{author} =~ s/</&lt;/g;
+#  $obj->{attr}->{author} =~ s/>/&gt;/g;
 
   $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
 #  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
   my $date = $obj->{attr}->{date};
+
   $obj->{attr}->{date} = MYUTIL::formatDate2(ParseDate($date));
   $obj->{cdate} = MYUTIL::formatDate3(ParseDate($date));
 

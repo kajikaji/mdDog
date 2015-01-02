@@ -543,7 +543,7 @@ sub setOutline{
   my $gitctrl = $self->{git};
 
   #MDファイルの更新履歴の整形
-  $self->{t}->{loglist} = $gitctrl->getSharedLogs();
+  $self->{t}->{loglist} = $gitctrl->getSharedLogs("DESC");
 
   $gitctrl->attachLocal($user);
   $gitctrl->checkoutVersion($revision);
