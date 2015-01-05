@@ -5,6 +5,7 @@ use Git::Wrapper;
 use Date::Manip;
 use Data::Dumper;
 use MYUTIL;
+use Fcntl ':flock';
 
 sub new {
   my $pkg = shift;
@@ -14,6 +15,7 @@ sub new {
     git         => undef,
     workdir     => ${workdir},
     branch_prefix => "user_",
+    lock_handle => undef,
   };
 
   $hash->{git} = Git::Wrapper->new($hash->{workdir}) if($workdir);
@@ -259,7 +261,7 @@ sub addImage {
 
   my $gitctrl = $self->{git};
   if ( -f $imagepath ){
-  $imagepath =~ s#$self->{workdir}/(.*)$#\1#;
+    $imagepath =~ s#$self->{workdir}/(.*)$#\1#;
     $gitctrl->add($imagepath);
     $gitctrl->commit({message => "image upload",author => $author});
     return 1;
@@ -278,10 +280,36 @@ sub deleteImage {
   my $gitctrl = $self->{git};
 
   foreach (@$images) {
-    $gitctrl->rm('image/' . $_);
+    if( -f "$self->{workdir}/image/$_" ){
+      $gitctrl->rm("image/$_");
+    }
+    if( -f "$self->{workdir}/thumb/$_" ) {
+      $gitctrl->rm("thumb/$_");
+    }
   }
-
   $gitctrl->commit({message => "delete images", author => $author});
+}
+
+##########
+#
+sub lockDir {
+  my $self = shift;
+
+  my $lockfile = "$self->{workdir}/\.lock";
+
+  open my $hF, ">", $lockfile || die "Can't create lockfile";
+  flock($hF, LOCK_EX);
+  $self->{lock_handle} = $hF;
+}
+
+##########
+#
+sub unlockDir {
+  my $self = shift;
+
+  flock($self->{lock_handle}, LOCK_UN);
+  close $self->{lock_handle};
+  $self->{lock_handle} = undef;
 }
 
 ############################################################
@@ -293,6 +321,8 @@ sub attachLocal {
   my $self = shift;
   my $uid = shift;
   my $isCreate = shift;
+
+  $self->lockDir();
 
   my $gitctrl = $self->{git};
   my @branches = $gitctrl->branch;
@@ -323,6 +353,8 @@ sub attachLocal_tmp {
   my $self = shift;
   my $uid = shift;
   my $isCreate = shift;
+
+  $self->lockDir();
 
   my $gitctrl = $self->{git};
   my @branches = $gitctrl->branch;
@@ -363,6 +395,9 @@ sub detachLocal {
 
   $self->{git}->reset({hard => 1}, "HEAD");
   $self->{git}->checkout("master");
+
+  $self->unlockDir();
+
 }
 
 

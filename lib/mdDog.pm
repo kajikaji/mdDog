@@ -754,7 +754,6 @@ sub upload_image {
   my $hF = $self->{q}->upload('imagefile');
   my $filename = basename($hF);
 
-
   $self->{git}->attachLocal_tmp($uid, 1);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
@@ -762,11 +761,44 @@ sub upload_image {
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
+  my $thumbnail = $self->add_thumbnail($fid, $filename);
+
   my $author = $self->getAuthor($self->{s}->param('login'));
   $self->{git}->addImage($filepath, $author);
+  $self->{git}->addImage($thumbnail, $author);
 
   $self->{git}->detachLocal();
   return 1;
+}
+
+############################################################
+# 画像のサムネイルを作成
+#
+sub add_thumbnail {
+  my $self = shift;
+  my $fid = shift;
+  my $filename = shift;
+
+  my $imgpath = "$self->{repodir}/${fid}/image/${filename}";
+  my $thumbdir = "$self->{repodir}/${fid}/thumb";
+  unless(-d $thumbdir){
+    mkdir $thumbdir, 0774 || die "can't make thumbnail directory.";
+  }
+
+  my $mImg = Image::Magick->new();
+  $mImg->Read($imgpath);
+  my ($w, $h) = $mImg->get('width', 'height');
+  my ($rw, $rh);
+  if ($w >= $h) {
+    $rw = THUMBNAIL_SIZE;
+    $rh = THUMBNAIL_SIZE / $w * $h;
+  } else {
+    $rh = THUMBNAIL_SIZE;
+    $rw = THUMBNAIL_SIZE / $h * $w;
+  }
+  $mImg->Resize(width=>$rw, height=> $rh);
+  $mImg->Write("${thumbdir}/${filename}");
+  return "${thumbdir}/${filename}";
 }
 
 ############################################################
@@ -798,9 +830,14 @@ sub printImage {
   my $image = $self->qParam('image');
   my $thumbnail = $self->qParam('thumbnail');
 
-  return unless($image);
+  return unless($image && $fid);
 
-  my $imgpath = "$self->{repodir}/${fid}/image/${image}";
+  my $imgpath;
+  unless($thumbnail){
+    $imgpath = "$self->{repodir}/${fid}/image/${image}";
+  } else {
+    $imgpath = "$self->{repodir}/${fid}/thumb/${image}";
+  }
 
   if($tmp){
     $self->{git}->attachLocal_tmp($uid);
@@ -817,6 +854,7 @@ sub printImage {
 
     my $mImg = Image::Magick->new();
     $mImg->Read($imgpath);
+=pod
     if ($thumbnail) {
       my ($w, $h) = $mImg->Get('width','height');
       my ($rw, $rh);
@@ -829,15 +867,9 @@ sub printImage {
       }
       $mImg->Resize(width=>$rw, height=> $rh);
     }
+=cut
     binmode STDOUT;
     $mImg->Write($type . ":-");
-
-=pod
-    open(IMG, $imgpath) || die "can't open image file(${imgpath})";
-    binmode(IMG);
-    print <IMG>;
-    close(IMG);
-=cut
   }
   $self->{git}->detachLocal();
 }
