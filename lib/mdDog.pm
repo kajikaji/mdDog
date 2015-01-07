@@ -530,6 +530,7 @@ sub setOutline{
   my $self = shift;
 
   my $fid = $self->qParam('fid');
+  return unless($fid);
   my $sql = "select file_name from docx_infos where id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
   return unless(@ary);
@@ -545,6 +546,7 @@ sub setOutline{
   #MDファイルの更新履歴の整形
   $self->{t}->{loglist} = $gitctrl->getSharedLogs("DESC");
 
+  #ドキュメントの読み込み
   $gitctrl->attachLocal($user);
   $gitctrl->checkoutVersion($revision);
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
@@ -555,11 +557,23 @@ sub setOutline{
   close $hF;
   $gitctrl->detachLocal();
 
-  my $document = markdown($md);
   my @contents;
-  my $line;
-  foreach(split(/\n/, $document)) {
-    $line = $_;
+
+  $self->{outline}->init();
+  my $divides = $self->{outline}->getDivides();
+  my ($rowdata, @partsAry) = $self->split4MD($md);
+  my ($i, $j) = 0;
+  my ($docs, $dat);
+  foreach (@partsAry) {
+    if(@$divides[$i] == $j){
+      push @$docs, $dat;
+      $dat = undef;
+      $i++;
+    }
+
+    my $line = markdown($_);
+    $dat .= $line;
+
     if( $line =~ m/<h1.*>/){
       $line =~ s#<h1.*>(.*)</h1>#\1#;
       push @contents, {level => 1, line => $line};
@@ -573,11 +587,16 @@ sub setOutline{
       $line =~ s#<h4.*>(.*)</h4>#\1#;
       push @contents, {level => 4, line => $line};
     }
+
+    $j++;
+  }
+  if($dat ne ""){
+    push @$docs, $dat;
   }
 
   $self->{t}->{revision} = $revision;
   $self->{t}->{contents} = \@contents;
-  $self->{t}->{document} = $document;
+  $self->{t}->{docs} = $docs;
 }
 
 ############################################################

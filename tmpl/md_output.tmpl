@@ -55,7 +55,9 @@
     </ul>
   </div>
 
-  <div class="document page">[% document %]</div>
+  [% FOR doc IN docs %]
+    <div class="document page">[% doc %]</div>
+  [% END %]
 
 </section>
 

@@ -303,20 +303,26 @@ var mdOutline = function(){
 };
 mdOutline.prototype = {
     init: function () {
-        $('.outline').find('.page').each($.proxy(function(i, elm){
-            var className = elm.className.split(" ")[0];
-            this.page = 0;
-            if(className === 'document'){
-                this.adjustDocumentPage(className, elm);
-                $(elm).remove();
-            }else{
-                this.adjustPage(className, elm);
-            }
+        this.page = 0;
+        $('.outline').find('.history.page').each($.proxy(function(i, elm){
+            this.adjustPage("history", elm);
         }, this));
+
+        this.page = 0;
+        $('.outline').find('.contents.page').each($.proxy(function(i, elm){
+            this.adjustPage("contents", elm);
+        }, this));
+
+        this.page = 0;
+        $('.outline').find('.document.page').each($.proxy(function(i, elm){
+            this.adjustDocumentPage(elm);
+            $(elm).remove();
+        }, this));
+
     },
 
     addPage : function (className, cPage, depth, obj){
-        var newPage = $('<div>').addClass(className).addClass('page');
+        var newPage = $('<div>').addClass(className + ' page  p' + (cPage + 1));
         var blk = obj;
         var ch = undefined;
         for(var i=0; i < depth; i++){
@@ -329,7 +335,7 @@ mdOutline.prototype = {
             blk = pObj;
         }
         newPage.prepend(ch);
-        $('.' + className + '.page.p' + cPage).after(newPage.addClass('p' + (cPage + 1)));
+        $('.' + className + '.page.p' + cPage).after(newPage);
         $(obj).prev().addClass("adjust-block");
     },
 
@@ -374,8 +380,8 @@ mdOutline.prototype = {
         var pageHeight = $(obj).outerHeight();  //297mm
         var cHeight = 0.0;
 
-        var newPage = $('<div>').addClass(className).addClass('page');
-        $('.' + className + '.page').after(newPage.addClass('p' + this.page));
+        var newPage = $('<div>').addClass(className + ' page p' + this.page);
+        $('.' + className + '.page').after(newPage);
 
         $(obj).children().each($.proxy(function(i, elm){
             cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, 0);
@@ -384,23 +390,23 @@ mdOutline.prototype = {
     },
 
     // 本文のページ分割
-    adjustDocumentPage : function(className, obj) {
+    adjustDocumentPage : function(obj) {
         var innerHeight = $(obj).height();
         var cHeight = 0.0;
         var newpage = 0;
 
-        $(obj).after($('<div>').addClass(className).addClass("page").addClass("p" + this.page));
+        $(obj).after($('<div>').addClass("document page p" + this.page));
 
         $(obj).children().each($.proxy(function(i, elm){
             if(newpage === 1){
-                $("." + className + ".page.p" + this.page).after(
-                     $('<div>').addClass(className).addClass("page").addClass("p" + (this.page + 1))
+                $(".document.page.p" + this.page).after(
+                     $('<div>').addClass("document page p" + (this.page + 1))
                 );
                 this.page++;
                 newpage = 0;
             }
 
-            $("." + className + ".page.p" + this.page).append($(elm).clone());
+            $(".document.page.p" + this.page).append($(elm).clone());
 
             var objHeight = $(elm).outerHeight(true);
             if( cHeight + objHeight >= innerHeight ) {
@@ -410,6 +416,7 @@ mdOutline.prototype = {
                 cHeight += objHeight;
             }
         }, this));
+	this.page++;
     }
 };
 
