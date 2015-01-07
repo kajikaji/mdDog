@@ -783,18 +783,17 @@ sub upload_image {
   my $uid = $self->{s}->param("login");
   return 0 unless($fid && $uid);
 
-  my $imgdir = "$self->{repodir}/${fid}/image";
-  unless(-d $imgdir){
-    mkdir $imgdir, 0774 || die "can't make image directory.";
-  }
-
   my $hF = $self->{q}->upload('imagefile');
   my $filename = basename($hF);
 
   $self->{git}->attachLocal_tmp($uid, 1);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
+  my $imgdir = "$self->{repodir}/${fid}/image";
   my $filepath = "${imgdir}/${filename}";
+  unless(-d $imgdir){
+    mkdir $imgdir, 0774 || die "can't make image directory.";
+  }
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
