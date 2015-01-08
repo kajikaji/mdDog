@@ -32,12 +32,14 @@ sub new {
 sub init{
   my $self = shift;
   my $fid = shift;
-  my $filename = shift;
+  my $files = shift;
   my $author = shift;
 
   $self->{git}->init();
-  $self->setDocx2Txt($fid) if($filename =~ m/.*\.docx$/);
-  $self->{git}->add($filename);
+  foreach (@$files){
+    $self->setDocx2Txt($fid) if($_ =~ m/.*\.docx$/);
+    $self->{git}->add($_);
+  }
   $self->{git}->commit({message => "新規追加", author => $author});
 }
 
@@ -66,14 +68,28 @@ sub getSharedLogs {
 ############################################################
 #ユーザーがリポジトリを所有するか確認
 # @param1 uid
+# @param2 tmp 編集バッファフラグ
 #
 sub isExistUserBranch {
   my $self = shift;
   my $uid = shift;
+  my $tmp = shift;
 
   my @branches = $self->{git}->branch;
   my $branch = "$self->{branch_prefix}${uid}";
+  $branch .= "_tmp" if($tmp);
   return MYUTIL::isInclude(\@branches, $branch);
+}
+
+############################################################
+# 編集バッファが存在するか判定する
+# Todo: 実装中 2015/1/7
+#
+sub isUpdatedBuffer {
+    my $self = shift;
+    my $uid = shift;
+
+    return 0;
 }
 
 ############################################################

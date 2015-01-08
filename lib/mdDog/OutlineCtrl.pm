@@ -20,6 +20,12 @@ sub new {
     workdir  => $workdir,
   };
 
+  my $filepath = "$hash->{workdir}/$hash->{filename}";
+  unless( -f $filepath ){
+    open my $hF, ">", $filepath || die "Create Error!. $filepath";
+    close($hF);
+  }
+
   return bless $hash, $pkg;
 }
 

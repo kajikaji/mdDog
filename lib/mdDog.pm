@@ -204,6 +204,20 @@ where di.id = $fid;";
 
 ############################################################
 #
+sub isExistBuffer {
+    my $self = shift;
+    my $fid = $self->qParam('fid');
+    my $uid = $self->{s}->param("login");
+
+    if($self->{git}->isExistUserBranch($uid, {tmp=>1})){
+        return $self->{git}->isUpdatedBuffer($uid);
+    }
+    return 0;
+}
+
+
+############################################################
+#
 sub gitLog {
   my $self = shift;
 
@@ -335,12 +349,14 @@ sub createFile {
 
   my $filename = $docname . "\.md";
   my $fid = $self->setupNewFile($filename, $uid);
-  my $filepath = $self->{repodir}. "/$fid/$filename";
+  my $workdir = "$self->{repodir}/${fid}";
+  my $filepath = "${workdir}/${filename}";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
   close($hF);
 
-  $self->{git} = GitCtrl->new("$self->{repodir}/${fid}");
-  $self->{git}->init($fid, $filename, $self->getAuthor($uid));
+  $self->{git} = GitCtrl->new($workdir);
+  $self->{outline} = OutlineCtrl->new($workdir);
+  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->getAuthor($uid));
 
   $self->dbCommit();
 }
@@ -572,6 +588,7 @@ sub setOutline{
     }
 
     my $line = markdown($_);
+    $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
     $dat .= $line;
 
     if( $line =~ m/<h1.*>/){
