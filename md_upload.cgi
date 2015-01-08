@@ -10,7 +10,7 @@ $dog->login();
 
 
 if(!$dog->qParam('fid')) {
-    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_upload.cgi:err01<br>";
+  $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_upload.cgi:err01<br>";
 } else {
     if($dog->qParam('uploadfile')){
         if($dog->uploadFile()){
@@ -27,6 +27,10 @@ if(!$dog->qParam('fid')) {
         }else{
             $dog->{t}->{message} = { "error" => "編集バッファのコミットに失敗しました" };
         }
+    }
+
+    if($dog->isExistBuffer()){
+	$dog->{t}->{message} = { "info" => "コミットされていないバッファがあります" };
     }
 
     $dog->setDocumentInfo();

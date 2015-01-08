@@ -27,6 +27,10 @@ if(!$dog->qParam('fid')) {
       }
   }
 
+  if($dog->isExistBuffer()){
+      $dog->{t}->{message} = { "info" => "コミットされていないバッファがあります" };
+  }
+
   $dog->setMD_buffer();
   $dog->setDocumentInfo();
 }

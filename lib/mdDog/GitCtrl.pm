@@ -86,10 +86,22 @@ sub isExistUserBranch {
 # Todo: 実装中 2015/1/7
 #
 sub isUpdatedBuffer {
-    my $self = shift;
-    my $uid = shift;
+  my $self = shift;
+  my $uid = shift;
 
-    return 0;
+  my @branches = $self->{git}->branch;
+  my $branch = "$self->{branch_prefix}${uid}";
+  my $tmp  = "${branch}_tmp";
+  if(MYUTIL::isInclude(\@branches, $tmp)){
+    if(MYUTIL::isInclude(\@branches, $branch)){
+      my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..${branch}");
+      return @diff;
+    }else{
+      my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..master");
+      return @diff;
+    }
+  }
+  return 0;
 }
 
 ############################################################
