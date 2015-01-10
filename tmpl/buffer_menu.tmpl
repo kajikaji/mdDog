@@ -1,25 +1,25 @@
-<ul class="buffer_edit_menu">
-  <li [% IF SUBMENU=="編集バッファ" %]class="selected"[% END %]><a class="glyph edit" href="md_edit.cgi?fid=[% fid %]">EDIT</a></li>
-  <li [% IF SUBMENU=="画像" %]class="selected"[% END %]><a class="glyph image" href="md_image.cgi?fid=[% fid %]">IMAGE</a></li>
-  <li [% IF SUBMENU=="アウトライン" %]class="selected"[% END %]><a class="glyph outline" href="md_outline.cgi?fid=[% fid %]">OUTLINE</a></li>
-  <li [% IF SUBMENU=="ソース" %]class="selected"[% END %]><a class="glyph source" href="md_source.cgi?fid=[% fid %]">SOURCE</a></li>
-  <li [% IF SUBMENU=="アップロード" %]class="selected"[% END %]><a class="glyph upload" href="md_upload.cgi?fid=[% fid %]">UPLOAD</a></li>
-  <li><a class="glyph commit" id="bufferCommitBtn">COMMIT</a></li>
+<ul class="BufferEditMenu">
+  <li [% IF SUBMENU=="編集バッファ" %]class="Selected"[% END %]><a class="Glyph Edit" href="md_edit.cgi?fid=[% fid %]">EDIT</a></li>
+  <li [% IF SUBMENU=="画像" %]class="Selected"[% END %]><a class="Glyph Image" href="md_image.cgi?fid=[% fid %]">IMAGE</a></li>
+  <li [% IF SUBMENU=="アウトライン" %]class="Selected"[% END %]><a class="Glyph Outline" href="md_outline.cgi?fid=[% fid %]">OUTLINE</a></li>
+  <li [% IF SUBMENU=="ソース" %]class="Selected"[% END %]><a class="Glyph Source" href="md_source.cgi?fid=[% fid %]">SOURCE</a></li>
+  <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a class="Glyph Upload" href="md_upload.cgi?fid=[% fid %]">UPLOAD</a></li>
+  <li><a class="Glyph Commit" id="bufferCommitBtn">COMMIT</a></li>
 </ul>
 
 
-<div class="bufferCommitForm" id="bufferCommitForm" style="display: none;">
+<div class="BufferCommitForm" id="bufferCommitForm" style="display: none;">
     <form name="commitForm" action="?fid=[% fid %]" method="post">
-      <div class="md_buffer_fix">
+      <div class="MdBufferFix">
         <h3>変更履歴</h3>
-        <div><textarea name="comment" class="history" rows="3" cols="70"></textarea></div>
-        <div class="ctrl">
+        <div><textarea name="comment" class="History" rows="3" cols="70"></textarea></div>
+        <div class="Ctrl">
           <input type="submit" name="commit" value="コミット" onClick="commitBuffer();">
-          <a class="btn" id="cancel_button">キャンセル</a>
+          <a class="Btn" id="cancelButton">キャンセル</a>
         </div>
         <input type="hidden" name="fid" value="[% fid %]">
-        <textarea name="document" class="document" style="display: none;"></textarea>
-        <div class="rowdata" style="display: none;">[% rowdata %]</div>
+        <textarea name="document" class="Document" style="display: none;"></textarea>
+        <div class="Rowdata" style="display: none;">[% rowdata %]</div>
       </div>
     </form>
 </div>

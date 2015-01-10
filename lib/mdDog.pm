@@ -220,6 +220,7 @@ sub isExistBuffer {
 #
 sub gitLog {
   my $self = shift;
+  my $all = shift;
 
   my $fid = $self->qParam("fid");
   my $uid = $self->{s}->param("login");
@@ -231,7 +232,7 @@ sub gitLog {
   $self->{t}->{sharedlist} = $gitctrl->getSharedLogs();
   $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
-  if($uid){ #ユーザーリポジトリ
+  if($all and $uid){ #ユーザーリポジトリ
     #自分のリポジトリ
     my $mylog = {
       uid     => $uid,
@@ -681,8 +682,8 @@ sub setMD_buffer{
 
     foreach (@partsAry) {
       my $conv = markdown($_);
-      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"md\">/;
-      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"md\" />#;
+      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
+      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
       $md .= $conv;
       $cnt++;
     }
@@ -989,8 +990,8 @@ sub api_postData {
   $cnt = $eid;
   foreach(@parts){
     my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
-    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"md\">/;
-    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"md\" />#;
+    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
+    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
     $conv =~ s/^(.*)\n$/\1/;
     $md .= $conv;
     $cnt++;
@@ -1136,7 +1137,7 @@ sub split4MD {
           }else{
               $blockquote = 1;
           }
-          $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
+          $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       }
     } else {
       if ( $_ =~ m/^\s*$/ ) {
@@ -1153,13 +1154,13 @@ sub split4MD {
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
+        $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       } elsif ( $block && $_ =~ m/^(====|----|#+).*/ ) {
         push @partsAry, $parts;
         $rowdata .= "${parts}</div>";
         $parts = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm-${cnt}\" class=\"elm\">";
+        $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       }
     }
 

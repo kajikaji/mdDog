@@ -1,73 +1,76 @@
 /*
  * GLYPH-ICON
  */
-i.glyph {
+i.Glyph {
   width: 26px;
   height: 26px;
   display: inline-block;
   background-color: transparent;
   background-repeat: no-repeat; }
 
-.glyph.download-alt {
+.Glyph.DownloadAlt {
   background-image: url("../img/181_download_alt.png"); }
 
-.glyph.bin {
+.Glyph.Bin {
   background-image: url("../img/016_bin.png"); }
 
-.glyph.inbox_plus {
+.Glyph.InboxPlus {
   background-image: url("../img/131_inbox_plus.png"); }
 
-.glyph.ok {
+.Glyph.Ok {
   background-image: url("../img/198_ok.png"); }
 
-.glyph.ban {
+.Glyph.Ban {
   background-image: url("../img/199_ban.png"); }
 
-.glyph.plus {
+.Glyph.Plus {
   background-position: 3px 3px;
   background-image: url("../img/432_plus.png"); }
 
-.glyph.commit {
+.Glyph.Commit {
   background-image: url("../img/141_database_plus.png");
   width: 27px;
   height: 27px; }
 
-.glyph.edit {
+.Glyph.Edit {
   background-image: url("../img/151_edit.png"); }
 
-.glyph.source {
+.Glyph.Source {
   background-image: url("../img/036_file.png"); }
 
-.glyph.image {
+.Glyph.Image {
   background-image: url("../img/159_picture.png"); }
 
-.glyph.outline {
+.Glyph.Outline {
   background-image: url("../img/156_show_lines.png"); }
 
-.glyph.upload {
+.Glyph.Upload {
   background-image: url("../img/201_upload.png"); }
 
-a.glyph {
+.Glyph.Cogwheel {
+  background-image: url("../img/019_cogwheel.png"); }
+
+a.Glyph {
   display: inline-block;
   float: left; }
-  a.glyph:after, a.glyph:before {
+  a.Glyph:after, a.Glyph:before {
     display: table;
     content: "";
     line-height: 0; }
-  a.glyph:after {
+  a.Glyph:after {
     clear: both; }
 
-a.glyph, input[type=submit].glyph {
+a.Glyph, input[type=submit].Glyph {
   padding: 0;
   border: none;
   background-color: transparent;
   background-repeat: no-repeat;
   height: 26px;
   padding-left: 28px; }
-  a.glyph:hover, input[type=submit].glyph:hover {
+  a.Glyph:hover, input[type=submit].Glyph:hover {
     background-color: transparent; }
 
-a.button {
+a.Button {
   display: inline-block;
   border: 1px solid #000;
   padding: 5px 8px;
@@ -75,10 +78,10 @@ a.button {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
-  a.button i {
+  a.Button i {
     margin-bottom: -5px;
     margin-right: 3px; }
-  a.button.orange {
+  a.Button.Orange {
     background-color: #ff4500;
     border: 1px solid #ff7f50; }
 
@@ -103,7 +106,7 @@ form input[type=text], form textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
 
-a.btn {
+a.Btn {
   border-radius: 4px;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -116,49 +119,49 @@ a.btn {
   font-weight: bold;
   color: #000;
   background-color: #fff; }
-  a.btn:hover {
+  a.Btn:hover {
     background-color: #f5deb3;
     color: #222; }
-  a.btn:after, a.btn:before {
+  a.Btn:after, a.Btn:before {
     display: table;
     content: "";
     line-height: 0; }
-  a.btn:after {
+  a.Btn:after {
     clear: both; }
 
-.app-header {
+.AppHeader {
   border-bottom: 3px double #4169e1;
   margin-top: 10px; }
-  .app-header .row > div {
+  .AppHeader .Row > div {
     float: left; }
-    .app-header .row > div.login-form {
+    .AppHeader .Row > div.LoginForm {
       float: right; }
-  .app-header .row:after, .app-header .row:before {
+  .AppHeader .Row:after, .AppHeader .Row:before {
     display: table;
     content: "";
     line-height: 0; }
-  .app-header .row:after {
+  .AppHeader .Row:after {
     clear: both; }
-  .app-header .title {
+  .AppHeader .Title {
     font-size: 48pt; }
-    .app-header .title a,
-    .app-header .title a:hover,
-    .app-header .title a:visited,
-    .app-header .title a:link,
-    .app-header .title a:active {
+    .AppHeader .Title a,
+    .AppHeader .Title a:hover,
+    .AppHeader .Title a:visited,
+    .AppHeader .Title a:link,
+    .AppHeader .Title a:active {
       color: #000;
       font-style: none; }
-  .app-header .login-form {
+  .AppHeader .LoginForm {
     text-align: right;
     margin: 5px;
     padding: 5px;
     box-sizing: border-box;
     font-size: 10pt; }
-    .app-header .login-form form input {
+    .AppHeader .LoginForm form input {
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
-    .app-header .login-form Formo span {
+    .AppHeader .LoginForm form span {
       margin-right: 15px; }
 
 h1, h2, h3, h4, h5 {
@@ -172,23 +175,30 @@ body > section > h1, body > section > h2, body > section > h3, body > section > 
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box; }
 
-section.message {
+section.Message {
   margin-bottom: 20px;
   font-size: 10pt; }
-  section.message > div {
+  section.Message > div {
     padding: 3px 5px;
     background-color: #fff;
     font-weight: bold;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; }
-    section.message > div.info {
+    section.Message > div.Info {
       border: 1px solid #4169e1; }
-    section.message > div.error {
+    section.Message > div.Error {
       color: #f00;
       border: 1px solid #f00; }
 
-section.error div.error {
+section.Admin h1 {
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 2.0em; }
+section.Admin ul.UserManage {
+  list-style: none; }
+
+section.Error div.Error {
   border: 3px solid #b22222;
   background-color: #ffd0db;
   padding: 10px;
@@ -196,62 +206,62 @@ section.error div.error {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
 
-.userinfo {
+.UserInfo {
   background-color: #4169e1;
   color: #fff;
   font-size: 9pt;
   padding: 3px 0; }
-  .userinfo ul {
+  .UserInfo ul {
     list-style: none; }
-    .userinfo ul li {
+    .UserInfo ul li {
       float: left;
       margin-right: 30px; }
-    .userinfo ul:after, .userinfo ul:before {
+    .UserInfo ul:after, .UserInfo ul:before {
       display: table;
       content: "";
       line-height: 0; }
-    .userinfo ul:after {
+    .UserInfo ul:after {
       clear: both; }
-  .userinfo .admin a,
-  .userinfo .admin a:hover,
-  .userinfo .admin a:visited,
-  .userinfo .admin a:link,
-  .userinfo .admin a:active {
+  .UserInfo .Admin a,
+  .UserInfo .Admin a:hover,
+  .UserInfo .Admin a:visited,
+  .UserInfo .Admin a:link,
+  .UserInfo .Admin a:active {
     color: #fff; }
-  .userinfo .admin a:hover {
+  .UserInfo .Admin a:hover {
     text-decoration: underline; }
 
-ul.back-nav {
+ul.BackNav {
   list-style: none;
   font-size: 11px;
   height: 20px;
   margin: 0 0 0 30px; }
-  ul.back-nav li {
+  ul.BackNav li {
     float: left;
     margin-right: 10px; }
-    ul.back-nav li a:before {
+    ul.BackNav li a:before {
       content: "<<    "; }
-  ul.back-nav:after, ul.back-nav:before {
+  ul.BackNav:after, ul.BackNav:before {
     display: table;
     content: "";
     line-height: 0; }
-  ul.back-nav:after {
+  ul.BackNav:after {
     clear: both; }
 
-.description .revision {
+.Description .Revision {
   font-weight: bold;
   margin-left: 3px;
   margin-right: 3px; }
-.description .download-link {
+.Description .DownloadLink {
   display: block; }
-.description .mdfile-toolbar {
+.Description .MdfileToolbar {
   display: block; }
 
-.no-file {
+.NoFile {
   margin: 10px;
   color: #888; }
 
-form#docx-create {
+form#docxCreate {
   margin: 10px;
   margin-bottom: 30px;
   padding: 10px;
@@ -260,79 +270,79 @@ form#docx-create {
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
-  form#docx-create > div {
+  form#docxCreate > div {
     margin-bottom: 10px; }
-  form#docx-create .subject {
+  form#docxCreate .Subject {
     font-weight: bold;
     font-size: 115%; }
 
-section.gitlog {
+section.Gitlog {
   margin-bottom: 30px; }
-  section.gitlog h3 {
+  section.Gitlog h3 {
     margin-top: 0;
     margin-bottom: 10px; }
-  section.gitlog .logtable .description {
+  section.Gitlog .Logtable .Description {
     font-size: 80%;
     padding: 5px;
     border: 1px solid #000;
     background-color: #fff; }
-    section.gitlog .logtable .description.alert {
+    section.Gitlog .Logtable .Description.Alert {
       color: #f00; }
-  section.gitlog ul.buffer-list {
+  section.Gitlog ul.BufferList {
     list-style: none;
     font-size: 11px; }
-    section.gitlog ul.buffer-list li {
+    section.Gitlog ul.BufferList li {
       float: left;
       border-style: solid;
       border-width: 1px 1px 0 0;
       border-color: #555; }
-      section.gitlog ul.buffer-list li:first-child {
+      section.Gitlog ul.BufferList li:first-child {
         border-left: 1px solid #555; }
-      section.gitlog ul.buffer-list li.active {
+      section.Gitlog ul.BufferList li.Active {
         font-weight: bold; }
-        section.gitlog ul.buffer-list li.active a {
+        section.Gitlog ul.BufferList li.Active a {
           background-color: #fff; }
-      section.gitlog ul.buffer-list li a {
+      section.Gitlog ul.BufferList li a {
         display: block;
         background-color: #dedede;
         padding: 3px 6px;
         text-align: center;
         color: #000; }
-        section.gitlog ul.buffer-list li a:hover {
+        section.Gitlog ul.BufferList li a:hover {
           color: #000;
           background-color: #b0c4de; }
-    section.gitlog ul.buffer-list:after, section.gitlog ul.buffer-list:before {
+    section.Gitlog ul.BufferList:after, section.Gitlog ul.BufferList:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.gitlog ul.buffer-list:after {
+    section.Gitlog ul.BufferList:after {
       clear: both; }
-  section.gitlog table.gitlog {
+  section.Gitlog table.Gitlog {
     font-size: 11px;
     line-heigth: 1.1em;
     box-sizing: border-box;
     width: 100%;
     border-color: #000; }
-    section.gitlog table.gitlog th, section.gitlog table.gitlog td {
+    section.Gitlog table.Gitlog th, section.Gitlog table.Gitlog td {
       border-color: #000; }
-    section.gitlog table.gitlog thead tr th, section.gitlog table.gitlog tbody tr td {
+    section.Gitlog table.Gitlog thead tr th, section.Gitlog table.Gitlog tbody tr td {
       padding: 3px 6px; }
-    section.gitlog table.gitlog thead tr th {
+    section.Gitlog table.Gitlog thead tr th {
       background-color: #696969;
       color: #fff; }
-    section.gitlog table.gitlog tbody tr td.date {
+    section.Gitlog table.Gitlog tbody tr td.Date {
       width: 160px; }
-    section.gitlog table.gitlog tbody tr td.author {
+    section.Gitlog table.Gitlog tbody tr td.Author {
       width: 200px; }
-    section.gitlog table.gitlog tbody tr td.ctrl {
+    section.Gitlog table.Gitlog tbody tr td.Ctrl {
       width: 80px; }
-      section.gitlog table.gitlog tbody tr td.ctrl > ul {
+      section.Gitlog table.Gitlog tbody tr td.Ctrl > ul {
         list-style: none;
         margin-left: 0; }
-      section.gitlog table.gitlog tbody tr td.ctrl .download-link a,
-      section.gitlog table.gitlog tbody tr td.ctrl .download-link a:hover,
-      section.gitlog table.gitlog tbody tr td.ctrl .download-link a:link,
-      section.gitlog table.gitlog tbody tr td.ctrl .download-link a:visited {
+      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a,
+      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:hover,
+      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:link,
+      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:visited {
         font-size: 8pt;
         color: #000;
         border: 1px solid #00a;
@@ -341,144 +351,144 @@ section.gitlog {
         border-radius: 3px;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px; }
-    section.gitlog table.gitlog tbody tr.master {
+    section.Gitlog table.Gitlog tbody tr.Master {
       background-color: #fff; }
-    section.gitlog table.gitlog tbody tr.user-branch {
+    section.Gitlog table.Gitlog tbody tr.UserBranch {
       background-color: #fffaf0; }
-    section.gitlog table.gitlog tbody tr.user-branch.old {
+    section.Gitlog table.Gitlog tbody tr.UserBranch.Old {
       background-color: #aaaaaa; }
 
-section.top .top-menu {
+section.Top .TopMenu {
   margin-top: 20px;
   margin-bottom: 20px; }
-  section.top .top-menu .subject {
+  section.Top .TopMenu .Subject {
     margin-bottom: 20px; }
-    section.top .top-menu .subject .title {
+    section.Top .TopMenu .Subject .Title {
       font-weight: bold;
       font-size: 2.0em; }
-    section.top .top-menu .subject.disable {
+    section.Top .TopMenu .Subject.Disable {
       color: #888; }
-    section.top .top-menu .subject + .caution {
+    section.Top .TopMenu .Subject + .Caution {
       font-size: 60%;
       margin-left: 10px;
       color: #f00; }
-    section.top .top-menu .subject .menu {
+    section.Top .TopMenu .Subject .Menu {
       float: right; }
-  section.top .top-menu table.doc-list {
+  section.Top .TopMenu table.DocList {
     box-sizing: border-box; }
-    section.top .top-menu table.doc-list tr.nonactive {
+    section.Top .TopMenu table.DocList tr.Nonactive {
       background-color: #ddd; }
-      section.top .top-menu table.doc-list tr.nonactive.deleted {
+      section.Top .TopMenu table.DocList tr.Nonactive.Deleted {
         background-color: #aaa; }
-    section.top .top-menu table.doc-list tr td > .doc-subject {
+    section.Top .TopMenu table.DocList tr td > .DocSubject {
       float: left;
       padding: 5px; }
-      section.top .top-menu table.doc-list tr td > .doc-subject > div {
+      section.Top .TopMenu table.DocList tr td > .DocSubject > div {
         float: left; }
-        section.top .top-menu table.doc-list tr td > .doc-subject > div.name a {
+        section.Top .TopMenu table.DocList tr td > .DocSubject > div.Name a {
           color: #0129a0;
           font-weight: bold; }
-          section.top .top-menu table.doc-list tr td > .doc-subject > div.name a:hover {
+          section.Top .TopMenu table.DocList tr td > .DocSubject > div.Name a:hover {
             color: #ff6437; }
-        section.top .top-menu table.doc-list tr td > .doc-subject > div:after, section.top .top-menu table.doc-list tr td > .doc-subject > div:before {
+        section.Top .TopMenu table.DocList tr td > .DocSubject > div:after, section.Top .TopMenu table.DocList tr td > .DocSubject > div:before {
           display: table;
           content: "";
           line-height: 0; }
-        section.top .top-menu table.doc-list tr td > .doc-subject > div:after {
+        section.Top .TopMenu table.DocList tr td > .DocSubject > div:after {
           clear: both; }
-    section.top .top-menu table.doc-list tr td > .doc-ctrl {
+    section.Top .TopMenu table.DocList tr td > .DocCtrl {
       float: right;
       padding: 5px; }
-      section.top .top-menu table.doc-list tr td > .doc-ctrl input.glyph {
+      section.Top .TopMenu table.DocList tr td > .DocCtrl input.Glyph {
         margin-left: 5px; }
-    section.top .top-menu table.doc-list tr td .doc-detail {
+    section.Top .TopMenu table.DocList tr td .DocDetail {
       clear: both;
       font-size: 8pt;
       border-top: 1px dashed rgba(0, 0, 0, 0.1); }
-      section.top .top-menu table.doc-list tr td .doc-detail div {
+      section.Top .TopMenu table.DocList tr td .DocDetail div {
         float: left;
         margin-left: 20px; }
-        section.top .top-menu table.doc-list tr td .doc-detail div:first-child {
+        section.Top .TopMenu table.DocList tr td .DocDetail div:first-child {
           margin-left: 5px; }
-      section.top .top-menu table.doc-list tr td .doc-detail:after, section.top .top-menu table.doc-list tr td .doc-detail:before {
+      section.Top .TopMenu table.DocList tr td .DocDetail:after, section.Top .TopMenu table.DocList tr td .DocDetail:before {
         display: table;
         content: "";
         line-height: 0; }
-      section.top .top-menu table.doc-list tr td .doc-detail:after {
+      section.Top .TopMenu table.DocList tr td .DocDetail:after {
         clear: both; }
 
-section.docinfo h1, section.docinfo h2 {
+section.Docinfo h1, section.Docinfo h2 {
   margin-top: 0; }
-section.docinfo h1 {
+section.Docinfo h1 {
   font-size: 2.0em;
   margin-bottom: 5px; }
-  section.docinfo h1 .title {
+  section.Docinfo h1 .Title {
     font-weight: normal;
     margin-right: 10px; }
-section.docinfo h2 .download-alt {
+section.Docinfo h2 .DownloadAlt {
   margin-right: 10px; }
-section.docinfo h2 .supplement {
+section.Docinfo h2 .Supplement {
   color: #000;
   font-size: 12px;
   margin-left: 10px; }
-section.docinfo:after, section.docinfo:before {
+section.Docinfo:after, section.Docinfo:before {
   display: table;
   content: "";
   line-height: 0; }
-section.docinfo:after {
+section.Docinfo:after {
   clear: both; }
-section.docinfo > .description {
+section.Docinfo > .Description {
   font-size: 11px;
   margin-bottom: 5px;
   color: #555; }
-  section.docinfo > .description > div {
+  section.Docinfo > .Description > div {
     float: left;
     margin-right: 10px; }
-    section.docinfo > .description > div .active {
+    section.Docinfo > .Description > div .Active {
       font-weight: bold;
       text-decoration: underline; }
-  section.docinfo > .description:after, section.docinfo > .description:before {
+  section.Docinfo > .Description:after, section.Docinfo > .Description:before {
     display: table;
     content: "";
     line-height: 0; }
-  section.docinfo > .description:after {
+  section.Docinfo > .Description:after {
     clear: both; }
-section.docinfo > ul.doc-ctrl {
+section.Docinfo > ul.DocCtrl {
   list-style: none;
   margin-bottom: 20px; }
-  section.docinfo > ul.doc-ctrl li {
+  section.Docinfo > ul.DocCtrl li {
     float: left;
     margin-right: 5px; }
-    section.docinfo > ul.doc-ctrl li:fist-child {
+    section.Docinfo > ul.DocCtrl li:fist-child {
       margin-right: 0; }
-    section.docinfo > ul.doc-ctrl li.selected a.btn {
+    section.Docinfo > ul.DocCtrl li.Selected a.Btn {
       background-color: #6d562b;
       color: #fff;
       cursor: default;
       font-weight: normal; }
-  section.docinfo > ul.doc-ctrl:after, section.docinfo > ul.doc-ctrl:before {
+  section.Docinfo > ul.DocCtrl:after, section.Docinfo > ul.DocCtrl:before {
     display: table;
     content: "";
     line-height: 0; }
-  section.docinfo > ul.doc-ctrl:after {
+  section.Docinfo > ul.DocCtrl:after {
     clear: both; }
-section.docinfo .user-action {
+section.Docinfo .UserAction {
   margin-bottom: 20px; }
-  section.docinfo .user-action h3 {
+  section.Docinfo .UserAction h3 {
     font-size: 15px;
     margin: 0 0 3px;
     padding: 6px 3px 3px;
     background-color: #fff;
     border-bottom: 3px solid #888; }
-  section.docinfo .user-action h3 + .description {
+  section.Docinfo .UserAction h3 + .Description {
     font-size: 10px; }
-  section.docinfo .user-action ul.menu {
+  section.Docinfo .UserAction ul.Menu {
     list-style: none;
     margin-bottom: 20px; }
-    section.docinfo .user-action ul.menu li {
+    section.Docinfo .UserAction ul.Menu li {
       float: left;
       margin-right: 20px; }
-      section.docinfo .user-action ul.menu li form.doc-upload-form {
+      section.Docinfo .UserAction ul.Menu li form.DocUploadForm {
         margin: 0;
         padding: 0;
         font-size: 14px;
@@ -488,21 +498,21 @@ section.docinfo .user-action {
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
         background-color: #fff; }
-        section.docinfo .user-action ul.menu li form.doc-upload-form > div {
+        section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div {
           margin-bottom: 4px; }
-          section.docinfo .user-action ul.menu li form.doc-upload-form > div.subject {
+          section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div.Subject {
             font-weight: bold; }
-          section.docinfo .user-action ul.menu li form.doc-upload-form > div label {
+          section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div label {
             font-size: 9px; }
-    section.docinfo .user-action ul.menu:after, section.docinfo .user-action ul.menu:before {
+    section.Docinfo .UserAction ul.Menu:after, section.Docinfo .UserAction ul.Menu:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.docinfo .user-action ul.menu:after {
+    section.Docinfo .UserAction ul.Menu:after {
       clear: both; }
-section.docinfo .output_menu {
+section.Docinfo .OutputMenu {
   margin-bottom: 20px; }
-  section.docinfo .output_menu button {
+  section.Docinfo .OutputMenu button {
     padding: 4px 6px;
     text-align: center;
     line-height: 1.0em;
@@ -514,13 +524,13 @@ section.docinfo .output_menu {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; }
-  section.docinfo .output_menu button:hover {
+  section.Docinfo .OutputMenu button:hover {
     background-color: #f5deb3;
     color: #222; }
 
-section.outline.print-format {
+section.Outline.PrintFormat {
   padding: 0; }
-  section.outline.print-format > div.page {
+  section.Outline.PrintFormat > div.Page {
     margin: 0;
     margin-bottom: -1px;
     border: none;
@@ -529,17 +539,17 @@ section.outline.print-format {
     -webkit-box-shadow: none;
     -moz-box-shadow: none; }
 
-section.outline {
+section.Outline {
   background-color: #fff;
   padding: 30px 0;
   font-size: 12pt;
   line-height: 1.2em; }
-  section.outline > div .subject {
+  section.Outline > div .Subject {
     font-weight: bold;
     font-size: 24pt;
     line-height: 1.5em;
     text-align: center; }
-  section.outline > div.page {
+  section.Outline > div.Page {
     height: 297mm;
     width: 210mm;
     margin-bottom: 10mm;
@@ -548,95 +558,95 @@ section.outline {
     -webkit-box-shadow: 1px 1.5px 1px 1px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 1px 1.5px 1px 1px rgba(0, 0, 0, 0.4);
     padding: 30mm 10mm 40mm; }
-  section.outline .document {
+  section.Outline .Document {
     padding: 10px;
     border: 2px solid #888;
     background-color: #fff;
     font-size: 14px;
     line-height: 1.2em; }
-    section.outline .document h1, section.outline .document h2, section.outline .document h3, section.outline .document h4, section.outline .document h5, section.outline .document h6, section.outline .document h7 {
+    section.Outline .Document h1, section.Outline .Document h2, section.Outline .Document h3, section.Outline .Document h4, section.Outline .Document h5, section.Outline .Document h6, section.Outline .Document h7 {
       margin: 0;
       padding: 30px 0 10px 0; }
-    section.outline .document h1:first-child, section.outline .document h2:first-child, section.outline .document h3:first-child {
+    section.Outline .Document h1:first-child, section.Outline .Document h2:first-child, section.Outline .Document h3:first-child {
       padding-top: 20px; }
-    section.outline .document h1 {
+    section.Outline .Document h1 {
       padding-top: 70px;
       font-size: 40px; }
-    section.outline .document h2 {
+    section.Outline .Document h2 {
       padding-top: 40px;
       font-size: 28px; }
-    section.outline .document h3 {
+    section.Outline .Document h3 {
       font-size: 18px; }
-    section.outline .document h4 {
+    section.Outline .Document h4 {
       font-size: 14px; }
-    section.outline .document p, section.outline .document div {
+    section.Outline .Document p, section.Outline .Document div {
       margin: 0;
       padding: 3px 3px 10px 3px; }
-    section.outline .document ol, section.outline .document ul {
+    section.Outline .Document ol, section.Outline .Document ul {
       margin-left: 0;
       padding-left: 28px; }
-      section.outline .document ol li, section.outline .document ul li {
+      section.Outline .Document ol li, section.Outline .Document ul li {
         margin-bottom: 10px; }
-    section.outline .document table thead {
+    section.Outline .Document table thead {
       background-color: #888;
       color: #Fff;
       font-size: 85%; }
-    section.outline .document table tr td, section.outline .document table tr th {
+    section.Outline .Document table tr td, section.Outline .Document table tr th {
       padding: 3px;
       border-color: #555;
       border-style: solid;
       border-width: 1px 0 0 1px; }
-    section.outline .document table th:last-child, section.outline .document table td:last-child {
+    section.Outline .Document table th:last-child, section.Outline .Document table td:last-child {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 0 1px; }
-    section.outline .document table tr:last-child td {
+    section.Outline .Document table tr:last-child td {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 1px 1px; }
-    section.outline .document blockquote {
+    section.Outline .Document blockquote {
       padding: 5px;
       font-size: 80%;
       border: 1px solid #aaa; }
-  section.outline .cover {
+  section.Outline .Cover {
     text-align: center; }
-    section.outline .cover .title {
+    section.Outline .Cover .Title {
       font-size: 36px;
       font-weight: bold;
       padding: 30px 0; }
-    section.outline .cover .revision {
+    section.Outline .Cover .Revision {
       font-size: 12px; }
-  section.outline .history {
+  section.Outline .History {
     font-size: 10pt;
     line-height: 1.0em; }
-    section.outline .history table.gitlog .date, section.outline .history table.gitlog .rev {
+    section.Outline .History table.Gitlog .Date, section.Outline .History table.Gitlog .Rev {
       width: 28mm; }
-  section.outline .contents {
+  section.Outline .Contents {
     margin-bottom: 30px; }
-    section.outline .contents > ul {
+    section.Outline .Contents > ul {
       margin-left: 30px;
       font-size: 10pt;
       line-height: 1.0em;
       list-style: none; }
-      section.outline .contents > ul li.level1 {
+      section.Outline .Contents > ul li.Level1 {
         margin-top: 10px;
         border-bottom: 1px dashed #aaa; }
-      section.outline .contents > ul li.level2 {
+      section.Outline .Contents > ul li.Level2 {
         font-size: 80%;
         padding-left: 50px; }
-      section.outline .contents > ul li.level3 {
+      section.Outline .Contents > ul li.Level3 {
         font-size: 70%;
         padding-left: 80px; }
-      section.outline .contents > ul li.level4 {
+      section.Outline .Contents > ul li.Level4 {
         font-size: 70%;
         padding-left: 100px; }
 
-section.outline_editor ul.buffer_edit_menu {
+section.OutlineEditor ul.BufferEditMenu {
   position: absolute;
   list-style: none;
   margin-right: 0;
   width: 140px; }
-  section.outline_editor ul.buffer_edit_menu > li a {
+  section.OutlineEditor ul.BufferEditMenu > li a {
     cursor: pointer;
     font-size: 7pt;
     font-weight: bold;
@@ -645,31 +655,31 @@ section.outline_editor ul.buffer_edit_menu {
     padding-top: 5px;
     margin-bottom: 3px;
     width: 80px; }
-    section.outline_editor ul.buffer_edit_menu > li a:hover {
+    section.OutlineEditor ul.BufferEditMenu > li a:hover {
       color: #000;
       background-color: #f5deb3; }
-  section.outline_editor ul.buffer_edit_menu > li.selected {
+  section.OutlineEditor ul.BufferEditMenu > li.Selected {
     padding-left: 15px; }
-    section.outline_editor ul.buffer_edit_menu > li.selected a:hover, section.outline_editor ul.buffer_edit_menu > li.selected a:link, section.outline_editor ul.buffer_edit_menu > li.selected a:visited {
+    section.OutlineEditor ul.BufferEditMenu > li.Selected a:hover, section.OutlineEditor ul.BufferEditMenu > li.Selected a:link, section.OutlineEditor ul.BufferEditMenu > li.Selected a:visited {
       cursor: default;
       background-color: transparent; }
-    section.outline_editor ul.buffer_edit_menu > li.selected a:before {
+    section.OutlineEditor ul.BufferEditMenu > li.Selected a:before {
       float: left;
       border: 8px solid transparent;
       border-left: 10px solid #000; }
-section.outline_editor .buffer_edit {
+section.OutlineEditor .BufferEdit {
   margin-left: 180px; }
-section.outline_editor .document {
+section.OutlineEditor .Document {
   background-color: #fff;
   border: 2px solid #888;
   padding: 10px; }
-  section.outline_editor .document #blk_tmpl, section.outline_editor .document #divide_info {
+  section.OutlineEditor .Document #blkTmpl, section.OutlineEditor .Document #divideInfo {
     display: none; }
-  section.outline_editor .document .outline_divide {
+  section.OutlineEditor .Document .OutlineDivide {
     border: 2px solid #00f; }
-  section.outline_editor .document .blk a.btn_expand {
+  section.OutlineEditor .Document .Blk a.BtnExpand {
     cursor: pointer; }
-  section.outline_editor .document .blk .tagname {
+  section.OutlineEditor .Document .Blk .Tagname {
     border: 2px solid #ff4500;
     background-color: #f5deb3;
     border-radius: 3px;
@@ -678,61 +688,61 @@ section.outline_editor .document {
     font-size: 9pt;
     font-weight: bold;
     padding: 2px 5px; }
-  section.outline_editor .document .blk .digest {
+  section.OutlineEditor .Document .Blk .Digest {
     font-size: 80%;
     margin: 0 5px; }
-    section.outline_editor .document .blk .digest:before {
+    section.OutlineEditor .Document .Blk .Digest:before {
       content: "\""; }
-    section.outline_editor .document .blk .digest:after {
+    section.OutlineEditor .Document .Blk .Digest:after {
       content: "... \""; }
-  section.outline_editor .document .blk .insert_divide {
+  section.OutlineEditor .Document .Blk .InsertDivide {
     font-size: 65%;
     font-weight: bold;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px; }
-  section.outline_editor .document .blk + .md {
+  section.OutlineEditor .Document .Blk + .Md {
     padding: 10px;
     border: 2px dashed #aaa;
     margin-top: 0;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; }
-  section.outline_editor .document .blk + ul.md, section.outline_editor .document .blk + ol.md {
+  section.OutlineEditor .Document .Blk + ul.Md, section.OutlineEditor .Document .Blk + ol.Md {
     padding-left: 30px; }
-  section.outline_editor .document .blk:after, section.outline_editor .document .blk:before {
+  section.OutlineEditor .Document .Blk:after, section.OutlineEditor .Document .Blk:before {
     display: table;
     content: "";
     line-height: 0; }
-  section.outline_editor .document .blk:after {
+  section.OutlineEditor .Document .Blk:after {
     clear: both; }
 
-table.gitlog {
+table.Gitlog {
   font-size: 11px;
   line-heigth: 1.1em;
   box-sizing: border-box;
   width: 100%;
   border-color: #000; }
-  table.gitlog th, table.gitlog td {
+  table.Gitlog th, table.Gitlog td {
     border-color: #000; }
-  table.gitlog thead tr th, table.gitlog tbody tr td {
+  table.Gitlog thead tr th, table.Gitlog tbody tr td {
     padding: 3px 6px; }
-  table.gitlog thead tr th {
+  table.Gitlog thead tr th {
     background-color: #696969;
     color: #fff; }
-  table.gitlog tbody tr td.date {
+  table.Gitlog tbody tr td.Date {
     width: 160px; }
-  table.gitlog tbody tr td.author {
+  table.Gitlog tbody tr td.Author {
     width: 200px; }
-  table.gitlog tbody tr td.ctrl {
+  table.Gitlog tbody tr td.Ctrl {
     width: 80px; }
-    table.gitlog tbody tr td.ctrl > ul {
+    table.Gitlog tbody tr td.Ctrl > ul {
       list-style: none;
       margin-left: 0; }
-    table.gitlog tbody tr td.ctrl .download-link a,
-    table.gitlog tbody tr td.ctrl .download-link a:hover,
-    table.gitlog tbody tr td.ctrl .download-link a:link,
-    table.gitlog tbody tr td.ctrl .download-link a:visited {
+    table.Gitlog tbody tr td.Ctrl .DownloadLink a,
+    table.Gitlog tbody tr td.Ctrl .DownloadLink a:hover,
+    table.Gitlog tbody tr td.Ctrl .DownloadLink a:link,
+    table.Gitlog tbody tr td.Ctrl .DownloadLink a:visited {
       font-size: 8pt;
       color: #000;
       border: 1px solid #00a;
@@ -742,15 +752,15 @@ table.gitlog {
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
 
-.diff-view {
+.DiffView {
   padding: 10px; }
-  .diff-view .canvas {
+  .DiffView .Canvas {
     padding: 5px;
     border: 1px solid #333;
     font-size: 10pt; }
-    .diff-view .canvas .line .no, .diff-view .canvas .line .content {
+    .DiffView .Canvas .Line .No, .DiffView .Canvas .Line .Content {
       float: left; }
-    .diff-view .canvas .line .no {
+    .DiffView .Canvas .Line .No {
       width: 50px;
       padding: 1px 5px 1px 0;
       margin-right: 10px;
@@ -758,96 +768,96 @@ table.gitlog {
       background-color: #aaa;
       color: #eee;
       font-size: 8pt; }
-    .diff-view .canvas .line:after, .diff-view .canvas .line:before {
+    .DiffView .Canvas .Line:after, .DiffView .Canvas .Line:before {
       display: table;
       content: "";
       line-height: 0; }
-    .diff-view .canvas .line:after {
+    .DiffView .Canvas .Line:after {
       clear: both; }
 
-.document {
+.Document {
   margin-bottom: 50px; }
-  .document > ul.property {
+  .Document > ul.Property {
     list-style: none;
     font-size: 10px;
     margin-bottom: 0;
     background-color: #333;
     color: #fff; }
-    .document > ul.property li {
+    .Document > ul.Property li {
       padding: 3px 7px;
       border-bottom: 1px solid #888; }
-      .document > ul.property li:last-child {
+      .Document > ul.Property li:last-child {
         border-bottom-width: 0; }
-      .document > ul.property li > div {
+      .Document > ul.Property li > div {
         float: left; }
-      .document > ul.property li:after, .document > ul.property li:before {
+      .Document > ul.Property li:after, .Document > ul.Property li:before {
         display: table;
         content: "";
         line-height: 0; }
-      .document > ul.property li:after {
+      .Document > ul.Property li:after {
         clear: both; }
-      .document > ul.property li .subject {
+      .Document > ul.Property li .Subject {
         width: 100px; }
-      .document > ul.property li.status {
+      .Document > ul.Property li.Status {
         font-size: 17px;
         padding: 5px 7px; }
-  .document > .canvas {
+  .Document > .Canvas {
     padding: 10px;
     border: 2px solid #888;
     background-color: #fff;
     font-size: 14px;
     line-height: 1.2em; }
-    .document > .canvas h1, .document > .canvas h2, .document > .canvas h3, .document > .canvas h4, .document > .canvas h5, .document > .canvas h6, .document > .canvas h7 {
+    .Document > .Canvas h1, .Document > .Canvas h2, .Document > .Canvas h3, .Document > .Canvas h4, .Document > .Canvas h5, .Document > .Canvas h6, .Document > .Canvas h7 {
       margin: 0;
       padding: 30px 0 10px 0; }
-    .document > .canvas h1:first-child, .document > .canvas h2:first-child, .document > .canvas h3:first-child {
+    .Document > .Canvas h1:first-child, .Document > .Canvas h2:first-child, .Document > .Canvas h3:first-child {
       padding-top: 20px; }
-    .document > .canvas h1 {
+    .Document > .Canvas h1 {
       padding-top: 70px;
       font-size: 40px; }
-    .document > .canvas h2 {
+    .Document > .Canvas h2 {
       padding-top: 40px;
       font-size: 28px; }
-    .document > .canvas h3 {
+    .Document > .Canvas h3 {
       font-size: 18px; }
-    .document > .canvas h4 {
+    .Document > .Canvas h4 {
       font-size: 14px; }
-    .document > .canvas p, .document > .canvas div {
+    .Document > .Canvas p, .Document > .Canvas div {
       margin: 0;
       padding: 3px 3px 10px 3px; }
-    .document > .canvas ol, .document > .canvas ul {
+    .Document > .Canvas ol, .Document > .Canvas ul {
       margin-left: 0;
       padding-left: 28px; }
-      .document > .canvas ol li, .document > .canvas ul li {
+      .Document > .Canvas ol li, .Document > .Canvas ul li {
         margin-bottom: 10px; }
-    .document > .canvas table thead {
+    .Document > .Canvas table thead {
       background-color: #888;
       color: #Fff;
       font-size: 85%; }
-    .document > .canvas table tr td, .document > .canvas table tr th {
+    .Document > .Canvas table tr td, .Document > .Canvas table tr th {
       padding: 3px;
       border-color: #555;
       border-style: solid;
       border-width: 1px 0 0 1px; }
-    .document > .canvas table th:last-child, .document > .canvas table td:last-child {
+    .Document > .Canvas table th:last-child, .Document > .Canvas table td:last-child {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 0 1px; }
-    .document > .canvas table tr:last-child td {
+    .Document > .Canvas table tr:last-child td {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 1px 1px; }
-    .document > .canvas blockquote {
+    .Document > .Canvas blockquote {
       padding: 5px;
       font-size: 80%;
       border: 1px solid #aaa; }
 
-section.md_buffer ul.buffer_edit_menu {
+section.MdBuffer ul.BufferEditMenu {
   position: absolute;
   list-style: none;
   margin-right: 0;
   width: 140px; }
-  section.md_buffer ul.buffer_edit_menu > li a {
+  section.MdBuffer ul.BufferEditMenu > li a {
     cursor: pointer;
     font-size: 7pt;
     font-weight: bold;
@@ -856,23 +866,23 @@ section.md_buffer ul.buffer_edit_menu {
     padding-top: 5px;
     margin-bottom: 3px;
     width: 80px; }
-    section.md_buffer ul.buffer_edit_menu > li a:hover {
+    section.MdBuffer ul.BufferEditMenu > li a:hover {
       color: #000;
       background-color: #f5deb3; }
-  section.md_buffer ul.buffer_edit_menu > li.selected {
+  section.MdBuffer ul.BufferEditMenu > li.Selected {
     padding-left: 15px; }
-    section.md_buffer ul.buffer_edit_menu > li.selected a:hover, section.md_buffer ul.buffer_edit_menu > li.selected a:link, section.md_buffer ul.buffer_edit_menu > li.selected a:visited {
+    section.MdBuffer ul.BufferEditMenu > li.Selected a:hover, section.MdBuffer ul.BufferEditMenu > li.Selected a:link, section.MdBuffer ul.BufferEditMenu > li.Selected a:visited {
       cursor: default;
       background-color: transparent; }
-    section.md_buffer ul.buffer_edit_menu > li.selected a:before {
+    section.MdBuffer ul.BufferEditMenu > li.Selected a:before {
       float: left;
       border: 8px solid transparent;
       border-left: 10px solid #000; }
-section.md_buffer .buffer_edit {
+section.MdBuffer .BufferEdit {
   margin-left: 180px; }
-  section.md_buffer .buffer_edit form .canvas {
+  section.MdBuffer .BufferEdit form .Canvas {
     margin-bottom: 10px; }
-    section.md_buffer .buffer_edit form .canvas textarea {
+    section.MdBuffer .BufferEdit form .Canvas textarea {
       width: 100%;
       box-sizing: border-box;
       padding: 10px;
@@ -880,26 +890,26 @@ section.md_buffer .buffer_edit {
       border-radius: 0;
       -webkit-border-radius: 0;
       -moz-border-radius: 0; }
-  section.md_buffer .buffer_edit ul.pagenav {
+  section.MdBuffer .BufferEdit ul.Pagenav {
     list-style: none; }
-    section.md_buffer .buffer_edit ul.pagenav li {
+    section.MdBuffer .BufferEdit ul.Pagenav li {
       float: left;
       margin-right: 5px;
       padding: 5px;
       border: 1px solid #aaa; }
-      section.md_buffer .buffer_edit ul.pagenav li a.outline_page {
+      section.MdBuffer .BufferEdit ul.Pagenav li a.OutlinePage {
         cursor: pointer; }
-        section.md_buffer .buffer_edit ul.pagenav li a.outline_page.active {
+        section.MdBuffer .BufferEdit ul.Pagenav li a.OutlinePage.Active {
           font-weight: bold;
           text-decoration: underline;
           color: #000; }
-    section.md_buffer .buffer_edit ul.pagenav:after, section.md_buffer .buffer_edit ul.pagenav:before {
+    section.MdBuffer .BufferEdit ul.Pagenav:after, section.MdBuffer .BufferEdit ul.Pagenav:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.md_buffer .buffer_edit ul.pagenav:after {
+    section.MdBuffer .BufferEdit ul.Pagenav:after {
       clear: both; }
-  section.md_buffer .buffer_edit .document {
+  section.MdBuffer .BufferEdit .Document {
     background-color: #fff;
     border: 2px solid #888;
     padding: 10px;
@@ -908,125 +918,125 @@ section.md_buffer .buffer_edit {
     background-color: #fff;
     font-size: 14px;
     line-height: 1.2em; }
-    section.md_buffer .buffer_edit .document > * {
+    section.MdBuffer .BufferEdit .Document > * {
       border: 3px solid #fff; }
-    section.md_buffer .buffer_edit .document > .focus {
+    section.MdBuffer .BufferEdit .Document > .Focus {
       background-color: #b0c4de;
       border: 3px solid #9fb3cd;
       cursor: pointer;
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
-    section.md_buffer .buffer_edit .document > .md {
+    section.MdBuffer .BufferEdit .Document > .Md {
       display: none; }
-    section.md_buffer .buffer_edit .document > .uneditable {
+    section.MdBuffer .BufferEdit .Document > .Uneditable {
       background-color: #ecc;
       color: #888; }
-    section.md_buffer .buffer_edit .document .editform textarea.editdata {
+    section.MdBuffer .BufferEdit .Document .Editform textarea.Editdata {
       width: 100%;
       box-sizing: boder-box;
       margin-bottom: 5px;
       border-radius: 5px;
       -webkit-border-radius: 5px;
       -moz-border-radius: 5px; }
-    section.md_buffer .buffer_edit .document .editform button {
+    section.MdBuffer .BufferEdit .Document .Editform button {
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
-    section.md_buffer .buffer_edit .document h1, section.md_buffer .buffer_edit .document h2, section.md_buffer .buffer_edit .document h3, section.md_buffer .buffer_edit .document h4, section.md_buffer .buffer_edit .document h5, section.md_buffer .buffer_edit .document h6, section.md_buffer .buffer_edit .document h7 {
+    section.MdBuffer .BufferEdit .Document h1, section.MdBuffer .BufferEdit .Document h2, section.MdBuffer .BufferEdit .Document h3, section.MdBuffer .BufferEdit .Document h4, section.MdBuffer .BufferEdit .Document h5, section.MdBuffer .BufferEdit .Document h6, section.MdBuffer .BufferEdit .Document h7 {
       margin: 0;
       padding: 30px 0 10px 0; }
-    section.md_buffer .buffer_edit .document h1:first-child, section.md_buffer .buffer_edit .document h2:first-child, section.md_buffer .buffer_edit .document h3:first-child {
+    section.MdBuffer .BufferEdit .Document h1:first-child, section.MdBuffer .BufferEdit .Document h2:first-child, section.MdBuffer .BufferEdit .Document h3:first-child {
       padding-top: 20px; }
-    section.md_buffer .buffer_edit .document h1 {
+    section.MdBuffer .BufferEdit .Document h1 {
       padding-top: 70px;
       font-size: 40px; }
-    section.md_buffer .buffer_edit .document h2 {
+    section.MdBuffer .BufferEdit .Document h2 {
       padding-top: 40px;
       font-size: 28px; }
-    section.md_buffer .buffer_edit .document h3 {
+    section.MdBuffer .BufferEdit .Document h3 {
       font-size: 18px; }
-    section.md_buffer .buffer_edit .document h4 {
+    section.MdBuffer .BufferEdit .Document h4 {
       font-size: 14px; }
-    section.md_buffer .buffer_edit .document p, section.md_buffer .buffer_edit .document div {
+    section.MdBuffer .BufferEdit .Document p, section.MdBuffer .BufferEdit .Document div {
       margin: 0;
       padding: 3px 3px 10px 3px; }
-    section.md_buffer .buffer_edit .document ol, section.md_buffer .buffer_edit .document ul {
+    section.MdBuffer .BufferEdit .Document ol, section.MdBuffer .BufferEdit .Document ul {
       margin-left: 0;
       padding-left: 28px; }
-      section.md_buffer .buffer_edit .document ol li, section.md_buffer .buffer_edit .document ul li {
+      section.MdBuffer .BufferEdit .Document ol li, section.MdBuffer .BufferEdit .Document ul li {
         margin-bottom: 10px; }
-    section.md_buffer .buffer_edit .document table thead {
+    section.MdBuffer .BufferEdit .Document table thead {
       background-color: #888;
       color: #Fff;
       font-size: 85%; }
-    section.md_buffer .buffer_edit .document table tr td, section.md_buffer .buffer_edit .document table tr th {
+    section.MdBuffer .BufferEdit .Document table tr td, section.MdBuffer .BufferEdit .Document table tr th {
       padding: 3px;
       border-color: #555;
       border-style: solid;
       border-width: 1px 0 0 1px; }
-    section.md_buffer .buffer_edit .document table th:last-child, section.md_buffer .buffer_edit .document table td:last-child {
+    section.MdBuffer .BufferEdit .Document table th:last-child, section.MdBuffer .BufferEdit .Document table td:last-child {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 0 1px; }
-    section.md_buffer .buffer_edit .document table tr:last-child td {
+    section.MdBuffer .BufferEdit .Document table tr:last-child td {
       border-color: #555;
       border-style: solid;
       border-width: 1px 1px 1px 1px; }
-    section.md_buffer .buffer_edit .document blockquote {
+    section.MdBuffer .BufferEdit .Document blockquote {
       padding: 5px;
       font-size: 80%;
       border: 1px solid #aaa; }
-section.md_buffer .buffer_edit.source .ctrl {
+section.MdBuffer .BufferEdit.Source .Ctrl {
   margin-bottom: 10px; }
-  section.md_buffer .buffer_edit.source .ctrl input[type=submit] {
+  section.MdBuffer .BufferEdit.Source .Ctrl input[type=submit] {
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     background-color: #fff; }
-section.md_buffer .upload_form {
+section.MdBuffer .UploadForm {
   margin-left: 180px; }
-  section.md_buffer .upload_form h3 {
+  section.MdBuffer .UploadForm h3 {
     margin-top: 0;
     margin-left: 0; }
-section.md_buffer .md_buffer_fix {
+section.MdBuffer .MdBufferFix {
   margin-bottom: 0; }
-section.md_buffer .image_manager {
+section.MdBuffer .ImageManager {
   background-color: #fff;
   border: 2px solid #888;
   padding: 10px; }
-  section.md_buffer .image_manager form.image_action {
+  section.MdBuffer .ImageManager form.ImageAction {
     margin: 30px 0; }
-    section.md_buffer .image_manager form.image_action ul.thumbnail {
+    section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail {
       list-style: none;
       margin: 10px 0; }
-      section.md_buffer .image_manager form.image_action ul.thumbnail li {
+      section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail li {
         float: left; }
-        section.md_buffer .image_manager form.image_action ul.thumbnail li .info {
+        section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail li .Info {
           font-size: 9pt; }
-      section.md_buffer .image_manager form.image_action ul.thumbnail:after, section.md_buffer .image_manager form.image_action ul.thumbnail:before {
+      section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail:after, section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail:before {
         display: table;
         content: "";
         line-height: 0; }
-      section.md_buffer .image_manager form.image_action ul.thumbnail:after {
+      section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail:after {
         clear: both; }
 
-.bufferCommitForm {
+.BufferCommitForm {
   position: absolute;
   padding: 30px 40px;
   margin: 0;
   background-color: rgba(0, 0, 0, 0.8);
   width: 100%;
   height: 100%; }
-  .bufferCommitForm .md_buffer_fix {
+  .BufferCommitForm .MdBufferFix {
     color: #fff; }
-    .bufferCommitForm .md_buffer_fix h3 {
+    .BufferCommitForm .MdBufferFix h3 {
       margin-top: 0; }
-    .bufferCommitForm .md_buffer_fix textarea.history {
+    .BufferCommitForm .MdBufferFix textarea.History {
       width: 100%;
       height: 100px;
       margin-bottom: 5px; }
-    .bufferCommitForm .md_buffer_fix .ctrl input[type=submit], .bufferCommitForm .md_buffer_fix .ctrl a.btn, .bufferCommitForm .md_buffer_fix .ctrl a.btn:link {
+    .BufferCommitForm .MdBufferFix .Ctrl input[type=submit], .BufferCommitForm .MdBufferFix .Ctrl a.Btn, .BufferCommitForm .MdBufferFix .Ctrl a.Btn:link {
       float: left;
       margin-right: 5px;
       cursor: pointer;
@@ -1041,12 +1051,12 @@ section.md_buffer .image_manager {
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
-    .bufferCommitForm .md_buffer_fix .ctrl input[type=submit]:hover, .bufferCommitForm .md_buffer_fix .ctrl a.btn:hover {
+    .BufferCommitForm .MdBufferFix .Ctrl input[type=submit]:hover, .BufferCommitForm .MdBufferFix .Ctrl a.Btn:hover {
       background-color: #f5deb3;
       color: #222; }
-    .bufferCommitForm .md_buffer_fix .ctrl:after, .bufferCommitForm .md_buffer_fix .ctrl:before {
+    .BufferCommitForm .MdBufferFix .Ctrl:after, .BufferCommitForm .MdBufferFix .Ctrl:before {
       display: table;
       content: "";
       line-height: 0; }
-    .bufferCommitForm .md_buffer_fix .ctrl:after {
+    .BufferCommitForm .MdBufferFix .Ctrl:after {
       clear: both; }

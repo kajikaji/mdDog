@@ -2,38 +2,38 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li>
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "承認" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section><!-- docinfo -->
 
-<section class="gitlog">
+<section class="Gitlog">
 [% IF approve_pre %]
-<table class="gitlog">
+<table class="Gitlog">
   <thead>
     <tr>
-      <th class="date">更新年月日</th>
-      <th class="message">詳細</th>
-      <th class="author">更新者</th>
+      <th class="Date">更新年月日</th>
+      <th class="Message">詳細</th>
+      <th class="Author">更新者</th>
     </tr>
   </thead>
   <tbody>
     [% FOREACH log IN loglist %]
-    <tr class="[% IF log.local %]user-branch[% ELSE %]master[% END %]">
-      <td class="date">[% log.attr.date %]</td>
-      <td class="message">[% log.message %]</td>
-      <td class="author">[% log.attr.author %]</td>
+    <tr class="[% IF log.local %]UserBranch[% ELSE %]Master[% END %]">
+      <td class="Date">[% log.attr.date %]</td>
+      <td class="Message">[% log.message %]</td>
+      <td class="Author">[% log.attr.author %]</td>
     </tr>
     [% END %]
   </tbody>
 </table>
 </div>
-<form class="approve-form" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
+<form class="ApproveForm" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
   <div class="">上記のコミットを承認します</div>
   <input type="submit" name="approve" value="OK">
   <a href="docinfo.cgi?fid=[% fid %]&user=[% user %]&revision=[% revision %]">キャンセル</a>
@@ -42,22 +42,22 @@
   <input type="hidden" name="user" value="[% user %]">
 </form>
 [% ELSE %]<!-- approve_pre -->
-  <h3 class="subject">更新履歴</h3>
+  <h3 class="Subject">更新履歴</h3>
 
-  <ul id="buffer-list" class="buffer-list">
+  <ul id="bufferList" class="BufferList">
     [%FOREACH user IN userlist %]
-    <li id="buffer-[% user.uid %]" [%IF loop.first %]class="active"[% END %]><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
+    <li id="buffer[% user.uid %]" [%IF loop.first %]class="Active"[% END %]><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
     [% END %]
   </ul>
 
   [%FOREACH user IN userlist %]
   [% IF user.loglist.size == 0 %]
-  <div id="log-buffer-[% user.uid %]" class="logtable user" [%UNLESS loop.first %]style="display: none;"[%END%]>
-    <div class="description">編集履歴はありません</div>
+  <div id="logBuffer[% user.uid %]" class="Logtable User" [%UNLESS loop.first %]style="display: none;"[%END%]>
+    <div class="Description">編集履歴はありません</div>
   </div>
   [% ELSE %]
-  <div id="log-buffer-[% user.uid %]" class="logtable user" [%UNLESS loop.first %]style="display: none;"[% END %]>
-    [% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
+  <div id="logBuffer[% user.uid %]" class="Logtable User" [%UNLESS loop.first %]style="display: none;"[% END %]>
+    [% UNLESS user.is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
 
     [% SET loglist = user.loglist %]
     [% SET is_live = user.is_live %]

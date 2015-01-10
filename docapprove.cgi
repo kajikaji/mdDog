@@ -19,7 +19,7 @@ if(!$dog->qParam('fid')) {
     $dog->setApproveList();
   }
 
-  $dog->gitLog();
+  $dog->gitLog('all');
   $dog->setDocumentInfo();
 }
 

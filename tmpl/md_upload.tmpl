@@ -2,22 +2,22 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "アップロード" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 [%INCLUDE info.tmpl %]
 
-<section class="md_buffer">
+<section class="MdBuffer">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="upload_form">
+  <div class="UploadForm">
     <form action="" method="post" id="docx-upload" enctype="multipart/form-data">
       <h3>MDファイルのアップロード</h3>
       <div>ローカルで編集したMDファイルをアップロードして上書きできます。ただし同名のファイル名である必要があります。</div>

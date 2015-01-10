@@ -3,34 +3,35 @@
 [% INCLUDE userinfo.tmpl %]
 <div>[% debug %]</div>
 
-<section class="top">
+<section class="Top">
 
-<div class="top-menu">
-  <div class="subject">
-    <span class="title">ドキュメント一覧</span>
+<div class="TopMenu">
+  <div class="Subject">
+    <span class="Title">ドキュメント一覧</span>
   [% IF login %]
-    <div class="menu">
-      <a href="create.cgi" class="button"><i class="glyph plus"></i>新規追加</a>
-      <a href="upload_docx.cgi" class="button"><i class="glyph inbox_plus"></i>docx登録</a>
+    <div class="Menu">
+      <a href="create.cgi" class="Button"><i class="Glyph Plus"></i>新規追加</a>
+      <a href="upload_docx.cgi" class="Button"><i class="Glyph InboxPlus"></i>docx登録</a>
     </div>
   [% END %]
   </div>
   [% IF infos %]
-  <table class="doc-list">
+  <table class="DocList">
     <tbody>
       [% FOREACH info IN infos %]
-      <tr class="[% IF info.is_used %]active[% ELSE %]nonactive[% END %] [% IF info.deleted_at %]deleted[% END %]">
-        <td class="info">
+      <tr class="[% IF info.is_used %]Active[% ELSE %]Nonactive[% END %] [% IF info.deleted_at %]Deleted[% END %]">
+        <td class="Info">
 
           [% UNLESS info.deleted_at %]
           [% IF is_delete || is_admin %]
-          <div class="doc-ctrl">
+          <div class="DocCtrl">
             <form action="" method="post">
+             <input type="submit" name="setting" value=" " class="Glyph Cogwheel">
               [% IF info.is_used %]
-               <input type="submit" name="unuse" value=" " class="glyph ban">
+               <input type="submit" name="unuse" value=" " class="Glyph Ban">
               [% ELSE %]
-              <input type="submit" name="use" value=" " class="glyph ok">
-              <input type="submit" name="delete" value=" " class="glyph bin">
+              <input type="submit" name="use" value=" " class="Glyph Ok">
+              <input type="submit" name="delete" value=" " class="Glyph Bin">
               [% END %]
               <input type="hidden" name="fid" value="[% info.id %]">
             </form>
@@ -38,25 +39,25 @@
           [% END %] <!-- IF is_delete || is_admin -->
           [% END %] <!-- UNLESS info.deleted_at -->
           
-          <div class="doc-subject">
+          <div class="DocSubject">
             [% IF info.deleted_at %]
-              <div class="name">[% info.file_name %]</div>
+              <div class="Name">[% info.file_name %]</div>
             [% ELSIF info.is_used %]
-              <div class="name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></div>
+              <div class="Name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></div>
             [% ELSE %]
-              <div class="name">[% info.file_name %]</div>
+              <div class="Name">[% info.file_name %]</div>
             [% END %]
           </div> <!-- doc-subject -->
 
-          <div class="doc-detail">
+          <div class="DocDetail">
           [% IF !info.deleted_at and info.is_used %]
             <div class="">[<a href="md_output.cgi?fid=[% info.id %]">最新版アウトライン</a>]</div>
             <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
           [% END %]
-            <div class="create-at">作成日時:[% info.created_at %]</div>
-            <div class="created-by">作成者:[% info.created_by %]</div>
-            <div class="last-approved-at">最終承認日時:[% info.last_updated_at %]</div>
-            <div class="filesize">最終ファイルサイズ:[% info.file_size %]byte</div>
+            <div class="CreateAt">作成日時:[% info.created_at %]</div>
+            <div class="CreatedBy">作成者:[% info.created_by %]</div>
+            <div class="LastApprovedAt">最終承認日時:[% info.last_updated_at %]</div>
+            <div class="Filesize">最終ファイルサイズ:[% info.file_size %]byte</div>
           </div>
         </td>
       </tr>
@@ -64,7 +65,7 @@
     </tbody>
   </table>
   [% ELSE %]
-  <div class="no-file">
+  <div class="NoFile">
     ファイルは登録されていません
   </div>
   [% END %]

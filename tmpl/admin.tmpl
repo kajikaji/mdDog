@@ -1,14 +1,31 @@
 [% INCLUDE header.tmpl %]
 [% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
 <div>[% debug %]</div>
-<h2>管理画面</h2>
-<div class="description">
-docxlogの管理を行います。アクセスには管理者権限が必要です
-</div>
 
-[% IF login %]
-[% END %]
+<ul class="back-nav">
+<li><a href="index.cgi">ドキュメント一覧</a></li>
+</ul>
 
+<section class="admin">
+  <h1>管理画面</h1>
+
+<h2>ユーザー管理</h2>
+<h3>管理方法</h3>
+<ul class="UserManage">
+<li><label><input type="radio" name="UserManageDB" value="own">独自管理</li></label>
+<li>
+  <label><input type="radio" name="UserManageDB" value="ldap">LDAP</label>
+  <label>Server:<input type="text" name="LDAPServer" length="30"></label>
+</li>
+</ul>
+
+<h3>ユーザー一覧</h3>
+<button>追加</button>
+
+
+
+</section>
 
 </body>
 </html>

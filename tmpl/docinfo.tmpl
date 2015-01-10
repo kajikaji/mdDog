@@ -2,46 +2,24 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%INCLUDE docinfo_header.tmpl %]
 </section><!-- docinfo -->
 
-<section class="gitlog">
-  <h3 class="subject">更新履歴</h3>
+<section class="Gitlog">
+  <h3 class="Subject">更新履歴</h3>
 
-  <ul id="buffer-list" class="buffer-list">
-    [%FOREACH user IN userlist %]
-    <li id="buffer-[% user.uid %]"><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
-    [% END %]
-    <li id="buffer-0" class="active"><a onclick="javascript:showLog(0);">承認済</a></li>
-  </ul>
-
-  <div id="log-buffer-0" class="logtable master">
+  <div id="logBuffer0" class="Logtable Master">
     [% SET loglist = sharedlist %]
     [% SET is_live = 1 %]
     [% INCLUDE table_gitlog.tmpl %]
   </div>
 
-  [%FOREACH user IN userlist %]
-  [% IF user.loglist.size == 0 %]
-  <div id="log-buffer-[% user.uid %]" class="logtable user" style="display: none;">
-    <div class="description">編集履歴はありません</div>
-  </div>
-  [% ELSE %]
-  <div id="log-buffer-[% user.uid %]" class="logtable user" style="display: none;">
-    [% UNLESS user.is_live %]<div class="description alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
-
-    [% SET loglist = user.loglist %]
-    [% SET is_live = user.is_live %]
-    [% INCLUDE table_gitlog.tmpl %]
-  </div>
-  [% END %]<!-- if user.loglist -->
-  [% END %]<!-- foreach userlist -->
-</section><!-- gitlog -->
+</section><!-- Gitlog -->
 
 </body>
 </html>

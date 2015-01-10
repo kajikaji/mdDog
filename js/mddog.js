@@ -2,19 +2,19 @@
  * 関数定義
  ***********************************************/
 function activeBufferList(uid) {
-    $('#buffer-list').find('li').each(function(){
-        var id = Number($(this).attr("id").substr(7));
+    $('#bufferList').find('li').each(function(){
+        var id = Number($(this).attr("id").substr(6));
         if(uid === id){
-            $(this).addClass("active");
+            $(this).addClass("Active");
         }else{
-            $(this).removeClass("active");
+            $(this).removeClass("Active");
         }
     });
 }
 
 function showLog(uid) {
-    $('.gitlog .logtable').each(function(){
-        var id = $(this).attr("id").substr(11);
+    $('.Gitlog .Logtable').each(function(){
+        var id = $(this).attr("id").substr(9);
         if(uid != id && !$(this).is(":hidden")){
               $(this).hide();
         }else if(uid == id && $(this).is(":hidden")){
@@ -39,15 +39,15 @@ function getParam(key) {
 
 function commitBuffer() {
     var $document = "";
-    $('form .md_buffer_fix .rowdata').find('.elm').each(function(){
+    $('form .MdBufferFix .Rowdata').find('.Elm').each(function(){
         $document += $(this).text();
         $document += "\n";
     });
-    if($('.buffer_edit.source .canvas').find('textarea').length){
-	$document = $('.buffer_edit.source .canvas textarea').val();
+    if($('.BufferEdit.Source .Canvas').find('textarea').length){
+	$document = $('.BufferEdit.Source .Canvas textarea').val();
     }
 
-    $('form .md_buffer_fix').find('textarea.document').text($document);
+    $('form .MdBufferFix').find('textarea.Document').text($document);
     document.forms['commitForm'].submit();   
 }
 
@@ -66,14 +66,14 @@ var mdEditForm = function(obj){
 mdEditForm.prototype = {
     init: function() {
         this.id = this.src.attr('id').slice(2);
-        this.elmId = 'elm-' + this.id;
+        this.elmId = 'elm' + this.id;
         this.mdId = 'md' + this.id;
-        this.formId = 'edit-' + this.id;
+        this.formId = 'edit' + this.id;
 
         var newForm = $('#' + this.formtmpl).clone().attr('id', this.formId);
         var data= $('#' + this.elmId).text();
         var n = data.match(/\n/g).length + 1;
-        newForm.find('textarea.editdata').text(data).attr('rows', n);
+        newForm.find('textarea.Editdata').text(data).attr('rows', n);
         this.src.after(newForm);
         newForm.show(); this.src.hide();
 
@@ -81,20 +81,20 @@ mdEditForm.prototype = {
     },
 
     attachButton: function(){
-        $('#' + this.formId).find('button.update').click($.proxy(function(){
+        $('#' + this.formId).find('button.Update').click($.proxy(function(){
             this.btnUpdate();
         }, this));
-        $('#' + this.formId).find('button.delete').click($.proxy(function(){
+        $('#' + this.formId).find('button.Delete').click($.proxy(function(){
             this.btnDelete();
         }, this));
-        $('#' + this.formId).find('button.cancel').click($.proxy(function(){
+        $('#' + this.formId).find('button.Cancel').click($.proxy(function(){
             this.btnCancel();
         }, this));
     },
 
     btnUpdate: function(){
             var fid = getParam("fid");
-            var editdata = $('#' + this.formId).find('textarea.editdata').val();
+            var editdata = $('#' + this.formId).find('textarea.Editdata').val();
             $.ajax({
                 url: this.api,
                 type: 'POST',
@@ -146,12 +146,12 @@ mdEditForm.prototype = {
         $('#' + this.elmId + 'org').remove();
 	    var eLeng = $elmObj.length;
 	    if(eLeng > 1){
-	        this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm-');
+	        this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm');
         }
 
         $newObj.hover(
-            function(){ $(this).addClass('focus'); },
-            function(){ $(this).removeClass('focus'); }
+            function(){ $(this).addClass('Focus'); },
+            function(){ $(this).removeClass('Focus'); }
         );
         $newObj.click(function(){
             var eForm = new mdEditForm($(this));
@@ -165,7 +165,7 @@ mdEditForm.prototype = {
 	this.resetTreeId($nextMd, -1, 'md');
 	var $nextElm = $('#' + this.elmId).next();
         $('#' + this.elmId).remove();
-	this.resetTreeId($nextElm, -1, 'elm-');
+	this.resetTreeId($nextElm, -1, 'elm');
     },
     resetTreeId: function(obj, inc, prefix) {
         while(obj.length > 0){
@@ -187,11 +187,11 @@ var outlineDivide = function() {};
 outlineDivide.prototype = {
     init: function () {
         var divide = [];
-        $('.md_buffer  ul.pagenav').find('a.outline_page').each($.proxy(function(index, obj){
+        $('.MdBuffer  ul.Pagenav').find('a.OutlinePage').each($.proxy(function(index, obj){
             divide.push($(obj).data('elm'));
             $(obj).data('id', index);
             $(obj).click($.proxy(function(ev){
-                $('.md_buffer .document .md').hide();
+                $('.MdBuffer .Document .Md').hide();
 
                 var id = $(ev.target).data('id');
 	            this.showPage(divide, id);
@@ -219,7 +219,7 @@ outlineDivide.prototype = {
             }
         }
         if(tmp !== undefined) {
-            $('.md_buffer .document').find('.md').each(function(){
+            $('.MdBuffer .Document').find('.Md').each(function(){
                 var objId = $(this).attr('id').substr(2);
                 if(objId >= tmp) {
                     $(this).show();
@@ -229,11 +229,11 @@ outlineDivide.prototype = {
     },
 
     activeNum: function (num) {
-        $('.md_buffer ul.pagenav').find('a.outline_page').each(function(index){
+        $('.MdBuffer ul.Pagenav').find('a.OutlinePage').each(function(index){
             if(index === num){
-                $(this).addClass('active');
+                $(this).addClass('Active');
             }else{
-                $(this).removeClass('active');
+                $(this).removeClass('Active');
             }
         });
     }
@@ -245,24 +245,24 @@ outlineDivide.prototype = {
 var mdOutlineEditor = function(){};
 mdOutlineEditor.prototype = {
     init: function(){
-        $('.outline_editor div.document').children('.md').each(function(){
+        $('.OutlineEditor div.Document').children('.Md').each(function(){
             var id = $(this).attr("id");
-            if(id === "blk_tmpl" || id == "divide_info"){
+            if(id === "blkTmpl" || id == "divideInfo"){
                 return;
             }
             var num = id.substr(2);
             var tag = this.tagName;
             var digest = $(this).text().substr(0, 6);
             $(this).hide();
-            var blk = $('#blk_tmpl').clone().removeAttr("id");
-            blk.find('.tagname').text(tag);
-            blk.find('.digest').text(digest);
-            blk.find('a.btn_expand').click(function(){
+            var blk = $('#blkTmpl').clone().removeAttr("id");
+            blk.find('.Tagname').text(tag);
+            blk.find('.Digest').text(digest);
+            blk.find('a.BtnExpand').click(function(){
                 $('#'+id).toggle();
             });
-            blk.find('button.divide_ctrl').attr('id', 'divide' + num).click(function(){
+            blk.find('button.DivideCtrl').attr('id', 'divide' + num).click(function(){
                 var action = 'divide';
-                if($(this).parent().next().next().hasClass('outline_divide')){
+                if($(this).parent().next().next().hasClass('OutlineDivide')){
                     action = 'undivide';
                 }
                 $.ajax({
@@ -275,21 +275,21 @@ mdOutlineEditor.prototype = {
                     }
                 }).done(function(res){
                     var num = res.num;
-                    var target = $('#md' + num).prev('div.blk');
+                    var target = $('#md' + num).prev('div.Blk');
                     if(action === 'divide'){
-                        var divideObj = $('<div>').addClass('outline_divide');
+                        var divideObj = $('<div>').addClass('OutlineDivide');
                         target.before(divideObj);
                     }else if(action === 'undivide'){
-                        target.prev('div.outline_divide').remove();
+                        target.prev('div.OutlineDivide').remove();
                     }
                 });
             });
             $(this).before(blk);
         });
-        $('.outline_editor div.document .divide_info').find('.divide').each(function(){
+        $('.OutlineEditor div.Document .DivideInfo').find('.Divide').each(function(){
             var num = $(this).text();
-            var target = $('#md' + num).prev('div.blk');
-            var divideObj = $('<div>').addClass('outline_divide');
+            var target = $('#md' + num).prev('div.Blk');
+            var divideObj = $('<div>').addClass('OutlineDivide');
             target.before(divideObj);
         });
     }
@@ -304,17 +304,17 @@ var mdOutline = function(){
 mdOutline.prototype = {
     init: function () {
         this.page = 0;
-        $('.outline').find('.history.page').each($.proxy(function(i, elm){
-            this.adjustPage("history", elm);
+        $('.Outline').find('.History.Page').each($.proxy(function(i, elm){
+            this.adjustPage("History", elm);
         }, this));
 
         this.page = 0;
-        $('.outline').find('.contents.page').each($.proxy(function(i, elm){
-            this.adjustPage("contents", elm);
+        $('.Outline').find('.Contents.Page').each($.proxy(function(i, elm){
+            this.adjustPage("Contents", elm);
         }, this));
 
         this.page = 0;
-        $('.outline').find('.document.page').each($.proxy(function(i, elm){
+        $('.Outline').find('.Document.Page').each($.proxy(function(i, elm){
             this.adjustDocumentPage(elm);
             $(elm).remove();
         }, this));
@@ -322,7 +322,7 @@ mdOutline.prototype = {
     },
 
     addPage : function (className, cPage, depth, obj){
-        var newPage = $('<div>').addClass(className + ' page  p' + (cPage + 1));
+        var newPage = $('<div>').addClass(className + ' Page  P' + (cPage + 1));
         var blk = obj;
         var ch = undefined;
         for(var i=0; i < depth; i++){
@@ -335,8 +335,8 @@ mdOutline.prototype = {
             blk = pObj;
         }
         newPage.prepend(ch);
-        $('.' + className + '.page.p' + cPage).after(newPage);
-        $(obj).prev().addClass("adjust-block");
+        $('.' + className + '.Page.P' + cPage).after(newPage);
+        $(obj).prev().addClass("AdjustBlock");
     },
 
     recursivePage : function(className, obj, innerHeight, pageHeight, cHeight, depth) {
@@ -351,7 +351,7 @@ mdOutline.prototype = {
                     var disp = $(elm).css('display');
                     if(disp === 'block' || disp === 'table' || disp === 'list-item') {
                         if(index === 0){
-                            $('.' + className + '.page.p' + this.page).append($('<' + obj.tagName + '>'));
+                            $('.' + className + '.Page.P' + this.page).append($('<' + obj.tagName + '>'));
                         }
                         cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, depth + 1);
                     }else{
@@ -364,9 +364,9 @@ mdOutline.prototype = {
             }
         }else{
             if(depth === 0){
-                $('.' + className + '.page.p' + this.page).append($(obj).clone());
+                $('.' + className + '.Page.P' + this.page).append($(obj).clone());
             }else{  // TODO: １階層しか対応していない 2014/12/12
-                $('.' + className + '.page.p' + this.page).children().last().append($(obj).clone());
+                $('.' + className + '.Page.P' + this.page).children().last().append($(obj).clone());
             }
             cHeight += objHeight;
         }
@@ -380,8 +380,8 @@ mdOutline.prototype = {
         var pageHeight = $(obj).outerHeight();  //297mm
         var cHeight = 0.0;
 
-        var newPage = $('<div>').addClass(className + ' page p' + this.page);
-        $('.' + className + '.page').after(newPage);
+        var newPage = $('<div>').addClass(className + ' Page P' + this.page);
+        $('.' + className + '.Page').after(newPage);
 
         $(obj).children().each($.proxy(function(i, elm){
             cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, 0);
@@ -395,18 +395,18 @@ mdOutline.prototype = {
         var cHeight = 0.0;
         var newpage = 0;
 
-        $(obj).after($('<div>').addClass("document page p" + this.page));
+        $(obj).after($('<div>').addClass("Document Page P" + this.page));
 
         $(obj).children().each($.proxy(function(i, elm){
             if(newpage === 1){
-                $(".document.page.p" + this.page).after(
-                     $('<div>').addClass("document page p" + (this.page + 1))
+                $(".Document.Page.P" + this.page).after(
+                     $('<div>').addClass("Document Page P" + (this.page + 1))
                 );
                 this.page++;
                 newpage = 0;
             }
 
-            $(".document.page.p" + this.page).append($(elm).clone());
+            $(".Document.Page.P" + this.page).append($(elm).clone());
 
             var objHeight = $(elm).outerHeight(true);
             if( cHeight + objHeight >= innerHeight ) {
@@ -425,17 +425,17 @@ mdOutline.prototype = {
  ***********************************************/
 $(function(){
     // バッファ編集ページ
-    $('.md_buffer div.document').children().each(function(){
-        if($(this).hasClass("md")){
+    $('.MdBuffer div.Document').children().each(function(){
+        if($(this).hasClass("Md")){
             $(this).hover(
-                function(){ $(this).addClass('focus'); },
-                function(){ $(this).removeClass('focus'); }
+                function(){ $(this).addClass('Focus'); },
+                function(){ $(this).removeClass('Focus'); }
             );
             $(this).click(function(){
                 new mdEditForm($(this)).init();;
             });
         }else{
-            $(this).addClass("uneditable");
+            $(this).addClass("Uneditable");
         }
     });
     new outlineDivide().init();   // 編集バッファのアウトライン
@@ -447,10 +447,10 @@ $(function(){
         $outline = true;
 
         $('body').children().each(function(){
-            if(!$(this).hasClass('outline')){
+            if(!$(this).hasClass('Outline')){
                 $(this).slideUp('100');
             }else{
-                $(this).addClass('print-format');
+                $(this).addClass('PrintFormat');
             }
         });
     });
@@ -458,7 +458,7 @@ $(function(){
     $('#bufferCommitBtn').on('click', function(){
 	$('#bufferCommitForm').fadeToggle();
     });
-    $('#cancel_button').click(function(){
+    $('#cancelButton').click(function(){
 	$('#bufferCommitForm').fadeToggle();
     });
 
@@ -467,16 +467,16 @@ $(function(){
             $outline = false;
 
             $('body').children().each(function(){
-                if(!$(this).hasClass('outline')){
+                if(!$(this).hasClass('Outline')){
                     $(this).slideDown('100');
                 }else{
-                    $(this).removeClass('print-format');
+                    $(this).removeClass('PrintFormat');
                 }
             });
         }
     });
 
-    if($('.md_buffer').find('.buffer_edit.source').length){
+    if($('.MdBuffer').find('.BufferEdit.Source').length){
 	var changeFlg = false;
 	$(window).on('beforeunload', function(){
 	    if(changeFlg){
@@ -485,7 +485,7 @@ $(function(){
 		return;
 	    }
 	});
-	$('.canvas').find('textarea').change(function(){
+	$('.Canvas').find('textarea').change(function(){
 	    changeFlg = true;
 	});
     }

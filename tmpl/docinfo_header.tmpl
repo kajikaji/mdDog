@@ -1,22 +1,21 @@
 <h1>
 [%IF SUBMENU %]
-<span class="title">[[% SUBMENU %]]</span>
+<span class="Title">[[% SUBMENU %]]</span>
 [% END %]
 <span class="">[% file_name %]</span></h1>
-<div class="description">
-  <div class="created-at">作成日時:[% created_at %]</div>
-  <div class="created-by">作成者:[% created_by %]</div>
-  <div class="last-approved-at">最終承認日時:[% last_updated_at %]</div>
-  <div class="filesize">ファイルサイズ:[% file_size %]byte</div>
+<div class="Description">
+  <div class="CreatedAt">作成日時:[% created_at %]</div>
+  <div class="CreatedBy">作成者:[% created_by %]</div>
+  <div class="LastApprovedAt">最終承認日時:[% last_updated_at %]</div>
+  <div class="Filesize">ファイルサイズ:[% file_size %]byte</div>
 </div>
 
 [% IF login %]
-<ul class="doc-ctrl">
-  <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース" "アップロード"] %]class="selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="btn">編集バッファ</a></li>
-  [%IF is_approve %]
-  <li [%IF SUBMENU == "承認" %]class="selected"[% END %]><a href="docapprove.cgi?fid=[% fid %]" class="btn">承認</a></li>[% END %]
-  [% IF is_mdfile %]<li [%IF SUBMENU == "アウトプット" %]class="selected"[% END %]><a href="md_output.cgi?fid=[% fid %]" class="btn">アウトプット</a></li>[% END %]
-  <li><a href="download.cgi?fid=[% fid %]" class="btn">最新版DL</a></li>  
+<ul class="DocCtrl">
+  <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース" "アップロード"] %]class="Selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="Btn">編集バッファ</a></li>
+  [%IF is_mdfile %]<li [%IF SUBMENU == "アウトプット" %]class="Selected"[% END %]><a href="md_output.cgi?fid=[% fid %]" class="Btn">アウトプット</a></li>[% END %]
+  <li><a href="download.cgi?fid=[% fid %]" class="Btn">最新版DL</a></li>  
+  [%IF is_approve %]<li [%IF SUBMENU == "承認" %]class="Selected"[% END %]><a href="docapprove.cgi?fid=[% fid %]" class="Btn">承認</a></li>[% END %]
 </ul>
 [% END %]
 

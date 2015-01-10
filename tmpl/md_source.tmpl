@@ -2,28 +2,28 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "ソース" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 [% INCLUDE info.tmpl %]
 
-<section class="md_buffer">
+<section class="MdBuffer">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="buffer_edit source">
+  <div class="BufferEdit Source">
     <form action="?fid=[% fid %]" method="post">
-      <div class="ctrl">
+      <div class="Ctrl">
         <input type="submit" name="update" value="保存">
         <input type="hidden" name="fid" value="[% fid %]">  
       </div>
-      <div class="canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
+      <div class="Canvas"><textarea rows="20" name="document">[% document %]</textarea></div>
     </form>
   </div> <!-- buffer_edit.source -->
 </section>

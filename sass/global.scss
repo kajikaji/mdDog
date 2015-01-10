@@ -36,21 +36,21 @@ $corner_b: 5px;
   tbody{
     tr{
       td{
-          div.message{
+          div.Message{
           }
-          &.date {
+          &.Date {
               width: 160px;
           }
-          &.author {
+          &.Author {
               width: 200px;
           }
-          &.ctrl{
+          &.Ctrl{
             width: 80px;
->ul{
-  list-style: none;
-  margin-left: 0;
-}
-            .download-link{
+	    >ul{
+		list-style: none;
+		margin-left: 0;
+	    }
+            .DownloadLink{
                   a,
                   a:hover,
                   a:link,
@@ -132,7 +132,7 @@ $corner_b: 5px;
 }
 
 @mixin bufferEditMenu {
-    ul.buffer_edit_menu{
+    ul.BufferEditMenu{
         position: absolute;
         list-style:none;
         margin-right: 0;
@@ -152,7 +152,7 @@ $corner_b: 5px;
                     background-color: #f5deb3;
                 }
             }
-            &.selected{
+            &.Selected{
                 padding-left: 15px;
                 a{
                     &:hover, &:link, &:visited{
@@ -175,58 +175,61 @@ $corner_b: 5px;
  * GLYPH-ICON
  */
 
-i.glyph{
+i.Glyph{
     width: 26px;
     height: 26px;
     display:inline-block;
     background-color: transparent;
     background-repeat: no-repeat;
 }
-.glyph.download-alt{
+.Glyph.DownloadAlt{
     background-image: url("../img/181_download_alt.png");
 }
-.glyph.bin{
+.Glyph.Bin{
     background-image: url("../img/016_bin.png");
 }
-.glyph.inbox_plus{
+.Glyph.InboxPlus{
     background-image: url("../img/131_inbox_plus.png");
 }
-.glyph.ok{
+.Glyph.Ok{
     background-image: url("../img/198_ok.png");
 }
-.glyph.ban{
+.Glyph.Ban{
     background-image: url("../img/199_ban.png");
 }
-.glyph.plus{
+.Glyph.Plus{
     background-position: 3px 3px;
     background-image: url("../img/432_plus.png");
 }
-.glyph.commit{
+.Glyph.Commit{
     background-image: url("../img/141_database_plus.png");
     width: 27px;
     height: 27px;
 }
-.glyph.edit{
+.Glyph.Edit{
     background-image: url("../img/151_edit.png");
 }
-.glyph.source{
+.Glyph.Source{
     background-image: url("../img/036_file.png");
 }
-.glyph.image{
+.Glyph.Image{
     background-image: url("../img/159_picture.png");
 }
-.glyph.outline{
+.Glyph.Outline{
     background-image: url("../img/156_show_lines.png");
 }
-.glyph.upload{
+.Glyph.Upload{
     background-image: url("../img/201_upload.png");
 }
-a.glyph {
+.Glyph.Cogwheel{
+    background-image: url("../img/019_cogwheel.png");
+}
+a.Glyph {
   display: inline-block;
   float: left;
   @include clearfix();
 }
-a.glyph, input[type=submit].glyph{
+a.Glyph, input[type=submit].Glyph{
   padding: 0;
   border: none;
   background-color: transparent;
@@ -239,7 +242,7 @@ a.glyph, input[type=submit].glyph{
   }
 }
 
-a.button{
+a.Button{
   display: inline-block;
   border: 1px solid #000;
   padding: 5px 8px;
@@ -250,7 +253,7 @@ a.button{
     margin-bottom: -5px;
     margin-right: 3px;
   }
-  &.orange{
+  &.Orange{
     background-color: #ff4500;
     border: 1px solid #ff7f50;
   }
@@ -269,7 +272,7 @@ form{
 
     @include round-corner(5px);
   }
-  input[type=submit]:hover, input[type=button]:hover, button:hover{
+  input[type=submit]:hover, input[type=button]:hover,button:hover{
     background-color: #f5deb3;
     color: #222;
   }
@@ -279,7 +282,7 @@ form{
   }
 }
 
-a.btn{
+a.Btn{
   @include round-corner(4px);
   border: 1px solid #555;
   padding: 4px 6px;
@@ -299,22 +302,22 @@ a.btn{
   @include clearfix();
 }
 
-.app-header{
+.AppHeader{
   border-bottom: 3px double #4169e1;
   margin-top: 10px;
 
-  .row > div {
+  .Row > div {
     float: left;
 
-    &.login-form{
+    &.LoginForm{
       float: right;
     }
   }
-  .row{
+  .Row{
     @include clearfix();
   }
 
-  .title{
+  .Title{
     font-size: 48pt;
     a,
     a:hover,
@@ -326,7 +329,7 @@ a.btn{
     }
   }
 
-  .login-form{
+  .LoginForm{
     text-align: right;
     margin: 5px;
     padding: 5px;
@@ -338,7 +341,7 @@ a.btn{
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
     }
-    Formo span{
+    form span{
       margin-right: 15px;
     }
   }
@@ -360,7 +363,7 @@ body > section{
   }
 }
 
-section.message{
+section.Message{
   margin-bottom: 20px;
   font-size: 10pt;
 
@@ -370,18 +373,31 @@ section.message{
     font-weight: bold;
     @include round-corner(5px);
 
-    &.info{
+    &.Info{
         border: 1px solid #4169e1;
     }
-    &.error{
+    &.Error{
         color: #f00;
         border: 1px solid #f00;
     }
   }
 }
 
-section.error{
-  div.error{
+section.Admin{
+  h1{
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 2.0em;
+  }
+
+  ul.UserManage{
+    list-style:none;
+    
+  }
+}
+
+section.Error{
+  div.Error{
     border: 3px solid #b22222;
     background-color: #ffd0db;
     padding: 10px;
@@ -389,7 +405,7 @@ section.error{
   }
 }
 
-.userinfo{
+.UserInfo{
   background-color: #4169e1;
   color: #fff;
   font-size: 9pt;
@@ -403,7 +419,7 @@ section.error{
     }
     @include clearfix();
   }
-  .admin{
+  .Admin{
     a,
     a:hover,
     a:visited,
@@ -417,7 +433,7 @@ section.error{
   }
 }
 
-ul.back-nav{
+ul.BackNav{
   list-style: none;
   font-size: 11px;
   height: 20px;
@@ -434,27 +450,27 @@ ul.back-nav{
 }
 
 
-.description{
+.Description{
 
-  .revision{
+  .Revision{
     font-weight: bold;
     margin-left: 3px;
     margin-right: 3px;
   }
-  .download-link{
+  .DownloadLink{
     display: block;  
   }
-  .mdfile-toolbar{
+  .MdfileToolbar{
     display: block;
   }
 }
 
-.no-file{
+.NoFile{
   margin: 10px;
   color: #888;
 }
 
-form#docx-create{
+form#docxCreate{
   margin: 10px;
   margin-bottom: 30px;
   padding: 10px;
@@ -465,13 +481,13 @@ form#docx-create{
   > div{
     margin-bottom: 10px;
   }
-  .subject{
+  .Subject{
     font-weight: bold;
     font-size: 115%;
   }
 }
 
-section.gitlog{
+section.Gitlog{
   margin-bottom: 30px;
 
   h3{
@@ -479,17 +495,17 @@ section.gitlog{
       margin-bottom: 10px;
   }
 
-  .logtable .description{
+  .Logtable .Description{
     font-size: 80%;
     padding: 5px;
     border: 1px solid #000;
     background-color: #fff;
-    &.alert{
+    &.Alert{
       color: #f00;
     }
   }
 
-  ul.buffer-list {
+  ul.BufferList {
       list-style: none;
       font-size: 11px;
       li{
@@ -500,7 +516,7 @@ section.gitlog{
 	  &:first-child{
 	      border-left: 1px solid #555;
 	  }
-	  &.active{
+	  &.Active{
 	      font-weight: bold;
 	      a {
 		  background-color: #fff;
@@ -521,18 +537,18 @@ section.gitlog{
       @include clearfix();
   }
 
-  table.gitlog{
+  table.Gitlog{
       @include table-gitlog();
 
       tbody{
 	  tr{
-	      &.master{
+	      &.Master{
 		  background-color: #fff;
 	      }
-	      &.user-branch{
+	      &.UserBranch{
 		  background-color: #fffaf0;
 	      }
-	      &.user-branch.old{
+	      &.UserBranch.Old{
 		  background-color: #aaaaaa;
 	      }
 	  }
@@ -541,48 +557,48 @@ section.gitlog{
 }
 
 
-section.top{
-  .top-menu{
+section.Top{
+  .TopMenu{
     margin-top: 20px;
     margin-bottom: 20px;;
 
-    .subject {
+    .Subject {
       margin-bottom: 20px;
-      .title{
+      .Title{
         font-weight: bold;
         font-size: 2.0em;
       }
-      &.disable{
+      &.Disable{
         color: #888;
       }
-      +.caution {
+      +.Caution {
         font-size: 60%;
         margin-left: 10px;
         color: #f00;
       }
 
-      .menu{
+      .Menu{
         float: right;
       }
 
     }
-    table.doc-list{
+    table.DocList{
         box-sizing: border-box;
 
         tr{
-            &.nonactive {
+            &.Nonactive {
                 background-color: #ddd;
-                &.deleted {
+                &.Deleted {
                     background-color: #aaa;
                 }
             }
             td{
-                >.doc-subject {
+                >.DocSubject {
                   float:left;
                   padding: 5px;
                   > div {
                       float: left;
-                      &.name {
+                      &.Name {
                           a {
                               color: #4169e0 - #404040;
                               font-weight: bold;
@@ -594,14 +610,14 @@ section.top{
                       @include clearfix();
                   }
                 }
-                >.doc-ctrl{
+                >.DocCtrl{
                     float: right;
                     padding: 5px;
-                    input.glyph{
+                    input.Glyph{
                         margin-left: 5px;
                     }
                 }
-                .doc-detail{
+                .DocDetail{
                     clear: both;
                     font-size: 8pt;
                     border-top: 1px dashed rgba(0,0,0,0.1);
@@ -620,23 +636,23 @@ section.top{
   } // .top-menu
 }
 
-section.docinfo{
+section.Docinfo{
   h1, h2{
     margin-top: 0;
   }
   h1{
     font-size: 2.0em;
     margin-bottom: 5px;
-    .title{
+    .Title{
       font-weight: normal;
       margin-right: 10px;
     }
   }
   h2{
-    .download-alt{
+    .DownloadAlt{
       margin-right: 10px;
     }
-    .supplement{
+    .Supplement{
         color: #000;
         font-size: 12px;
         margin-left: 10px;
@@ -644,14 +660,14 @@ section.docinfo{
   }
   @include clearfix();
 
-  >.description{
+  >.Description{
     font-size: 11px;
     margin-bottom: 5px;
     color: #555;
     >div{
       float: left;
       margin-right: 10px;
-      .active{
+      .Active{
           font-weight: bold;
           text-decoration: underline;
       }
@@ -659,7 +675,7 @@ section.docinfo{
     @include clearfix();
   }
 
-  >ul.doc-ctrl{
+  >ul.DocCtrl{
     list-style: none;
     margin-bottom: 20px;
     li{
@@ -668,8 +684,8 @@ section.docinfo{
       &:fist-child{
        margin-right: 0;
       }
-      &.selected{
-        a.btn{
+      &.Selected{
+        a.Btn{
             background-color: #f5deb3 - #888;
             color: #fff;
             cursor: default;
@@ -680,7 +696,7 @@ section.docinfo{
     @include clearfix();
   }
 
-  .user-action{
+  .UserAction{
     margin-bottom: 20px;
     h3{
         font-size: 15px;
@@ -689,16 +705,16 @@ section.docinfo{
         background-color: #fff;
         border-bottom: 3px solid #888;
     }
-    h3+.description{
+    h3+.Description{
         font-size: 10px;
     }
-    ul.menu{
+    ul.Menu{
         list-style: none;
         margin-bottom: 20px;
         li{
             float: left;
             margin-right: 20px;
-            form.doc-upload-form{
+            form.DocUploadForm{
                 margin: 0;
                 padding: 0;
 		font-size: 14px;
@@ -709,7 +725,7 @@ section.docinfo{
 
                 >div {
 		    margin-bottom: 4px;
-		    &.subject{
+		    &.Subject{
 			font-weight: bold;
 		    }
                     label{
@@ -721,7 +737,7 @@ section.docinfo{
         @include clearfix();
     }
   }
-  .output_menu{
+  .OutputMenu{
      margin-bottom: 20px;
       button{
           padding: 4px 6px;
@@ -742,9 +758,9 @@ section.docinfo{
   }
 }
 
-section.outline.print-format{
+section.Outline.PrintFormat{
     padding: 0;
-    >div.page{
+    >div.Page{
 	margin: 0;
         margin-bottom: -1px;
 	border: none;
@@ -755,21 +771,21 @@ section.outline.print-format{
     }
 }
 
-section.outline{
+section.Outline{
     background-color: #fff;
     padding: 30px 0;
 
     font-size: 12pt;
     line-height: 1.2em;
 
-    >div .subject{
+    >div .Subject{
 	    font-weight: bold;
 	    font-size: 24pt;
         line-height: 1.5em;
 	    text-align: center;      
     }
 
-    >div.page{
+    >div.Page{
       height: 297mm;
       width: 210mm;
       margin-bottom: 10mm;
@@ -781,30 +797,30 @@ section.outline{
       padding: 30mm 10mm 40mm;
     }
 
-    .document{
+    .Document{
 	    @include markdown-set();
     }
-    .cover{
+    .Cover{
 	    text-align: center;
-	    .title{
+	    .Title{
 	        font-size: 36px;
 	        font-weight: bold;
 	        padding: 30px 0;
 	    }
-	    .revision{
+	    .Revision{
 	        font-size: 12px;
 	    }
     }
-    .history{
+    .History{
         font-size: 10pt;
         line-height: 1.0em;
-	    table.gitlog{
-            .date,.rev{
+	    table.Gitlog{
+              .Date,.Rev{
                 width: 28mm;
-            }
+              }
 	    }
     }
-    .contents{
+    .Contents{
 	    margin-bottom: 30px;
 	    >ul{
 	        margin-left: 30px;
@@ -813,19 +829,19 @@ section.outline{
 	        list-style: none;
 
 	        li{
-		        &.level1{
+		        &.Level1{
 		            margin-top: 10px;
 		            border-bottom: 1px dashed #aaa;
 		        }
-		        &.level2{
+		        &.Level2{
 		            font-size: 80%;
 		            padding-left: 50px;
 		        }
-		        &.level3{
+		        &.Level3{
 		            font-size: 70%;
 		            padding-left: 80px;
 		        }
-		        &.level4{
+		        &.Level4{
 		            font-size: 70%;
 		            padding-left: 100px;
 		        }
@@ -834,32 +850,32 @@ section.outline{
     }  
 }
 
-section.outline_editor{
+section.OutlineEditor{
     @include bufferEditMenu();
 
-    .buffer_edit {
+    .BufferEdit {
       margin-left: 180px;
     }
 
-    .document{
+    .Document{
         background-color: #fff;
         border: 2px solid #888;
         padding: 10px;
 
-        #blk_tmpl, #divide_info{
+        #blkTmpl, #divideInfo{
             display: none;
         }
 
-        .outline_divide{
+        .OutlineDivide{
             border: 2px solid #00f;
         }
 
-        .blk{
-            a.btn_expand{
+        .Blk{
+            a.BtnExpand{
                 cursor: pointer;
             }
 
-            .tagname {
+            .Tagname {
                 border: 2px solid #ff4500;
                 background-color: #f5deb3;
                 @include round-corner(3px);
@@ -868,7 +884,7 @@ section.outline_editor{
                 padding: 2px 5px;
             }
 
-            .digest{
+            .Digest{
                 font-size: 80%;
                 margin: 0 5px;
                 &:before{
@@ -879,19 +895,19 @@ section.outline_editor{
                 }  
             }
 
-            .insert_divide{
+            .InsertDivide{
                 font-size: 65%;
                 font-weight: bold;
                 @include round-corner(3px);
             }
 
-            +.md{
+            +.Md{
                 padding: 10px;
                 border: 2px dashed #aaa;
                 margin-top:0;                
                 @include round-corner(5px);
             }
-            +ul.md,+ol.md{
+            +ul.Md,+ol.Md{
                 padding-left: 30px;
             }
 
@@ -900,21 +916,21 @@ section.outline_editor{
     }
 }
 
-table.gitlog {
+table.Gitlog {
   @include table-gitlog();
 }
 
-.diff-view {
+.DiffView {
   padding: 10px;
-  .canvas{
+  .Canvas{
     padding: 5px;
     border: 1px solid #333;
     font-size: 10pt;
-    .line{
-        .no, .content{
+    .Line{
+        .No, .Content{
           float: left;
         }
-        .no {
+        .No {
           width: 50px;
           padding: 1px 5px 1px 0;
           margin-right: 10px;
@@ -928,9 +944,9 @@ table.gitlog {
   }
 }
 
-.document {
+.Document {
   margin-bottom: 50px;
-  >ul.property{
+  >ul.Property{
       list-style: none;
       font-size: 10px;
       margin-bottom: 0;
@@ -947,29 +963,29 @@ table.gitlog {
               float: left;
           }
           @include clearfix();
-          .subject{
+          .Subject{
               width: 100px;
           }
-          .value{
+          .Value{
           }
-          &.status{
+          &.Status{
               font-size: 17px;
               padding: 5px 7px;
           }
       }
   }
-  >.canvas{
+  >.Canvas{
     @include markdown-set;
   }
 }
 
-section.md_buffer{
+section.MdBuffer{
     @include bufferEditMenu();
 
-    .buffer_edit{
+    .BufferEdit{
         margin-left: 180px;
 
-        form .canvas {
+        form .Canvas {
             margin-bottom: 10px;
             textarea{
                 width: 100%;
@@ -982,7 +998,7 @@ section.md_buffer{
             }
         }
 
-        ul.pagenav{
+        ul.Pagenav{
             list-style: none;
             li{
                 float: left;
@@ -990,9 +1006,9 @@ section.md_buffer{
                 padding: 5px;
                 border: 1px solid #aaa;
 
-                a.outline_page{
+                a.OutlinePage{
                     cursor: pointer;
-                    &.active{
+                    &.Active{
                         font-weight: bold;
                         text-decoration: underline;
                         color: #000;
@@ -1002,7 +1018,7 @@ section.md_buffer{
             @include clearfix();
         }
 
-        .document{
+        .Document{
             background-color: #fff;
             border: 2px solid #888;
             padding: 10px;
@@ -1011,23 +1027,23 @@ section.md_buffer{
                 border: 3px solid #fff;;
             }
 
-            >.focus{
+            >.Focus{
                 background-color: #b0c4de;
                 border: 3px solid #b0c4de-#111;;
                 cursor: pointer;
                 @include round-corner(3px);
             }
 
-            >.md{
+            >.Md{
                 display: none;
             }
-            >.uneditable{
+            >.Uneditable{
                 background-color: #ecc;
                 color: #888;
             }
 
-            .editform{
-                textarea.editdata{
+            .Editform{
+                textarea.Editdata{
                     width: 100%;
                     box-sizing: boder-box;
                     margin-bottom: 5px;
@@ -1041,8 +1057,8 @@ section.md_buffer{
         }
     }
 
-    .buffer_edit.source{
-        .ctrl{
+    .BufferEdit.Source{
+        .Ctrl{
             margin-bottom: 10px;
             input[type=submit]{
                 @include round-corner(5px);
@@ -1051,7 +1067,7 @@ section.md_buffer{
         }
     }
 
-    .upload_form {
+    .UploadForm {
         margin-left: 180px;
         h3{
           margin-top: 0;
@@ -1059,25 +1075,25 @@ section.md_buffer{
         }
     }
 
-    .md_buffer_fix{
+    .MdBufferFix{
         margin-bottom: 0;
     }
 
-    .image_manager{
+    .ImageManager{
         background-color: #fff;
         border: 2px solid #888;
         padding: 10px;
 
-	form.image_action{
+	form.ImageAction{
 	    margin: 30px 0;
-            ul.thumbnail{
+            ul.Thumbnail{
 		list-style: none;
 
 		margin: 10px 0;
 
 		li{
 		    float: left;
-		    .info{
+		    .Info{
 			font-size: 9pt;
 		    }
 		}
@@ -1087,7 +1103,7 @@ section.md_buffer{
     }
 }
 
-.bufferCommitForm{
+.BufferCommitForm{
   position: absolute;
   padding: 30px 40px;
   margin: 0;
@@ -1095,18 +1111,18 @@ section.md_buffer{
   width: 100%;
   height: 100%;
 
-  .md_buffer_fix{
+  .MdBufferFix{
     color: #fff;
     h3{
         margin-top: 0;
     }
-    textarea.history{
+    textarea.History{
         width: 100%;
         height: 100px;
         margin-bottom: 5px;
     }
-    .ctrl{
-        input[type=submit], a.btn, a.btn:link{
+    .Ctrl{
+        input[type=submit], a.Btn, a.Btn:link{
             float: left;
             margin-right: 5px;
             cursor: pointer;
@@ -1121,7 +1137,7 @@ section.md_buffer{
 
             @include round-corner(3px);
         }
-        input[type=submit]:hover, a.btn:hover{
+        input[type=submit]:hover, a.Btn:hover{
             background-color: #f5deb3;
             color: #222;
         }

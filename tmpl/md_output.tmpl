@@ -2,61 +2,61 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "アウトプット" %]
 [%INCLUDE docinfo_header.tmpl %]
 
-  <div class="output_menu">
+  <div class="OutputMenu">
     <button id="printOutline">印刷アウトライン</button>
   </div> <!-- output_menu -->
 </section <!-- docinfo -->
 
-<section class="outline">
-  <div class="cover page">
-    <div class="title">[% file_name %]</div>
-    <div class="revision">[% revision %]</div>
+<section class="Outline">
+  <div class="Cover Page">
+    <div class="Title">[% file_name %]</div>
+    <div class="Revision">[% revision %]</div>
   </div>
 
-  <div class="history page">
-    <div class="subject">更新履歴</div>
-    <table class="gitlog">
+  <div class="History Page">
+    <div class="Subject">更新履歴</div>
+    <table class="Gitlog">
       <thead>
         <tr>
-	      <th class="date">更新年月日</th>
-          <th class="rev">Rev</th>
-	      <th class="message">詳細</th>
-	      <th class="author">更新者</th>
+	      <th class="Date">更新年月日</th>
+          <th class="Rev">Rev</th>
+	      <th class="Message">詳細</th>
+	      <th class="Author">更新者</th>
         </tr>
       </thead>
       <tbody>
         [% FOREACH log IN loglist %]
-        <tr class="log">
-          <td class="date">[% log.cdate %]</td>
-          <td class="rev">[% log.sha1_name %]</td>
-          <td class="message">[% log.message %]</td>
-          <td class="author">[% log.attr.author %]</td>
+        <tr class="Log">
+          <td class="Date">[% log.cdate %]</td>
+          <td class="Rev">[% log.sha1_name %]</td>
+          <td class="Message">[% log.message %]</td>
+          <td class="Author">[% log.attr.author %]</td>
         </tr>
         [% END %]
       </tbody>
     </table>
   </div>
 
-  <div class="contents page">
-    <div class="subject">目次</div>
+  <div class="Contents Page">
+    <div class="Subject">目次</div>
     <ul>
       [% FOR content IN contents %]
-      <li class="level[% content.level %]">[% content.line %]</li>
+      <li class="Level[% content.level %]">[% content.line %]</li>
       [% END %]
     </ul>
   </div>
 
   [% FOR doc IN docs %]
-    <div class="document page">[% doc %]</div>
+    <div class="Document Page">[% doc %]</div>
   [% END %]
 
 </section>

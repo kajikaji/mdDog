@@ -2,42 +2,42 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "編集バッファ" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 [%INCLUDE info.tmpl %]
 
-<section class="md_buffer">
+<section class="MdBuffer">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="buffer_edit">
-    <ul class="pagenav">
-      <li><a class="outline_page" data-elm="0">1</a></li>
+  <div class="BufferEdit">
+    <ul class="Pagenav">
+      <li><a class="OutlinePage" data-elm="0">1</a></li>
       [% FOREACH divide IN divides %]
-      <li><a class="outline_page" data-elm="[% divide %]">[% loop.index() + 2 %]</a></li>
+      <li><a class="OutlinePage" data-elm="[% divide %]">[% loop.index() + 2 %]</a></li>
       [% END %]
     </ul>
 
-    <div class="document">
+    <div class="Document">
       [% markdown %]
     </div>
 
-    <div id="editform" class="editform" style="display: none;">
-      <textarea id="editdata" class="editdata" name="editdata"></textarea>
-      <button class="update">更新</button>
-      <button class="delete">削除</button>
-      <button class="cancel">キャンセル</button>
-      <button class="image_view">画像</button>
+    <div id="editform" class="Editform" style="display: none;">
+      <textarea id="editdata" class="Editdata" name="editdata"></textarea>
+      <button class="Update">更新</button>
+      <button class="Delete">削除</button>
+      <button class="Cancel">キャンセル</button>
+      <button class="ImageView">画像</button>
     </div>
 
-  </div> <!-- buffer_edit -->
+  </div> <!-- BufferEdit -->
 </section>
 
 </body>

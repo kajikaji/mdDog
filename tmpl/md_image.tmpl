@@ -2,37 +2,37 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "画像" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section> <!-- docinfo -->
 
 [%INCLUDE info.tmpl %]
 
-<section class="md_buffer">
+<section class="MdBuffer">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="buffer_edit">
-    <div class="image_manager">
-      <form class="image_uploader" method="post" action="?fid=[% fid %]" enctype="multipart/form-data">
+  <div class="BufferEdit">
+    <div class="ImageManager">
+      <form class="ImageUploader" method="post" action="?fid=[% fid %]" enctype="multipart/form-data">
         <input type="file" name="imagefile" />
         <input type="submit" name="upload" value="アップロード">
         <input type="hidden" name="fid" value="[% fid %]">
       </form>
 
       [% IF images %]
-      <form class="image_action" method="post" action="?fid=[% fid %]">
+      <form class="ImageAction" method="post" action="?fid=[% fid %]">
         <input type="submit" name="delete" value="削除">
         <input type="hidden" name="fid" value="[% fid %]">
-        <ul class="thumbnail">
+        <ul class="Thumbnail">
 	      [% FOREACH image IN images %]
 	      <li>
-	        <div class="info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
+	        <div class="Info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
 	        <img src="md_imageView.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1&thumbnail=1">
 	      </li>
 	      [% END %]

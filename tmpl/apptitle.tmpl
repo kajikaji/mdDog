@@ -1,13 +1,13 @@
-<section class="app-header">
-  <div class="row">
-    <div class="title"><a href="index.cgi">mdDog</a></div>
-    <div class="login-form">
+<section class="AppHeader">
+  <div class="Row">
+    <div class="Title"><a href="index.cgi">mdDog</a></div>
+    <div class="LoginForm">
       <form method="post">
         [% IF login %]
         <input type="submit" name="logout" value="LOGOUT">
         [% ELSE %]
-        <span class="account">account&ensp;<input type="text" name="account" size="12" maxlength="20"></span>
-        <span class="password">password&ensp;<input type="password" name="password" size="12" maxlength="20"></span>
+        <span class="Account">account&ensp;<input type="text" name="account" size="12" maxlength="20"></span>
+        <span class="Password">password&ensp;<input type="password" name="password" size="12" maxlength="20"></span>
         <input type="submit" name="login" value="LOGIN">
         [% END %]
         [% INCLUDE posted_data.tmpl %]

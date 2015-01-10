@@ -2,33 +2,33 @@
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
-<ul class="back-nav">
+<ul class="BackNav">
 <li><a href="index.cgi">ドキュメント一覧</a></li> 
 <li><a href="docinfo.cgi?fid=[% fid %]">ドキュメント情報</a></li>
 </ul>
 
-<section class="docinfo">
+<section class="Docinfo">
 [%SET SUBMENU = "アウトライン" %]
 [%INCLUDE docinfo_header.tmpl %]
 </section <!-- docinfo -->
 
 [%INCLUDE info.tmpl %]
 
-<section class="outline_editor">
+<section class="OutlineEditor">
   [% INCLUDE buffer_menu.tmpl %]
 
-  <div class="buffer_edit">
-    <div class="document">
-      <div id="blk_tmpl" class="blk">
-        <a class="btn_expand"><i class="glyph plus"></i></a>
-        <span class="tagname"></span>
-        <span class="digest"></span>
-        <button class="divide_ctrl">直後で改ページ</button>
+  <div class="BufferEdit">
+    <div class="Document">
+      <div id="blkTmpl" class="Blk">
+        <a class="BtnExpand"><i class="Glyph Plus"></i></a>
+        <span class="Tagname"></span>
+        <span class="Digest"></span>
+        <button class="DivideCtrl">直後で改ページ</button>
       </div>
-      <div id="divide_info" class="divide_info">
+      <div id="divideInfo" class="DivideInfo">
         [% IF divides %]
         [% FOREACH divide IN divides %]
-        <span class="divide">[% divide %]</span>
+        <span class="Divide">[% divide %]</span>
         [% END %]
         [% END %]
       </div>

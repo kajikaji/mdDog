@@ -1,9 +1,9 @@
 [% IF login %]
-<section class="userinfo">
+<section class="UserInfo">
   <ul>
-  <li class="user account">ユーザーアカウント：[% account %]</li>
+  <li class="User Account">ユーザーアカウント：[% account %]</li>
   [% IF is_admin %]
-    <li class="user admin"><a href="admin.cgi">[管理ページ]</a></li>
+    <li class="User Admin"><a href="admin.cgi">[管理ページ]</a></li>
   [% END %]
   </ul>
 </section>
