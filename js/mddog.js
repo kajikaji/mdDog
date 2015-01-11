@@ -488,9 +488,9 @@ $(function(){
     new mdOutlineEditor().init(); // アウトラインエディタ
     new mdOutline().init();       // アウトライン出力
 
-    var $outline = false;
+    var outline = false;
     $('#printOutline').on("click", function(){
-        $outline = true;
+        outline = true;
 
         $('body').children().each(function(){
             if(!$(this).hasClass('Outline')){
@@ -501,16 +501,22 @@ $(function(){
         });
     });
 
+    var commitFrom = false;
     $('#bufferCommitBtn').on('click', function(){
-	$('#bufferCommitForm').fadeToggle();
-    });
-    $('#cancelButton').click(function(){
-	$('#bufferCommitForm').fadeToggle();
+        $('#bufferCommitForm').fadeToggle();
+        commitForm = true;
     });
 
+    $('#cancelButton').click(function(){
+	$('#bufferCommitForm').fadeToggle();
+        commitForm = false;
+    });
+
+    //キー入力の監視
     $(window).keydown(function(ev){
-        if($outline){
-            $outline = false;
+        if(outline){
+            //アウトラインの印刷ページ
+            outline = false;
 
             $('body').children().each(function(){
                 if(!$(this).hasClass('Outline')){
@@ -519,6 +525,11 @@ $(function(){
                     $(this).removeClass('PrintFormat');
                 }
             });
+        }
+        if(commitForm && ev.keyCode === 27){ //ESCキー
+            //編集バッファのコミット窓
+            $('#bufferCommitForm').fadeToggle();
+            commitForm = false;
         }
     });
 

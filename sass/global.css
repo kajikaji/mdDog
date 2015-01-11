@@ -1041,13 +1041,21 @@ section.MdBuffer .ImageManager {
 
 .BufferCommitForm {
   position: absolute;
-  padding: 30px 40px;
+  top: 0;
+  padding: 50px 40px;
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(188, 188, 188, 0.4);
   width: 100%;
   height: 100%; }
   .BufferCommitForm .MdBufferFix {
-    color: #fff; }
+    color: #000;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #000;
+    width: 50%;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px; }
     .BufferCommitForm .MdBufferFix h3 {
       margin-top: 0; }
     .BufferCommitForm .MdBufferFix textarea.History {
