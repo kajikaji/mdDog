@@ -51,6 +51,22 @@ function commitBuffer() {
     document.forms['commitForm'].submit();   
 }
 
+function insertAtCaret(target, str) {
+    var obj = $(target);
+    obj.focus();
+    if(navigator.userAgent.match(/MSIE/)) {
+        var r = document.selection.createRange();
+        r.text = str;
+        r.select();
+    } else {
+        var s = obj.val();
+        var p = obj.get(0).selectionStart;
+        var np = p + str.length;
+        obj.val(s.substr(0, p) + str + s.substr(p));
+        obj.get(0).setSelectionRange(np, np);
+    }
+}
+
 /*
  * マークダウンエディタの制御クラス
  */
@@ -73,7 +89,9 @@ mdEditForm.prototype = {
         var newForm = $('#' + this.formtmpl).clone().attr('id', this.formId);
         var data= $('#' + this.elmId).text();
         var n = data.match(/\n/g).length + 1;
-        newForm.find('textarea.Editdata').text(data).attr('rows', n);
+        var tt = newForm.find('textarea.Editdata');
+        tt.attr('id', 'editdata' + this.id);
+        tt.text(data).attr('rows', n);
         this.src.after(newForm);
         newForm.show(); this.src.hide();
 
@@ -89,6 +107,9 @@ mdEditForm.prototype = {
         }, this));
         $('#' + this.formId).find('button.Cancel').click($.proxy(function(){
             this.btnCancel();
+        }, this));
+        $('#' + this.formId).find('button.ImageView').click($.proxy(function(){
+            this.btnImageView();
         }, this));
     },
 
@@ -123,8 +144,33 @@ mdEditForm.prototype = {
             }, this));
     },
     btnCancel: function(){
-            $('#' + this.formId).remove();
-            $(this.src).show();
+        $('#' + this.formId).remove();
+        $(this.src).show();
+    },
+    btnImageView: function(){
+        var fid = getParam("fid");
+ 
+        $.ajax({
+            url: this.api,
+            type: 'GET',
+            data:{
+                fid: fid, 
+                action: 'image_list', 
+            }
+        }).done($.proxy(function(res){
+            var length = res.length;
+            var list = $('#' + this.formId).find('ul.ImageList');
+            list.show();
+            for(var i=0; i < res.length; i++){
+                var img = $('<img>').attr('src', 'md_imageView.cgi?image=' + res[i].filename + '&fid=' + fid + '&tmp=1&thumbnail=1');
+                var anch = $('<a>').addClass('Btn').text('挿入');
+                var tt = '#editdata' + this.id;
+                var tag = '![mdDog](md_imageView.cgi?fid=' + fid + '&image=' + res[i].filename + '&tmp=1)';
+                anch.attr('onclick', 'insertAtCaret(\"' + tt + '\",\"' + tag + '\")');
+                var imageRec = $('<li>').append(img).append(anch);
+                list.append(imageRec);
+            }
+        }, this));
     },
 
     updateSuccess: function(res){

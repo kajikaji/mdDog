@@ -1052,6 +1052,20 @@ section.MdBuffer{
                 button{
                     @include round-corner(3px);
                 }
+		ul.ImageList{
+		    border: 1px dashed #b0c4de;
+		    @include round-corner(10px);
+		    margin: 5px 0 20px;
+		    padding: 10px;
+		    background-color: #e6e6fa;
+
+		    list-style: none;
+		    >li{
+			float: left;
+			margin: 5px;
+		    }
+		    @include clearfix();
+		}
             }
             @include markdown-set;
         }

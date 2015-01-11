@@ -943,6 +943,24 @@ section.MdBuffer .BufferEdit {
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
+    section.MdBuffer .BufferEdit .Document .Editform ul.ImageList {
+      border: 1px dashed #b0c4de;
+      border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      margin: 5px 0 20px;
+      padding: 10px;
+      background-color: #e6e6fa;
+      list-style: none; }
+      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList > li {
+        float: left;
+        margin: 5px; }
+      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:after, section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:after {
+        clear: both; }
     section.MdBuffer .BufferEdit .Document h1, section.MdBuffer .BufferEdit .Document h2, section.MdBuffer .BufferEdit .Document h3, section.MdBuffer .BufferEdit .Document h4, section.MdBuffer .BufferEdit .Document h5, section.MdBuffer .BufferEdit .Document h6, section.MdBuffer .BufferEdit .Document h7 {
       margin: 0;
       padding: 30px 0 10px 0; }

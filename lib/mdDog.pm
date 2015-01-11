@@ -863,7 +863,8 @@ sub printImage {
 
   my $tmp = $self->qParam('tmp');
   my $fid = $self->qParam('fid');
-  my $uid = $self->qParam("uid");
+  my $uid = $self->{s}->param("login");
+#  my $uid = $self->qParam("uid");
   my $image = $self->qParam('image');
   my $thumbnail = $self->qParam('thumbnail');
 
@@ -876,7 +877,7 @@ sub printImage {
     $imgpath = "$self->{repodir}/${fid}/thumb/${image}";
   }
 
-  if($tmp){
+  if($uid && $tmp){
     $self->{git}->attachLocal_tmp($uid);
   }else{
     $self->{git}->attachLocal($uid);
@@ -891,20 +892,6 @@ sub printImage {
 
     my $mImg = Image::Magick->new();
     $mImg->Read($imgpath);
-=pod
-    if ($thumbnail) {
-      my ($w, $h) = $mImg->Get('width','height');
-      my ($rw, $rh);
-      if ($w >= $h) {
-        $rw = THUMBNAIL_SIZE;
-        $rh = THUMBNAIL_SIZE / $w * $h;
-      } else {
-        $rh = THUMBNAIL_SIZE;
-        $rw = THUMBNAIL_SIZE / $h * $w;
-      }
-      $mImg->Resize(width=>$rw, height=> $rh);
-    }
-=cut
     binmode STDOUT;
     $mImg->Write($type . ":-");
   }
@@ -914,31 +901,50 @@ sub printImage {
 
 ############################################################
 # JSONを返す
-sub api_getJSON {
+sub api_getData {
   my $self = shift;
   my $uid = $self->{s}->param("login");
   return unless($uid);
   my $fid = $self->qParam('fid');
   my $eid = $self->qParam('eid');
-  my $document = $self->getUserDocument($uid, $fid);
-  my ($rowdata, @partsAry) = $self->split4MD($document);
-  my $cnt = 0;
-  my $data;
 
-  foreach (@partsAry) {
-    if($eid){
-      if($eid == $cnt){
-        $data = [{eid => ${cnt}, data => $_}];
-        last;
+  if($self->qParam('action') eq 'image_list'){
+      $self->{git}->attachLocal_tmp($uid);
+      my $data;
+      my $imgdir = "$self->{repodir}/${fid}/image";
+      if( -d $imgdir){
+          my @images = glob "$imgdir/*";
+          $self->{git}->detachLocal();
+
+          foreach (@images) {
+              my $path = $_;
+              $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
+              push @$data, {filename => $path};
+          }
       }
-    }else{
-      push @$data, { eid => ${cnt}, data => $_ };
-    }
-    $cnt++;
-  }
+      my $json = JSON->new();
+      return $json->encode($data);
+  } else {
+      my $document = $self->getUserDocument($uid, $fid);
+      my ($rowdata, @partsAry) = $self->split4MD($document);
+      my $cnt = 0;
+      my $data;
 
-  my $json = JSON->new();
-  return $json->encode($data);
+      foreach (@partsAry) {
+          if ($eid) {
+              if ($eid == $cnt) {
+                  $data = [{eid => ${cnt}, data => $_}];
+                  last;
+              }
+          } else {
+              push @$data, { eid => ${cnt}, data => $_ };
+          }
+          $cnt++;
+      }
+
+      my $json = JSON->new();
+      return $json->encode($data);
+  }
 }
 
 ############################################################

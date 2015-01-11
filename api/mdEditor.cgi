@@ -14,7 +14,7 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     return unless($dog->qParam('fid'));
 
     ## ?fid=[fid](&eid=[eid])
-    print $dog->api_getJSON();
+    print $dog->api_getData();
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
     ## ?fid=[fid]&eid=[eid]&action=[action]
     return unless($dog->qParam('fid')
