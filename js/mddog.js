@@ -165,7 +165,7 @@ mdEditForm.prototype = {
                 var img = $('<img>').attr('src', 'md_imageView.cgi?image=' + res[i].filename + '&fid=' + fid + '&tmp=1&thumbnail=1');
                 var anch = $('<a>').addClass('Btn').text('挿入');
                 var tt = '#editdata' + this.id;
-                var tag = '![mdDog](md_imageView.cgi?fid=' + fid + '&image=' + res[i].filename + '&tmp=1)';
+                var tag = '![mdDog](md_imageView.cgi?fid=' + fid + '&image=' + res[i].filename + ')';
                 anch.attr('onclick', 'insertAtCaret(\"' + tt + '\",\"' + tag + '\")');
                 var imageRec = $('<li>').append(img).append(anch);
                 list.append(imageRec);

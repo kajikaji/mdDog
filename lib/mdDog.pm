@@ -543,7 +543,7 @@ sub getAuthor {
 # MDドキュメントをアウトライン用整形してテンプレートにセットする
 # またドキュメントの情報もテンプレートにセットする
 #
-sub setOutline{
+sub setMasterOutline{
   my $self = shift;
 
   my $fid = $self->qParam('fid');
@@ -612,6 +612,8 @@ sub setOutline{
     push @$docs, $dat;
   }
 
+  $document =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
+
   $self->{t}->{revision} = $revision;
   $self->{t}->{contents} = \@contents;
   $self->{t}->{docs} = $docs;
@@ -674,7 +676,6 @@ sub setMD_buffer{
 
   unless($preview){
     $self->{t}->{document} = $document;
-    $self->{t}->{style} = "source";
   }else {
     my ($rowdata, @partsAry) = $self->split4MD($document);
     my $md;
@@ -682,15 +683,17 @@ sub setMD_buffer{
 
     foreach (@partsAry) {
       my $conv = markdown($_);
+
       $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
       $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
+      $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
+
       $md .= $conv;
       $cnt++;
     }
 
     $self->{t}->{rowdata} = $rowdata;
     $self->{t}->{markdown} = $md;
-    $self->{t}->{style} = "preview";
   }
 }
 
@@ -860,14 +863,14 @@ sub delete_image {
 sub printImage {
   my $self = shift;
 
-  my $tmp = $self->qParam('tmp');
   my $fid = $self->qParam('fid');
-  my $uid = $self->{s}->param("login");
-#  my $uid = $self->qParam("uid");
   my $image = $self->qParam('image');
-  my $thumbnail = $self->qParam('thumbnail');
-
   return unless($image && $fid);
+
+  my $thumbnail = $self->qParam('thumbnail');
+  my $tmp = $self->qParam('tmp');
+  my $uid = $self->{s}->param("login");
+  $uid = undef if($uid && $self->qParam('master'));
 
   my $imgpath;
   unless($thumbnail){
@@ -997,6 +1000,7 @@ sub api_postData {
     my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
     $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
     $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
+    $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
     $conv =~ s/^(.*)\n$/\1/;
     $md .= $conv;
     $cnt++;
