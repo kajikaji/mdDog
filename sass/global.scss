@@ -128,6 +128,19 @@ $corner_b: 5px;
         font-size:  80%;
         border: 1px solid #aaa;
     }
+    code{
+        display: table;
+    box-sizing: border-box;
+        width: 100%;
+        white-space: pre;
+        padding: 5px 20px;
+        background-color: #000;
+        color: #fff;
+        font-weight: normal;
+        font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2em;
+    }
 }
 
 @mixin bufferEditMenu {
