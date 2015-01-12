@@ -50,6 +50,9 @@ i.Glyph {
 .Glyph.Cogwheel {
   background-image: url("../img/019_cogwheel.png"); }
 
+.Glyph.Logbook {
+  background-image: url("../img/087_log_book.png"); }
+
 a.Glyph {
   display: inline-block;
   float: left; }
@@ -339,18 +342,6 @@ section.Gitlog {
       section.Gitlog table.Gitlog tbody tr td.Ctrl > ul {
         list-style: none;
         margin-left: 0; }
-      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a,
-      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:hover,
-      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:link,
-      section.Gitlog table.Gitlog tbody tr td.Ctrl .DownloadLink a:visited {
-        font-size: 8pt;
-        color: #000;
-        border: 1px solid #00a;
-        background-color: #aaf;
-        padding: 2p;
-        border-radius: 3px;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px; }
     section.Gitlog table.Gitlog tbody tr.Master {
       background-color: #fff; }
     section.Gitlog table.Gitlog tbody tr.UserBranch {
@@ -401,6 +392,8 @@ section.Top .TopMenu {
       padding: 5px; }
       section.Top .TopMenu table.DocList tr td > .DocCtrl input.Glyph {
         margin-left: 5px; }
+      section.Top .TopMenu table.DocList tr td > .DocCtrl form {
+        display: inline; }
     section.Top .TopMenu table.DocList tr td .DocDetail {
       clear: both;
       font-size: 8pt;
@@ -684,7 +677,8 @@ section.OutlineEditor .BufferEdit {
 section.OutlineEditor .Document {
   background-color: #fff;
   border: 2px solid #888;
-  padding: 10px; }
+  padding: 10px;
+  margin-bottom: 30px; }
   section.OutlineEditor .Document #blkTmpl, section.OutlineEditor .Document #divideInfo {
     display: none; }
   section.OutlineEditor .Document .OutlineDivide {
@@ -751,18 +745,8 @@ table.Gitlog {
     table.Gitlog tbody tr td.Ctrl > ul {
       list-style: none;
       margin-left: 0; }
-    table.Gitlog tbody tr td.Ctrl .DownloadLink a,
-    table.Gitlog tbody tr td.Ctrl .DownloadLink a:hover,
-    table.Gitlog tbody tr td.Ctrl .DownloadLink a:link,
-    table.Gitlog tbody tr td.Ctrl .DownloadLink a:visited {
-      font-size: 8pt;
-      color: #000;
-      border: 1px solid #00a;
-      background-color: #aaf;
-      padding: 2p;
-      border-radius: 3px;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px; }
+  table.Gitlog .RevisionCtrl a.RevisionViewer, table.Gitlog .RevisionCtrl a.RevisionViewer:hover {
+    cursor: pointer; }
 
 .DiffView {
   padding: 10px; }
@@ -786,95 +770,6 @@ table.Gitlog {
       line-height: 0; }
     .DiffView .Canvas .Line:after {
       clear: both; }
-
-.Document {
-  margin-bottom: 50px; }
-  .Document > ul.Property {
-    list-style: none;
-    font-size: 10px;
-    margin-bottom: 0;
-    background-color: #333;
-    color: #fff; }
-    .Document > ul.Property li {
-      padding: 3px 7px;
-      border-bottom: 1px solid #888; }
-      .Document > ul.Property li:last-child {
-        border-bottom-width: 0; }
-      .Document > ul.Property li > div {
-        float: left; }
-      .Document > ul.Property li:after, .Document > ul.Property li:before {
-        display: table;
-        content: "";
-        line-height: 0; }
-      .Document > ul.Property li:after {
-        clear: both; }
-      .Document > ul.Property li .Subject {
-        width: 100px; }
-      .Document > ul.Property li.Status {
-        font-size: 17px;
-        padding: 5px 7px; }
-  .Document > .Canvas {
-    padding: 10px;
-    border: 2px solid #888;
-    background-color: #fff;
-    font-size: 14px;
-    line-height: 1.2em; }
-    .Document > .Canvas h1, .Document > .Canvas h2, .Document > .Canvas h3, .Document > .Canvas h4, .Document > .Canvas h5, .Document > .Canvas h6, .Document > .Canvas h7 {
-      margin: 0;
-      padding: 30px 0 10px 0; }
-    .Document > .Canvas h1:first-child, .Document > .Canvas h2:first-child, .Document > .Canvas h3:first-child {
-      padding-top: 20px; }
-    .Document > .Canvas h1 {
-      padding-top: 70px;
-      font-size: 40px; }
-    .Document > .Canvas h2 {
-      padding-top: 40px;
-      font-size: 28px; }
-    .Document > .Canvas h3 {
-      font-size: 18px; }
-    .Document > .Canvas h4 {
-      font-size: 14px; }
-    .Document > .Canvas p, .Document > .Canvas div {
-      margin: 0;
-      padding: 3px 3px 10px 3px; }
-    .Document > .Canvas ol, .Document > .Canvas ul {
-      margin-left: 0;
-      padding-left: 28px; }
-      .Document > .Canvas ol li, .Document > .Canvas ul li {
-        margin-bottom: 10px; }
-    .Document > .Canvas table thead {
-      background-color: #888;
-      color: #Fff;
-      font-size: 85%; }
-    .Document > .Canvas table tr td, .Document > .Canvas table tr th {
-      padding: 3px;
-      border-color: #555;
-      border-style: solid;
-      border-width: 1px 0 0 1px; }
-    .Document > .Canvas table th:last-child, .Document > .Canvas table td:last-child {
-      border-color: #555;
-      border-style: solid;
-      border-width: 1px 1px 0 1px; }
-    .Document > .Canvas table tr:last-child td {
-      border-color: #555;
-      border-style: solid;
-      border-width: 1px 1px 1px 1px; }
-    .Document > .Canvas blockquote {
-      padding: 5px;
-      font-size: 80%;
-      border: 1px solid #aaa; }
-    .Document > .Canvas code {
-      display: table;
-      box-sizing: border-box;
-      width: 100%;
-      white-space: pre;
-      padding: 5px 20px;
-      background-color: #000;
-      color: #fff;
-      font-weight: normal;
-      font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
-      font-size: 10pt;
-      line-height: 1.2em; }
 
 section.MdBuffer ul.BufferEditMenu {
   position: absolute;
@@ -937,6 +832,7 @@ section.MdBuffer .BufferEdit {
     background-color: #fff;
     border: 2px solid #888;
     padding: 10px;
+    margin-bottom: 30px;
     padding: 10px;
     border: 2px solid #888;
     background-color: #fff;
@@ -1074,6 +970,133 @@ section.MdBuffer .ImageManager {
         line-height: 0; }
       section.MdBuffer .ImageManager form.ImageAction ul.Thumbnail:after {
         clear: both; }
+
+section.BufferLog ul.BufferEditMenu {
+  position: absolute;
+  list-style: none;
+  margin-right: 0;
+  width: 140px; }
+  section.BufferLog ul.BufferEditMenu > li a {
+    cursor: pointer;
+    font-size: 7pt;
+    font-weight: bold;
+    color: #000;
+    padding-right: 30px;
+    padding-top: 5px;
+    margin-bottom: 3px;
+    width: 80px; }
+    section.BufferLog ul.BufferEditMenu > li a:hover {
+      color: #000;
+      background-color: #f5deb3; }
+  section.BufferLog ul.BufferEditMenu > li.Selected {
+    padding-left: 15px; }
+    section.BufferLog ul.BufferEditMenu > li.Selected a:hover, section.BufferLog ul.BufferEditMenu > li.Selected a:link, section.BufferLog ul.BufferEditMenu > li.Selected a:visited {
+      cursor: default;
+      background-color: transparent; }
+    section.BufferLog ul.BufferEditMenu > li.Selected a:before {
+      float: left;
+      border: 8px solid transparent;
+      border-left: 10px solid #000; }
+section.BufferLog .GitLog {
+  margin-left: 180px; }
+
+.RevisionViewerDialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 50px 40px;
+  margin: 0;
+  background-color: rgba(188, 188, 188, 0.4);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box; }
+  .RevisionViewerDialog .Document {
+    background-color: #fff;
+    border: 1px solid #888;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 30px; }
+    .RevisionViewerDialog .Document .Name {
+      font-size: 20px;
+      font-weight: bold; }
+    .RevisionViewerDialog .Document .Info {
+      font-size: 10px; }
+      .RevisionViewerDialog .Document .Info > div {
+        float: left;
+        margin-right: 10px; }
+      .RevisionViewerDialog .Document .Info:after, .RevisionViewerDialog .Document .Info:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      .RevisionViewerDialog .Document .Info:after {
+        clear: both; }
+    .RevisionViewerDialog .Document .Caution {
+      font-size: 10px;
+      color: #faa; }
+    .RevisionViewerDialog .Document .Body {
+      padding: 10px;
+      border: 2px solid #888;
+      background-color: #fff;
+      font-size: 14px;
+      line-height: 1.2em; }
+      .RevisionViewerDialog .Document .Body h1, .RevisionViewerDialog .Document .Body h2, .RevisionViewerDialog .Document .Body h3, .RevisionViewerDialog .Document .Body h4, .RevisionViewerDialog .Document .Body h5, .RevisionViewerDialog .Document .Body h6, .RevisionViewerDialog .Document .Body h7 {
+        margin: 0;
+        padding: 30px 0 10px 0; }
+      .RevisionViewerDialog .Document .Body h1:first-child, .RevisionViewerDialog .Document .Body h2:first-child, .RevisionViewerDialog .Document .Body h3:first-child {
+        padding-top: 20px; }
+      .RevisionViewerDialog .Document .Body h1 {
+        padding-top: 70px;
+        font-size: 40px; }
+      .RevisionViewerDialog .Document .Body h2 {
+        padding-top: 40px;
+        font-size: 28px; }
+      .RevisionViewerDialog .Document .Body h3 {
+        font-size: 18px; }
+      .RevisionViewerDialog .Document .Body h4 {
+        font-size: 14px; }
+      .RevisionViewerDialog .Document .Body p, .RevisionViewerDialog .Document .Body div {
+        margin: 0;
+        padding: 3px 3px 10px 3px; }
+      .RevisionViewerDialog .Document .Body ol, .RevisionViewerDialog .Document .Body ul {
+        margin-left: 0;
+        padding-left: 28px; }
+        .RevisionViewerDialog .Document .Body ol li, .RevisionViewerDialog .Document .Body ul li {
+          margin-bottom: 10px; }
+      .RevisionViewerDialog .Document .Body table thead {
+        background-color: #888;
+        color: #Fff;
+        font-size: 85%; }
+      .RevisionViewerDialog .Document .Body table tr td, .RevisionViewerDialog .Document .Body table tr th {
+        padding: 3px;
+        border-color: #555;
+        border-style: solid;
+        border-width: 1px 0 0 1px; }
+      .RevisionViewerDialog .Document .Body table th:last-child, .RevisionViewerDialog .Document .Body table td:last-child {
+        border-color: #555;
+        border-style: solid;
+        border-width: 1px 1px 0 1px; }
+      .RevisionViewerDialog .Document .Body table tr:last-child td {
+        border-color: #555;
+        border-style: solid;
+        border-width: 1px 1px 1px 1px; }
+      .RevisionViewerDialog .Document .Body blockquote {
+        padding: 5px;
+        font-size: 80%;
+        border: 1px solid #aaa; }
+      .RevisionViewerDialog .Document .Body code {
+        display: table;
+        box-sizing: border-box;
+        width: 100%;
+        white-space: pre;
+        padding: 5px 20px;
+        background-color: #000;
+        color: #fff;
+        font-weight: normal;
+        font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+        font-size: 10pt;
+        line-height: 1.2em; }
 
 .BufferCommitForm {
   position: absolute;

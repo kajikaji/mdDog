@@ -501,7 +501,7 @@ $(function(){
         });
     });
 
-    var commitFrom = false;
+    var commitForm = false;
     $('#bufferCommitBtn').on('click', function(){
         $('#bufferCommitForm').fadeToggle();
         commitForm = true;
@@ -511,6 +511,32 @@ $(function(){
 	$('#bufferCommitForm').fadeToggle();
         commitForm = false;
     });
+
+    var revisionViewer = false;
+    if($('table.Gitlog').length > 0){
+	$('a.RevisionViewer').on('click', function(){
+	    var fid=$(this).data('fid');
+	    var uid=$(this).data('user');
+	    if(uid !== null) uid = 0;
+	    var revision=$(this).data('revision');
+	    $.ajax({
+		url: 'api/revisionViewer.cgi',
+		type: 'POST',
+		data: {
+		    'fid': fid,
+		    'user': uid,
+		    'revision': revision,
+		}
+	    }).done(function(res){
+		$('#revisionViewer .Document .Body').html(res.document);
+		$('#revisionViewer .Document .Name').text(res.name);
+		$('#revisionViewer .Document .Info .CommitDate').text(res.commitDate);
+		$('#revisionViewer .Document .Info .CommitMessage').text(res.commitMessage);
+                $('#revisionViewer').fadeToggle();
+                revisionViewer = true;
+	    });
+	});
+    }
 
     //キー入力の監視
     $(window).keydown(function(ev){
@@ -530,6 +556,11 @@ $(function(){
             //編集バッファのコミット窓
             $('#bufferCommitForm').fadeToggle();
             commitForm = false;
+        }
+        if(revisionViewer && ev.keyCode === 27){ //ESCキー
+            //リヴィジョンヴューアー窓
+            $('#revisionViewer').fadeToggle();
+            revisionViewer = false;
         }
     });
 

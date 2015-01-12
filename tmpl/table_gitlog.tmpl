@@ -3,7 +3,7 @@
     <tr>
 	  <th class="Date">更新年月日</th>
 	  <th class="Message">詳細</th>
-	  <th class="Author">更新者</th>
+	  [%UNLESS owned %]<th class="Author">更新者</th>[%END %]
 	  <th class="Ctrl">操作</th>
     </tr>
   </thead>
@@ -12,32 +12,49 @@
     <tr class="Log [% UNLESS is_live %]Old[% ELSIF log.user %]User[% END %]">
        <td class="Date">[% log.attr.date %]</td>
        <td class="Message">[% log.message %]</td>
-       <td class="Author">[% log.attr.author %]</td>
+       [%UNLESS owned %]<td class="Author">[% log.attr.author %]</td>[%END %]
        <td class="Ctrl">
          <ul>
-           [% IF is_mdfile %]
-           <li><span class="MdfileToolbar"><a href="md_view.cgi?fid=[% fid %][% IF log.user %]&user=[% log.user %][% END %]&revision=[% log.id %]">閲覧</a></span></li>
-           [% END %]
-           <li><span class="DownloadLink"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">download</a></span></li>
-           [% UNLESS loop.last %]
-           <li><span class="Diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">差分</a></span></li>
-           [% END %]
-           [% IF log.user %]
-           <li><span class="MasterDiff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">共有との差分</a></spa></li>
-           [% END %]
-           [% IF is_approve && is_live && log.user  %]
-           <li><span class="CommitApprove"><a href="approve.cgi?fid=[% fid %]&user=[% log.user %]&revision=[% log.id %]">ここまでを承認する</a></span>
-<form class="ApproveForm" method="post">
-<input type="hidden" name="fid" value="[% fid %]">
-<input type="hidden" name="user" value="[% log.user %]">
-<input type="hidden" name="revision" value="[% log.id %]">
-<input type="submit" name="approve_pre" value="承認" class="Btn">
-</form>
-           </li>
-           [% END %]
+           [%IF is_mdfile %]
+           <li><span class="RevisionCtrl"><a class="RevisionViewer" data-fid="[% fid %]" [%IF log.user %]data-user="[% log.user %]"[% END %] data-revision="[% log.id %]">VIEW</a></span></li>
+           [%END %]
+           <li><span class="DownloadLink"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">DOWNLOAD</a></span></li>
+           [%UNLESS loop.last %]
+           <li><span class="Diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">DIFF</a></span></li>
+           [%END %]
+           [%IF log.user %]
+           <li><span class="MasterDiff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">masterDIFF</a></spa></li>
+           [%END %]
+           [%IF is_approve && is_live && log.user && !owned %]
+             <li>
+               <form class="ApproveForm" method="post">
+                 <input type="hidden" name="fid" value="[% fid %]">
+                 <input type="hidden" name="user" value="[% log.user %]">
+                 <input type="hidden" name="revision" value="[% log.id %]">
+                 <input type="submit" name="approve_pre" value="承認" class="Btn">
+               </form>
+             </li>
+           [%END %]
+           [%IF owned %]
+             <li>編集の削除</li>
+             <li>マージ</li>
+             <li>詳細の編集</li>
+           [%END %]
          </ul>
        </td>
     </tr>
     [% END %]
   </tbody>
 </table>
+
+<div class="RevisionViewerDialog" id="revisionViewer" style="display:none;">
+  <div class="Document">
+    <div class="Name"></div>
+    <div class="Info">
+      <div class="CommitDate"></div>
+      <div class="CommitMessage"></div>
+    </div>
+    <div class="Caution">ビューアーを終えるにはESCキーを押してください</div>
+    <div class="Body"></div>
+  </div>
+</div>

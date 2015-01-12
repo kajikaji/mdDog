@@ -9,7 +9,7 @@ $dog->setupConfig();
 $dog->login();
 
 if(!$dog->qParam('fid')){
-    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_view.cgi:err01<br>";
+    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_outline.cgi:err01<br>";
 }else{
     if($dog->qParam('commit')){
         #変更を反映 変更履歴は必須

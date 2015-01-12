@@ -25,8 +25,8 @@
           [% UNLESS info.deleted_at %]
           [% IF is_delete || is_admin %]
           <div class="DocCtrl">
+            <a href="docsetting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
             <form action="" method="post">
-             <input type="submit" name="setting" value=" " class="Glyph Cogwheel">
               [% IF info.is_used %]
                <input type="submit" name="unuse" value=" " class="Glyph Ban">
               [% ELSE %]

@@ -267,6 +267,34 @@ sub gitLog {
   $self->{t}->{userlist} = \@userary;
 }
 
+############################################################
+#
+sub gitMyLog {
+    my $self = shift;
+
+    my $fid = $self->qParam("fid");
+    my $uid = $self->{s}->param("login");
+    return 0 unless($fid && $uid);
+
+    my @userary;
+    my $latest_rev = undef;
+    my $gitctrl = $self->{git};
+
+    #共有リポジトリ(master)
+    $self->{t}->{sharedlist} = $gitctrl->getSharedLogs();
+    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
+
+    if($gitctrl->isExistUserBranch($uid)){
+        $self->{t}->{loglist} = $gitctrl->getUserLogs($uid);
+        my $user_root = $gitctrl->getBranchRoot($uid);
+        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
+    }
+    else{
+        $self->{t}->{is_live} = 1;
+    }
+    $self->{t}->{owned} = 1;
+}
+
 ###################################################
 # 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
@@ -612,8 +640,6 @@ sub setMasterOutline{
     push @$docs, $dat;
   }
 
-  $document =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
-
   $self->{t}->{revision} = $revision;
   $self->{t}->{contents} = \@contents;
   $self->{t}->{docs} = $docs;
@@ -634,8 +660,8 @@ sub setMD{
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document;
-  my $user = $self->qParam('user');         # 'user'指定無しだとmasterへ
   my $revision = $self->qParam('revision'); # 'revision'指定無しだと最新リヴィジョンへ
+  my $user = $self->qParam('user');         # 'user'指定無しだとmasterへ
 
   my $gitctrl = $self->{git};
 
@@ -791,6 +817,10 @@ sub upload_image {
 
   $self->{git}->attachLocal_tmp($uid, 1);
 
+  my $imgdir = "$self->{repodir}/${fid}/image";
+  unless(-d $imgdir){
+    mkdir $imgdir, 0774 || die "can't make image directory.";
+  }
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $imgdir = "$self->{repodir}/${fid}/image";
   my $filepath = "${imgdir}/${filename}";
@@ -1087,6 +1117,50 @@ sub api_outline_removeDivide {
   $self->{git}->detachLocal();
   my $json = JSON->new();
   return $json->encode({action => 'undivide',num => ${num}});
+}
+
+############################################################
+# 指定のrevisionのJSONデータを返す
+sub api_get_revisiondata {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $document;
+  my $revision = $self->qParam('revision');
+  my $user = $self->qParam('user');
+  $user = undef if($user == 0);
+
+  my $gitctrl = $self->{git};
+
+  my $user_root = $gitctrl->getBranchLatest($user);
+  $revision = $user_root unless($revision);
+  my $oneLog = $gitctrl->oneLog($revision);
+
+  $gitctrl->attachLocal($user);
+  $gitctrl->checkoutVersion($revision);
+
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $document, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+
+  $gitctrl->detachLocal();
+  my $json = JSON->new();
+  return $json->encode({
+      name => $filename,
+      document => markdown($document),
+      revision => $revision,
+      commitDate => MYUTIL::formatDate1($oneLog->{attr}->{date}),
+      commitMessage => $oneLog->{message},
+  });
 }
 
 ############################################################
