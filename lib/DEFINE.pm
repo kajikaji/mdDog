@@ -1,5 +1,10 @@
 package DEFINE;
 
+#
+# author: gm2bv
+# date: 2015/1/14
+#
+
 use strict; no strict "refs";
 no warnings "uninitialized";
 use Date::Manip;

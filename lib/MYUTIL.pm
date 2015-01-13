@@ -1,12 +1,17 @@
 package MYUTIL;
 
+#
+# author: gm2bv
+# date: 2015/1/14
+#
+
 use strict;
 use NKF;
 use Encode qw/encode decode/;
 use Date::Manip;
 use Data::Dumper;
 
-sub adjustDiffLine {
+sub adjust_diff_line {
   my $line = shift;
   my $ret;
 
@@ -30,31 +35,31 @@ sub adjustDiffLine {
   return $ret;
 }
 
-sub formatDate1 {
+sub format_date1 {
   my $date = shift;
   $date =~ s/^(.*) \+0900/\1/;
   return  UnixDate(ParseDate($date), "%Y-%m-%d %H:%M:%S");
 }
 
-sub formatDate2 {
+sub format_date2 {
   my $date = shift;
   $date =~ s/^(.*) \+0900/\1/;
   return  UnixDate(ParseDate($date), "%Y年%m月%d日 %H時%M分%S秒");
 }
 
-sub formatDate3 {
+sub format_date3 {
   my $date = shift;
   $date =~ s/^(.*) \+0900/\1/;
   return  UnixDate(ParseDate($date), "%Y年%m月%d日");
 }
 
-sub numUnit {
+sub num_unit {
   my $num = shift;
   $num =~ s/(\d{1,3})(?=(?:\d{3})+(?!\d))/$1,/g;
   return $num;
 }
 
-sub isInclude {
+sub is_include {
   my $branches = shift;
   my $val = shift;
   my $ret = undef;
@@ -72,7 +77,7 @@ sub isInclude {
   return $ret;
 }
 
-sub DebugExit {
+sub debug_exit {
   my $obj    = shift;
   my $dumper = shift;
 

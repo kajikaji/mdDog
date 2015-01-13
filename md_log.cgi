@@ -1,19 +1,23 @@
 #!/usr/bin/perl
+#
+# author: gm2bv
+# date: 2015/1/14
+#
 
 use strict; no strict "refs";
 use lib './lib/';
 use mdDog;
 
-my $dog =mdDog->new();
-$dog->setupConfig();
+my $dog = mdDog->new();
+$dog->setup_config();
 $dog->login();
 
 if(!$dog->qParam('fid')) {
-    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_edit.cgi:err01<br>";
+    $dog->{t}->{error} = "md&MMkwrTDlMOEw8zDIMExjB1uaMFUwjDBmMEQwfjBbMJM-<br>md_edit.cgi:err01<br>";
 } else {
-    $dog->gitMyLog();
-    $dog->setDocumentInfo();
+    $dog->git_my_log();
+    $dog->set_document_info();
 }
 
-$dog->printPage();
+$dog->print_page();
 exit();

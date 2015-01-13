@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+#
+# author: gm2bv
+# date: 2015/1/14
+#
 
 use strict; no strict "refs";
 use lib './lib/';
@@ -6,7 +10,7 @@ use mdDog;
 use Data::Dumper;
 
 my $dog =mdDog->new();
-$dog->setupConfig();
+$dog->setup_config();
 $dog->login();
 
 if(!$dog->qParam('fid')) {
@@ -14,14 +18,14 @@ if(!$dog->qParam('fid')) {
 } else {
   #正常系の処理
   if($dog->qParam('approve')){
-    $dog->docApprove();
+    $dog->doc_approve();
   }elsif($dog->qParam('approve_pre')){ # 確認
-    $dog->setApproveList();
+    $dog->set_approve_list();
   }
 
-  $dog->gitLog('all');
-  $dog->setDocumentInfo();
+  $dog->git_log('all');
+  $dog->set_document_info();
 }
 
-$dog->printPage();
+$dog->print_page();
 exit();

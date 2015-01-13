@@ -516,15 +516,15 @@ $(function(){
     if($('table.Gitlog').length > 0){
 	$('a.RevisionViewer').on('click', function(){
 	    var fid=$(this).data('fid');
-	    var uid=$(this).data('user');
-	    if(uid !== null) uid = 0;
+	    var user=$(this).data('user');
+	    if(user === null) user = 0;
 	    var revision=$(this).data('revision');
 	    $.ajax({
 		url: 'api/revisionViewer.cgi',
 		type: 'POST',
 		data: {
 		    'fid': fid,
-		    'user': uid,
+		    'user': user,
 		    'revision': revision,
 		}
 	    }).done(function(res){

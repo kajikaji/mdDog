@@ -1,22 +1,26 @@
 #!/usr/bin/perl
+#
+# author: gm2bv
+# date: 2015/1/14
+#
 
 use strict; no strict "refs";
 use lib './lib/';
 use mdDog;
 
 my $dog =mdDog->new();
-$dog->setupConfig();
+$dog->setup_config();
 $dog->login();
 
 if(!$dog->qParam('fid')) {
   $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_output.cgi:err01<br>";
 } else {
-    $dog->setMasterOutline();
+    $dog->set_master_outline();
 
     #MDファイルの目次作成
     #MDファイルの出力
-    $dog->setDocumentInfo();
+    $dog->set_document_info();
 }
 
-$dog->printPage();
+$dog->print_page();
 exit();

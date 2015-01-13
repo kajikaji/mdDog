@@ -1,5 +1,10 @@
 package APPBASE;
 
+#
+# author: gm2bv
+# date: 2015/1/14
+#
+
 use strict;
 use CGI;
 use CGI::Session;
@@ -51,7 +56,7 @@ sub new {
 # OUTLINE : 基本アプリ用の初期設定メソッド
 # RETURN  : TRUE/FALSE
 # =============================================================================#
-sub setupConfig {
+sub setup_config {
   my $self = shift;
   my $tmplfile = shift;
 
@@ -113,7 +118,7 @@ sub setupTmpl {
 # OUTLINE : テンプレート表示 (DB切断も行う)
 # RETURN  : NONE
 # =============================================================================#
-sub printPage {
+sub print_page {
   my $self  = shift;
 
   $self->destroy();

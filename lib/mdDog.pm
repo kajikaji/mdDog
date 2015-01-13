@@ -1,5 +1,10 @@
 package mdDog;
 
+#
+# author: gm2bv
+# date: 2015/1/14
+#
+
 use strict; no strict "subs";
 use base APPBASE;
 use Git::Wrapper;
@@ -19,6 +24,8 @@ use mdDog::OutlineCtrl;
 
 use constant THUMBNAIL_SIZE => 150;
 
+###################################################
+#
 sub new {
   my $pkg = shift;
   my $base = $pkg->SUPER::new(@_);
@@ -35,7 +42,7 @@ sub new {
 
 ###################################################
 #
-sub setupConfig {
+sub setup_config {
   my $self = shift;
 
   if($self->qParam('fid')){
@@ -44,20 +51,22 @@ sub setupConfig {
     $self->{outline} = OutlineCtrl->new($workdir);
   }
 
-  $self->SUPER::setupConfig();
+  $self->SUPER::setup_config();
 }
 
-sub setOutline_buffer{
+###################################################
+#
+sub set_outline_buffer{
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
   return unless($uid);
 
-  $self->{git}->attachLocal_tmp($uid);
+  $self->{git}->attach_local_tmp($uid);
   $self->{outline}->init();
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
 
-  my $divides = $self->{outline}->getDivides();
+  my $divides = $self->{outline}->get_divides();
   $self->{t}->{divides} = $divides;
 }
 
@@ -106,7 +115,7 @@ sub login {
 ############################################################
 #出力処理
 #
-sub printPage {
+sub print_page {
   my $self = shift;
 
   if($self->{s}->param("login")){
@@ -119,13 +128,13 @@ sub printPage {
     $self->{t}->{is_delete} = $self->{user}->{may_delete};
   }
 
-  $self->SUPER::printPage();
+  $self->SUPER::print_page();
 }
 
 ############################################################
 #登録されたドキュメント一覧の取得してテンプレートにセット
 #
-sub listupDocuments {
+sub listup_documents {
   my $self = shift;
   my @infos;
 
@@ -138,27 +147,20 @@ from docx_infos di
 join docx_users du on du.id = di.created_by
 where di.deleted_at is null
 order by di.is_used DESC, di.created_at desc;";
-=pod
-  id,
-  file_name,
-  is_used,
-  to_char(created_at,'YYYY-MM-DD hh:mm:ss') as created_at,
-  to_char(deleted_at,'YYYY-MM-DD hh:mm:ss') as deleted_at,
-=cut
 
   my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
      || $self->errorMessage("DB:Error",1);
   if(@$ary){
     foreach (@$ary) {
-      my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->getSharedLogs();
+      my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
       my $info = {
         id        => $_->{id},
         file_name => $_->{file_name},
         is_used   => $_->{is_used},
-        created_at => MYUTIL::formatDate2($_->{created_at}),
-        deleted_at => !$_->{deleted_at}?undef:MYUTIL::formatDate2($_->{deleted_at}),
+        created_at => MYUTIL::format_date2($_->{created_at}),
+        deleted_at => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
         created_by => $_->{nic_name},
-        file_size => MYUTIL::numUnit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
+        file_size => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
         last_updated_at => ${logs}[0][0]->{attr}->{date},
       };
       push @infos, $info;
@@ -169,7 +171,7 @@ order by di.is_used DESC, di.created_at desc;";
 
 ############################################################
 # ドキュメント情報を取得してテンプレートにセット
-sub setDocumentInfo {
+sub set_document_info {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
@@ -189,11 +191,11 @@ where di.id = $fid;";
   if($ary) {
     $self->{t}->{file_name} = $ary->{file_name};
     $self->{t}->{is_mdfile} = 1 if($ary->{file_name} =~ m/.*\.md/);
-    $self->{t}->{created_at} = MYUTIL::formatDate2($ary->{created_at});
+    $self->{t}->{created_at} = MYUTIL::format_date2($ary->{created_at});
     $self->{t}->{created_by} = $ary->{nic_name};
-    my @logs = $self->{git}->getSharedLogs();
+    my @logs = $self->{git}->get_shared_logs();
     $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
-    $self->{t}->{file_size} = MYUTIL::numUnit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
+    $self->{t}->{file_size} = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
   }
 
   $self->{t}->{fid} = $fid;
@@ -204,21 +206,24 @@ where di.id = $fid;";
 
 ############################################################
 #
-sub isExistBuffer {
+sub is_exist_buffer {
     my $self = shift;
     my $fid = $self->qParam('fid');
     my $uid = $self->{s}->param("login");
 
-    if($self->{git}->isExistUserBranch($uid, {tmp=>1})){
-        return $self->{git}->isUpdatedBuffer($uid);
+    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})){
+        return $self->{git}->is_updated_buffer($uid);
     }
     return 0;
 }
 
 
 ############################################################
+#ドキュメントのログを取得
 #
-sub gitLog {
+# @param1 全ての編集ユーザーのログを取得するかのフラグ
+#
+sub git_log {
   my $self = shift;
   my $all = shift;
 
@@ -229,7 +234,7 @@ sub gitLog {
   my $gitctrl = $self->{git};
 
   #共有リポジトリ(master)
-  $self->{t}->{sharedlist} = $gitctrl->getSharedLogs();
+  $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
   $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
   if($all and $uid){ #ユーザーリポジトリ
@@ -239,9 +244,9 @@ sub gitLog {
       name    => $self->{user}->{account},
       loglist => [],
     };
-    if($gitctrl->isExistUserBranch($uid)){
-      $mylog->{loglist} = $gitctrl->getUserLogs($uid);
-      my $user_root = $gitctrl->getBranchRoot($uid);
+    if($gitctrl->is_exist_user_branch($uid)){
+      $mylog->{loglist} = $gitctrl->get_user_logs($uid);
+      my $user_root = $gitctrl->get_branch_root($uid);
       $mylog->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }else{
       $mylog->{is_live} = 1;
@@ -249,14 +254,14 @@ sub gitLog {
     push @userary, $mylog;
     if($self->{user}->{may_approve}){
       #承認者
-      foreach($gitctrl->getOtherUsers($uid)){
+      foreach($gitctrl->get_other_users($uid)){
         my $userlog = {
           uid       => $_,
-          name      => $self->getAccount($_),
-          loglist   => $gitctrl->getUserLogs($_),
+          name      => $self->get_account($_),
+          loglist   => $gitctrl->get_user_logs($_),
         };
 
-        my $userRoot = $gitctrl->getBranchRoot($_);
+        my $userRoot = $gitctrl->get_branch_root($_);
         if($latest_rev =~ m/${userRoot}[0-9a-z]+/ && (@{$userlog->{loglist}})) {
           $userlog->{is_live} = 1;
           push @userary, $userlog;
@@ -268,8 +273,9 @@ sub gitLog {
 }
 
 ############################################################
+#ログインユーザー自身の編集バッファのログの取得
 #
-sub gitMyLog {
+sub git_my_log {
     my $self = shift;
 
     my $fid = $self->qParam("fid");
@@ -281,12 +287,12 @@ sub gitMyLog {
     my $gitctrl = $self->{git};
 
     #共有リポジトリ(master)
-    $self->{t}->{sharedlist} = $gitctrl->getSharedLogs();
+    $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
     $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
-    if($gitctrl->isExistUserBranch($uid)){
-        $self->{t}->{loglist} = $gitctrl->getUserLogs($uid);
-        my $user_root = $gitctrl->getBranchRoot($uid);
+    if($gitctrl->is_exist_user_branch($uid)){
+        $self->{t}->{loglist} = $gitctrl->get_user_logs($uid);
+        my $user_root = $gitctrl->get_branch_root($uid);
         $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }
     else{
@@ -298,7 +304,7 @@ sub gitMyLog {
 ###################################################
 # 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
-sub setApproveList {
+sub set_approve_list {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -310,7 +316,7 @@ sub setApproveList {
 
   my @logs;
   my $flg = undef;
-  my $branches = $self->{git}->getUserLogs($user);
+  my $branches = $self->{git}->get_user_logs($user);
   for (@$branches){
     my $obj = eval {($_)};
     my $rev = $obj->{id};
@@ -327,7 +333,7 @@ sub setApproveList {
 ###################################################
 # 指定のユーザーの指定のリヴィジョンを承認して共有化
 #
-sub docApprove {
+sub doc_approve {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -341,32 +347,8 @@ sub docApprove {
 
 
 ###################################################
-# 新規でdocxファイルを登録する
-# その際にアップロードしたユーザーブランチを作成
-# 同名のファイルを許容する
-sub uploadDOCX {
-  my $self = shift;
-
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $hF = $self->{q}->upload('uploadfile');
-  my $filename = basename($hF);
-  my $fid = $self->setupNewFile($filename);
-
-  my $tmppath = $self->{q}->tmpFileName($hF);
-  my $filepath = $self->{repodir}. "/$fid/$filename";
-  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
-  close($hF);
-
-  $self->{git} = GitCtrl->new("$self->{repodir}/${fid}");
-  $self->{git}->init($fid, $filename, $self->getAuthor($uid));
-
-  $self->dbCommit();
-}
-
-###################################################
 # MDファイルを作る
-sub createFile {
+sub create_file {
   my $self = shift;
   my $uid = $self->{s}->param("login");
   
@@ -377,7 +359,7 @@ sub createFile {
   return unless($docname);
 
   my $filename = $docname . "\.md";
-  my $fid = $self->setupNewFile($filename, $uid);
+  my $fid = $self->setup_new_file($filename, $uid);
   my $workdir = "$self->{repodir}/${fid}";
   my $filepath = "${workdir}/${filename}";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
@@ -385,76 +367,41 @@ sub createFile {
 
   $self->{git} = GitCtrl->new($workdir);
   $self->{outline} = OutlineCtrl->new($workdir);
-  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->getAuthor($uid));
+  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->get_author($uid));
 
   $self->dbCommit();
 }
 
 ###################################################
 #
-sub setupNewFile{
+# @param1 filename
+# @param2 uid
+#
+sub setup_new_file{
   my $self = shift;
   my $filename = shift;
   my $uid = shift;
 
  my $sql_insert = "insert into docx_infos(file_name,created_at,created_by) values('$filename',now(),$uid);";
-  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error uploadFile", 1);
+  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error upload_file", 1);
   my $sql_newfile = "select currval('docx_infos_id_seq');";
   my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
   my $fid = $ary_id[0];
   mkdir("./$self->{repodir}/$fid",0776)
-    || die "Error:uploadFile can't make a directory($self->{repodir}/$fid)";
+    || die "Error:upload_file can't make a directory($self->{repodir}/$fid)";
   return $fid;
-}
-
-
-###################################################
-# ユーザーのブランチにコミットする
-#
-sub commitFile {
-  my $self = shift;
-
-  my $fid = $self->qParam('fid');
-  my $uid = $self->{s}->param("login");
-  return 0 unless($fid && $uid);
-
-  my $author = $self->getAuthor($uid);
-  my $message = $self->qParam('detail');
-  my $hF = $self->{q}->upload('uploadfile');
-  my $filename = basename($hF);
-
-  my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
-  my @ary_check = $self->{dbh}->selectrow_array($sql_check);
-  if(!@ary_check || $ary_check[0] != $fid){
-    $self->{t}->{error} = "違うファイルがアップロードされました";
-    close($hF);
-    return 0;
-  }
-
-  $self->{git}->attachLocal($uid, 1);
-
-  my $tmppath = $self->{q}->tmpFileName($hF);
-  my $filepath = $self->{repodir}. "/$fid/$filename";
-  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
-  close($hF);
-
-  if(!$self->{git}->commit($filename, $author, $message)){
-    $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
-  }
-  $self->{git}->detachLocal();
-  return 1;
 }
 
 ###################################################
 # ユーザーのブランチにアップロードしたファイルをコミットする
 #
-sub uploadFile {
+sub upload_file {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
   my $uid = $self->{s}->param("login");
   return 0 unless($fid && $uid);
-  my $author = $self->getAuthor($uid);
+  my $author = $self->get_author($uid);
   my $hF = $self->{q}->upload('uploadfile');
   return 0 unless($hF);
   my $filename = basename($hF);
@@ -467,7 +414,7 @@ sub uploadFile {
     return 0;
   }
 
-  $self->{git}->attachLocal_tmp($uid, 1);
+  $self->{git}->attach_local_tmp($uid, 1);
 
   my $tmppath = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
@@ -477,23 +424,24 @@ sub uploadFile {
   if(!$self->{git}->commit($filename, $author, "rewrite by an uploaded file")){
     $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
   }
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
   return 1;
 }
 
 ###################################################
+#編集バージョンの差分をテンプレートにセットする
 #
-sub gitDiff{
+sub git_diff{
   my $self = shift;
   my $ver = $self->qParam('revision');
   my $dist = $self->qParam('dist');
 
-  $self->{t}->{difflist} = $self->{git}->getDiff($ver, $dist);
+  $self->{t}->{difflist} = $self->{git}->get_diff($ver, $dist);
 }
 
 ############################################################
 #
-sub changeFileInfo {
+sub change_file_info {
   my $self = shift;
   my $ope = shift;
 
@@ -509,14 +457,17 @@ sub changeFileInfo {
     $sql = "update docx_infos set deleted_at = now() where id = $fid;";
     File::Path::rmtree(["./$self->{repodir}/$fid"]) || die("can't remove a directory: $fid");
   }
-  $self->{dbh}->do($sql) || errorMessage("Error:changeFileInfo = $sql");
+  $self->{dbh}->do($sql) || errorMessage("Error:change_file_info = $sql");
 
   $self->dbCommit();
 }
 
 ############################################################
+#指定のバージョンのドキュメントをダウンロード出力する
+# @param1 fid
+# @param2 rev
 #
-sub downloadFile {
+sub download_file {
   my $self = shift;
   my $fid = shift;
   my $rev = shift;
@@ -528,7 +479,7 @@ sub downloadFile {
   my $filepath = "./$self->{repodir}/$fid/$filename";
 
   if($rev){
-    $self->{git}->checkoutVersion($rev);
+    $self->{git}->checkout_version($rev);
   }
 
   print "Content-type:application/octet-stream\n";
@@ -542,12 +493,13 @@ sub downloadFile {
   }
   close DF;
 
-  $self->{git}->detachLocal() if($rev);
+  $self->{git}->detach_local() if($rev);
 }
 
 ############################################################
+# @param1 uid
 #
-sub getAccount {
+sub get_account {
   my $self = shift;
   my $uid = shift;
 
@@ -557,8 +509,9 @@ sub getAccount {
 }
 
 ############################################################
+# @param1 uid
 #
-sub getAuthor {
+sub get_author {
   my $self = shift;
   my $uid = shift;
 
@@ -571,7 +524,7 @@ sub getAuthor {
 # MDドキュメントをアウトライン用整形してテンプレートにセットする
 # またドキュメントの情報もテンプレートにセットする
 #
-sub setMasterOutline{
+sub set_master_outline{
   my $self = shift;
 
   my $fid = $self->qParam('fid');
@@ -589,24 +542,24 @@ sub setMasterOutline{
   my $gitctrl = $self->{git};
 
   #MDファイルの更新履歴の整形
-  $self->{t}->{loglist} = $gitctrl->getSharedLogs("DESC");
+  $self->{t}->{loglist} = $gitctrl->get_shared_logs("DESC");
 
   #ドキュメントの読み込み
-  $gitctrl->attachLocal($user);
-  $gitctrl->checkoutVersion($revision);
+  $gitctrl->attach_local($user);
+  $gitctrl->checkout_version($revision);
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
   my $pos = 0;
   while (my $length = sysread $hF, $md, 1024, $pos) {
     $pos += $length;
   }
   close $hF;
-  $gitctrl->detachLocal();
+  $gitctrl->detach_local();
 
   my @contents;
 
   $self->{outline}->init();
-  my $divides = $self->{outline}->getDivides();
-  my ($rowdata, @partsAry) = $self->split4MD($md);
+  my $divides = $self->{outline}->get_divides();
+  my ($rowdata, @partsAry) = $self->split_for_md($md);
   my ($i, $j) = 0;
   my ($docs, $dat);
   foreach (@partsAry) {
@@ -646,64 +599,22 @@ sub setMasterOutline{
 }
 
 ############################################################
-# MDドキュメントをテンプレートにセットする
-# またドキュメントの情報もテンプレートにセットする
-#
-sub setMD{
-  my $self = shift;
-
-  my $fid = $self->qParam('fid');
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $document;
-  my $revision = $self->qParam('revision'); # 'revision'指定無しだと最新リヴィジョンへ
-  my $user = $self->qParam('user');         # 'user'指定無しだとmasterへ
-
-  my $gitctrl = $self->{git};
-
-  my $user_root = $gitctrl->getBranchLatest($user);
-  $revision = $user_root unless($revision);
-  $self->{t}->{git_is_latest} = $revision =~ m/^${user_root}$/ ?1:0;
-  $self->{t}->{is_buffer} = $user?1:0;
-  my $oneLog = $gitctrl->oneLog($revision);
-  $self->{t}->{git_comment} = $oneLog->{message};
-  $self->{t}->{git_commit_date} = MYUTIL::formatDate1($oneLog->{attr}->{date});
-
-  $gitctrl->attachLocal($user);
-  $gitctrl->checkoutVersion($revision);
-
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
-
-  $gitctrl->detachLocal();
-
-  $self->{t}->{revision} = $revision;
-  $self->{t}->{document} = markdown($document);
-}
-
-############################################################
 # MDドキュメントの編集バッファをテンプレートにセットする
-sub setMD_buffer{
+# @param1 ドキュメントを構造解析するかのフラグ
+#
+sub set_md_buffer{
   my $self = shift;
   my $preview = shift;
 
   my $uid = $self->{s}->param("login");
   return unless($uid);
   my $fid = $self->qParam('fid');
-  my $document = $self->getUserDocument($uid, $fid);
+  my $document = $self->get_user_document($uid, $fid);
 
   unless($preview){
     $self->{t}->{document} = $document;
   }else {
-    my ($rowdata, @partsAry) = $self->split4MD($document);
+    my ($rowdata, @partsAry) = $self->split_for_md($document);
     my $md;
     my $cnt = 0;
 
@@ -725,7 +636,8 @@ sub setMD_buffer{
 
 ############################################################
 # MDドキュメントの編集バッファを更新する
-sub updateMD_buffer {
+#
+sub update_md_buffer {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -741,22 +653,23 @@ sub updateMD_buffer {
   $document =~ s#</div>\n##g;
   $document =~ s/\r\n/\n/g;
 
-  $self->{git}->attachLocal_tmp($uid, 1);
+  $self->{git}->attach_local_tmp($uid, 1);
 
   #ファイル書き込み
   open my $hF, '>', $filepath || die "failed to read ${filepath}";
   syswrite $hF, $document;
   close $hF;
 
-  my $author = $self->getAuthor($self->{s}->param('login'));
+  my $author = $self->get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
   return 1;
 }
 
 ############################################################
 # MDドキュメントの編集バッファをフィックスする
-sub fixMD_buffer {
+#
+sub fix_md_buffer {
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -765,16 +678,16 @@ sub fixMD_buffer {
   return 0 unless($uid && $fid && $comment);
 
   if($self->qParam('document')){
-    return 0 unless($self->updateMD_buffer());
+    return 0 unless($self->update_md_buffer());
   }
-  $self->{git}->fixTmp($uid, $self->getAuthor($uid), $comment);
+  $self->{git}->fix_tmp($uid, $self->get_author($uid), $comment);
   return 1;
 }
 
 ############################################################
 # MDドキュメントで管理している画像一覧を取得
 #
-sub setMD_image{
+sub set_md_image{
   my $self = shift;
 
   my $uid = $self->{s}->param("login");
@@ -787,9 +700,9 @@ sub setMD_image{
     mkdir $imgdir, 0774 || die "can't make image directory.";
   }
 
-  $self->{git}->attachLocal_tmp($uid);
+  $self->{git}->attach_local_tmp($uid);
   my @images = glob "$imgdir/*";
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
 
   my @imgpaths;
   foreach (@images) {
@@ -815,7 +728,7 @@ sub upload_image {
   my $hF = $self->{q}->upload('imagefile');
   my $filename = basename($hF);
 
-  $self->{git}->attachLocal_tmp($uid, 1);
+  $self->{git}->attach_local_tmp($uid, 1);
 
   my $imgdir = "$self->{repodir}/${fid}/image";
   unless(-d $imgdir){
@@ -832,16 +745,18 @@ sub upload_image {
 
   my $thumbnail = $self->add_thumbnail($fid, $filename);
 
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  $self->{git}->addImage($filepath, $author);
-  $self->{git}->addImage($thumbnail, $author);
+  my $author = $self->get_author($self->{s}->param('login'));
+  $self->{git}->add_image($filepath, $author);
+  $self->{git}->add_image($thumbnail, $author);
 
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
   return 1;
 }
 
 ############################################################
 # 画像のサムネイルを作成
+# @param1 fid
+# @param2 ファイル名
 #
 sub add_thumbnail {
   my $self = shift;
@@ -881,16 +796,17 @@ sub delete_image {
 
   my @selected = ($self->qParam('select_image'));
 
-  $self->{git}->attachLocal_tmp($uid);
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  $self->{git}->deleteImage([@selected], $author);
-  $self->{git}->detachLocal();
+  $self->{git}->attach_local_tmp($uid);
+  my $author = $self->get_author($self->{s}->param('login'));
+  $self->{git}->delete_image([@selected], $author);
+  $self->{git}->detach_local();
   return 1;
 }
 
 ############################################################
+#指定の画像ファイルを出力
 #
-sub printImage {
+sub print_image {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
@@ -910,9 +826,9 @@ sub printImage {
   }
 
   if($uid && $tmp){
-    $self->{git}->attachLocal_tmp($uid);
+    $self->{git}->attach_local_tmp($uid);
   }else{
-    $self->{git}->attachLocal($uid);
+    $self->{git}->attach_local($uid);
   }
 
   if( -f $imgpath ){
@@ -927,245 +843,14 @@ sub printImage {
     binmode STDOUT;
     $mImg->Write($type . ":-");
   }
-  $self->{git}->detachLocal();
-}
-
-
-############################################################
-# JSONを返す
-sub api_getData {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid');
-  my $eid = $self->qParam('eid');
-
-  if($self->qParam('action') eq 'image_list'){
-      $self->{git}->attachLocal_tmp($uid);
-      my $data;
-      my $imgdir = "$self->{repodir}/${fid}/image";
-      if( -d $imgdir){
-          my @images = glob "$imgdir/*";
-          $self->{git}->detachLocal();
-
-          foreach (@images) {
-              my $path = $_;
-              $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
-              push @$data, {filename => $path};
-          }
-      }
-      my $json = JSON->new();
-      return $json->encode($data);
-  } else {
-      my $document = $self->getUserDocument($uid, $fid);
-      my ($rowdata, @partsAry) = $self->split4MD($document);
-      my $cnt = 0;
-      my $data;
-
-      foreach (@partsAry) {
-          if ($eid) {
-              if ($eid == $cnt) {
-                  $data = [{eid => ${cnt}, data => $_}];
-                  last;
-              }
-          } else {
-              push @$data, { eid => ${cnt}, data => $_ };
-          }
-          $cnt++;
-      }
-
-      my $json = JSON->new();
-      return $json->encode($data);
-  }
+  $self->{git}->detach_local();
 }
 
 ############################################################
+# @param1 uid
+# @param2 fid
 #
-sub api_postData {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-  my $eid = $self->qParam('eid') + 0;
-  my $data = $self->qParam('data');
-  $data .= "\n" if( $data !~ m/(.*)\n$/);
-  $data .= "\n" if( $data !~ m/(.*)\n\n$/);
-  my $document = $self->getUserDocument($uid, $fid);
-  my ($rowdata, @partsAry) = $self->split4MD($document);
-
-  $self->{git}->attachLocal_tmp($uid, 1);
-
-  #ファイル書き込み
-  # TODO: ファイル名取得ルーチンが重複！
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-
-  open my $hF, '>', $filepath || return undef;
-  my $cnt = 0;
-  my @newAry;
-  my $line;
-  foreach(@partsAry) {
-    if($eid == $cnt){
-      $line = $data . "\n";
-    }else{
-      $line = $_ . "\n";
-    }
-    syswrite $hF, $line, length($line);
-    $cnt++;
-  }
-  close $hF;
-
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detachLocal();
-
-  my $json = JSON->new();
-  my $md;# = markdown($data);
-  my ($row, @parts) = $self->split4MD($data, $eid);
-  $cnt = $eid;
-  foreach(@parts){
-    my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
-    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
-    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
-    $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
-    $conv =~ s/^(.*)\n$/\1/;
-    $md .= $conv;
-    $cnt++;
-  }
-  return $json->encode({eid => ${eid}, md => ${md}, row => ${row}});
-}
-
-############################################################
-#
-sub api_deleteData {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-  my $eid = $self->qParam('eid');
-
-  my $document = $self->getUserDocument($uid, $fid);
-  my ($rowdata, @partsAry) = $self->split4MD($document);
-
-  $self->{git}->attachLocal_tmp($uid, 1);
-
-  #ファイル書き込み
-  # TODO: ファイル名取得ルーチンが重複！
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-
-  open my $hF, '>', $filepath || return undef;
-  my $cnt = 0;
-  foreach(@partsAry) {
-    if($eid != $cnt){
-      my $line = $_ . "\n";
-      syswrite $hF, $line, length($line);
-    }
-    $cnt++;
-  }
-  close $hF;
-
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detachLocal();
-
-  my $json = JSON->new();
-  return $json->encode({eid => ${eid}});
-}
-
-############################################################
-#
-sub api_outline_addDivide {
-  my $self = shift;
-
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-
-  my $num = $self->qParam('num');
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  my $comment = "INSERT DIVIDE";
-  $self->{git}->attachLocal_tmp($uid, 1);
-  $self->{outline}->insertDivide($num, $comment);
-  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
-  $self->{git}->detachLocal();
-  my $json = JSON->new();
-  return $json->encode({action => 'divide',num => ${num}});
-}
-
-############################################################
-#
-sub api_outline_removeDivide {
-  my $self = shift;
-
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-
-  my $num = $self->qParam('num');
-  my $author = $self->getAuthor($self->{s}->param('login'));
-  my $comment = "REMOVE DIVIDE";
-  $self->{git}->attachLocal_tmp($uid, 1);
-  $self->{outline}->removeDivide($num);
-  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
-  $self->{git}->detachLocal();
-  my $json = JSON->new();
-  return $json->encode({action => 'undivide',num => ${num}});
-}
-
-############################################################
-# 指定のrevisionのJSONデータを返す
-sub api_get_revisiondata {
-  my $self = shift;
-
-  my $fid = $self->qParam('fid');
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $document;
-  my $revision = $self->qParam('revision');
-  my $user = $self->qParam('user');
-  $user = undef if($user == 0);
-
-  my $gitctrl = $self->{git};
-
-  my $user_root = $gitctrl->getBranchLatest($user);
-  $revision = $user_root unless($revision);
-  my $oneLog = $gitctrl->oneLog($revision);
-
-  $gitctrl->attachLocal($user);
-  $gitctrl->checkoutVersion($revision);
-
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
-
-  $gitctrl->detachLocal();
-  my $json = JSON->new();
-  return $json->encode({
-      name => $filename,
-      document => markdown($document),
-      revision => $revision,
-      commitDate => MYUTIL::formatDate1($oneLog->{attr}->{date}),
-      commitMessage => $oneLog->{message},
-  });
-}
-
-############################################################
-#
-sub getUserDocument {
+sub get_user_document {
   my $self = shift;
   my $uid  = shift;
   my $fid  = shift;
@@ -1176,7 +861,7 @@ sub getUserDocument {
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
 
-  $self->{git}->attachLocal_tmp($uid);
+  $self->{git}->attach_local_tmp($uid);
 
   my $document;
   open my $hF, '<', $filepath || die "failed to read ${filepath}";
@@ -1185,14 +870,17 @@ sub getUserDocument {
     $pos += $length;
   }
   close $hF;
-  $self->{git}->detachLocal();
+  $self->{git}->detach_local();
 
   return $document;
 }
 
 ############################################################
+#ドキュメントデータを構造解析する
+# @param1 ドキュメントデータ
+# @param2 要素番号
 #
-sub split4MD {
+sub split_for_md {
   my $self = shift;
   my $document = shift;
   my $index = shift;
@@ -1266,5 +954,245 @@ sub split4MD {
 
   return ($rowdata, @partsAry);
 }
+
+
+############################################################
+#[API] JSONを返す
+#
+sub api_get_data {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid');
+  my $eid = $self->qParam('eid');
+
+  if($self->qParam('action') eq 'image_list'){
+      $self->{git}->attach_local_tmp($uid);
+      my $data;
+      my $imgdir = "$self->{repodir}/${fid}/image";
+      if( -d $imgdir){
+          my @images = glob "$imgdir/*";
+          $self->{git}->detach_local();
+
+          foreach (@images) {
+              my $path = $_;
+              $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
+              push @$data, {filename => $path};
+          }
+      }
+      my $json = JSON->new();
+      return $json->encode($data);
+  } else {
+      my $document = $self->get_user_document($uid, $fid);
+      my ($rowdata, @partsAry) = $self->split_for_md($document);
+      my $cnt = 0;
+      my $data;
+
+      foreach (@partsAry) {
+          if ($eid) {
+              if ($eid == $cnt) {
+                  $data = [{eid => ${cnt}, data => $_}];
+                  last;
+              }
+          } else {
+              push @$data, { eid => ${cnt}, data => $_ };
+          }
+          $cnt++;
+      }
+
+      my $json = JSON->new();
+      return $json->encode($data);
+  }
+}
+
+############################################################
+#[API]
+#
+sub api_post_data {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+  my $eid = $self->qParam('eid') + 0;
+  my $data = $self->qParam('data');
+  $data .= "\n" if( $data !~ m/(.*)\n$/);
+  $data .= "\n" if( $data !~ m/(.*)\n\n$/);
+  my $document = $self->get_user_document($uid, $fid);
+  my ($rowdata, @partsAry) = $self->split_for_md($document);
+
+  $self->{git}->attach_local_tmp($uid, 1);
+
+  #ファイル書き込み
+  # TODO: ファイル名取得ルーチンが重複！
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  open my $hF, '>', $filepath || return undef;
+  my $cnt = 0;
+  my @newAry;
+  my $line;
+  foreach(@partsAry) {
+    if($eid == $cnt){
+      $line = $data . "\n";
+    }else{
+      $line = $_ . "\n";
+    }
+    syswrite $hF, $line, length($line);
+    $cnt++;
+  }
+  close $hF;
+
+  my $author = $self->get_author($self->{s}->param('login'));
+  $self->{git}->commit($filename, $author, "temp saved");
+  $self->{git}->detach_local();
+
+  my $json = JSON->new();
+  my $md;# = markdown($data);
+  my ($row, @parts) = $self->split_for_md($data, $eid);
+  $cnt = $eid;
+  foreach(@parts){
+    my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
+    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
+    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
+    $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
+    $conv =~ s/^(.*)\n$/\1/;
+    $md .= $conv;
+    $cnt++;
+  }
+  return $json->encode({eid => ${eid}, md => ${md}, row => ${row}});
+}
+
+############################################################
+#[API]
+#
+sub api_delete_data {
+  my $self = shift;
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+  my $eid = $self->qParam('eid');
+
+  my $document = $self->get_user_document($uid, $fid);
+  my ($rowdata, @partsAry) = $self->split_for_md($document);
+
+  $self->{git}->attach_local_tmp($uid, 1);
+
+  #ファイル書き込み
+  # TODO: ファイル名取得ルーチンが重複！
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  open my $hF, '>', $filepath || return undef;
+  my $cnt = 0;
+  foreach(@partsAry) {
+    if($eid != $cnt){
+      my $line = $_ . "\n";
+      syswrite $hF, $line, length($line);
+    }
+    $cnt++;
+  }
+  close $hF;
+
+  my $author = $self->get_author($self->{s}->param('login'));
+  $self->{git}->commit($filename, $author, "temp saved");
+  $self->{git}->detach_local();
+
+  my $json = JSON->new();
+  return $json->encode({eid => ${eid}});
+}
+
+############################################################
+#[API] アウトラインで改ページを加える
+#
+sub api_outline_add_divide {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+
+  my $num = $self->qParam('num');
+  my $author = $self->get_author($self->{s}->param('login'));
+  my $comment = "INSERT DIVIDE";
+  $self->{git}->attach_local_tmp($uid, 1);
+  $self->{outline}->insert_divide($num, $comment);
+  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->detach_local();
+  my $json = JSON->new();
+  return $json->encode({action => 'divide',num => ${num}});
+}
+
+############################################################
+#[API] アウトラインに設定された改ページを削除する
+#
+sub api_outline_remove_divide {
+  my $self = shift;
+
+  my $uid = $self->{s}->param("login");
+  return unless($uid);
+  my $fid = $self->qParam('fid') + 0;
+
+  my $num = $self->qParam('num');
+  my $author = $self->get_author($self->{s}->param('login'));
+  my $comment = "REMOVE DIVIDE";
+  $self->{git}->attach_local_tmp($uid, 1);
+  $self->{outline}->remove_divide($num);
+  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->detach_local();
+  my $json = JSON->new();
+  return $json->encode({action => 'undivide',num => ${num}});
+}
+
+############################################################
+#[API] 指定のrevisionのJSONデータを返す
+#
+sub api_get_revisiondata {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+  my $document;
+  my $revision = $self->qParam('revision');
+  my $user = $self->qParam('user');
+  $user = undef if($user == 0);
+
+  my $gitctrl = $self->{git};
+
+  my $user_root = $gitctrl->get_branch_latest($user);
+  $revision = $user_root unless($revision);
+  my $oneLog = $gitctrl->one_log($revision);
+
+  $gitctrl->attach_local($user);
+  $gitctrl->checkout_version($revision);
+
+  open my $hF, '<', $filepath || die "failed to read ${filepath}";
+  my $pos = 0;
+  while (my $length = sysread $hF, $document, 1024, $pos) {
+    $pos += $length;
+  }
+  close $hF;
+
+  $gitctrl->detach_local();
+  my $json = JSON->new();
+  return $json->encode({
+      name => $filename,
+      document => markdown($document),
+      revision => $revision,
+      commitDate => MYUTIL::format_date1($oneLog->{attr}->{date}),
+      commitMessage => $oneLog->{message},
+  });
+}
+
 
 1;

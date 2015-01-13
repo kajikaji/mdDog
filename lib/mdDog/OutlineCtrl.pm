@@ -1,5 +1,10 @@
 package OutlineCtrl;
 
+#
+# author: gm2bv
+# date: 2015/1/14
+#
+
 use strict; no strict "refs"; no strict "subs";
 use base mdDog;
 use constant A_DIV => "DIVIDE";
@@ -10,7 +15,8 @@ use constant A_INDT => "INDENT";
 #  フォーマット
 #  [要素No]:[DIVIDE|INDENT|SIZEUP|SIZEDOWN|CENTER]:[COMMENT]
 #
-
+# @param1: 作業ディレクトリ
+#
 sub new {
   my $pkg = shift;
   my $workdir = shift;
@@ -31,6 +37,7 @@ sub new {
 
 ####################################################################
 # ハッシュをクリアしてデータファイルから解析して新たに生成
+#
 sub init {
   my $self = shift;
   my $datpath = "$self->{workdir}/$self->{filename}";
@@ -59,8 +66,10 @@ sub init {
 }
 
 ####################################################################
+# @param1: 要素番号
+# @param2: コメント
 #
-sub insertDivide {
+sub insert_divide {
   my $self = shift;
   my $num = shift;
   my $comment = shift;
@@ -79,9 +88,9 @@ sub insertDivide {
 }
 
 ####################################################################
+# @param1: 要素番号
 #
-#
-sub removeDivide {
+sub remove_divide {
   my $self = shift;
   my $num = shift;
 
@@ -104,7 +113,7 @@ sub removeDivide {
 
 ####################################################################
 #
-sub getDivides {
+sub get_divides {
   my $self = shift;
   my $ret;
   for (sort { $a <=> $b } (keys %{$self->{'DIVIDE'}})) {
