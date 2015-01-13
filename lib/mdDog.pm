@@ -1194,5 +1194,30 @@ sub api_get_revisiondata {
   });
 }
 
+############################################################
+#[API] 指定のrevisionの差分を返す
+#
+sub api_get_diff {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+
+  my $filename = $ary[0];
+  my $revision = $self->qParam('revision');
+  my $dist = $self->qParam('dist');
+  my $diff = $self->{git}->get_diff($revision, $dist);
+
+  my $json = JSON->new();
+  return $json->encode({
+      name => $filename,
+      revision => $revision,
+      dist => $dist?$dist:'ひとつ前',
+      diff => $diff,
+  });
+
+}
 
 1;

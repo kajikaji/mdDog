@@ -745,31 +745,9 @@ table.Gitlog {
     table.Gitlog tbody tr td.Ctrl > ul {
       list-style: none;
       margin-left: 0; }
-  table.Gitlog .RevisionCtrl a.RevisionViewer, table.Gitlog .RevisionCtrl a.RevisionViewer:hover {
+  table.Gitlog .RevisionCtrl a.RevisionViewer, table.Gitlog .RevisionCtrl a.RevisionViewer:hover,
+  table.Gitlog .RevisionCtrl a.DiffViewer, table.Gitlog .RevisionCtrl a.DiffViewer:hover {
     cursor: pointer; }
-
-.DiffView {
-  padding: 10px; }
-  .DiffView .Canvas {
-    padding: 5px;
-    border: 1px solid #333;
-    font-size: 10pt; }
-    .DiffView .Canvas .Line .No, .DiffView .Canvas .Line .Content {
-      float: left; }
-    .DiffView .Canvas .Line .No {
-      width: 50px;
-      padding: 1px 5px 1px 0;
-      margin-right: 10px;
-      text-align: right;
-      background-color: #aaa;
-      color: #eee;
-      font-size: 8pt; }
-    .DiffView .Canvas .Line:after, .DiffView .Canvas .Line:before {
-      display: table;
-      content: "";
-      line-height: 0; }
-    .DiffView .Canvas .Line:after {
-      clear: both; }
 
 section.MdBuffer ul.BufferEditMenu {
   position: absolute;
@@ -1000,7 +978,7 @@ section.BufferLog ul.BufferEditMenu {
 section.BufferLog .GitLog {
   margin-left: 180px; }
 
-.RevisionViewerDialog {
+.RevisionViewerDialog, .DiffViewerDialog {
   position: absolute;
   top: 0;
   left: 0;
@@ -1010,7 +988,7 @@ section.BufferLog .GitLog {
   width: 100%;
   height: 100%;
   box-sizing: border-box; }
-  .RevisionViewerDialog .Document {
+  .RevisionViewerDialog .Document, .DiffViewerDialog .Document {
     background-color: #fff;
     border: 1px solid #888;
     border-radius: 10px;
@@ -1018,74 +996,74 @@ section.BufferLog .GitLog {
     -moz-border-radius: 10px;
     padding: 15px;
     margin-bottom: 30px; }
-    .RevisionViewerDialog .Document .Name {
+    .RevisionViewerDialog .Document .Name, .DiffViewerDialog .Document .Name {
       font-size: 20px;
       font-weight: bold; }
-    .RevisionViewerDialog .Document .Info {
+    .RevisionViewerDialog .Document .Info, .DiffViewerDialog .Document .Info {
       font-size: 10px; }
-      .RevisionViewerDialog .Document .Info > div {
+      .RevisionViewerDialog .Document .Info > div, .DiffViewerDialog .Document .Info > div {
         float: left;
         margin-right: 10px; }
-      .RevisionViewerDialog .Document .Info:after, .RevisionViewerDialog .Document .Info:before {
+      .RevisionViewerDialog .Document .Info:after, .RevisionViewerDialog .Document .Info:before, .DiffViewerDialog .Document .Info:after, .DiffViewerDialog .Document .Info:before {
         display: table;
         content: "";
         line-height: 0; }
-      .RevisionViewerDialog .Document .Info:after {
+      .RevisionViewerDialog .Document .Info:after, .DiffViewerDialog .Document .Info:after {
         clear: both; }
-    .RevisionViewerDialog .Document .Caution {
+    .RevisionViewerDialog .Document .Caution, .DiffViewerDialog .Document .Caution {
       font-size: 10px;
       color: #faa; }
-    .RevisionViewerDialog .Document .Body {
+    .RevisionViewerDialog .Document .Body, .DiffViewerDialog .Document .Body {
       padding: 10px;
       border: 2px solid #888;
       background-color: #fff;
       font-size: 14px;
       line-height: 1.2em; }
-      .RevisionViewerDialog .Document .Body h1, .RevisionViewerDialog .Document .Body h2, .RevisionViewerDialog .Document .Body h3, .RevisionViewerDialog .Document .Body h4, .RevisionViewerDialog .Document .Body h5, .RevisionViewerDialog .Document .Body h6, .RevisionViewerDialog .Document .Body h7 {
+      .RevisionViewerDialog .Document .Body h1, .RevisionViewerDialog .Document .Body h2, .RevisionViewerDialog .Document .Body h3, .RevisionViewerDialog .Document .Body h4, .RevisionViewerDialog .Document .Body h5, .RevisionViewerDialog .Document .Body h6, .RevisionViewerDialog .Document .Body h7, .DiffViewerDialog .Document .Body h1, .DiffViewerDialog .Document .Body h2, .DiffViewerDialog .Document .Body h3, .DiffViewerDialog .Document .Body h4, .DiffViewerDialog .Document .Body h5, .DiffViewerDialog .Document .Body h6, .DiffViewerDialog .Document .Body h7 {
         margin: 0;
         padding: 30px 0 10px 0; }
-      .RevisionViewerDialog .Document .Body h1:first-child, .RevisionViewerDialog .Document .Body h2:first-child, .RevisionViewerDialog .Document .Body h3:first-child {
+      .RevisionViewerDialog .Document .Body h1:first-child, .RevisionViewerDialog .Document .Body h2:first-child, .RevisionViewerDialog .Document .Body h3:first-child, .DiffViewerDialog .Document .Body h1:first-child, .DiffViewerDialog .Document .Body h2:first-child, .DiffViewerDialog .Document .Body h3:first-child {
         padding-top: 20px; }
-      .RevisionViewerDialog .Document .Body h1 {
+      .RevisionViewerDialog .Document .Body h1, .DiffViewerDialog .Document .Body h1 {
         padding-top: 70px;
         font-size: 40px; }
-      .RevisionViewerDialog .Document .Body h2 {
+      .RevisionViewerDialog .Document .Body h2, .DiffViewerDialog .Document .Body h2 {
         padding-top: 40px;
         font-size: 28px; }
-      .RevisionViewerDialog .Document .Body h3 {
+      .RevisionViewerDialog .Document .Body h3, .DiffViewerDialog .Document .Body h3 {
         font-size: 18px; }
-      .RevisionViewerDialog .Document .Body h4 {
+      .RevisionViewerDialog .Document .Body h4, .DiffViewerDialog .Document .Body h4 {
         font-size: 14px; }
-      .RevisionViewerDialog .Document .Body p, .RevisionViewerDialog .Document .Body div {
+      .RevisionViewerDialog .Document .Body p, .RevisionViewerDialog .Document .Body div, .DiffViewerDialog .Document .Body p, .DiffViewerDialog .Document .Body div {
         margin: 0;
         padding: 3px 3px 10px 3px; }
-      .RevisionViewerDialog .Document .Body ol, .RevisionViewerDialog .Document .Body ul {
+      .RevisionViewerDialog .Document .Body ol, .RevisionViewerDialog .Document .Body ul, .DiffViewerDialog .Document .Body ol, .DiffViewerDialog .Document .Body ul {
         margin-left: 0;
         padding-left: 28px; }
-        .RevisionViewerDialog .Document .Body ol li, .RevisionViewerDialog .Document .Body ul li {
+        .RevisionViewerDialog .Document .Body ol li, .RevisionViewerDialog .Document .Body ul li, .DiffViewerDialog .Document .Body ol li, .DiffViewerDialog .Document .Body ul li {
           margin-bottom: 10px; }
-      .RevisionViewerDialog .Document .Body table thead {
+      .RevisionViewerDialog .Document .Body table thead, .DiffViewerDialog .Document .Body table thead {
         background-color: #888;
         color: #Fff;
         font-size: 85%; }
-      .RevisionViewerDialog .Document .Body table tr td, .RevisionViewerDialog .Document .Body table tr th {
+      .RevisionViewerDialog .Document .Body table tr td, .RevisionViewerDialog .Document .Body table tr th, .DiffViewerDialog .Document .Body table tr td, .DiffViewerDialog .Document .Body table tr th {
         padding: 3px;
         border-color: #555;
         border-style: solid;
         border-width: 1px 0 0 1px; }
-      .RevisionViewerDialog .Document .Body table th:last-child, .RevisionViewerDialog .Document .Body table td:last-child {
+      .RevisionViewerDialog .Document .Body table th:last-child, .RevisionViewerDialog .Document .Body table td:last-child, .DiffViewerDialog .Document .Body table th:last-child, .DiffViewerDialog .Document .Body table td:last-child {
         border-color: #555;
         border-style: solid;
         border-width: 1px 1px 0 1px; }
-      .RevisionViewerDialog .Document .Body table tr:last-child td {
+      .RevisionViewerDialog .Document .Body table tr:last-child td, .DiffViewerDialog .Document .Body table tr:last-child td {
         border-color: #555;
         border-style: solid;
         border-width: 1px 1px 1px 1px; }
-      .RevisionViewerDialog .Document .Body blockquote {
+      .RevisionViewerDialog .Document .Body blockquote, .DiffViewerDialog .Document .Body blockquote {
         padding: 5px;
         font-size: 80%;
         border: 1px solid #aaa; }
-      .RevisionViewerDialog .Document .Body code {
+      .RevisionViewerDialog .Document .Body code, .DiffViewerDialog .Document .Body code {
         display: table;
         box-sizing: border-box;
         width: 100%;
@@ -1097,6 +1075,33 @@ section.BufferLog .GitLog {
         font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
         font-size: 10pt;
         line-height: 1.2em; }
+
+.DiffViewerDialog .Document .Body {
+  padding: 5px;
+  border: 1px solid #333;
+  font-size: 10pt; }
+  .DiffViewerDialog .Document .Body div.Line {
+    margin: 0;
+    padding: 0; }
+    .DiffViewerDialog .Document .Body div.Line .No, .DiffViewerDialog .Document .Body div.Line .Content {
+      float: left; }
+    .DiffViewerDialog .Document .Body div.Line .No {
+      width: 50px;
+      padding: 1px 5px 1px 0;
+      margin-right: 10px;
+      text-align: right;
+      background-color: #aaa;
+      color: #eee;
+      font-size: 8pt; }
+    .DiffViewerDialog .Document .Body div.Line .Content {
+      padding: 1px;
+      margin: 0; }
+    .DiffViewerDialog .Document .Body div.Line:after, .DiffViewerDialog .Document .Body div.Line:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    .DiffViewerDialog .Document .Body div.Line:after {
+      clear: both; }
 
 .BufferCommitForm {
   position: absolute;

@@ -929,35 +929,13 @@ table.Gitlog {
   @include table-gitlog();
 
   .RevisionCtrl{
-    a.RevisionViewer, a.RevisionViewer:hover{
+    a.RevisionViewer, a.RevisionViewer:hover,
+    a.DiffViewer, a.DiffViewer:hover{
       cursor: pointer;
     }
   }
 }
 
-.DiffView {
-  padding: 10px;
-  .Canvas{
-    padding: 5px;
-    border: 1px solid #333;
-    font-size: 10pt;
-    .Line{
-        .No, .Content{
-          float: left;
-        }
-        .No {
-          width: 50px;
-          padding: 1px 5px 1px 0;
-          margin-right: 10px;
-          text-align: right;
-          background-color: #aaa;
-          color: #eee;
-          font-size: 8pt;
-        }
-        @include clearfix();
-    }
-  }
-}
 
 section.MdBuffer{
     @include bufferEditMenu();
@@ -1106,7 +1084,7 @@ section.BufferLog{
     } 
 }
 
-.RevisionViewerDialog{
+.RevisionViewerDialog, .DiffViewerDialog{
   position: absolute;
   top: 0;
   left: 0;
@@ -1146,6 +1124,35 @@ section.BufferLog{
 
     .Body{
       @include markdown-set();
+    }
+  }
+}
+
+.DiffViewerDialog{
+  .Document .Body{
+    padding: 5px;
+    border: 1px solid #333;
+    font-size: 10pt;
+    div.Line{
+        margin: 0;
+        padding: 0;
+        .No, .Content{
+          float: left;
+        }
+        .No {
+          width: 50px;
+          padding: 1px 5px 1px 0;
+          margin-right: 10px;
+          text-align: right;
+          background-color: #aaa;
+          color: #eee;
+          font-size: 8pt;
+        }
+        .Content{
+          padding: 1px;
+          margin: 0;
+        }
+        @include clearfix();
     }
   }
 }

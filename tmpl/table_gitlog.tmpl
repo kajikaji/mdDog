@@ -20,10 +20,10 @@
            [%END %]
            <li><span class="DownloadLink"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">DOWNLOAD</a></span></li>
            [%UNLESS loop.last %]
-           <li><span class="Diff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]">DIFF</a></span></li>
+           <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]">DIFF</a></span></li>
            [%END %]
            [%IF log.user %]
-           <li><span class="MasterDiff"><a href="docdiff.cgi?fid=[% fid %]&revision=[% log.id %]&dist=master">masterDIFF</a></spa></li>
+           <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]" data-dist="master">masterDIFF</a></spa></li>
            [%END %]
            [%IF is_approve && is_live && log.user && !owned %]
              <li>
@@ -53,6 +53,17 @@
     <div class="Info">
       <div class="CommitDate"></div>
       <div class="CommitMessage"></div>
+    </div>
+    <div class="Caution">ビューアーを終えるにはESCキーを押してください</div>
+    <div class="Body"></div>
+  </div>
+</div>
+
+<div class="DiffViewerDialog" id="diffViewer" style="display:none;">
+  <div class="Document">
+    <div class="Name"></div>
+    <div class="Info">
+      <span class="Revision"></span>と<span class="Dist"></span>を比較
     </div>
     <div class="Caution">ビューアーを終えるにはESCキーを押してください</div>
     <div class="Body"></div>
