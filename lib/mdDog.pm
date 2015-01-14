@@ -428,17 +428,6 @@ sub upload_file {
   return 1;
 }
 
-###################################################
-#編集バージョンの差分をテンプレートにセットする
-#
-sub git_diff{
-  my $self = shift;
-  my $ver = $self->qParam('revision');
-  my $dist = $self->qParam('dist');
-
-  $self->{t}->{difflist} = $self->{git}->get_diff($ver, $dist);
-}
-
 ############################################################
 #
 sub change_file_info {
