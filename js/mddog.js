@@ -114,9 +114,9 @@ mdEditForm.prototype = {
     },
 
     btnUpdate: function(){
-            var fid = getParam("fid");
-            var editdata = $('#' + this.formId).find('textarea.Editdata').val();
-            $.ajax({
+        var fid = getParam("fid");
+        var editdata = $('#' + this.formId).find('textarea.Editdata').val();
+        $.ajax({
                 url: this.api,
                 type: 'POST',
                 data:{
@@ -125,13 +125,14 @@ mdEditForm.prototype = {
                 action: 'update', 
                 data: editdata
             }
-            }).done($.proxy(function(res){
+        }).done($.proxy(function(res){
             this.updateSuccess(res);
-            }, this));
+            this.updateMessage();
+        }, this));
     },
     btnDelete: function(){
-            var fid = getParam("fid");
-            $.ajax({
+        var fid = getParam("fid");
+        $.ajax({
                 url: this.api,
                 type: 'POST',
                 data:{
@@ -139,9 +140,10 @@ mdEditForm.prototype = {
                 eid: this.id,
                 action: 'delete',
             }
-            }).done($.proxy(function(res){
+        }).done($.proxy(function(res){
             this.deleteSuccess(res);
-            }, this));
+            this.updateMessage();
+        }, this));
     },
     btnCancel: function(){
         $('#' + this.formId).remove();
@@ -206,12 +208,19 @@ mdEditForm.prototype = {
     },
     deleteSuccess: function(res) {
         $('#' + this.formId).remove();
-	var $nextMd = $('#' + this.mdId).next();
+        var $nextMd = $('#' + this.mdId).next();
         $('#' + this.mdId).remove();
-	this.resetTreeId($nextMd, -1, 'md');
-	var $nextElm = $('#' + this.elmId).next();
+        this.resetTreeId($nextMd, -1, 'md');
+        var $nextElm = $('#' + this.elmId).next();
         $('#' + this.elmId).remove();
-	this.resetTreeId($nextElm, -1, 'elm');
+        this.resetTreeId($nextElm, -1, 'elm');
+    },
+    updateMessage: function() {
+        if($('section.Message').is(":hidden")){
+            var info = $('<div>').addClass('Info').text("コミットされていないバッファがあります");
+            $('section.Message').append(info);
+            $('section.Message').show();
+        }
     },
     resetTreeId: function(obj, inc, prefix) {
         while(obj.length > 0){
@@ -327,6 +336,13 @@ mdOutlineEditor.prototype = {
                         target.before(divideObj);
                     }else if(action === 'undivide'){
                         target.prev('div.OutlineDivide').remove();
+                    }
+
+                    //メッセージを表示
+                    if($('section.Message').is(":hidden")){
+                        var info = $('<div>').addClass('Info').text("コミットされていないバッファがあります");
+                        $('section.Message').append(info);
+                        $('section.Message').show();
                     }
                 });
             });

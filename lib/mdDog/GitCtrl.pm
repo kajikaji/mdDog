@@ -455,6 +455,7 @@ sub fix_tmp {
   my $author = shift;
   my $message = shift;
 
+  my $ret;
   my $branch = "$self->{branch_prefix}${uid}";
   my $branch_tmp = "${branch}_tmp";
   my $gitctrl = $self->{git};
@@ -468,12 +469,18 @@ sub fix_tmp {
     my $cnt = @logs_tmp;
     $gitctrl->checkout($branch_tmp);
     $gitctrl->reset({soft => 1}, "HEAD~${cnt}");
-    $gitctrl->commit({message => $message, author => $author});
+    if($gitctrl->diff({cached => 1})){
+      $gitctrl->commit({message => $message, author => $author});
+    }else{
+      $ret = "データの変更が見つからないのでコミットされませんでした";
+    }
     $gitctrl->checkout($branch);
     $gitctrl->rebase($branch_tmp);
     $gitctrl->checkout("master");
   }
   $gitctrl->branch("-D", $branch_tmp);
+
+  return $ret;
 }
 
 ############################################################
