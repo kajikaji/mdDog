@@ -6,10 +6,10 @@
 
 use strict;no strict "refs";
 use lib '../lib/';
-use mdDog;
+use mdDogAPI;
 use MYUTIL;
 
-my $dog = mdDog->new('api');
+my $dog = mdDogAPI->new('api');
 $dog->setup_config();
 $dog->login();
 
@@ -18,7 +18,7 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     return unless($dog->qParam('fid'));
 
     ## ?fid=[fid](&eid=[eid])
-    print $dog->api_get_data();
+    print $dog->get_data();
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
     ## ?fid=[fid]&eid=[eid]&action=[action]
     return unless($dog->qParam('fid')
@@ -26,10 +26,10 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
                   || $dog->qParam('action'));
 
     if($dog->qParam('action') eq 'update' &&  $dog->qParam('data')){
-        my $updateData = $dog->api_post_data();
+        my $updateData = $dog->post_data();
         print $updateData;
     }elsif($dog->qParam('action') eq 'delete' ) {
-        my $ret = $dog->api_delete_data();
+        my $ret = $dog->delete_data();
         print $ret;
     }
 }

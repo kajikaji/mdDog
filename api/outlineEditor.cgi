@@ -6,10 +6,10 @@
 
 use strict;no strict "refs";
 use lib '../lib/';
-use mdDog;
+use mdDogAPI;
 use MYUTIL;
 
-my $dog = mdDog->new('api');
+my $dog = mdDogAPI->new('api');
 $dog->setup_config();
 $dog->login();
 
@@ -21,10 +21,10 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
                   || $dog->qParam('action'));
 
     if($dog->qParam('action') eq 'divide' &&  $dog->qParam('num')){
-        print $dog->api_outline_add_divide();
+        print $dog->outline_add_divide();
     }
     elsif($dog->qParam('action') eq 'undivide' &&  $dog->qParam('num')){
-        print $dog->api_outline_remove_divide();
+        print $dog->outline_remove_divide();
     }
 }
 
