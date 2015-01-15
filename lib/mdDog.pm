@@ -552,10 +552,12 @@ sub set_master_outline{
   my ($i, $j) = 0;
   my ($docs, $dat);
   foreach (@partsAry) {
-    if(@$divides[$i] == $j){
-      push @$docs, $dat;
-      $dat = undef;
-      $i++;
+    if($divides){
+      if(@$divides[$i] == $j){
+        push @$docs, $dat;
+        $dat = undef;
+        $i++;
+      }
     }
 
     my $line = markdown($_);
