@@ -381,6 +381,15 @@ mdOutline.prototype = {
             $(elm).remove();
         }, this));
 
+        //目次にページ番号を挿入
+	$('.Outline').find('.Contents.Page').each($.proxy(function(i, elm){
+	    $(elm).find('.List .Caption').each(function(){
+		var num = Number($(this).attr('id').substr(7));
+		var pageObj = $('#document' + num).parent('.Document.Page');
+		var page = Number(pageObj.attr('class').split(' ')[2].substr(1)) + 1;
+		$(this).find('.PageNum').text(page);
+	    });
+	}, this));
     },
 
     addPage : function (className, cPage, depth, obj){
@@ -461,6 +470,7 @@ mdOutline.prototype = {
 
         $(obj).children().each($.proxy(function(i, elm){
             if(newpage === 1){
+                $(".Document.Page.P" + this.page).append(this.pageFooter(this.page + 1));
                 $(".Document.Page.P" + this.page).after(
                      $('<div>').addClass("Document Page P" + (this.page + 1))
                 );
@@ -478,7 +488,16 @@ mdOutline.prototype = {
                 cHeight += objHeight;
             }
         }, this));
-	this.page++;
+
+        $(".Document.Page.P" + this.page).append(this.pageFooter(this.page + 1));
+        this.page++;
+    },
+
+    pageFooter: function(num) {
+	var footer = $('<div>').addClass("PageFooter");
+	footer.append($('<div>').addClass("PageNum").text(num));
+
+	return footer;
     }
 };
 

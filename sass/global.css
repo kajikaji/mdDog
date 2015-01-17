@@ -556,7 +556,8 @@ section.Outline {
     border: 2px solid #888;
     background-color: #fff;
     font-size: 14px;
-    line-height: 1.2em; }
+    line-height: 1.2em;
+    position: relative; }
     section.Outline .Document h1, section.Outline .Document h2, section.Outline .Document h3, section.Outline .Document h4, section.Outline .Document h5, section.Outline .Document h6, section.Outline .Document h7 {
       margin: 0;
       padding: 30px 0 10px 0; }
@@ -613,6 +614,13 @@ section.Outline {
       font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
       font-size: 10pt;
       line-height: 1.2em; }
+    section.Outline .Document .PageFooter {
+      position: absolute;
+      top: 280mm;
+      width: 190mm;
+      box-sizing: border-box; }
+      section.Outline .Document .PageFooter .PageNum {
+        text-align: center; }
   section.Outline .Cover {
     text-align: center; }
     section.Outline .Cover .Title {
@@ -628,23 +636,31 @@ section.Outline {
       width: 28mm; }
   section.Outline .Contents {
     margin-bottom: 30px; }
-    section.Outline .Contents > ul {
+    section.Outline .Contents > ul.List {
       margin-left: 30px;
       font-size: 10pt;
       line-height: 1.0em;
       list-style: none; }
-      section.Outline .Contents > ul li.Level1 {
+      section.Outline .Contents > ul.List li.Level1 {
         margin-top: 10px;
         border-bottom: 1px dashed #aaa; }
-      section.Outline .Contents > ul li.Level2 {
+      section.Outline .Contents > ul.List li.Level2 {
         font-size: 80%;
         padding-left: 50px; }
-      section.Outline .Contents > ul li.Level3 {
+      section.Outline .Contents > ul.List li.Level3 {
         font-size: 70%;
         padding-left: 80px; }
-      section.Outline .Contents > ul li.Level4 {
+      section.Outline .Contents > ul.List li.Level4 {
         font-size: 70%;
         padding-left: 100px; }
+      section.Outline .Contents > ul.List li .PageNum {
+        float: right; }
+      section.Outline .Contents > ul.List li:after, section.Outline .Contents > ul.List li:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Outline .Contents > ul.List li:after {
+        clear: both; }
 
 section.OutlineEditor ul.BufferEditMenu {
   position: absolute;

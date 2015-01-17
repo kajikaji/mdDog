@@ -549,10 +549,11 @@ sub set_master_outline{
   $self->{outline}->init();
   my $divides = $self->{outline}->get_divides();
   my ($rowdata, @partsAry) = $self->split_for_md($md);
-  my ($i, $j) = 0;
+  my ($i, $j) = (0, 0);
   my ($docs, $dat);
   foreach (@partsAry) {
     if($divides){
+      #改ページ
       if(@$divides[$i] == $j){
         push @$docs, $dat;
         $dat = undef;
@@ -561,21 +562,23 @@ sub set_master_outline{
     }
 
     my $line = markdown($_);
+    $line =~ s#^<([a-z1-9]+)>#<\1 id="document${j}">#;
     $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
     $dat .= $line;
 
+    #目次の生成
     if( $line =~ m/<h1.*>/){
       $line =~ s#<h1.*>(.*)</h1>#\1#;
-      push @contents, {level => 1, line => $line};
+      push @contents, {level => 1, line => $line, num => $j};
     }elsif( $line =~ m/<h2.*>/ ){
       $line =~ s#<h2.*>(.*)</h2>#\1#;
-      push @contents, {level => 2, line => $line};
+      push @contents, {level => 2, line => $line, num => $j};
     }elsif( $line =~ m/<h3.*>/ ){
       $line =~ s#<h3.*>(.*)</h3>#\1#;
-      push @contents, {level => 3, line => $line};
+      push @contents, {level => 3, line => $line, num => $j};
     }elsif( $line =~ m/<h4.*>/ ){
       $line =~ s#<h4.*>(.*)</h4>#\1#;
-      push @contents, {level => 4, line => $line};
+      push @contents, {level => 4, line => $line, num => $j};
     }
 
     $j++;
