@@ -101,14 +101,19 @@ sub post_data {
   my $cnt = 0;
   my @newAry;
   my $line;
-  foreach(@partsAry) {
-    if($eid == $cnt){
+  if($eid >= 0){
+      foreach (@partsAry) {
+          if ($eid == $cnt) {
+              $line = $data . "\n";
+          } else {
+              $line = $_ . "\n";
+          }
+          syswrite $hF, $line, length($line);
+          $cnt++;
+      }
+  } else {
       $line = $data . "\n";
-    }else{
-      $line = $_ . "\n";
-    }
-    syswrite $hF, $line, length($line);
-    $cnt++;
+      syswrite $hF, $line, length($line);
   }
   close $hF;
 
@@ -118,6 +123,7 @@ sub post_data {
 
   my $json = JSON->new();
   my $md;# = markdown($data);
+  $eid = 0 if($eid < 0);
   my ($row, @parts) = $self->split_for_md($data, $eid);
   $cnt = $eid;
   foreach(@parts){

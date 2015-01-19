@@ -81,20 +81,26 @@ var mdEditForm = function(obj){
 };
 mdEditForm.prototype = {
     init: function() {
-        this.id = this.src.attr('id').slice(2);
-        this.elmId = 'elm' + this.id;
+        var newForm = $('#' + this.formtmpl).clone()
+        var tt = newForm.find('textarea.Editdata');
+
+        this.id = Number(this.src.attr('id').slice(2));
         this.mdId = 'md' + this.id;
         this.formId = 'edit' + this.id;
 
-        var newForm = $('#' + this.formtmpl).clone().attr('id', this.formId);
-        var data= $('#' + this.elmId).text();
-        var n = data.match(/\n/g).length + 1;
-        var tt = newForm.find('textarea.Editdata');
         tt.attr('id', 'editdata' + this.id);
-        tt.text(data).attr('rows', n);
+        newForm.attr('id', this.formId);
+
+        if(this.id >= 0){
+            this.elmId = 'elm' + this.id;
+
+            var data= $('#' + this.elmId).text();
+            var n = data.match(/\n/g).length + 1;
+            tt.text(data).attr('rows', n);
+        }
+
         this.src.after(newForm);
         newForm.show(); this.src.hide();
-
         this.attachButton();
     },
 
@@ -102,9 +108,13 @@ mdEditForm.prototype = {
         $('#' + this.formId).find('button.Update').click($.proxy(function(){
             this.btnUpdate();
         }, this));
-        $('#' + this.formId).find('button.Delete').click($.proxy(function(){
-            this.btnDelete();
-        }, this));
+        if(this.id >= 0){
+          $('#' + this.formId).find('button.Delete').click($.proxy(function(){
+              this.btnDelete();
+          }, this));
+        }else{
+            $('#' + this.formId).find('button.Delete').hide();
+        }
         $('#' + this.formId).find('button.Cancel').click($.proxy(function(){
             this.btnCancel();
         }, this));
@@ -183,18 +193,22 @@ mdEditForm.prototype = {
         $('#' + this.mdId + 'org').after($newObj);
         $newObj.show();
         $('#' + this.mdId + 'org').remove();
-	    var leng = $newObj.length;
-	    if(leng > 1){
-	        this.resetTreeId($newObj.last().next(), leng - 1, 'md');
+        var leng = $newObj.length;
+        if(leng > 1){
+            this.resetTreeId($newObj.last().next(), leng - 1, 'md');
         }
 
-        $('#' + this.elmId).attr('id', this.elmId + 'org');
-        var $elmObj = $(res.row);
-        $('#' + this.elmId + 'org').after($elmObj);
-        $('#' + this.elmId + 'org').remove();
-	    var eLeng = $elmObj.length;
-	    if(eLeng > 1){
-	        this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm');
+        if(this.elmId !== undefined){
+            $('#' + this.elmId).attr('id', this.elmId + 'org');
+            var $elmObj = $(res.row);
+            $('#' + this.elmId + 'org').after($elmObj);
+            $('#' + this.elmId + 'org').remove();
+            var eLeng = $elmObj.length;
+            if(eLeng > 1){
+                this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm');
+            }
+        }else{
+            $('#bufferCommitForm .Rowdata').append(res.row);
         }
 
         $newObj.hover(
@@ -205,6 +219,7 @@ mdEditForm.prototype = {
             var eForm = new mdEditForm($(this));
             eForm.init();
         });
+        this.checkBlankDocument();
     },
     deleteSuccess: function(res) {
         $('#' + this.formId).remove();
@@ -214,6 +229,7 @@ mdEditForm.prototype = {
         var $nextElm = $('#' + this.elmId).next();
         $('#' + this.elmId).remove();
         this.resetTreeId($nextElm, -1, 'elm');
+        this.checkBlankDocument();
     },
     updateMessage: function() {
         if($('section.Message').is(":hidden")){
@@ -231,6 +247,19 @@ mdEditForm.prototype = {
                 obj.attr('id', prefix + id);
             }
             obj = obj.next();
+        }
+    },
+    checkBlankDocument: function(){
+        if($('.MdBuffer div.Document').children().length == 0){
+            var blank = $('<div>').addClass("Blank").attr("id", "md-1");
+            $('.MdBuffer div.Document').append(blank);
+            blank.hover(
+                function(){ blank.addClass('Focus'); },
+                function(){ blank.removeClass('Focus'); }
+            );
+            blank.click(function(){
+                new mdEditForm(blank).init();;
+            });
         }
     }
 };
@@ -519,6 +548,18 @@ $(function(){
             $(this).addClass("Uneditable");
         }
     });
+    if($('.MdBuffer div.Document').children().length == 0){
+        var blank = $('<div>').addClass("Blank").attr("id", "md-1");
+        $('.MdBuffer div.Document').append(blank);
+        blank.hover(
+            function(){ blank.addClass('Focus'); },
+            function(){ blank.removeClass('Focus'); }
+        );
+        blank.click(function(){
+            new mdEditForm(blank).init();;
+        });
+    }
+
     new outlineDivide().init();   // 編集バッファのアウトライン
     new mdOutlineEditor().init(); // アウトラインエディタ
     new mdOutline().init();       // アウトライン出力

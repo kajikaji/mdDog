@@ -25,7 +25,7 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
                   || $dog->qParam('eid')
                   || $dog->qParam('action'));
 
-    if($dog->qParam('action') eq 'update' &&  $dog->qParam('data')){
+    if($dog->qParam('action') eq 'update'){
         my $updateData = $dog->post_data();
         print $updateData;
     }elsif($dog->qParam('action') eq 'delete' ) {

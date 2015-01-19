@@ -771,14 +771,16 @@ sub add_thumbnail {
   $mImg->Read($imgpath);
   my ($w, $h) = $mImg->get('width', 'height');
   my ($rw, $rh);
-  if ($w >= $h) {
-    $rw = THUMBNAIL_SIZE;
-    $rh = THUMBNAIL_SIZE / $w * $h;
-  } else {
-    $rh = THUMBNAIL_SIZE;
-    $rw = THUMBNAIL_SIZE / $h * $w;
+  if ($w > THUMBNAIL_SIZE || $h > THUMBNAIL_SIZE) { #サイズが大きいときだけリサイズ
+      if ($w >= $h) {
+          $rw = THUMBNAIL_SIZE;
+          $rh = THUMBNAIL_SIZE / $w * $h;
+      } else {
+          $rh = THUMBNAIL_SIZE;
+          $rw = THUMBNAIL_SIZE / $h * $w;
+      }
+      $mImg->Resize(width=>$rw, height=> $rh);
   }
-  $mImg->Resize(width=>$rw, height=> $rh);
   $mImg->Write("${thumbdir}/${filename}");
   return "${thumbdir}/${filename}";
 }
