@@ -132,6 +132,25 @@ sub print_page {
 }
 
 ############################################################
+#ユーザーが編集・承認を行なうページへのログインを行なう
+#条件を満たさないと適宜ページにリダイレクトする
+#
+sub login_user_document {
+  my $self = shift;
+
+  my $fid = $self->qParam('fid');
+  unless($fid) {
+      print "Location: index.cgi\n\n";
+      exit();
+  }
+  unless($self->login()){
+      print "Location: docinfo.cgi?fid=${fid}\n\n";
+      exit();
+  }
+  return 1;
+}
+
+############################################################
 #登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
@@ -190,7 +209,6 @@ where di.id = $fid;";
   my $ary = $self->{dbh}->selectrow_hashref($sql);
   if($ary) {
     $self->{t}->{file_name} = $ary->{file_name};
-    $self->{t}->{is_mdfile} = 1 if($ary->{file_name} =~ m/.*\.md/);
     $self->{t}->{created_at} = MYUTIL::format_date2($ary->{created_at});
     $self->{t}->{created_by} = $ary->{nic_name};
     my @logs = $self->{git}->get_shared_logs();
@@ -211,10 +229,10 @@ sub is_exist_buffer {
     my $fid = $self->qParam('fid');
     my $uid = $self->{s}->param("login");
 
-    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})){
-        return $self->{git}->is_updated_buffer($uid);
+    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
+      && $self->{git}->is_updated_buffer($uid)){
+        push @{$self->{t}->{message}->{info}}, "コミットされていないバッファがあります";
     }
-    return 0;
 }
 
 
@@ -394,6 +412,9 @@ sub setup_new_file{
 
 ###################################################
 # ユーザーのブランチにアップロードしたファイルをコミットする
+# query1: fid
+# query2: login
+# query3: uploadfile
 #
 sub upload_file {
   my $self = shift;
@@ -403,13 +424,16 @@ sub upload_file {
   return 0 unless($fid && $uid);
   my $author = $self->get_author($uid);
   my $hF = $self->{q}->upload('uploadfile');
-  return 0 unless($hF);
+  unless($hF){
+    push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
+    return 0;
+  }
   my $filename = basename($hF);
 
   my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
   my @ary_check = $self->{dbh}->selectrow_array($sql_check);
   if(!@ary_check || $ary_check[0] != $fid){
-    $self->{t}->{error} = "違うファイルがアップロードされました";
+    push @{$self->{t}->{message}->{error}}, "違うファイルがアップロードされたため更新されませんでした";
     close($hF);
     return 0;
   }
@@ -422,9 +446,10 @@ sub upload_file {
   close($hF);
 
   if(!$self->{git}->commit($filename, $author, "rewrite by an uploaded file")){
-    $self->{t}->{error} = "ファイルに変更がないため更新されませんでした";
+    push @{$self->{t}->{message}->{info}}, "ファイルに変更がないため更新されませんでした";
   }
   $self->{git}->detach_local();
+  push @{$self->{t}->{message}->{info}}, "アップロードしたファイルで上書きしました";
   return 1;
 }
 
@@ -639,7 +664,10 @@ sub update_md_buffer {
   return 0 unless($uid && $fid);
   my $sql = "select file_name from docx_infos where id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
-  return 0 unless(@ary);
+  unless(@ary){
+    push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
+    return 0;
+  }
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document = $self->qParam('document');
@@ -657,28 +685,38 @@ sub update_md_buffer {
   my $author = $self->get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
+  push @{$self->{t}->{message}->{info}}, "編集内容を保存しました";
   return 1;
 }
 
 ############################################################
 # MDドキュメントの編集バッファをフィックスする
+# query1: login
+# query2: fid
+# query3: comment
 #
 sub fix_md_buffer {
   my $self = shift;
 
+  my $gitctrl = $self->{git};
   my $uid = $self->{s}->param("login");
   my $fid = $self->qParam('fid');
   my $comment = $self->qParam('comment');
-  return 0 unless($uid && $fid && $comment);
+  unless($uid && $fid && $comment){
+    push @{$self->{t}->{message}->{error}}, "コメントがないためコミット失敗しました";
+    return 0;
+  }
 
   if($self->qParam('document')){
     return 0 unless($self->update_md_buffer());
   }
-  my $ret = $self->{git}->fix_tmp($uid, $self->get_author($uid), $comment);
-  if($ret){
-    $self->{t}->{message}->{info} = $ret;
+  my $ret = $gitctrl->fix_tmp($uid, $self->get_author($uid), $comment);
+  unless($ret){
+    push @{$self->{t}->{message}->{error}}, "編集バッファのコミットに失敗しました";
     return 0;
   }
+  push @{$self->{t}->{message}->{info}}, "コミットしました";
+  push(@{$self->{t}->{message}->{info}}, $gitctrl->{info}) if($gitctrl->{info});
   return 1;
 }
 
@@ -748,6 +786,7 @@ sub upload_image {
   $self->{git}->add_image($thumbnail, $author);
 
   $self->{git}->detach_local();
+  push @{$self->{t}->{message}->{info}},  "画像をアップロードしました";
   return 1;
 }
 
@@ -800,6 +839,7 @@ sub delete_image {
   my $author = $self->get_author($self->{s}->param('login'));
   $self->{git}->delete_image([@selected], $author);
   $self->{git}->detach_local();
+  push @{$self->{t}->{message}->{info}}, "画像を削除しました";
   return 1;
 }
 

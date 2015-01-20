@@ -10,35 +10,22 @@ use mdDog;
 
 my $dog =mdDog->new();
 $dog->setup_config();
-$dog->login();
+$dog->login_user_document();
 
-
-if(!$dog->qParam('fid')) {
-  $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_upload.cgi:err01<br>";
-} else {
-    if($dog->qParam('uploadfile')){
-        if($dog->upload_file()){
-            $dog->{t}->{message} = { "info" => "アップロードしたファイルで上書きしました" };
-        }else{
-            $dog->{t}->{message} = { "error" => "アップロードに失敗しました" };
-        }
-    }
-
-    if($dog->qParam('commit')){
-        #変更を反映 変更履歴は必須
-        if($dog->fix_md_buffer()){
-            $dog->{t}->{message} = { "info" => "コミットしました" };
-        }else{
-            $dog->{t}->{message} = { "error" => "編集バッファのコミットに失敗しました" };
-        }
-    }
-
-    if($dog->is_exist_buffer()){
-	$dog->{t}->{message} = { "info" => "コミットされていないバッファがあります" };
-    }
-
-    $dog->set_document_info();
+#アップロード処理
+if ($dog->qParam('uploadfile')) {
+    $dog->upload_file();
 }
+
+#コミット処理
+if ($dog->qParam('commit')) {
+    #変更を反映 変更履歴は必須
+    $dog->fix_md_buffer();
+}
+
+$dog->is_exist_buffer();
+
+$dog->set_document_info();
 
 $dog->print_page();
 exit();
