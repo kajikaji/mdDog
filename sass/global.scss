@@ -226,6 +226,12 @@ i.Glyph{
 .Glyph.Logbook{
     background-image: url("../img/087_log_book.png");
 }
+.Glyph.Book{
+    background-image: url("../img/071_book.png");
+}
+.Glyph.File{
+    background-image: url("../img/036_file.png");
+}
 a.Glyph {
   display: inline-block;
   float: left;
@@ -369,8 +375,9 @@ section.Message{
   margin-bottom: 20px;
   font-size: 10pt;
 
-  >div{
-    padding: 3px 5px;
+  >ul{
+    list-style: none;
+    margin-left: 30px;
     background-color: #fff;
     font-weight: bold;
     @include round-corner(5px);
@@ -381,6 +388,9 @@ section.Message{
     &.Error{
         color: #f00;
         border: 1px solid #f00;
+    }
+    li{
+      padding: 2px 5px;
     }
   }
 }
@@ -672,9 +682,11 @@ section.Docinfo{
     >div{
       float: left;
       margin-right: 10px;
-      .Active{
+      a.Active, a.Active:hover{
           font-weight: bold;
           text-decoration: underline;
+          color: #000;
+          cursor: default;
       }
     }
     @include clearfix();
@@ -1138,7 +1150,8 @@ section.BufferLog{
 
     .Caution{
       font-size: 10px;
-      color: #faa;
+      font-weight: bold;
+      color: #f33;
     }
 
     .Body{

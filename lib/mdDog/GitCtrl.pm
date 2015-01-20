@@ -24,6 +24,8 @@ sub new {
     workdir     => ${workdir},
     branch_prefix => "user_",
     lock_handle => undef,
+    error       => undef,
+    info        => undef,
   };
 
   $hash->{git} = Git::Wrapper->new($hash->{workdir}) if($workdir);
@@ -461,7 +463,10 @@ sub fix_tmp {
   my $gitctrl = $self->{git};
 
   my @branches = $gitctrl->branch;
-  return unless(MYUTIL::is_include(\@branches, $branch_tmp));
+  unless(MYUTIL::is_include(\@branches, $branch_tmp)){
+    $self->{error} .= "編集バッファが見つかりません";
+    return 0;
+  }
   $gitctrl->branch($branch) unless(MYUTIL::is_include(\@branches, $branch));
 
   my @logs_tmp = ($gitctrl->log($branch . ".." . $branch_tmp));
@@ -473,6 +478,7 @@ sub fix_tmp {
       $gitctrl->commit({message => $message, author => $author});
     }else{
       $ret = "データの変更が見つからないのでコミットされませんでした";
+      $self->{info} .= "データの変更が見つからないのでコミットされませんでした";
     }
     $gitctrl->checkout($branch);
     $gitctrl->rebase($branch_tmp);
@@ -480,7 +486,7 @@ sub fix_tmp {
   }
   $gitctrl->branch("-D", $branch_tmp);
 
-  return $ret;
+  return 1;
 }
 
 ############################################################

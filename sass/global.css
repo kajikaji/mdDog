@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*
  * GLYPH-ICON
  */
@@ -52,6 +53,12 @@ i.Glyph {
 
 .Glyph.Logbook {
   background-image: url("../img/087_log_book.png"); }
+
+.Glyph.Book {
+  background-image: url("../img/071_book.png"); }
+
+.Glyph.File {
+  background-image: url("../img/036_file.png"); }
 
 a.Glyph {
   display: inline-block;
@@ -181,18 +188,21 @@ body > section > h1, body > section > h2, body > section > h3, body > section > 
 section.Message {
   margin-bottom: 20px;
   font-size: 10pt; }
-  section.Message > div {
-    padding: 3px 5px;
+  section.Message > ul {
+    list-style: none;
+    margin-left: 30px;
     background-color: #fff;
     font-weight: bold;
     border-radius: 5px;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; }
-    section.Message > div.Info {
+    section.Message > ul.Info {
       border: 1px solid #4169e1; }
-    section.Message > div.Error {
+    section.Message > ul.Error {
       color: #f00;
       border: 1px solid #f00; }
+    section.Message > ul li {
+      padding: 2px 5px; }
 
 section.Admin h1 {
   margin-bottom: 20px;
@@ -437,9 +447,11 @@ section.Docinfo > .Description {
   section.Docinfo > .Description > div {
     float: left;
     margin-right: 10px; }
-    section.Docinfo > .Description > div .Active {
+    section.Docinfo > .Description > div a.Active, section.Docinfo > .Description > div a.Active:hover {
       font-weight: bold;
-      text-decoration: underline; }
+      text-decoration: underline;
+      color: #000;
+      cursor: default; }
   section.Docinfo > .Description:after, section.Docinfo > .Description:before {
     display: table;
     content: "";
@@ -846,6 +858,8 @@ section.MdBuffer .BufferEdit {
     section.MdBuffer .BufferEdit .Document > .Uneditable {
       background-color: #ecc;
       color: #888; }
+    section.MdBuffer .BufferEdit .Document > .Blank {
+      height: 10px; }
     section.MdBuffer .BufferEdit .Document .Editform textarea.Editdata {
       width: 100%;
       box-sizing: boder-box;
@@ -1028,7 +1042,8 @@ section.BufferLog .GitLog {
         clear: both; }
     .RevisionViewerDialog .Document .Caution, .DiffViewerDialog .Document .Caution {
       font-size: 10px;
-      color: #faa; }
+      font-weight: bold;
+      color: #f33; }
     .RevisionViewerDialog .Document .Body, .DiffViewerDialog .Document .Body {
       padding: 10px;
       border: 2px solid #888;

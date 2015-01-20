@@ -658,17 +658,17 @@ $(function(){
                 }
             });
         }
-        if(commitForm && ev.keyCode === 27){ //ESCキー
+        if(commitForm && ev.keyCode === 27){  //ESCキー
             //編集バッファのコミット窓
             $('#bufferCommitForm').fadeToggle();
             commitForm = false;
         }
-        if(revisionViewer && ev.keyCode === 27){ //ESCキー
+        if(revisionViewer){
             //リヴィジョンヴューアー窓
             $('#revisionViewer').fadeToggle();
             revisionViewer = false;
         }
-        if(diffViewer && ev.keyCode === 27){ //ESCキー
+        if(diffViewer){
             //差分ヴューアー窓
             $('#diffViewer').fadeToggle();
             diffViewer = false;

@@ -22,20 +22,21 @@
         <td class="Info">
 
           [% UNLESS info.deleted_at %]
-          [% IF is_delete || is_admin %]
           <div class="DocCtrl">
+            <a href="md_output.cgi?fid=[% info.id %]" class="Glyph File"></a>
+            [% IF is_delete || is_admin %]
             <a href="docsetting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
             <form action="" method="post">
               [% IF info.is_used %]
-               <input type="submit" name="unuse" value=" " class="Glyph Ban">
+              <input type="submit" name="unuse" value=" " class="Glyph Ban">
               [% ELSE %]
               <input type="submit" name="use" value=" " class="Glyph Ok">
               <input type="submit" name="delete" value=" " class="Glyph Bin">
               [% END %]
               <input type="hidden" name="fid" value="[% info.id %]">
             </form>
+            [% END %] <!-- IF is_delete || is_admin -->
           </div>
-          [% END %] <!-- IF is_delete || is_admin -->
           [% END %] <!-- UNLESS info.deleted_at -->
           
           <div class="DocSubject">
@@ -50,7 +51,6 @@
 
           <div class="DocDetail">
           [% IF !info.deleted_at and info.is_used %]
-            <div class="">[<a href="md_output.cgi?fid=[% info.id %]">最新版アウトライン</a>]</div>
             <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
           [% END %]
             <div class="CreateAt">作成日時:[% info.created_at %]</div>

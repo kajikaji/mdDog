@@ -1,4 +1,16 @@
 <section class="Message" [%UNLESS message %]style="display: none;"[%END %]>
-  [%IF message.error %]<div class="Error">[% message.error %]</div>[% END %]
-  [%IF message.info %]<div class="Info">[% message.info %]</div>[% END %]
+  [%IF message.error %]
+    <ul class="Error">
+    [%FOREACH e IN message.error %]
+      <li>[% e %]</li>
+    [%END %]
+    </ul>
+  [%END %]
+  [%IF message.info %]
+    <ul class="Info">
+    [%FOREACH i IN  message.info %]
+      <li>[% i %]</li>
+    [%END %]
+    </ul>
+  [%END %]
 </section>
