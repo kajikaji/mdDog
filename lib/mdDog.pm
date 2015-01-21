@@ -27,10 +27,10 @@ use constant THUMBNAIL_SIZE => 150;
 ###################################################
 #
 sub new {
-  my $pkg = shift;
-  my $base = $pkg->SUPER::new(@_);
+  my $pkg   = shift;
+  my $base  = $pkg->SUPER::new(@_);
 
-  my $hash = {
+  my $hash  = {
     repo_prefix => "user_",
     git         => undef,
     outline     => undef,
@@ -77,10 +77,19 @@ sub login {
   my $self = shift;
 
   if($self->qParam('login')){
-    my $account = $self->qParam('account');
-    my $password = $self->qParam('password');
+    my $account   = $self->qParam('account');
+    my $password  = $self->qParam('password');
 
-    my $sql = "select id from docx_users where account = '$account' and password = md5('$password') and is_used = true;";
+    my $sql = << "SQL";
+SELECT
+  id
+FROM
+  docx_users
+WHERE
+  account = '$account'
+  AND password = md5('$password')
+  AND is_used = true;
+SQL
     my @ary = $self->{dbh}->selectrow_array($sql);
     if(@ary){
       $self->{s}->param("login", $ary[0]);
@@ -96,7 +105,15 @@ sub login {
 
   my $id = $self->{s}->param("login");
   if($id){
-    my $sql = "select account,mail,nic_name,may_admin,may_approve,may_delete from docx_users where id = ${id} and is_used = true;";
+    my $sql = << "SQL";
+SELECT
+  account, mail, nic_name, may_admin, may_approve, may_delete
+FROM
+  docx_users
+WHERE
+  id = ${id}
+  AND is_used = true;
+SQL
     my $ha = $self->{dbh}->selectrow_hashref($sql);
     $self->{user} = {
       account     => $ha->{account},
@@ -119,13 +136,13 @@ sub print_page {
   my $self = shift;
 
   if($self->{s}->param("login")){
-    $self->{t}->{login} = $self->{s}->param("login");
+    $self->{t}->{login}      = $self->{s}->param("login");
   }
   if($self->{user}){
-    $self->{t}->{account} = $self->{user}->{account};
-    $self->{t}->{is_admin} = $self->{user}->{may_admin};
+    $self->{t}->{account}    = $self->{user}->{account};
+    $self->{t}->{is_admin}   = $self->{user}->{may_admin};
     $self->{t}->{is_approve} = $self->{user}->{may_approve};
-    $self->{t}->{is_delete} = $self->{user}->{may_delete};
+    $self->{t}->{is_delete}  = $self->{user}->{may_delete};
   }
 
   $self->SUPER::print_page();
@@ -157,15 +174,20 @@ sub listup_documents {
   my $self = shift;
   my @infos;
 
-  my $sql = "select
+  my $sql = << "SQL";
+SELECT
   di.*,
-  du.nic_name as nic_name,
-  du.account as account,
-  du.mail as mail
-from docx_infos di
-join docx_users du on du.id = di.created_by
-where di.deleted_at is null
-order by di.is_used DESC, di.created_at desc;";
+  du.nic_name AS nic_name,
+  du.account AS account,
+  du.mail AS mail
+FROM
+  docx_infos di
+JOIN docx_users du ON du.id = di.created_by
+WHERE
+  di.deleted_at is null
+ORDER BY
+  di.is_used DESC, di.created_at DESC;
+SQL
 
   my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
      || $self->errorMessage("DB:Error",1);
@@ -173,13 +195,13 @@ order by di.is_used DESC, di.created_at desc;";
     foreach (@$ary) {
       my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
       my $info = {
-        id        => $_->{id},
-        file_name => $_->{file_name},
-        is_used   => $_->{is_used},
-        created_at => MYUTIL::format_date2($_->{created_at}),
-        deleted_at => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
-        created_by => $_->{nic_name},
-        file_size => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
+        id              => $_->{id},
+        file_name       => $_->{file_name},
+        is_used         => $_->{is_used},
+        created_at      => MYUTIL::format_date2($_->{created_at}),
+        deleted_at      => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
+        created_by      => $_->{nic_name},
+        file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
         last_updated_at => ${logs}[0][0]->{attr}->{date},
       };
       push @infos, $info;
@@ -193,31 +215,37 @@ order by di.is_used DESC, di.created_at desc;";
 sub set_document_info {
   my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  my $user = $self->qParam('user');
-  my $ver = $self->qParam('revision');
-  return unless($fid);
+  my $fid   = $self->qParam('fid');
+  my $user  = $self->qParam('user');
+  my $ver   = $self->qParam('revision');
+  return unless($fid);    # NULL CHECK
 
-  my $sql = "select
+  my $sql = << "SQL";
+SELECT
   di.*,
-  du.nic_name as nic_name,
-  du.account as account,
-  du.mail as mail
-from docx_infos di
-join docx_users du on di.created_by = du.id and du.is_used = 't'
-where di.id = $fid;";
+  du.nic_name AS nic_name,
+  du.account  AS account,
+  du.mail     AS mail
+FROM
+  docx_infos di
+JOIN docx_users du
+  ON di.created_by = du.id AND du.is_used = 't'
+WHERE
+  di.id = $fid;
+SQL
   my $ary = $self->{dbh}->selectrow_hashref($sql);
   if($ary) {
-    $self->{t}->{file_name} = $ary->{file_name};
-    $self->{t}->{created_at} = MYUTIL::format_date2($ary->{created_at});
-    $self->{t}->{created_by} = $ary->{nic_name};
+    $self->{t}->{file_name}       = $ary->{file_name};
+    $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
+    $self->{t}->{created_by}      = $ary->{nic_name};
+    $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
+
     my @logs = $self->{git}->get_shared_logs();
     $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
-    $self->{t}->{file_size} = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
   }
 
-  $self->{t}->{fid} = $fid;
-  $self->{t}->{user} = $user;
+  $self->{t}->{fid}      = $fid;
+  $self->{t}->{user}     = $user;
   $self->{t}->{revision} = $ver if($ver);
 }
 
@@ -226,12 +254,13 @@ where di.id = $fid;";
 #
 sub is_exist_buffer {
     my $self = shift;
-    my $fid = $self->qParam('fid');
-    my $uid = $self->{s}->param("login");
+    my $fid  = $self->qParam('fid');
+    my $uid  = $self->{s}->param("login");
 
     if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
       && $self->{git}->is_updated_buffer($uid)){
         push @{$self->{t}->{message}->{info}}, "コミットされていないバッファがあります";
+        $self->{t}->{isExistBuffer} = 1;
     }
 }
 
@@ -243,13 +272,14 @@ sub is_exist_buffer {
 #
 sub git_log {
   my $self = shift;
-  my $all = shift;
+  my $all  = shift;
 
-  my $fid = $self->qParam("fid");
-  my $uid = $self->{s}->param("login");
+  my $fid  = $self->qParam("fid");
+  my $uid  = $self->{s}->param("login");
+
   my @userary;
   my $latest_rev = undef;
-  my $gitctrl = $self->{git};
+  my $gitctrl    = $self->{git};
 
   #共有リポジトリ(master)
   $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
@@ -296,13 +326,13 @@ sub git_log {
 sub git_my_log {
     my $self = shift;
 
-    my $fid = $self->qParam("fid");
-    my $uid = $self->{s}->param("login");
-    return 0 unless($fid && $uid);
+    my $fid  = $self->qParam("fid");
+    my $uid  = $self->{s}->param("login");
+    return 0 unless($fid && $uid);  # NULL CHECK
 
     my @userary;
     my $latest_rev = undef;
-    my $gitctrl = $self->{git};
+    my $gitctrl    = $self->{git};
 
     #共有リポジトリ(master)
     $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
@@ -325,12 +355,13 @@ sub git_my_log {
 sub set_approve_list {
   my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  my $fid = $self->qParam("fid");
+  my $uid      = $self->{s}->param("login");
+  my $fid      = $self->qParam("fid");
   my $revision = $self->qParam("revision");
-  my $user = $self->qParam("user");
-  return unless($uid && $fid && $revision && $user);
-  my $branch = "$self->{repo_prefix}${user}";
+  my $user     = $self->qParam("user");
+  return unless($uid && $fid && $revision && $user);  # NULL CHECK
+
+  my $branch   = "$self->{repo_prefix}${user}";
 
   my @logs;
   my $flg = undef;
@@ -344,7 +375,7 @@ sub set_approve_list {
       $flg = 1 unless($flg);
     }
   }
-  $self->{t}->{loglist} = \@logs;
+  $self->{t}->{loglist}     = \@logs;
   $self->{t}->{approve_pre} = 1;
 }
 
@@ -354,11 +385,11 @@ sub set_approve_list {
 sub doc_approve {
   my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  my $fid = $self->qParam("fid");
+  my $uid      = $self->{s}->param("login");
+  my $fid      = $self->qParam("fid");
   my $revision = $self->qParam("revision");
-  my $user = $self->qParam("user");
-  return unless($uid && $fid && $revision && $user);
+  my $user     = $self->qParam("user");
+  return unless($uid && $fid && $revision && $user); # NULL CHECK
 
   $self->{git}->approve($user, $revision);
 }
@@ -368,8 +399,8 @@ sub doc_approve {
 # MDファイルを作る
 sub create_file {
   my $self = shift;
-  my $uid = $self->{s}->param("login");
-  
+  my $uid  = $self->{s}->param("login");
+
   my $docname = nkf("-w", $self->qParam('docname'));
   $docname =~ s/^\s*(.*)\s*$/\1/;
   $docname =~ s/\s/_/g;
@@ -377,13 +408,13 @@ sub create_file {
   return unless($docname);
 
   my $filename = $docname . "\.md";
-  my $fid = $self->setup_new_file($filename, $uid);
-  my $workdir = "$self->{repodir}/${fid}";
+  my $fid      = $self->setup_new_file($filename, $uid);
+  my $workdir  = "$self->{repodir}/${fid}";
   my $filepath = "${workdir}/${filename}";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
   close($hF);
 
-  $self->{git} = GitCtrl->new($workdir);
+  $self->{git}     = GitCtrl->new($workdir);
   $self->{outline} = OutlineCtrl->new($workdir);
   $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->get_author($uid));
 
@@ -396,13 +427,18 @@ sub create_file {
 # @param2 uid
 #
 sub setup_new_file{
-  my $self = shift;
+  my $self     = shift;
   my $filename = shift;
-  my $uid = shift;
+  my $uid      = shift;
 
- my $sql_insert = "insert into docx_infos(file_name,created_at,created_by) values('$filename',now(),$uid);";
+ my $sql_insert = << "SQL";
+INSERT INTO
+  docx_infos(file_name, created_at, created_by)
+VALUES
+  ('$filename',now(),$uid);
+SQL
   $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error upload_file", 1);
-  my $sql_newfile = "select currval('docx_infos_id_seq');";
+  my $sql_newfile = "SELECT currval('docx_infos_id_seq');";
   my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
   my $fid = $ary_id[0];
   mkdir("./$self->{repodir}/$fid",0776)
@@ -419,11 +455,12 @@ sub setup_new_file{
 sub upload_file {
   my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  my $uid = $self->{s}->param("login");
-  return 0 unless($fid && $uid);
+  my $fid    = $self->qParam('fid');
+  my $uid    = $self->{s}->param("login");
+  return 0 unless($fid && $uid); # NULL CHECK
+
   my $author = $self->get_author($uid);
-  my $hF = $self->{q}->upload('uploadfile');
+  my $hF     = $self->{q}->upload('uploadfile');
   unless($hF){
     push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
     return 0;
@@ -440,7 +477,7 @@ sub upload_file {
 
   $self->{git}->attach_local_tmp($uid, 1);
 
-  my $tmppath = $self->{q}->tmpFileName($hF);
+  my $tmppath  = $self->{q}->tmpFileName($hF);
   my $filepath = $self->{repodir}. "/$fid/$filename";
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
@@ -457,10 +494,10 @@ sub upload_file {
 #
 sub change_file_info {
   my $self = shift;
-  my $ope = shift;
+  my $ope  = shift;
 
-  my $fid = $self->qParam('fid');
-  return unless($fid);
+  my $fid  = $self->qParam('fid');
+  return unless($fid);  # NULL CHECK
   my $sql;
 
   if($ope =~ m/^use$/){
@@ -483,11 +520,11 @@ sub change_file_info {
 #
 sub download_file {
   my $self = shift;
-  my $fid = shift;
-  my $rev = shift;
+  my $fid  = shift;
+  my $rev  = shift;
 
-  my $sql = "select file_name from docx_infos where id = $fid;";
-  my @ary = $self->{dbh}->selectrow_array($sql);
+  my $sql  = "select file_name from docx_infos where id = $fid;";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
   return unless($ary[0]);
   my $filename = $ary[0];
   my $filepath = "./$self->{repodir}/$fid/$filename";
@@ -515,10 +552,10 @@ sub download_file {
 #
 sub get_account {
   my $self = shift;
-  my $uid = shift;
+  my $uid  = shift;
 
-  my $sql = "select account from docx_users where id = $uid;";
-  my @ary = $self->{dbh}->selectrow_array($sql);
+  my $sql  = "select account from docx_users where id = $uid;";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
   return $ary[0];
 }
 
@@ -527,10 +564,10 @@ sub get_account {
 #
 sub get_author {
   my $self = shift;
-  my $uid = shift;
+  my $uid  = shift;
 
-  my $sql = "select account || ' <' || mail || '>' from docx_users where id = $uid;";
-  my @ary = $self->{dbh}->selectrow_array($sql);
+  my $sql  = "select account || ' <' || mail || '>' from docx_users where id = $uid;";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
   return $ary[0];
 }
 
@@ -541,19 +578,19 @@ sub get_author {
 sub set_master_outline{
   my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  return unless($fid);
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
+  my $fid  = $self->qParam('fid');
+  return unless($fid);  # NULL CHECK
+
+  my $sql  = "select file_name from docx_infos where id = ${fid};";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
   return unless(@ary);
 
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $md;
-  my $user = undef;
+  my $user     = undef;
   my $revision = undef;
-
-  my $gitctrl = $self->{git};
+  my $gitctrl  = $self->{git};
 
   #MDファイルの更新履歴の整形
   $self->{t}->{loglist} = $gitctrl->get_shared_logs("DESC");
@@ -614,7 +651,7 @@ sub set_master_outline{
 
   $self->{t}->{revision} = $revision;
   $self->{t}->{contents} = \@contents;
-  $self->{t}->{docs} = $docs;
+  $self->{t}->{docs}     = $docs;
 }
 
 ############################################################
@@ -622,12 +659,12 @@ sub set_master_outline{
 # @param1 ドキュメントを構造解析するかのフラグ
 #
 sub set_md_buffer{
-  my $self = shift;
-  my $preview = shift;
+  my $self     = shift;
+  my $preview  = shift;
 
-  my $uid = $self->{s}->param("login");
+  my $uid      = $self->{s}->param("login");
   return unless($uid);
-  my $fid = $self->qParam('fid');
+  my $fid      = $self->qParam('fid');
   my $document = $self->get_user_document($uid, $fid);
 
   unless($preview){
@@ -659,11 +696,12 @@ sub set_md_buffer{
 sub update_md_buffer {
   my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  my $fid = $self->qParam('fid');
+  my $uid  = $self->{s}->param("login");
+  my $fid  = $self->qParam('fid');
   return 0 unless($uid && $fid);
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
+
+  my $sql  = "select file_name from docx_infos where id = ${fid};";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
   unless(@ary){
     push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
     return 0;
@@ -671,9 +709,9 @@ sub update_md_buffer {
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
   my $document = $self->qParam('document');
-  $document =~ s#<div>\n##g;
-  $document =~ s#</div>\n##g;
-  $document =~ s/\r\n/\n/g;
+  $document    =~ s#<div>\n##g;
+  $document    =~ s#</div>\n##g;
+  $document    =~ s/\r\n/\n/g;
 
   $self->{git}->attach_local_tmp($uid, 1);
 
@@ -696,11 +734,11 @@ sub update_md_buffer {
 # query3: comment
 #
 sub fix_md_buffer {
-  my $self = shift;
+  my $self    = shift;
 
   my $gitctrl = $self->{git};
-  my $uid = $self->{s}->param("login");
-  my $fid = $self->qParam('fid');
+  my $uid     = $self->{s}->param("login");
+  my $fid     = $self->qParam('fid');
   my $comment = $self->qParam('comment');
   unless($uid && $fid && $comment){
     push @{$self->{t}->{message}->{error}}, "コメントがないためコミット失敗しました";
@@ -724,12 +762,11 @@ sub fix_md_buffer {
 # MDドキュメントで管理している画像一覧を取得
 #
 sub set_md_image{
-  my $self = shift;
+  my $self   = shift;
 
-  my $uid = $self->{s}->param("login");
+  my $uid    = $self->{s}->param("login");
   return unless($uid);
-  my $fid = $self->qParam('fid');
-
+  my $fid    = $self->qParam('fid');
   my $imgdir = "$self->{repodir}/${fid}/image";
 
   unless(-d $imgdir){
@@ -748,30 +785,30 @@ sub set_md_image{
   }
 
   $self->{t}->{images} = \@imgpaths;
-  $self->{t}->{uid} = $self->{s}->param("login");
+  $self->{t}->{uid}    = $self->{s}->param("login");
 }
 
 ############################################################
 # 画像をアップロードしてユーザーの編集バッファにコミット
 #
 sub upload_image {
-  my $self = shift;
+  my $self     = shift;
 
-  my $fid = $self->qParam('fid');
-  my $uid = $self->{s}->param("login");
+  my $fid      = $self->qParam('fid');
+  my $uid      = $self->{s}->param("login");
   return 0 unless($fid && $uid);
 
-  my $hF = $self->{q}->upload('imagefile');
+  my $hF       = $self->{q}->upload('imagefile');
   my $filename = basename($hF);
 
   $self->{git}->attach_local_tmp($uid, 1);
 
-  my $imgdir = "$self->{repodir}/${fid}/image";
+  my $imgdir   = "$self->{repodir}/${fid}/image";
   unless(-d $imgdir){
     mkdir $imgdir, 0774 || die "can't make image directory.";
   }
-  my $tmppath = $self->{q}->tmpFileName($hF);
-  my $imgdir = "$self->{repodir}/${fid}/image";
+  my $tmppath  = $self->{q}->tmpFileName($hF);
+  my $imgdir   = "$self->{repodir}/${fid}/image";
   my $filepath = "${imgdir}/${filename}";
   unless(-d $imgdir){
     mkdir $imgdir, 0774 || die "can't make image directory.";
@@ -796,11 +833,11 @@ sub upload_image {
 # @param2 ファイル名
 #
 sub add_thumbnail {
-  my $self = shift;
-  my $fid = shift;
+  my $self     = shift;
+  my $fid      = shift;
   my $filename = shift;
 
-  my $imgpath = "$self->{repodir}/${fid}/image/${filename}";
+  my $imgpath  = "$self->{repodir}/${fid}/image/${filename}";
   my $thumbdir = "$self->{repodir}/${fid}/thumb";
   unless(-d $thumbdir){
     mkdir $thumbdir, 0774 || die "can't make thumbnail directory.";
@@ -829,8 +866,8 @@ sub add_thumbnail {
 sub delete_image {
   my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  my $uid = $self->{s}->param("login");
+  my $fid  = $self->qParam('fid');
+  my $uid  = $self->{s}->param("login");
   return 0 unless($uid && $fid);
 
   my @selected = ($self->qParam('select_image'));
@@ -849,13 +886,14 @@ sub delete_image {
 sub print_image {
   my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  my $image = $self->qParam('image');
-  return unless($image && $fid);
-
+  my $fid       = $self->qParam('fid');
+  my $image     = $self->qParam('image');
   my $thumbnail = $self->qParam('thumbnail');
-  my $tmp = $self->qParam('tmp');
-  my $uid = $self->{s}->param("login");
+  my $tmp       = $self->qParam('tmp');
+  my $size      = $self->qParam('size');      # 0 - 100
+  my $uid       = $self->{s}->param("login");
+  return unless($image && $fid);              # NULL CHECK
+
   $uid = undef if($uid && $self->qParam('master'));
 
   my $imgpath;
@@ -880,6 +918,12 @@ sub print_image {
 
     my $mImg = Image::Magick->new();
     $mImg->Read($imgpath);
+    if( $size > 0 && $size < 100 ){
+        my ($w, $h) = $mImg->get('width', 'height');
+        my $rw = $w * $size / 100;
+        my $rh = $h * $size / 100;
+        $mImg->Resize(width => $rw, height => $rh);
+    }
     binmode STDOUT;
     $mImg->Write($type . ":-");
   }
@@ -921,75 +965,75 @@ sub get_user_document {
 # @param2 要素番号
 #
 sub split_for_md {
-  my $self = shift;
-  my $document = shift;
-  my $index = shift;
+  my $self       = shift;
+  my $document   = shift;
+  my $index      = shift;
 
   my @partsAry;
-  my $parts = "";
-  my $rowdata = "";
-  my $block = 0;
+  my $parts      = "";
+  my $rowdata    = "";
+  my $block      = 0;
   my $blockquote = 0;
-  my $quote = 0;
-  my $cnt = $index?$index:0;
+  my $quote      = 0;
+  my $cnt        = $index?$index:0;
   foreach (split(/\n/, $document)) {
     if ( $blockquote && $_ !~ m/^> .*/ ) {
       $blockquote = 0;
       push @partsAry, $parts;
       $rowdata .= "${parts}</div>";
-      $parts = "";
+      $parts    = "";
       $cnt++;
     }
 
     if ( !$block && !$blockquote ) {
       if ( $_ =~ m/^.+$/ ) {
           unless( $_ =~ m/^> .+/ ){
-              $block = 1;
+            $block      = 1;
           }else{
-              $blockquote = 1;
+            $blockquote = 1;
           }
           $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       }
     } else {
       if ( $_ =~ m/^\s*$/ ) {
         $blockquote = 0;
-        $block = 0;
+        $block      = 0;
         push @partsAry, $parts;
-        $rowdata .= "${parts}</div>";
-        $parts = "";
+        $rowdata   .= "${parts}</div>";
+        $parts      = "";
         $cnt++;
       } elsif ( !$blockquote && $_ =~ m/^> .*/) {
         $blockquote = 1;
-        $block = 0;
+        $block      = 0;
         push @partsAry, $parts;
-        $rowdata .= "${parts}</div>";
-        $parts = "";
+        $rowdata   .= "${parts}</div>";
+        $parts      = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
+        $rowdata   .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       } elsif ( $block && $_ =~ m/^(====|----|#+).*/ ) {
         push @partsAry, $parts;
-        $rowdata .= "${parts}</div>";
-        $parts = "";
+        $rowdata   .= "${parts}</div>";
+        $parts      = "";
         $cnt++;
-        $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
+        $rowdata   .= "<div id=\"elm${cnt}\" class=\"Elm\">";
       }
     }
 
     if ($block || $blockquote || $quote) {
-      $parts .= $_ . "\n";
+      $parts       .= $_ . "\n";
     }
 
     if ( $block && $_ =~ m/^(====|----|#+).*/ ) {
       $block = 0;
       push @partsAry, $parts;
-      $rowdata .= "${parts}</div>";
-      $parts = "";
+      $rowdata     .= "${parts}</div>";
+      $parts        = "";
       $cnt++;
     }
   }
   if ($block || $blockquote || $quote) {
     push @partsAry, $parts;
-    $rowdata .= "${parts}</div>";
+    $rowdata       .= "${parts}</div>";
   }
 
   return ($rowdata, @partsAry);
