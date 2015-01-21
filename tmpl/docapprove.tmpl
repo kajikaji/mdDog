@@ -12,7 +12,7 @@
 [%INCLUDE docinfo_header.tmpl %]
 </section><!-- docinfo -->
 
-<section class="Gitlog">
+<section class="DocApprove">
 [% IF approve_pre %]
 <table class="Gitlog">
   <thead>
@@ -46,7 +46,7 @@
 
   <ul id="bufferList" class="BufferList">
     [%FOREACH user IN userlist %]
-    <li id="buffer[% user.uid %]" [%IF loop.first %]class="Active"[% END %]><a onclick="javascript:showLog([% user.uid %]);">[% user.name %]さんの編集バッファ</a></li>
+    <li id="buffer[% user.uid %]" [%IF loop.first %]class="Active"[% END %]><a>[% user.name %]さんの編集バッファ</a></li>
     [% END %]
   </ul>
 

@@ -375,6 +375,10 @@ section.Message{
   margin-bottom: 20px;
   font-size: 10pt;
 
+  .IsExistBuffer{
+    float: right;
+  }
+
   >ul{
     list-style: none;
     margin-left: 30px;
@@ -499,7 +503,7 @@ form#docxCreate{
   }
 }
 
-section.Gitlog{
+section.Gitlog, section.DocApprove{
   margin-bottom: 30px;
 
   h3{
