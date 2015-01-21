@@ -1,4 +1,12 @@
-<section class="Message" [%UNLESS message %]style="display: none;"[%END %]>
+<section class="Message">
+  [%IF isExistBuffer %]
+  <div class="IsExistBuffer">
+    バッファがコミットされていません
+    <a class="Btn">バッファリセット</a>
+
+  </div>
+  [%END %]
+
   [%IF message.error %]
     <ul class="Error">
     [%FOREACH e IN message.error %]
