@@ -235,6 +235,7 @@ WHERE
 SQL
   my $ary = $self->{dbh}->selectrow_hashref($sql);
   if($ary) {
+
     $self->{t}->{file_name}       = $ary->{file_name};
     $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
     $self->{t}->{created_by}      = $ary->{nic_name};
