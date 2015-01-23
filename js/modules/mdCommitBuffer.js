@@ -8,7 +8,7 @@ define(function(){
             $document += $(this).text();
             $document += "\n";
         });
-        if($('.BufferEdit.Source .Canvas').find('textarea').length){
+        if( $('.BufferEdit.Source .Canvas').find('textarea').length ){
 	        $document = $('.BufferEdit.Source .Canvas textarea').val();
         }
 
@@ -33,7 +33,7 @@ define(function(){
 
     //キー入力の監視
     $(window).keydown(function(ev){
-        if(commitForm && ev.keyCode === 27){  //ESCキー
+        if( commitForm && ev.keyCode === 27 ){  //ESCキー
             //編集バッファのコミット窓
             $('#bufferCommitForm').fadeToggle();
             commitForm = false;

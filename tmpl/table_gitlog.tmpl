@@ -15,9 +15,7 @@
        [%UNLESS owned %]<td class="Author">[% log.attr.author %]</td>[%END %]
        <td class="Ctrl">
          <ul>
-           [%IF is_mdfile %]
            <li><span class="RevisionCtrl"><a class="RevisionViewer" data-fid="[% fid %]" [%IF log.user %]data-user="[% log.user %]"[% END %] data-revision="[% log.id %]">VIEW</a></span></li>
-           [%END %]
            <li><span class="DownloadLink"><a href="download.cgi?fid=[% fid %]&revision=[% log.id %]">DOWNLOAD</a></span></li>
            [%UNLESS loop.last %]
            <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]">DIFF</a></span></li>

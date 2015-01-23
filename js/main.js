@@ -1,32 +1,26 @@
 'use strict'
 requirejs.config({
     baseUrl: 'js/modules',
+    urlArgs: 'rev=20150123e',
     paths: {
         jquery:          'jquery-1.11.1.min',
         mddog:           'mddog',
         UTIL:            'UTIL',
         mdOutline:       'mdOutline',
+        mdBufferEditor:  'mdBufferEditor',
         mdEditForm:      'mdEditForm',
         mdOutlineDivide: 'mdOutlineDivide',
-        mdBufferEditor:  'mdBufferEditor',
         mdOutlnieEditor: 'mdOutlineEditor',
-        mdApprove:       'mdApprove',
-        mdCommitBuffer:  'mdCommitBuffer'
+        mdCommitBuffer:  'mdCommitBuffer',
+        logTableChanger: 'logTableChanger',
+        diffViewer:      'diffViewer',
+        revisionViewer:  'revisionViewer'
     },
     shim: {
         'mddog': {
             deps: ['jquery']
         },
-        'UTIL': {
-            deps: ['jquery']
-        },
         'mdOutline': {
-            deps: ['jquery']
-        },
-        'mdEditForm': {
-            deps: ['jquery', 'mddog']
-        },
-        'mdOutlineDivide': {
             deps: ['jquery']
         },
         'mdBufferEditor': {
@@ -35,10 +29,16 @@ requirejs.config({
         'mdOutlineEditor':{
             deps: ['jquery', 'UTIL']
         },
-        'mdApprove': {
+        'mdCommitbuffer': {
             deps: ['jquery']
         },
-        'mdCommitbuffer': {
+        'diffViewer': {
+            deps: ['jquery']
+        },
+        'revisionViewer': {
+            deps: ['jquery']
+        },
+        'logTableChanger': {
             deps: ['jquery']
         }
     }
@@ -46,6 +46,7 @@ requirejs.config({
 
 //jQuery読込みと実行
 requirejs(['jquery'], function($){
+
     //アウトライン出力
     if($('body > section.Outline').length){
         require(['mdOutline'], function(Outline){
@@ -66,11 +67,21 @@ requirejs(['jquery'], function($){
     }
     //承認ページの履歴テーブル制御
     if($('body > section.DocApprove').length){
-        require(['mdApprove'], function(Approve){});
+        require(['logTableChanger'], function(changer){});
     }
     //コミットフォーム
     if($('.BufferEditMenu').length){
         require(['mdCommitBuffer'], function(CommitBuffer){});
+    }
+
+    //履歴テーブルにビューアーの埋め込み
+    if(!$('body > section.Outline').length && $('table.Gitlog').length){
+        require(['diffViewer'], function(DiffViewer){
+            new DiffViewer().init();
+        });
+        require(['revisionViewer'], function(RevisionViewer){
+            new RevisionViewer().init();
+        });
     }
 });
 

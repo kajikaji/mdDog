@@ -5,32 +5,33 @@
 
 define(function(){
     var mdEditForm = function(obj, fid){
-        this.src = obj;
+        this.src      = obj;
+        this.fid      = fid;
+        this.formtmpl = 'editform';
+        this.api      = 'api/mdEditor.cgi';
+
         this.id;
-        this.fid = fid;
         this.elmId;
         this.mdId;
         this.formId;
-        this.formtmpl = 'editform';
-        this.api = 'api/mdEditor.cgi';
     };
     mdEditForm.prototype = {
         init: function() {
             var newForm = $('#' + this.formtmpl).clone()
-            var tt = newForm.find('textarea.Editdata');
+            var tt      = newForm.find('textarea.Editdata');
 
-            this.id = Number(this.src.attr('id').slice(2));
-            this.mdId = 'md' + this.id;
+            this.id     = Number(this.src.attr('id').slice(2));
+            this.mdId   = 'md' + this.id;
             this.formId = 'edit' + this.id;
 
             tt.attr('id', 'editdata' + this.id);
             newForm.attr('id', this.formId);
 
-            if(this.id >= 0){
+            if( this.id >= 0 ){
                 this.elmId = 'elm' + this.id;
 
-                var data= $('#' + this.elmId).text();
-                var n = data.match(/\n/g).length + 1;
+                var data = $('#' + this.elmId).text();
+                var n    = data.match(/\n/g).length + 1;
                 tt.text(data).attr('rows', n);
             }
 
@@ -43,7 +44,7 @@ define(function(){
             $('#' + this.formId).find('button.Update').click($.proxy(function(){
                 this.btnUpdate();
             }, this));
-            if(this.id >= 0){
+            if( this.id >= 0 ){
                 $('#' + this.formId).find('button.Delete').click($.proxy(function(){
                     this.btnDelete();
                 }, this));
@@ -61,13 +62,13 @@ define(function(){
         btnUpdate: function(){
             var editdata = $('#' + this.formId).find('textarea.Editdata').val();
             $.ajax({
-                url: this.api,
-                type: 'POST',
-                data:{
-                    fid: this.fid, 
-                    eid: this.id,
-                    action: 'update', 
-                    data: editdata
+                url  : this.api,
+                type : 'POST',
+                data : {
+                    fid    : this.fid, 
+                    eid    : this.id,
+                    action : 'update', 
+                    data   : editdata
                 }
             }).done($.proxy(function(res){
                 this.updateSuccess(res);
@@ -76,12 +77,12 @@ define(function(){
         },
         btnDelete: function(){
             $.ajax({
-                url: this.api,
-                type: 'POST',
-                data:{
-                    fid: this.fid, 
-                    eid: this.id,
-                    action: 'delete',
+                url  : this.api,
+                type : 'POST',
+                data :{
+                    fid    : this.fid, 
+                    eid    : this.id,
+                    action : 'delete',
                 }
             }).done($.proxy(function(res){
                 this.deleteSuccess(res);
@@ -94,11 +95,11 @@ define(function(){
         },
         btnImageView: function(){
             $.ajax({
-                url: this.api,
-                type: 'GET',
-                data:{
-                    fid: this.fid, 
-                    action: 'image_list', 
+                url  : this.api,
+                type : 'GET',
+                data :{
+                    fid    : this.fid, 
+                    action : 'image_list', 
                 }
             }).done($.proxy(function(res){
                 var length = res.length;
@@ -118,18 +119,18 @@ define(function(){
             }, this));
         },
 
-        insertAtCaret: function(filename) {
+        insertAtCaret: function(filename){
             var obj = $('#editdata' + this.id);
             var str = '![mdDog](md_imageView.cgi?fid=' + this.fid + '&image=' + filename + ')';
 
             obj.focus();
-            if(navigator.userAgent.match(/MSIE/)) {
+            if( navigator.userAgent.match(/MSIE/) ){
                 var r = document.selection.createRange();
                 r.text = str;
                 r.select();
-            } else {
-                var s = obj.val();
-                var p = obj.get(0).selectionStart;
+            }else{
+                var s  = obj.val();
+                var p  = obj.get(0).selectionStart;
                 var np = p + str.length;
                 obj.val(s.substr(0, p) + str + s.substr(p));
                 obj.get(0).setSelectionRange(np, np);
@@ -138,24 +139,23 @@ define(function(){
 
         updateSuccess: function(res){
             $('#' + this.formId).remove();
-
             $('#' + this.mdId).attr('id', this.mdId + 'org');
             var $newObj = $(res.md);
             $('#' + this.mdId + 'org').after($newObj);
             $newObj.show();
             $('#' + this.mdId + 'org').remove();
             var leng = $newObj.length;
-            if(leng > 1){
+            if( leng > 1 ){
                 this.resetTreeId($newObj.last().next(), leng - 1, 'md');
             }
 
-            if(this.elmId !== undefined){
+            if( this.elmId !== undefined ){
                 $('#' + this.elmId).attr('id', this.elmId + 'org');
                 var $elmObj = $(res.row);
                 $('#' + this.elmId + 'org').after($elmObj);
                 $('#' + this.elmId + 'org').remove();
                 var eLeng = $elmObj.length;
-                if(eLeng > 1){
+                if( eLeng > 1 ){
                     this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm');
                 }
             }else{
@@ -172,7 +172,7 @@ define(function(){
             });
             this.checkBlankDocument();
         },
-        deleteSuccess: function(res) {
+        deleteSuccess: function(res){
             $('#' + this.formId).remove();
             var $nextMd = $('#' + this.mdId).next();
             $('#' + this.mdId).remove();
@@ -182,18 +182,18 @@ define(function(){
             this.resetTreeId($nextElm, -1, 'elm');
             this.checkBlankDocument();
         },
-        updateMessage: function() {
-            if($('section.Message').is(":hidden")){
+        updateMessage: function(){
+            if( $('section.Message').is(":hidden") ){
                 var info = $('<div>').addClass('Info').text("コミットされていないバッファがあります");
                 $('section.Message').append(info);
                 $('section.Message').show();
             }
         },
-        resetTreeId: function(obj, inc, prefix) {
-            while(obj.length > 0){
+        resetTreeId: function(obj, inc, prefix){
+            while( obj.length > 0 ){
                 var id = obj.attr('id');
-                if(id){
-                    id = Number(id.substr(prefix.length));
+                if( id ){
+                    id  = Number(id.substr(prefix.length));
                     id += inc;
                     obj.attr('id', prefix + id);
                 }
@@ -201,7 +201,7 @@ define(function(){
             }
         },
         checkBlankDocument: function(){
-            if($('.MdBuffer div.Document').children().length == 0){
+            if( $('.MdBuffer div.Document').children().length == 0 ){
                 var blank = $('<div>').addClass("Blank").attr("id", "md-1");
                 $('.MdBuffer div.Document').append(blank);
                 blank.hover(

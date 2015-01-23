@@ -6,7 +6,7 @@
 define(function(){
     var mdOutlineDivide = function() {};
     mdOutlineDivide.prototype = {
-        init: function () {
+        init: function (){
             var divide = [];
             $('.MdBuffer  ul.Pagenav').find('a.OutlinePage').each($.proxy(function(index, obj){
                 divide.push($(obj).data('elm'));
@@ -23,35 +23,34 @@ define(function(){
             this.activeNum(0);
         },
 
-        showPage: function (dividesAr, id) {
+        showPage: function(dividesAr, id){
             var tmp = undefined;
             for(var i=0; i < dividesAr.length; i++) 
             {
-                if(i === id) {
+                if( i === id ){
                     tmp = dividesAr[i];
                 }else{
-                    if(tmp !== undefined){
-                        for(var j=tmp; j < dividesAr[i]; j++)
-                        {
+                    if( tmp !== undefined ){
+                        for(var j=tmp; j < dividesAr[i]; j++){
                             $('#md' + j).show();
                         }
                         tmp = undefined;
                     }
                 }
             }
-            if(tmp !== undefined) {
+            if( tmp !== undefined ){
                 $('.MdBuffer .Document').find('.Md').each(function(){
                     var objId = $(this).attr('id').substr(2);
-                    if(objId >= tmp) {
+                    if( objId >= tmp ){
                         $(this).show();
                     }
                 });
             }
         },
 
-        activeNum: function (num) {
+        activeNum: function(num){
             $('.MdBuffer ul.Pagenav').find('a.OutlinePage').each(function(index){
-                if(index === num){
+                if( index === num ){
                     $(this).addClass('Active');
                 }else{
                     $(this).removeClass('Active');
