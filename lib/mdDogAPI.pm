@@ -7,21 +7,11 @@ package mdDogAPI;
 
 use strict; no strict "subs";
 use base mdDog;
-#use Git::Wrapper;
-#use Data::Dumper;
-#use File::Copy;
-#use File::Basename;
-#use File::Path;
-#use Date::Manip;
 use Text::Markdown::Discount qw(markdown);
-#use NKF;
-#use Cwd;
-#use Image::Magick;
-#use JSON;
-#use MYUTIL;
-#use mdDog::GitCtrl;
-#use mdDog::OutlineCtrl;
 
+use constant USER_AUTH_ADMIN   => 1;
+use constant USER_AUTH_APPROVE => 2;
+use constant USER_AUTH_DELETE  => 3;
 
 ############################################################
 #[API] JSONを返す
@@ -32,10 +22,10 @@ sub get_data {
   return unless($uid);
   my $fid = $self->qParam('fid');
   my $eid = $self->qParam('eid');
+  my $data;
 
   if($self->qParam('action') eq 'image_list'){
       $self->{git}->attach_local_tmp($uid);
-      my $data;
       my $imgdir = "$self->{repodir}/${fid}/image";
       if( -d $imgdir){
           my @images = glob "$imgdir/*";
@@ -47,13 +37,10 @@ sub get_data {
               push @$data, {filename => $path};
           }
       }
-      my $json = JSON->new();
-      return $json->encode($data);
   } else {
       my $document = $self->get_user_document($uid, $fid);
       my ($rowdata, @partsAry) = $self->split_for_md($document);
       my $cnt = 0;
-      my $data;
 
       foreach (@partsAry) {
           if ($eid) {
@@ -66,10 +53,9 @@ sub get_data {
           }
           $cnt++;
       }
-
-      my $json = JSON->new();
-      return $json->encode($data);
   }
+  my $json = JSON->new();
+  return $json->encode($data);
 }
 
 ############################################################
@@ -117,7 +103,7 @@ sub post_data {
   }
   close $hF;
 
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
 
@@ -172,7 +158,7 @@ sub delete_data {
   }
   close $hF;
 
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
 
@@ -191,7 +177,7 @@ sub outline_add_divide {
   my $fid = $self->qParam('fid') + 0;
 
   my $num = $self->qParam('num');
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   my $comment = "INSERT DIVIDE";
   $self->{git}->attach_local_tmp($uid, 1);
   $self->{outline}->insert_divide($num, $comment);
@@ -212,7 +198,7 @@ sub outline_remove_divide {
   my $fid = $self->qParam('fid') + 0;
 
   my $num = $self->qParam('num');
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   my $comment = "REMOVE DIVIDE";
   $self->{git}->attach_local_tmp($uid, 1);
   $self->{outline}->remove_divide($num);
@@ -274,23 +260,243 @@ sub get_diff {
   my $self = shift;
 
   my $fid = $self->qParam('fid');
-  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my $sql = "SELECT file_name FROM docx_infos WHERE id = ${fid};";
   my @ary = $self->{dbh}->selectrow_array($sql);
   return unless(@ary);
 
   my $filename = $ary[0];
   my $revision = $self->qParam('revision');
-  my $dist = $self->qParam('dist');
-  my $diff = $self->{git}->get_diff($revision, $dist);
+  my $dist     = $self->qParam('dist');
+  my $diff     = $self->{git}->get_diff($revision, $dist);
 
   my $json = JSON->new();
   return $json->encode({
-      name => $filename,
+      name     => $filename,
       revision => $revision,
-      dist => $dist?$dist:'ひとつ前',
-      diff => $diff,
+      dist     => $dist?$dist:'ひとつ前',
+      diff    => $diff,
   });
 
+}
+
+############################################################
+#[API] アカウントの追加
+#
+sub add_account {
+    my $self = shift;
+
+    my $account  = $self->qParam('account');
+    my $nicname  = $self->qParam('nicname');
+    my $mail     = $self->qParam('mail');
+    my $password = $self->qParam('password');
+    return unless( $account && $nicname && $mail && $password);
+
+    my $sql_insert = << "SQL";
+INSERT INTO docx_users
+  (account, nic_name, mail, password, created_at)
+VALUES
+  ('$account', '$nicname', '$mail', md5('$password'), now())
+SQL
+
+    $self->{dbh}->do($sql_insert)
+      || die("DB Error: add account");
+    $self->dbCommit();
+
+    my $sql = << "SQL";
+SELECT * FROM docx_users
+WHERE id = currval('docx_users_id_seq')
+SQL
+    my $infos = $self->{dbh}->selectrow_hashref($sql)
+      || die("DB Error: get new account", 1);
+
+    my $json = JSON->new();
+    return $json->encode({
+        id          => $infos->{id},
+        account     => $infos->{account},
+        nic_name    => $infos->{nic_name},
+        mail        => $infos->{mail},
+        may_approve => $infos->{may_approve},
+        may_admin   => $infos->{may_admin},
+        may_delete  => $infos->{may_delete},
+        is_used     => $infos->{is_used},
+        created_at  => MYUTIL::format_date3($infos->{created_at})
+   });
+}
+
+############################################################
+#[API] ユーザーの使用・不使用切り替え
+#
+sub user_used {
+    my $self    = shift;
+
+    my $uid     = $self->qParam('uid');
+    my $checked = $self->qParam('is_used') eq '1'?'t':'f';
+
+    my $sql_update = << "SQL";
+UPDATE docx_users
+SET is_used = '${checked}'
+WHERE id = ${uid};
+SQL
+
+    $self->{dbh}->do($sql_update)
+      || die("DB Error: user_used changed");
+    $self->dbCommit();
+
+    my $sql = << "SQL";
+SELECT * FROM docx_users WHERE id = ${uid}
+SQL
+    my $infos = $self->{dbh}->selectrow_hashref($sql);
+    my $json = JSON->new();
+    return $json->encode({
+        id          => $infos->{id},
+        account     => $infos->{account},
+        nic_name    => $infos->{nic_name},
+        mail        => $infos->{mail},
+        may_approve => $infos->{may_approve},
+        may_admin   => $infos->{may_admin},
+        may_delete  => $infos->{may_delete},
+        is_used     => $infos->{is_used},
+        created_at  => MYUTIL::format_date3($infos->{created_at})
+    });
+}
+
+############################################################
+#[API] 管理ユーザーの切り替え
+#
+sub user_admin {
+    my $self = shift;
+    $self->_user_auth(USER_AUTH_ADMIN);
+}
+
+############################################################
+#[API]
+#
+sub user_approve {
+    my $self = shift;
+    $self->_user_auth(USER_AUTH_APPROVE);
+}
+
+############################################################
+#[API]
+#
+sub user_delete {
+    my $self = shift;
+    $self->_user_auth(USER_AUTH_DELETE);
+}
+
+############################################################
+# ユーザーの権限フラグの制御
+#
+sub _user_auth {
+    my $self    = shift;
+    my $type    = shift;
+
+    my $uid     = $self->qParam('uid');
+    my $checked = $self->qParam('checked') eq '1'?'t':'f';
+    my $col;
+    if(     $type == USER_AUTH_ADMIN ){
+        $col = 'may_admin';
+    }elsif( $type == USER_AUTH_APPROVE ){
+        $col = 'may_approve';
+    }elsif( $type == USER_AUTH_DELETE ){
+        $col = 'may_delete';
+    }
+
+    my $sql_update = << "SQL";
+UPDATE docx_users
+SET ${col} = '${checked}'
+WHERE id = ${uid};
+SQL
+
+    $self->{dbh}->do($sql_update)
+      || die("DB Error: user_used changed");
+    $self->dbCommit();
+
+    my $sql = << "SQL";
+SELECT * FROM docx_users WHERE id = ${uid}
+SQL
+    my $infos = $self->{dbh}->selectrow_hashref($sql);
+    my $json = JSON->new();
+    return $json->encode({
+        id          => $infos->{id},
+        account     => $infos->{account},
+        nic_name    => $infos->{nic_name},
+        mail        => $infos->{mail},
+        may_approve => $infos->{may_approve},
+        may_admin   => $infos->{may_admin},
+        may_delete  => $infos->{may_delete},
+        is_used     => $infos->{is_used},
+        created_at  => MYUTIL::format_date3($infos->{created_at})
+    });
+}
+
+############################################################
+#[API]
+#
+sub document_user_add {
+    my $self  = shift;
+
+    my $fid   = $self->qParam('fid');
+    my @users = $self->qParam('users[]');
+    my $uid   = $self->{s}->param('login');
+
+    my $sql_insert = << "SQL";
+INSERT INTO
+  docx_auths(info_id, user_id, created_at, created_by, updated_at)
+VALUES
+SQL
+    my $sql = "SELECT id,account,nic_name FROM docx_users WHERE id IN (";
+
+    my $i = 0;
+    foreach(@users) {
+      $sql_insert .= "," if( $i > 0 );
+      $sql_insert .= "(${fid}, $_, now(), ${uid}, now())";
+
+      $sql .= "," if($i > 0);
+      $sql .= $_;
+      $i++;
+    }
+    $sql .= ')';
+
+    $self->{dbh}->do($sql_insert)
+      || die("DB Error: document_user_add");
+
+    my $data = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
+      || die("DB Error+ document_user_add select");
+
+    $self->dbCommit();
+
+    my $json = JSON->new();
+    return $json->encode($data);
+}
+
+############################################################
+#[API]
+#
+sub document_user_may_approve {
+    my $self = shift;
+
+    my $fid   = $self->qParam('fid');
+    my $uid   = $self->qParam('uid');
+    my $checked = $self->qParam('checked')?'t':'f';
+
+    my $sql_update = << "SQL";
+UPDATE docx_auths
+SET may_approve = '${checked}'
+WHERE
+  info_id = ${fid}
+  AND user_id = ${uid};
+SQL
+    $self->{dbh}->do($sql_update)
+      || die("DB Error: document_user_may_approve");
+
+    my $sql = "SELECT * FROM docx_auths WHERE info_id = ${fid} AND user_id = ${uid}";
+    my $info = $self->{dbh}->selectrow_hashref($sql)
+      || die("DB Error: document_user_may_approve select ${sql}");
+    $self->dbCommit();
+
+    my $json = JSON->new();
+    return $json->encode($info);
 }
 
 1;

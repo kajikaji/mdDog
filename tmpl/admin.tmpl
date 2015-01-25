@@ -11,23 +11,57 @@
   <h1>管理画面</h1>
 
 <h2>ユーザー管理</h2>
-<h3>管理方法</h3>
-<ul class="UserManage">
-<li><label><input type="radio" name="UserManageDB" value="own">独自管理</li></label>
-<li>
-  <label><input type="radio" name="UserManageDB" value="ldap">LDAP</label>
-  <label>Server:<input type="text" name="LDAPServer" length="30"></label>
-</li>
-</ul>
 
 <h3>ユーザー一覧</h3>
-<button>追加</button>
+<div class="AddAccountForm">
+  <label>アカウント<input type="text" class="Account"></label>
+  <label>表示名<input type="text" class="NicName"></label>
+  <label>メール<input type="text" class="Mail"></label>
+  <label>パスワード<input type="password" class="Password"></label>
+  <button class="Add">追加</button>
+</div>
 
-
+<table id="accountTable">
+<thead>
+<tr>
+  <th>使用</th>
+  <th>アカウント</th>
+  <th>表示名</th>
+  <th>メールアドレス</th>
+  <th>管理権限</th>
+  <th>承認権限</th>
+  <th>削除権限</th>
+  <th>登録日</th>
+</tr>
+<tbody>
+[%FOREACH u IN userinfos %]
+<tr class="Account">
+  <td class="IsUsed"><input type="checkbox" data-uid="[% u.id %]" [%IF u.is_used     %]checked[%END %]></td>
+  <td class="Account">[% u.account     %]</td>
+  <td class="Niname">[% u.nic_name    %]</td>
+  <td class="Mail">[% u.mail        %]</td>
+  <td class="MayAdmin"><input type="checkbox" data-uid="[% u.id %]"  [%IF u.may_admin   %]checked[%END %]></td>
+  <td class="MayApprove"><input type="checkbox" data-uid="[% u.id %]"  [%IF u.may_approve %]checked[%END %]></td>
+  <td class="MayDelete"><input type="checkbox" data-uid="[% u.id %]"  [%IF u.may_delete  %]checked[%END %]></td>
+  <td class="CreatedAt">[% u.created_at  %]</td>
+</tr>
+[%END %]
+<tr class="AccountTmpl" style="display: none;">
+  <td class="IsUsed"><input type="checkbox"></td>
+  <td class="Account"></td>
+  <td class="Nicname"></td>
+  <td class="Mail"></td>
+  <td class="MayAdmin"><input type="checkbox"></td>
+  <td class="MayApprove"><input type="checkbox"></td>
+  <td class="MayDelete"><input type="checkbox"></td>
+  <td class="CreatedAt"></td>
+</tr>
+</tbody>
+</table>
 
 </section>
 
-</body>
-</html>
+[%INCLUDE footer.tmpl %]
+
 
 

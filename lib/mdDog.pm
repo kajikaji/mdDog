@@ -306,7 +306,7 @@ sub git_log {
       foreach($gitctrl->get_other_users($uid)){
         my $userlog = {
           uid       => $_,
-          name      => $self->get_account($_),
+          name      => $self->_get_account($_),
           loglist   => $gitctrl->get_user_logs($_),
         };
 
@@ -409,7 +409,7 @@ sub create_file {
   return unless($docname);
 
   my $filename = $docname . "\.md";
-  my $fid      = $self->setup_new_file($filename, $uid);
+  my $fid      = $self->_setup_new_file($filename, $uid);
   my $workdir  = "$self->{repodir}/${fid}";
   my $filepath = "${workdir}/${filename}";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
@@ -417,17 +417,17 @@ sub create_file {
 
   $self->{git}     = GitCtrl->new($workdir);
   $self->{outline} = OutlineCtrl->new($workdir);
-  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->get_author($uid));
+  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->_get_author($uid));
 
   $self->dbCommit();
 }
 
 ###################################################
-#
+# ドキュメントの新規作成
 # @param1 filename
 # @param2 uid
 #
-sub setup_new_file{
+sub _setup_new_file{
   my $self     = shift;
   my $filename = shift;
   my $uid      = shift;
@@ -438,12 +438,22 @@ INSERT INTO
 VALUES
   ('$filename',now(),$uid);
 SQL
-  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error upload_file", 1);
+  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error _setup_new_file infos", 1);
+
   my $sql_newfile = "SELECT currval('docx_infos_id_seq');";
   my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
   my $fid = $ary_id[0];
   mkdir("./$self->{repodir}/$fid",0776)
-    || die "Error:upload_file can't make a directory($self->{repodir}/$fid)";
+    || die "Error:_setup_new_file can't make a directory($self->{repodir}/$fid)";
+
+  my $sql_auth = << "SQL";
+INSERT INTO
+  docx_auths(info_id, user_id, may_approve, created_at, created_by, updated_at)
+VALUES
+  (${fid}, ${uid}, 't', now(), ${uid}, now());
+SQL
+  $self->{dbh}->do($sql_auth) || $self->errorMessage("DB:Error _setup_new_file auth", 1);
+
   return $fid;
 }
 
@@ -460,7 +470,7 @@ sub upload_file {
   my $uid    = $self->{s}->param("login");
   return 0 unless($fid && $uid); # NULL CHECK
 
-  my $author = $self->get_author($uid);
+  my $author = $self->_get_author($uid);
   my $hF     = $self->{q}->upload('uploadfile');
   unless($hF){
     push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
@@ -551,7 +561,7 @@ sub download_file {
 ############################################################
 # @param1 uid
 #
-sub get_account {
+sub _get_account {
   my $self = shift;
   my $uid  = shift;
 
@@ -563,7 +573,7 @@ sub get_account {
 ############################################################
 # @param1 uid
 #
-sub get_author {
+sub _get_author {
   my $self = shift;
   my $uid  = shift;
 
@@ -721,7 +731,7 @@ sub update_md_buffer {
   syswrite $hF, $document;
   close $hF;
 
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
   push @{$self->{t}->{message}->{info}}, "編集内容を保存しました";
@@ -749,7 +759,7 @@ sub fix_md_buffer {
   if($self->qParam('document')){
     return 0 unless($self->update_md_buffer());
   }
-  my $ret = $gitctrl->fix_tmp($uid, $self->get_author($uid), $comment);
+  my $ret = $gitctrl->fix_tmp($uid, $self->_get_author($uid), $comment);
   unless($ret){
     push @{$self->{t}->{message}->{error}}, "編集バッファのコミットに失敗しました";
     return 0;
@@ -819,7 +829,7 @@ sub upload_image {
 
   my $thumbnail = $self->add_thumbnail($fid, $filename);
 
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->add_image($filepath, $author);
   $self->{git}->add_image($thumbnail, $author);
 
@@ -874,7 +884,7 @@ sub delete_image {
   my @selected = ($self->qParam('select_image'));
 
   $self->{git}->attach_local_tmp($uid);
-  my $author = $self->get_author($self->{s}->param('login'));
+  my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->delete_image([@selected], $author);
   $self->{git}->detach_local();
   push @{$self->{t}->{message}->{info}}, "画像を削除しました";

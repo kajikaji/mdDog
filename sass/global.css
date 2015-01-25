@@ -1,4 +1,3 @@
-@charset "UTF-8";
 /*
  * GLYPH-ICON
  */
@@ -188,6 +187,8 @@ body > section > h1, body > section > h2, body > section > h3, body > section > 
 section.Message {
   margin-bottom: 20px;
   font-size: 10pt; }
+  section.Message .IsExistBuffer {
+    float: right; }
   section.Message > ul {
     list-style: none;
     margin-left: 30px;
@@ -289,74 +290,74 @@ form#docxCreate {
     font-weight: bold;
     font-size: 115%; }
 
-section.Gitlog {
+section.Gitlog, section.DocApprove {
   margin-bottom: 30px; }
-  section.Gitlog h3 {
+  section.Gitlog h3, section.DocApprove h3 {
     margin-top: 0;
     margin-bottom: 10px; }
-  section.Gitlog .Logtable .Description {
+  section.Gitlog .Logtable .Description, section.DocApprove .Logtable .Description {
     font-size: 80%;
     padding: 5px;
     border: 1px solid #000;
     background-color: #fff; }
-    section.Gitlog .Logtable .Description.Alert {
+    section.Gitlog .Logtable .Description.Alert, section.DocApprove .Logtable .Description.Alert {
       color: #f00; }
-  section.Gitlog ul.BufferList {
+  section.Gitlog ul.BufferList, section.DocApprove ul.BufferList {
     list-style: none;
     font-size: 11px; }
-    section.Gitlog ul.BufferList li {
+    section.Gitlog ul.BufferList li, section.DocApprove ul.BufferList li {
       float: left;
       border-style: solid;
       border-width: 1px 1px 0 0;
       border-color: #555; }
-      section.Gitlog ul.BufferList li:first-child {
+      section.Gitlog ul.BufferList li:first-child, section.DocApprove ul.BufferList li:first-child {
         border-left: 1px solid #555; }
-      section.Gitlog ul.BufferList li.Active {
+      section.Gitlog ul.BufferList li.Active, section.DocApprove ul.BufferList li.Active {
         font-weight: bold; }
-        section.Gitlog ul.BufferList li.Active a {
+        section.Gitlog ul.BufferList li.Active a, section.DocApprove ul.BufferList li.Active a {
           background-color: #fff; }
-      section.Gitlog ul.BufferList li a {
+      section.Gitlog ul.BufferList li a, section.DocApprove ul.BufferList li a {
         display: block;
         background-color: #dedede;
         padding: 3px 6px;
         text-align: center;
         color: #000; }
-        section.Gitlog ul.BufferList li a:hover {
+        section.Gitlog ul.BufferList li a:hover, section.DocApprove ul.BufferList li a:hover {
           color: #000;
           background-color: #b0c4de; }
-    section.Gitlog ul.BufferList:after, section.Gitlog ul.BufferList:before {
+    section.Gitlog ul.BufferList:after, section.Gitlog ul.BufferList:before, section.DocApprove ul.BufferList:after, section.DocApprove ul.BufferList:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.Gitlog ul.BufferList:after {
+    section.Gitlog ul.BufferList:after, section.DocApprove ul.BufferList:after {
       clear: both; }
-  section.Gitlog table.Gitlog {
+  section.Gitlog table.Gitlog, section.DocApprove table.Gitlog {
     font-size: 11px;
     line-heigth: 1.1em;
     box-sizing: border-box;
     width: 100%;
     border-color: #000; }
-    section.Gitlog table.Gitlog th, section.Gitlog table.Gitlog td {
+    section.Gitlog table.Gitlog th, section.Gitlog table.Gitlog td, section.DocApprove table.Gitlog th, section.DocApprove table.Gitlog td {
       border-color: #000; }
-    section.Gitlog table.Gitlog thead tr th, section.Gitlog table.Gitlog tbody tr td {
+    section.Gitlog table.Gitlog thead tr th, section.Gitlog table.Gitlog tbody tr td, section.DocApprove table.Gitlog thead tr th, section.DocApprove table.Gitlog tbody tr td {
       padding: 3px 6px; }
-    section.Gitlog table.Gitlog thead tr th {
+    section.Gitlog table.Gitlog thead tr th, section.DocApprove table.Gitlog thead tr th {
       background-color: #696969;
       color: #fff; }
-    section.Gitlog table.Gitlog tbody tr td.Date {
+    section.Gitlog table.Gitlog tbody tr td.Date, section.DocApprove table.Gitlog tbody tr td.Date {
       width: 160px; }
-    section.Gitlog table.Gitlog tbody tr td.Author {
+    section.Gitlog table.Gitlog tbody tr td.Author, section.DocApprove table.Gitlog tbody tr td.Author {
       width: 200px; }
-    section.Gitlog table.Gitlog tbody tr td.Ctrl {
+    section.Gitlog table.Gitlog tbody tr td.Ctrl, section.DocApprove table.Gitlog tbody tr td.Ctrl {
       width: 80px; }
-      section.Gitlog table.Gitlog tbody tr td.Ctrl > ul {
+      section.Gitlog table.Gitlog tbody tr td.Ctrl > ul, section.DocApprove table.Gitlog tbody tr td.Ctrl > ul {
         list-style: none;
         margin-left: 0; }
-    section.Gitlog table.Gitlog tbody tr.Master {
+    section.Gitlog table.Gitlog tbody tr.Master, section.DocApprove table.Gitlog tbody tr.Master {
       background-color: #fff; }
-    section.Gitlog table.Gitlog tbody tr.UserBranch {
+    section.Gitlog table.Gitlog tbody tr.UserBranch, section.DocApprove table.Gitlog tbody tr.UserBranch {
       background-color: #fffaf0; }
-    section.Gitlog table.Gitlog tbody tr.UserBranch.Old {
+    section.Gitlog table.Gitlog tbody tr.UserBranch.Old, section.DocApprove table.Gitlog tbody tr.UserBranch.Old {
       background-color: #aaaaaa; }
 
 section.Top .TopMenu {
@@ -532,6 +533,11 @@ section.Docinfo .OutputMenu {
   section.Docinfo .OutputMenu button:hover {
     background-color: #f5deb3;
     color: #222; }
+
+section.DocSetting .UnallowUsersList select {
+  padding: 5px;
+  font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+  font-size: 10pt; }
 
 section.Outline.PrintFormat {
   padding: 0; }

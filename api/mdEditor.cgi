@@ -21,14 +21,14 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     print $dog->get_data();
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
     ## ?fid=[fid]&eid=[eid]&action=[action]
-    return unless($dog->qParam('fid')
-                  || $dog->qParam('eid')
-                  || $dog->qParam('action'));
+    return unless( $dog->qParam('fid')
+                || $dog->qParam('eid')
+                || $dog->qParam('action'));
 
-    if($dog->qParam('action') eq 'update'){
+    if( $dog->qParam('action')      eq 'update' ) {
         my $updateData = $dog->post_data();
         print $updateData;
-    }elsif($dog->qParam('action') eq 'delete' ) {
+    } elsif( $dog->qParam('action') eq 'delete' ) {
         my $ret = $dog->delete_data();
         print $ret;
     }

@@ -1,7 +1,7 @@
 'use strict'
 requirejs.config({
     baseUrl: 'js/modules',
-    urlArgs: 'rev=20150123e',
+    urlArgs: 'rev=20150125b',
     paths: {
         jquery:          'jquery-1.11.1.min',
         mddog:           'mddog',
@@ -14,7 +14,9 @@ requirejs.config({
         mdCommitBuffer:  'mdCommitBuffer',
         logTableChanger: 'logTableChanger',
         diffViewer:      'diffViewer',
-        revisionViewer:  'revisionViewer'
+        revisionViewer:  'revisionViewer',
+	addAccountForm:  'addAccountForm',
+        userManager:     'userManager'
     },
     shim: {
         'mddog': {
@@ -40,7 +42,13 @@ requirejs.config({
         },
         'logTableChanger': {
             deps: ['jquery']
-        }
+        },
+	'addAccountForm': {
+	    deps: ['jquery']
+	},
+        'userManager' : {
+	    deps: ['jquery', 'UTIL']
+	}
     }
 });
 
@@ -82,6 +90,16 @@ requirejs(['jquery'], function($){
         require(['revisionViewer'], function(RevisionViewer){
             new RevisionViewer().init();
         });
+    }
+
+    //管理ページ　アカウント管理
+    if($('.AddAccountForm').length){
+	require(['addAccountForm'], function(AddAccountForm){});
+    }
+
+    //ドキュメント設定ページ　ユーザー管理
+    if($('.DocSetting').length){
+        require(['userManager'], function(UserManager){});
     }
 });
 

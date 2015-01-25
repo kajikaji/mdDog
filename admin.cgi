@@ -9,7 +9,7 @@ use lib './lib/';
 use mdDogAdmin;
 use Data::Dumper;
 
-my $dog =mdDogAdmin->new();
+my $dog = mdDogAdmin->new();
 $dog->setup_config();
 if(!$dog->login_for_admin()){
   #管理者でない場合、index.cgiにリダイレクト

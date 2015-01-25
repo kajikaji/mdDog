@@ -6,18 +6,15 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use mdDog;
+use mdDogAdmin;
 use Data::Dumper;
 
-my $dog = mdDog->new();
+my $dog = mdDogAdmin->new();
 $dog->setup_config();
-$dog->login();
+$dog->login_user_document();
 
-if(!$dog->qParam('fid')) {
-} else {
-
-  $dog->set_document_info();
-}
+$dog->get_document_users();
+$dog->set_document_info();
 
 $dog->print_page();
 exit();
