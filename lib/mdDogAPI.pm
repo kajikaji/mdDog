@@ -499,4 +499,33 @@ SQL
     return $json->encode($info);
 }
 
+############################################################
+#[API]
+#
+sub document_change_public {
+    my $self = shift;
+
+    my $fid     = $self->qParam('fid');
+    my $uid     = $self->qParam('uid');
+    my $checked = $self->qParam('is_public')?'t':'f';
+
+    my $sql_update = << "SQL";
+UPDATE docx_infos
+SET is_public = ${checked}
+WHERE
+  id = ${fid};
+SQL
+
+    $self->{dbh}->do($sql_update)
+      || die("DB Error: document_change_public");
+
+    my $sql = "SELECT * FROM docx_infos WHERE id = ${fid}";
+    my $info = $self->{dbh}->selectrow_hashref($sql)
+      || die("DB Error: document_change_public select ${sql}");
+    $self->dbCommit();
+
+    my $json = JSON->new();
+    return $json->encode($info);
+}
+
 1;

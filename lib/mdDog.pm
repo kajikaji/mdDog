@@ -171,10 +171,34 @@ sub login_user_document {
 #登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
-  my $self = shift;
-  my @infos;
+    my $self = shift;
+    my @infos;
+    my $uid  = $self->{s}->param("login");
 
-  my $sql = << "SQL";
+    my $sql;
+
+    if( $uid ){
+        $sql = << "SQL";
+SELECT
+  di.*,
+  du.nic_name    AS nic_name,
+  du.account     AS account,
+  du.mail        AS mail,
+  da.id          AS auth_id,
+  da.may_approve AS may_approve
+FROM
+  docx_infos di
+JOIN docx_users du ON du.id = di.created_by
+LEFT OUTER JOIN docx_auths da on da.info_id = di.id and da.user_id = ${uid}
+WHERE
+  di.deleted_at is null
+  and (di.is_public = true or da.id is not null)
+ORDER BY
+  di.is_used DESC, di.created_at DESC;
+SQL
+      }else{
+        #ログインなし
+        $sql = << "SQL";
 SELECT
   di.*,
   du.nic_name AS nic_name,
@@ -185,9 +209,11 @@ FROM
 JOIN docx_users du ON du.id = di.created_by
 WHERE
   di.deleted_at is null
+  and di.is_public = true
 ORDER BY
   di.is_used DESC, di.created_at DESC;
 SQL
+      }
 
   my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
      || $self->errorMessage("DB:Error",1);
@@ -203,6 +229,8 @@ SQL
         created_by      => $_->{nic_name},
         file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
         last_updated_at => ${logs}[0][0]->{attr}->{date},
+        is_editable => $_->{auth_id}?1:0,
+        is_owned => $_->{created_by}==${uid}?1:0,
       };
       push @infos, $info;
     }
