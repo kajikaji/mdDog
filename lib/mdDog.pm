@@ -268,6 +268,7 @@ SQL
     $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
     $self->{t}->{created_by}      = $ary->{nic_name};
     $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
+    $self->{t}->{is_public}       = $ary->{is_public};
 
     my @logs = $self->{git}->get_shared_logs();
     $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};

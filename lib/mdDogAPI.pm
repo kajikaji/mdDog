@@ -473,6 +473,50 @@ SQL
 ############################################################
 #[API]
 #
+sub document_user_delete {
+    my $self  = shift;
+
+    my $fid   = $self->qParam('fid');
+    my @users = $self->qParam('users[]');
+    my $uid   = $self->{s}->param('login');
+
+    return unless( @users );
+
+    my $sql_delete = << "SQL";
+DELETE FROM docx_auths
+WHERE
+  info_id = ${fid}
+  AND user_id in (
+SQL
+    my $sql = "SELECT id,account,nic_name FROM docx_users WHERE id IN (";
+
+    my $i = 0;
+    foreach(@users) {
+        $sql_delete .= ',' if( $i > 0 );
+        $sql_delete .= $_;
+
+        $sql .= ',' if( $i > 0);
+        $sql .= $_;
+        $i++;
+    }
+    $sql_delete .= ')';
+    $sql        .= ')';
+
+    $self->{dbh}->do($sql_delete)
+      || die("DB Error: document_user_delete");
+
+    my $data = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
+      || die("DB Error+ document_user_add select");
+
+    $self->dbCommit();
+
+    my $json = JSON->new();
+    return $json->encode($data);
+}
+
+############################################################
+#[API]
+#
 sub document_user_may_approve {
     my $self = shift;
 
@@ -506,7 +550,6 @@ sub document_change_public {
     my $self = shift;
 
     my $fid     = $self->qParam('fid');
-    my $uid     = $self->qParam('uid');
     my $checked = $self->qParam('is_public')?'t':'f';
 
     my $sql_update = << "SQL";

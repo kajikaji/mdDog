@@ -1,4 +1,4 @@
-[% INCLUDE header.tmpl %]
+B0;95;c[% INCLUDE header.tmpl %]
 [% INCLUDE apptitle.tmpl %]
 [% INCLUDE userinfo.tmpl %]
 
@@ -12,35 +12,38 @@
 
 <section class="DocSetting">
   <h3>全体公開フラグ</h3>
-  <div><label id="PublicMark">全体に公開する場合はチェックをつける<input type="checkbox"></label></div>
+  <div><label id="PublicMark">[% is_public %]全体に公開する場合はチェックをつける<input type="checkbox" [%IF is_public %]checked[%END %]></label></div>
 
   <h3>ユーザー権限</h3>
-  <table class="UsersTable">
-    <thead>
-      <tr>
-	<th></th>
-	<th>名前</th>
-	<th>承認</th>
-	<th>削除</th>
-      </tr>
-    </thead>
-    <tbody>
-      [%FOREACH u IN users %]
-      <tr class="User">
-	<td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
-	<td class="Name">[% u.nic_name %]</td>
-	<td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
-	<td class="Delete"><input type="checkbox" [%IF u.may_delete %]checked[%END %]></td>
-      </tr>
-      [%END %]
-      <tr class="UserTmpl" style="display: none;">
-	<td class="Select"><input type="checkbox"></td>
-	<td class="Name"></td>
-	<td class="Approve"><input type="checkbox"></td>
-	<td class="Delete"><input type="checkbox"></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="AllowUsersList">
+    <table class="UsersTable">
+      <thead>
+	<tr>
+	  <th></th>
+	  <th>名前</th>
+	  <th>承認</th>
+	  <th>削除</th>
+	</tr>
+      </thead>
+      <tbody>
+	[%FOREACH u IN users %]
+	<tr class="User" id="User[% u.user_id %]">
+	  <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
+	  <td class="Name">[% u.nic_name %]</td>
+	  <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
+	  <td class="Delete"><input type="checkbox" [%IF u.may_delete %]checked[%END %]></td>
+	</tr>
+	[%END %]
+	<tr class="UserTmpl" style="display: none;">
+	  <td class="Select"><input type="checkbox"></td>
+	  <td class="Name"></td>
+	  <td class="Approve"><input type="checkbox"></td>
+	  <td class="Delete"><input type="checkbox"></td>
+	</tr>
+      </tbody>
+    </table>
+    <button class="RemoveUser">削除</button>
+  </div>
 
   <div class="UnallowUsersList">
     <button class="AddUser">追加</button>
