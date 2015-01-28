@@ -10,10 +10,17 @@
 
 <ul class="DocCtrl">
   <li [%UNLESS SUBMENU %]class="Selected"[%END %]><a href="docinfo.cgi?fid=[% fid %]" class="Btn">更新履歴</a></li>
-  <li [%IF SUBMENU == "アウトプット" %]class="Selected"[% END %]><a href="md_output.cgi?fid=[% fid %]" class="Btn">最新版アウトライン</a></li>
-  [% IF login %]
-  <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース" "アップロード" "編集履歴"] %]class="Selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="Btn">編集バッファ</a></li>
-  [%IF is_approve %]<li [%IF SUBMENU == "承認" %]class="Selected"[% END %]><a href="docapprove.cgi?fid=[% fid %]" class="Btn">承認</a></li>[% END %]
-  [% END %]
+  <li [%IF SUBMENU == "アウトプット" %]class="Selected"[%END %]><a href="md_output.cgi?fid=[% fid %]" class="Btn">最新版アウトライン</a></li>
+  [%IF login %]
+    [%IF is_edit || is_admin %]
+      <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース" "アップロード" "編集履歴"] %]class="Selected"[% END %]><a href="md_edit.cgi?fid=[% fid %]" class="Btn">編集バッファ</a></li>
+    [%END %]
+    [%IF is_approve || is_admin %]
+      <li [%IF SUBMENU == "承認" %]class="Selected"[%END %]><a href="docapprove.cgi?fid=[% fid %]" class="Btn">承認</a></li>
+    [%END %]
+    [%IF is_owned || is_admin %]
+      <li [%IF SUBMENU == "設定" %]class="Selected"[%END %]><a href="docsetting.cgi?fid=[% fid %]" class="Btn">設定</a></li>
+    [%END %]
+  [%END %]
 </ul>
 

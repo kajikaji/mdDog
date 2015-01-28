@@ -27,6 +27,7 @@ id serial primary key,
 info_id int not null,
 user_id int not null,
 may_approve boolean default false,
+may_edit    boolean default false,
 created_at timestamp,
 created_by int,
 updated_at timestamp

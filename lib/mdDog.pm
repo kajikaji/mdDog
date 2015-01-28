@@ -120,8 +120,8 @@ SQL
       mail        => $ha->{mail},
       nic_name    => $ha->{nic_name},
       may_admin   => $ha->{may_admin},
-      may_approve => $ha->{may_approve},
-      may_delete  => $ha->{may_delete},
+#      may_approve => $ha->{may_approve},
+#      may_delete  => $ha->{may_delete},
     };
     return 1;
   }
@@ -141,8 +141,6 @@ sub print_page {
   if($self->{user}){
     $self->{t}->{account}    = $self->{user}->{account};
     $self->{t}->{is_admin}   = $self->{user}->{may_admin};
-    $self->{t}->{is_approve} = $self->{user}->{may_approve};
-    $self->{t}->{is_delete}  = $self->{user}->{may_delete};
   }
 
   $self->SUPER::print_page();
@@ -164,6 +162,7 @@ sub login_user_document {
       print "Location: docinfo.cgi?fid=${fid}\n\n";
       exit();
   }
+
   return 1;
 }
 
@@ -244,6 +243,7 @@ sub set_document_info {
   my $self = shift;
 
   my $fid   = $self->qParam('fid');
+  my $uid   = $self->{s}->param('login');
   my $user  = $self->qParam('user');
   my $ver   = $self->qParam('revision');
   return unless($fid);    # NULL CHECK
@@ -269,14 +269,32 @@ SQL
     $self->{t}->{created_by}      = $ary->{nic_name};
     $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
     $self->{t}->{is_public}       = $ary->{is_public};
+    $self->{t}->{is_owned}        = $ary->{created_by} == $self->{s}->param('login')?1:0;
 
     my @logs = $self->{git}->get_shared_logs();
     $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
   }
 
+  if( $uid ){
+    # 権限の取得
+    my $sql_auth = << "SQL";
+SELECT * FROM docx_auths
+WHERE
+  info_id = ${fid}
+  AND user_id = ${uid}
+SQL
+    my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
+    if($ary) {
+      $self->{t}->{is_approve} = $ary->{may_approve};
+      $self->{t}->{is_edit}    = $ary->{may_edit};
+      $self->{t}->{is_delete}  = $ary->{may_delete};
+    }
+  }
+
   $self->{t}->{fid}      = $fid;
   $self->{t}->{user}     = $user;
   $self->{t}->{revision} = $ver if($ver);
+
 }
 
 

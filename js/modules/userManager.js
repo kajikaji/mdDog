@@ -70,10 +70,11 @@ $(function(){
 
     }, this));
 
-    //承認フラグ
+
     $('.UsersTable tbody').find('tr.User').each(function(){
         var uid_ = $(this).find('.Select input[type=checkbox]').data('id');
         var fid_ = getParam('fid');
+        //承認フラグ
         $(this).find('.Approve input[type=checkbox]').on('click', function(){
             var checked_ = $(this).prop('checked')===true?1:0;
             $.ajax({
@@ -89,6 +90,23 @@ $(function(){
             }).done(function(res){
             });
         });
+        //編集フラグ
+        $(this).find('.Edit input[type=checkbox]').on('click', function(){
+            var checked_ = $(this).prop('checked')===true?1:0;
+            $.ajax({
+                url  : 'api/userManager.cgi',
+                type : 'POST',
+                data : {
+                    action  : 'user_may_edit',
+                    type    : 'POST',
+                    fid     : fid_,
+                    uid     : uid_,
+                    checked : checked_
+                }
+            }).done(function(res){
+            });
+        });
+        //削除フラグ
         $(this).find('.Delete input[type=checkbox]').on('click', function(){
         });
     });

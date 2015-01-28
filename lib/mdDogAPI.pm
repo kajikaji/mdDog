@@ -546,15 +546,44 @@ SQL
 ############################################################
 #[API]
 #
+sub document_user_may_edit {
+    my $self    = shift;
+
+    my $fid     = $self->qParam('fid');
+    my $uid     = $self->qParam('uid');
+    my $checked = $self->qParam('checked')?'t':'f';
+
+    my $sql_update = << "SQL";
+UPDATE docx_auths
+SET may_edit = '${checked}'
+WHERE
+  info_id = ${fid}
+  AND user_id = ${uid};
+SQL
+    $self->{dbh}->do($sql_update)
+      || die("DB Error: document_user_may_edit");
+
+    my $sql = "SELECT * FROM docx_auths WHERE info_id = ${fid} AND user_id = ${uid}";
+    my $info = $self->{dbh}->selectrow_hashref($sql)
+      || die("DB Error: document_user_may_edit select ${sql}");
+    $self->dbCommit();
+
+    my $json = JSON->new();
+    return $json->encode($info);
+}
+
+############################################################
+#[API]
+#
 sub document_change_public {
     my $self = shift;
 
-    my $fid     = $self->qParam('fid');
-    my $checked = $self->qParam('is_public')?'t':'f';
+    my $fid       = $self->qParam('fid');
+    my $is_public = $self->qParam('is_public')?'t':'f';
 
     my $sql_update = << "SQL";
 UPDATE docx_infos
-SET is_public = ${checked}
+SET is_public = '${is_public}'
 WHERE
   id = ${fid};
 SQL

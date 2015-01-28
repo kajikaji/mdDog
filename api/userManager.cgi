@@ -25,6 +25,9 @@ if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
     if( $dog->qParam('action') eq 'user_may_approve' ){
 	print $dog->document_user_may_approve();
     }
+    if( $dog->qParam('action') eq 'user_may_edit' ){
+	print $dog->document_user_may_edit();
+    }
 }
 
 exit();
