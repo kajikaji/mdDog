@@ -138,12 +138,51 @@ sub print_page {
   if($self->{s}->param("login")){
     $self->{t}->{login}      = $self->{s}->param("login");
   }
-  if($self->{user}){
+  if($self->{user}){ #ユーザー情報をセット
     $self->{t}->{account}    = $self->{user}->{account};
+    $self->{t}->{nic_name}   = $self->{user}->{nic_name};
+    $self->{t}->{mail}       = $self->{user}->{mail};
     $self->{t}->{is_admin}   = $self->{user}->{is_admin};
   }
 
   $self->SUPER::print_page();
+}
+
+############################################################
+#
+#
+sub change_profile{
+    my $self = shift;
+    my $uid  = $self->{s}->param('login');
+
+    my $account     = $self->qParam('account');
+    my $mail        = $self->qParam('mail');
+    my $nic_name    = $self->qParam('nic_name');
+    my $password    = $self->qParam('password');
+    my $re_password = $self->qParam('re_password');
+
+    if( $password != $re_password ){
+      push @{$self->{t}->{message}->{error}}, "再入力されたパスワードが一致しません";
+      return 0;
+    }
+    unless( $account && $nic_name && $mail ){
+      push @{$self->{t}->{message}->{error}}, "入力が不足しています";
+      return 0;
+    }
+
+    my $sql_update = << "SQL";
+UPDATE docx_users
+SET
+  account = '${account}',
+  nic_name = '${nic_name}',
+  mail = '${mail}',
+  password = md5('${password}')
+WHERE
+  id = ${uid}
+SQL
+    $self->{dbh}->do($sql_update);
+    $self->dbCommit();
+    return 1;
 }
 
 ############################################################

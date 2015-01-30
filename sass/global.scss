@@ -315,7 +315,7 @@ form{
     background-color: #f5deb3;
     color: #222;
   }
-  input[type=text], textarea {
+  input[type=text], input[type=password], textarea {
     font-size: 85%;
     @include round-corner(5px);
   }
@@ -466,7 +466,7 @@ section.Error{
     }
     @include clearfix();
   }
-  .Admin{
+  .Account, .Admin{
     a,
     a:hover,
     a:visited,

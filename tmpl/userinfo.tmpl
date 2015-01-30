@@ -1,7 +1,7 @@
 [% IF login %]
 <section class="UserInfo">
   <ul>
-  <li class="User Account">ユーザーアカウント：[% account %]</li>
+  <li class="User Account">ユーザー：<a href="profile.cgi">[% nic_name %]</a></li>
   [% IF is_admin %]
     <li class="User Admin"><a href="admin.cgi">[管理ページ]</a></li>
   [% END %]

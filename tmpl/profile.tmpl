@@ -1,0 +1,35 @@
+[% INCLUDE header.tmpl %]
+[% INCLUDE apptitle.tmpl %]
+[% INCLUDE userinfo.tmpl %]
+<div>[% debug %]</div>
+
+<ul class="BackNav">
+<li><a href="index.cgi">ドキュメント一覧</a></li>
+</ul>
+
+<section class="Profile">
+  <h1>アカウント編集</h1>
+
+  <form class="AccountForm">
+    <div class="Item">
+      <label>アカウント<input type="text" name="account" value="[% account %]"></label>
+    </div>
+    <div class="Item">
+      <label>表示名<input type="text" name="nic_name" value="[% nic_name %]"></label>
+    </div>
+    <div class="Item">
+      <label>メール<input type="text" name="mail" value="[% mail %]"></label>
+    </div>
+    <div class="Item">
+      <label>パスワード<input type="password" name="password"></label>
+    </div>
+    <div class="Item">
+      <label>パスワード(再入力)<input type="password" name="re_password"></label>
+    </div>
+    <div class="Item">
+      <input type="submit" name="save" value="保存">
+    </div>
+  </form>
+</section>
+
+[%INCLUDE footer.tmpl %]

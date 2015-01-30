@@ -134,7 +134,7 @@ form input[type=submit], form input[type=button], form button {
 form input[type=submit]:hover, form input[type=button]:hover, form button:hover {
   background-color: #f5deb3;
   color: #222; }
-form input[type=text], form textarea {
+form input[type=text], form input[type=password], form textarea {
   font-size: 85%;
   border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -261,13 +261,13 @@ section.Error div.Error {
       line-height: 0; }
     .UserInfo ul:after {
       clear: both; }
-  .UserInfo .Admin a,
-  .UserInfo .Admin a:hover,
-  .UserInfo .Admin a:visited,
-  .UserInfo .Admin a:link,
-  .UserInfo .Admin a:active {
+  .UserInfo .Account a,
+  .UserInfo .Account a:hover,
+  .UserInfo .Account a:visited,
+  .UserInfo .Account a:link,
+  .UserInfo .Account a:active, .UserInfo .Admin a, .UserInfo .Admin a:hover, .UserInfo .Admin a:visited, .UserInfo .Admin a:link, .UserInfo .Admin a:active {
     color: #fff; }
-  .UserInfo .Admin a:hover {
+  .UserInfo .Account a:hover, .UserInfo .Admin a:hover {
     text-decoration: underline; }
 
 ul.BackNav {
