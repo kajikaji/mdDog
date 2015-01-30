@@ -12,6 +12,7 @@ use MYUTIL;
 my $dog = mdDogAPI->new('api');
 $dog->setup_config();
 $dog->login();
+$dog->check_auths("is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if($ENV{'REQUEST_METHOD'} eq 'GET'){
