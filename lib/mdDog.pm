@@ -119,7 +119,7 @@ SQL
       account     => $ha->{account},
       mail        => $ha->{mail},
       nic_name    => $ha->{nic_name},
-      may_admin   => $ha->{may_admin},
+      is_admin    => $ha->{may_admin},
 #      may_approve => $ha->{may_approve},
 #      may_delete  => $ha->{may_delete},
     };
@@ -140,7 +140,7 @@ sub print_page {
   }
   if($self->{user}){
     $self->{t}->{account}    = $self->{user}->{account};
-    $self->{t}->{is_admin}   = $self->{user}->{may_admin};
+    $self->{t}->{is_admin}   = $self->{user}->{is_admin};
   }
 
   $self->SUPER::print_page();
@@ -164,6 +164,60 @@ sub login_user_document {
   }
 
   return 1;
+}
+
+############################################################
+# 権限チェック
+#
+sub check_auths {
+    my $self  = shift;
+    my $fid   = $self->qParam('fid');
+    my $uid   = $self->{s}->param('login');
+
+    my $sql_auth = << "SQL";
+SELECT
+  da.*,
+  di.created_by
+FROM docx_auths da
+INNER JOIN docx_infos di ON da.info_id = di.id
+WHERE
+  da.info_id = ${fid}
+  AND da.user_id = ${uid}
+SQL
+    my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
+    if($ary) {
+      $self->{user}->{is_approve} = $ary->{may_approve};
+      $self->{user}->{is_edit}    = $ary->{may_edit};
+      $self->{user}->{is_delete}  = $ary->{may_delete};
+      $self->{user}->{is_owned}   = $ary->{created_by} == $uid?1:0;
+    }
+
+    foreach (@_) {
+      if ( $_ =~ m/all/ ) {
+        return;
+      }
+      if ( $_ =~ m/is_edit/    && $self->{user}->{is_edit}    ) {
+        return;
+      }
+      if ( $_ =~ m/is_owned/   && $self->{user}->{is_owned}   ) {
+        return;
+      }
+      if ( $_ =~ m/is_approve/ && $self->{user}->{is_approve} ) {
+        return;
+      }
+      if ( $_ =~ m/is_delete/  && $self->{user}->{is_delete}  ) {
+        return;
+      }
+      if ( $_ =~ m/is_admin/   && $self->{user}->{is_admin}   ) {
+        return;
+      }
+    }
+    if ( $fid ){
+      print "Location: docinfo.cgi?fid=${fid}\n\n";
+    } else {
+      print "Location: index.cgi\n\n";
+    }
+    exit();
 }
 
 ############################################################
@@ -276,6 +330,7 @@ SQL
   }
 
   if( $uid ){
+=pod
     # 権限の取得
     my $sql_auth = << "SQL";
 SELECT * FROM docx_auths
@@ -289,6 +344,10 @@ SQL
       $self->{t}->{is_edit}    = $ary->{may_edit};
       $self->{t}->{is_delete}  = $ary->{may_delete};
     }
+=cut
+      $self->{t}->{is_approve} = $self->{user}->{is_approve};
+      $self->{t}->{is_edit}    = $self->{user}->{is_edit};
+      $self->{t}->{is_delete}  = $self->{user}->{is_delete};
   }
 
   $self->{t}->{fid}      = $fid;

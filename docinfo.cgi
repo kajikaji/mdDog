@@ -12,6 +12,7 @@ use Data::Dumper;
 my $dog =mdDog->new();
 $dog->setup_config();
 $dog->login();
+$dog->check_auths("all");
 
 if(!$dog->qParam('fid')) {
   $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>docinfo.cgi<br>Err001";

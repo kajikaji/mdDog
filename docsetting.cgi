@@ -12,6 +12,7 @@ use Data::Dumper;
 my $dog = mdDogAdmin->new();
 $dog->setup_config();
 $dog->login_user_document();
+$dog->check_auths("is_owned", "is_admin");
 
 $dog->get_document_users();
 $dog->set_document_info();

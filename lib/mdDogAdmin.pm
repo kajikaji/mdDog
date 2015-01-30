@@ -13,7 +13,7 @@ sub login_for_admin{
     my $self = shift;
 
     $self->SUPER::login();
-    return $self->{user}->{may_admin}
+    return $self->{user}->{is_admin}
 }
 
 sub set_user_infos{

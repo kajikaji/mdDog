@@ -11,6 +11,7 @@ use mdDog;
 my $dog =mdDog->new();
 $dog->setup_config();
 $dog->login();
+$dog->check_auths("all");
 
 if(!$dog->qParam('fid')) {
   $dog->{t}->{error} = "mdドキュメントが指定されていません<br>md_output.cgi:err01<br>";
