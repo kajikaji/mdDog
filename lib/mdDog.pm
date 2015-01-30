@@ -282,8 +282,9 @@ SQL
         created_by      => $_->{nic_name},
         file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
         last_updated_at => ${logs}[0][0]->{attr}->{date},
-        is_editable => $_->{auth_id}?1:0,
-        is_owned => $_->{created_by}==${uid}?1:0,
+        is_editable     => $_->{auth_id}?1:0,
+        is_public       => $_->{is_public},
+        is_owned        => $_->{created_by}==${uid}?1:0,
       };
       push @infos, $info;
     }

@@ -171,6 +171,37 @@ $corner_b: 5px;
 }
 
 /*
+ * MARK
+ */
+i.Mark{
+    font-style: normal;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 2px 3px;
+
+    &.Round{
+      @include round-corner(8px);
+    }
+
+    &.Orange{
+        background-color: #ff7f50;
+        color: #fff;
+    }
+    &.Green{
+        background-color: #006400;
+        color: #fff;
+    }
+    &.Blue{
+        background-color: #0000cd;
+        color: #fff;
+    }
+    &.Black{
+        background-color: #000;
+        color: #fff;
+    }
+}
+
+/*
  * GLYPH-ICON
  */
 

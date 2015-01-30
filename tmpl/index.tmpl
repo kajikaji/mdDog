@@ -42,21 +42,25 @@
           [% END %] <!-- UNLESS info.deleted_at -->
           
           <div class="DocSubject">
-            [% IF info.deleted_at %]
-              <div class="Name">[% info.file_name %]</div>
-            [% ELSIF info.is_used %]
-              <div class="Name"><a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a></div>
-            [% ELSE %]
-              <div class="Name">[% info.file_name %]</div>
-            [% END %]
+	    <div class="Name">
+              [%IF info.is_used %]
+                [%IF info.is_public %]<i class="Mark Round Orange">P</i>[%END %]
+                [%IF info.is_editable %]<i class="Mark Round Green">E</i>[%END %]
+                [%IF info.is_owned %]<i class="Mark Round Black">O</i>[%END %]
+              [%END %]
+              [% IF info.deleted_at %]
+                [% info.file_name %]
+              [% ELSIF info.is_used %]
+                <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+              [% ELSE %]
+                [% info.file_name %]
+              [% END %]
+	    </div>
           </div> <!-- doc-subject -->
 
           <div class="DocDetail">
           [%IF !info.deleted_at and info.is_used %]
             <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
-          [%END %]
-          [%IF info.is_editable %]
-            <div>editable!</div>
           [%END %]
             <div class="CreateAt">作成日時:[% info.created_at %]</div>
             <div class="CreatedBy">作成者:[% info.created_by %]</div>
