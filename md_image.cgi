@@ -11,7 +11,7 @@ use mdDog;
 my $dog =mdDog->new();
 $dog->setup_config();
 $dog->login_user_document();
-$dog->check_auths("is_edit");
+$dog->check_auths("is_edit", "is_admin");
 
 #画像アップロード処理
 if ($dog->qParam('upload')) {
