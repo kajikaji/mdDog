@@ -14,9 +14,14 @@ $dog->login_user_document();
 $dog->check_auths("is_edit", "is_admin");
 
 # コミット処理
-if ($dog->qParam('commit')) {
+if( $dog->qParam('commit') ){
     #変更を反映 変更履歴は必須
     $dog->fix_md_buffer();
+}
+
+#バッファリセット
+if( $dog->qParam('resetBuffer') ){
+    $dog->reset_buffer();
 }
 
 $dog->is_exist_buffer();

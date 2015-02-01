@@ -1,12 +1,4 @@
 <section class="Message">
-  [%IF isExistBuffer %]
-  <div class="IsExistBuffer">
-    バッファがコミットされていません
-    <a class="Btn">バッファリセット</a>
-
-  </div>
-  [%END %]
-
   [%IF message.error %]
     <ul class="Error">
     [%FOREACH e IN message.error %]
@@ -18,6 +10,19 @@
     <ul class="Info">
     [%FOREACH i IN  message.info %]
       <li>[% i %]</li>
+    [%END %]
+    </ul>
+  [%END %]
+  [%IF message.buffered %]
+    <ul class="Buffered">
+    [%FOREACH i IN  message.buffered %]
+      <li>
+        [% i %]
+        <form action="?fid=[% fid %]" method="POST" class="ResetBuffer">
+          <input type="hidden" name="fid" value="[% fid %]">
+          <input type="submit" value="バッファリセット" name="resetBuffer">
+        </form>
+      </li>
     [%END %]
     </ul>
   [%END %]

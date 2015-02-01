@@ -452,41 +452,56 @@ sub detach_local {
 # @param3 "commit message"
 #
 sub fix_tmp {
-  my $self = shift;
-  my $uid = shift;
-  my $author = shift;
-  my $message = shift;
+    my $self    = shift;
+    my $uid     = shift;
+    my $author  = shift;
+    my $message = shift;
 
-  my $ret;
-  my $branch = "$self->{branch_prefix}${uid}";
-  my $branch_tmp = "${branch}_tmp";
-  my $gitctrl = $self->{git};
+    my $ret;
+    my $branch     = "$self->{branch_prefix}${uid}";
+    my $branch_tmp = "${branch}_tmp";
+    my $gitctrl    = $self->{git};
 
-  my @branches = $gitctrl->branch;
-  unless(MYUTIL::is_include(\@branches, $branch_tmp)){
-    $self->{error} .= "編集バッファが見つかりません";
-    return 0;
-  }
-  $gitctrl->branch($branch) unless(MYUTIL::is_include(\@branches, $branch));
+    $self->lock_dir();
 
-  my @logs_tmp = ($gitctrl->log($branch . ".." . $branch_tmp));
-  if(@logs_tmp > 0){
-    my $cnt = @logs_tmp;
-    $gitctrl->checkout($branch_tmp);
-    $gitctrl->reset({soft => 1}, "HEAD~${cnt}");
-    if($gitctrl->diff({cached => 1})){
-      $gitctrl->commit({message => $message, author => $author});
-    }else{
-      $ret = "データの変更が見つからないのでコミットされませんでした";
-      $self->{info} .= "データの変更が見つからないのでコミットされませんでした";
+    my @branches = $gitctrl->branch;
+    unless(MYUTIL::is_include(\@branches, $branch_tmp)){
+        $self->{error} .= "編集バッファが見つかりません";
+        return 0;
     }
-    $gitctrl->checkout($branch);
-    $gitctrl->rebase($branch_tmp);
-    $gitctrl->checkout("master");
-  }
-  $gitctrl->branch("-D", $branch_tmp);
+    $gitctrl->branch($branch) unless(MYUTIL::is_include(\@branches, $branch));
 
-  return 1;
+    my @logs_tmp = ($gitctrl->log($branch . ".." . $branch_tmp));
+    if(@logs_tmp > 0){
+        my $cnt = @logs_tmp;
+        $gitctrl->checkout($branch_tmp);
+        $gitctrl->reset({soft => 1}, "HEAD~${cnt}");
+        if($gitctrl->diff({cached => 1})){
+            $gitctrl->commit({message => $message, author => $author});
+        }else{
+            $ret = "データの変更が見つからないのでコミットされませんでした";
+            $self->{info} .= "データの変更が見つからないのでコミットされませんでした";
+        }
+        $gitctrl->checkout($branch);
+        $gitctrl->rebase($branch_tmp);
+        $gitctrl->checkout("master");
+    }
+    $gitctrl->branch("-D", $branch_tmp);
+    $self->unlock_dir();
+    return 1;
+}
+
+############################################################
+#
+sub reset_buffer {
+    my $self       = shift;
+    my $uid        = shift;
+    my $branch_tmp = "$self->{branch_prefix}${uid}_tmp";
+
+    $self->lock_dir();
+    $self->{git}->branch("-D", $branch_tmp);
+    $self->unlock_dir();
+    return 1;
 }
 
 ############################################################

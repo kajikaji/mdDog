@@ -424,8 +424,18 @@ section.Message{
         color: #f00;
         border: 1px solid #f00;
     }
+    &.Buffered{
+        border: 1px solid #4169e1;
+    }
     li{
       padding: 2px 5px;
+
+      form.ResetBuffer {
+          display: inline-block;
+          float: right;
+          margin: 3px;
+      }
+      @include clearfix();
     }
   }
 }

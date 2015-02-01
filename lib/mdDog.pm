@@ -408,8 +408,7 @@ sub is_exist_buffer {
 
     if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
       && $self->{git}->is_updated_buffer($uid)){
-        push @{$self->{t}->{message}->{info}}, "コミットされていないバッファがあります";
-        $self->{t}->{isExistBuffer} = 1;
+        push @{$self->{t}->{message}->{buffered}}, "コミットされていないバッファがあります";
     }
 }
 
@@ -915,6 +914,21 @@ sub fix_md_buffer {
   push @{$self->{t}->{message}->{info}}, "コミットしました";
   push(@{$self->{t}->{message}->{info}}, $gitctrl->{info}) if($gitctrl->{info});
   return 1;
+}
+
+############################################################
+#
+sub reset_buffer {
+  my $self    = shift;
+
+  my $gitctrl = $self->{git};
+  my $uid     = $self->{s}->param("login");
+  my $fid     = $self->qParam('fid');
+  unless( $uid && $fid ){
+    push @{$self->{t}->{message}->{error}}, "不正なアクセスです";
+    return 0;
+  }
+  return $gitctrl->reset_buffer($uid);
 }
 
 ############################################################

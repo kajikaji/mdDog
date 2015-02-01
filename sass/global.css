@@ -227,8 +227,20 @@ section.Message {
     section.Message > ul.Error {
       color: #f00;
       border: 1px solid #f00; }
+    section.Message > ul.Buffered {
+      border: 1px solid #4169e1; }
     section.Message > ul li {
       padding: 2px 5px; }
+      section.Message > ul li form.ResetBuffer {
+        display: inline-block;
+        float: right;
+        margin: 3px; }
+      section.Message > ul li:after, section.Message > ul li:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Message > ul li:after {
+        clear: both; }
 
 section.Admin h1 {
   margin-bottom: 20px;
