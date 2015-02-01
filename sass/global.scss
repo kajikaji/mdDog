@@ -1001,9 +1001,14 @@ table.Gitlog {
 
   .RevisionCtrl{
     a.RevisionViewer, a.RevisionViewer:hover,
-    a.DiffViewer, a.DiffViewer:hover{
+    a.DiffViewer, a.DiffViewer:hover,
+    a.Rollback, a.Rollback:hover{
       cursor: pointer;
     }
+  }
+
+  .Ctrl .CtrlTemp{
+    display: none;
   }
 }
 

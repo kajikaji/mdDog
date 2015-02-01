@@ -600,4 +600,27 @@ SQL
     return $json->encode($info);
 }
 
+############################################################
+#[API]
+#
+sub rollback_buffer {
+    my $self     = shift;
+    my $fid      = $self->qParam('fid');
+    my $revision = $self->qParam('revision');
+    my $uid      = $self->{s}->param('login');
+
+    my $gitctrl  = $self->{git};
+    unless( $gitctrl->is_exist_user_branch($uid, 'tmp') ){
+        $gitctrl->attach_local_tmp($uid, 'create tmp');
+        $gitctrl->detach_local();
+    }
+    $gitctrl->attach_local($uid);
+    $gitctrl->rollback_buffer($revision);
+    $gitctrl->detach_local();
+
+#    my $logs = $gitctrl->get_user_logs($uid);
+    my $json = JSON->new();
+    return $json->encode({action => 'reset', revision => $revision});
+}
+
 1;

@@ -277,6 +277,7 @@ SELECT
   du.account     AS account,
   du.mail        AS mail,
   da.id          AS auth_id,
+  da.may_edit    AS may_edit,
   da.may_approve AS may_approve
 FROM
   docx_infos di
@@ -321,7 +322,8 @@ SQL
         created_by      => $_->{nic_name},
         file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
         last_updated_at => ${logs}[0][0]->{attr}->{date},
-        is_editable     => $_->{auth_id}?1:0,
+        is_editable     => $_->{may_edit}?1:0,
+        is_approve      => $_->{may_approve}?1:0,
         is_public       => $_->{is_public},
         is_owned        => $_->{created_by}==${uid}?1:0,
       };

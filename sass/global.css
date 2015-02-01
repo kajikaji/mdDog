@@ -805,8 +805,11 @@ table.Gitlog {
       list-style: none;
       margin-left: 0; }
   table.Gitlog .RevisionCtrl a.RevisionViewer, table.Gitlog .RevisionCtrl a.RevisionViewer:hover,
-  table.Gitlog .RevisionCtrl a.DiffViewer, table.Gitlog .RevisionCtrl a.DiffViewer:hover {
+  table.Gitlog .RevisionCtrl a.DiffViewer, table.Gitlog .RevisionCtrl a.DiffViewer:hover,
+  table.Gitlog .RevisionCtrl a.Rollback, table.Gitlog .RevisionCtrl a.Rollback:hover {
     cursor: pointer; }
+  table.Gitlog .Ctrl .CtrlTemp {
+    display: none; }
 
 section.MdBuffer ul.BufferEditMenu {
   position: absolute;

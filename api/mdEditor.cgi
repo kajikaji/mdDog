@@ -15,21 +15,21 @@ $dog->login();
 $dog->check_auths("is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
-if($ENV{'REQUEST_METHOD'} eq 'GET'){
+if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
     return unless($dog->qParam('fid'));
 
     ## ?fid=[fid](&eid=[eid])
     print $dog->get_data();
-} elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
+} elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
     ## ?fid=[fid]&eid=[eid]&action=[action]
     return unless( $dog->qParam('fid')
                 || $dog->qParam('eid')
                 || $dog->qParam('action'));
 
-    if( $dog->qParam('action')      eq 'update' ) {
+    if(     $dog->qParam('action') eq 'update' ){
         my $updateData = $dog->post_data();
         print $updateData;
-    } elsif( $dog->qParam('action') eq 'delete' ) {
+    }elsif( $dog->qParam('action') eq 'delete' ){
         my $ret = $dog->delete_data();
         print $ret;
     }

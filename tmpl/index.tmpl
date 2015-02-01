@@ -46,6 +46,7 @@
               [%IF info.is_used %]
                 [%IF info.is_public %]<i class="Mark Round Orange">P</i>[%END %]
                 [%IF info.is_editable %]<i class="Mark Round Green">E</i>[%END %]
+                [%IF info.is_approve %]<i class="Mark Round Blue">A</i>[%END %]
                 [%IF info.is_owned %]<i class="Mark Round Black">O</i>[%END %]
               [%END %]
               [% IF info.deleted_at %]

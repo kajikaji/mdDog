@@ -9,7 +9,7 @@
   </thead>
   <tbody>
     [% FOREACH log IN loglist %]
-    <tr class="Log [% UNLESS is_live %]Old[% ELSIF log.user %]User[% END %]">
+    <tr class="Log [% UNLESS is_live %]Old[% ELSIF log.user %]User[% END %]" id="Log[% log.id %]">
        <td class="Date">[% log.attr.date %]</td>
        <td class="Message">[% log.message %]</td>
        [%UNLESS owned %]<td class="Author">[% log.attr.author %]</td>[%END %]
@@ -33,11 +33,15 @@
                </form>
              </li>
            [%END %]
-           [%IF owned %]
-             <li>編集の削除</li>
+           [%IF loop.first and owned %]
+             <li><span class="RevisionCtrl"><a class="Rollback" data-fid="[% fid %]" data-revision="[% log.id %]">ROLLBACK</a></span></li>
              <li>マージ</li>
              <li>詳細の編集</li>
+           [%ELSE %]
+             <li class="CtrlTemp"><span class="RevisionCtrl"><a class="Rollback">ROLLBACK</a></span></li>
+
            [%END %]
+
          </ul>
        </td>
     </tr>

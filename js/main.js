@@ -15,6 +15,7 @@ requirejs.config({
         logTableChanger: 'logTableChanger',
         diffViewer:      'diffViewer',
         revisionViewer:  'revisionViewer',
+	rollbackBuffer:  'rollbackBuffer',
 	addAccountForm:  'addAccountForm',
         userManager:     'userManager'
     },
@@ -40,6 +41,9 @@ requirejs.config({
         'revisionViewer': {
             deps: ['jquery']
         },
+	'rollbackBuffer': {
+	    deps: ['jquery']
+	},
         'logTableChanger': {
             deps: ['jquery']
         },
@@ -90,6 +94,9 @@ requirejs(['jquery'], function($){
         require(['revisionViewer'], function(RevisionViewer){
             new RevisionViewer().init();
         });
+        require(['rollbackBuffer'], function(RollbackBuffer){
+	    new RollbackBuffer().init();
+	});
     }
 
     //管理ページ　アカウント管理
