@@ -50,19 +50,17 @@
   </ul>
 
   [%FOREACH user IN userlist %]
-  [% IF user.loglist.size == 0 %]
-  <div id="logBuffer[% user.uid %]" class="Logtable User" [%UNLESS loop.first %]style="display: none;"[%END%]>
-    <div class="Description">編集履歴はありません</div>
-  </div>
-  [% ELSE %]
-  <div id="logBuffer[% user.uid %]" class="Logtable User" [%UNLESS loop.first %]style="display: none;"[% END %]>
-    [% UNLESS user.is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
+  <div id="logBuffer[% user.uid %]" class="Logtable User" [%UNLESS loop.first %]style="display: none;"[%END %]>
+    [% IF user.loglist.size == 0 %]
+      <div class="Description">編集履歴はありません</div>
+    [% ELSE %]
+      [% UNLESS user.is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
 
-    [% SET loglist = user.loglist %]
-    [% SET is_live = user.is_live %]
-    [% INCLUDE table_gitlog.tmpl %]
+      [% SET loglist = user.loglist %]
+      [% SET is_live = user.is_live %]
+      [% INCLUDE table_gitlog.tmpl %]
+    [% END %]<!-- if user.loglist -->
   </div>
-  [% END %]<!-- if user.loglist -->
   [% END %]<!-- foreach userlist -->
 [% END %]<!-- approve_pre -->
 </section>

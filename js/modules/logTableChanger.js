@@ -13,7 +13,7 @@ define(function(){
     };
     function showLog(uid) {
         $('.DocApprove .Logtable').each(function(){
-            var id = $(this).attr("id").substr(9);
+            var id = Number($(this).attr("id").substr(9));
             if( uid !== id && !$(this).is(":hidden") ) {
                 $(this).hide();
             } else if( uid === id && $(this).is(":hidden") ) {

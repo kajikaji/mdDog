@@ -419,53 +419,55 @@ sub is_exist_buffer {
 # @param1 全ての編集ユーザーのログを取得するかのフラグ
 #
 sub git_log {
-  my $self = shift;
-  my $all  = shift;
+    my $self = shift;
+    my $all  = shift;
 
-  my $fid  = $self->qParam("fid");
-  my $uid  = $self->{s}->param("login");
+    my $fid  = $self->qParam("fid");
+    my $uid  = $self->{s}->param("login");
 
-  my @userary;
-  my $latest_rev = undef;
-  my $gitctrl    = $self->{git};
+    my @userary;
+    my $latest_rev = undef;
+    my $gitctrl    = $self->{git};
 
-  #共有リポジトリ(master)
-  $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
-  $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
+    #共有リポジトリ(master)
+    $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
+    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
-  if($all and $uid){ #ユーザーリポジトリ
-    #自分のリポジトリ
-    my $mylog = {
-      uid     => $uid,
-      name    => $self->{user}->{account},
-      loglist => [],
-    };
-    if($gitctrl->is_exist_user_branch($uid)){
-      $mylog->{loglist} = $gitctrl->get_user_logs($uid);
-      my $user_root = $gitctrl->get_branch_root($uid);
-      $mylog->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
-    }else{
-      $mylog->{is_live} = 1;
-    }
-    push @userary, $mylog;
-    if($self->{user}->{may_approve}){
-      #承認者
-      foreach($gitctrl->get_other_users($uid)){
-        my $userlog = {
-          uid       => $_,
-          name      => $self->_get_account($_),
-          loglist   => $gitctrl->get_user_logs($_),
-        };
-
-        my $userRoot = $gitctrl->get_branch_root($_);
-        if($latest_rev =~ m/${userRoot}[0-9a-z]+/ && (@{$userlog->{loglist}})) {
-          $userlog->{is_live} = 1;
-          push @userary, $userlog;
+    if( $all and $uid ){        #ユーザーリポジトリ
+        #自分のリポジトリ
+        my $mylog = {
+                   uid     => $uid,
+                   name    => $self->{user}->{account},
+                   loglist => [],
+                  };
+        if( $gitctrl->is_exist_user_branch($uid) ){
+            $mylog->{loglist} = $gitctrl->get_user_logs($uid);
+            my $user_root = $gitctrl->get_branch_root($uid);
+            $mylog->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
+        }else{
+            $mylog->{is_live} = 1;
         }
-      }
+        push @userary, $mylog;
+        if( $self->{user}->{is_approve} ){
+            #承認者
+            foreach( $gitctrl->get_other_users() ){
+                next if($_ eq $uid);
+                my $userlog = {
+                         uid       => $_,
+                         name      => $self->_get_account($_),
+                         loglist   => $gitctrl->get_user_logs($_),
+                };
+
+                my $userRoot = $gitctrl->get_branch_root($_);
+                if( $latest_rev =~ m/${userRoot}[0-9a-z]+/
+                    && (@{$userlog->{loglist}}) ){
+                    $userlog->{is_live} = 1;
+                    push @userary, $userlog;
+                }
+            }
+        }
     }
-  }
-  $self->{t}->{userlist} = \@userary;
+    $self->{t}->{userlist} = \@userary;
 }
 
 ############################################################

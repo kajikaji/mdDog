@@ -14,9 +14,9 @@ $dog->login_user_document();
 $dog->check_auths("is_approve", "is_admin");
 
 #承認処理
-if ($dog->qParam('approve')) {
+if( $dog->qParam('approve') ){
     $dog->doc_approve();
-} elsif ($dog->qParam('approve_pre')) { # 確認
+}elsif( $dog->qParam('approve_pre') ){ # 確認
     $dog->set_approve_list();
 }
 

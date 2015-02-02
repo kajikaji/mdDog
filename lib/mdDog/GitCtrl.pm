@@ -16,21 +16,21 @@ use Fcntl ':flock';
 # @param1: 作業ディレクトリ
 #
 sub new {
-  my $pkg = shift;
-  my $workdir = shift;
+    my $pkg = shift;
+    my $workdir = shift;
 
-  my $hash = {
-    git         => undef,
-    workdir     => ${workdir},
-    branch_prefix => "user_",
-    lock_handle => undef,
-    error       => undef,
-    info        => undef,
-  };
+    my $hash = {
+        git           => undef,
+        workdir       => ${workdir},
+        branch_prefix => "user_",
+        lock_handle   => undef,
+        error         => undef,
+        info          => undef,
+    };
 
-  $hash->{git} = Git::Wrapper->new($hash->{workdir}) if($workdir);
+    $hash->{git} = Git::Wrapper->new($hash->{workdir}) if($workdir);
 
-  return bless $hash, $pkg;
+    return bless $hash, $pkg;
 }
 
 ############################################################
@@ -40,16 +40,16 @@ sub new {
 # @param3 "author"
 #
 sub init{
-  my $self = shift;
-  my $fid = shift;
-  my $files = shift;
-  my $author = shift;
+    my $self = shift;
+    my $fid = shift;
+    my $files = shift;
+    my $author = shift;
 
-  $self->{git}->init();
-  foreach (@$files){
-    $self->{git}->add($_);
-  }
-  $self->{git}->commit({message => "新規追加", author => $author});
+    $self->{git}->init();
+    foreach( @$files ){
+        $self->{git}->add($_);
+    }
+    $self->{git}->commit({message => "新規追加", author => $author});
 }
 
 
@@ -58,20 +58,20 @@ sub init{
 # @param1 ソート順(任意)
 #
 sub get_shared_logs {
-  my $self = shift;
-  my $desc = shift;
-  my @logs;
+    my $self = shift;
+    my $desc = shift;
+    my @logs;
 
-  foreach ($self->{git}->log("master")){
-    my $obj = eval {$_};
-    push @logs, $self->adjust_log($obj);
-  }
+    foreach( $self->{git}->log("master") ){
+        my $obj = eval {$_};
+        push @logs, $self->adjust_log($obj);
+    }
 
-  if($desc){
-    @logs = sort{$a->{attr}->{date} cmp $b->{attr}->{date}} @logs;
-  }
+    if( $desc ){
+        @logs = sort{$a->{attr}->{date} cmp $b->{attr}->{date}} @logs;
+    }
 
-  return \@logs;
+    return \@logs;
 }
 
 
@@ -81,14 +81,14 @@ sub get_shared_logs {
 # @param2 tmp 編集バッファフラグ
 #
 sub is_exist_user_branch {
-  my $self = shift;
-  my $uid = shift;
-  my $tmp = shift;
+    my $self = shift;
+    my $uid  = shift;
+    my $tmp  = shift;
 
-  my @branches = $self->{git}->branch;
-  my $branch = "$self->{branch_prefix}${uid}";
-  $branch .= "_tmp" if($tmp);
-  return MYUTIL::is_include(\@branches, $branch);
+    my @branches = $self->{git}->branch;
+    my $branch   = "$self->{branch_prefix}${uid}";
+    $branch     .= "_tmp" if($tmp);
+    return MYUTIL::is_include(\@branches, $branch);
 }
 
 ############################################################
@@ -96,22 +96,22 @@ sub is_exist_user_branch {
 # @param1 uid
 #
 sub is_updated_buffer {
-  my $self = shift;
-  my $uid = shift;
+    my $self = shift;
+    my $uid = shift;
 
-  my @branches = $self->{git}->branch;
-  my $branch = "$self->{branch_prefix}${uid}";
-  my $tmp  = "${branch}_tmp";
-  if(MYUTIL::is_include(\@branches, $tmp)){
-    if(MYUTIL::is_include(\@branches, $branch)){
-      my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..${branch}");
-      return @diff;
-    }else{
-      my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..master");
-      return @diff;
+    my @branches = $self->{git}->branch;
+    my $branch = "$self->{branch_prefix}${uid}";
+    my $tmp  = "${branch}_tmp";
+    if( MYUTIL::is_include(\@branches, $tmp) ){
+        if( MYUTIL::is_include(\@branches, $branch) ){
+            my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..${branch}");
+            return @diff;
+        }else{
+            my @diff = $self->{git}->diff({"name-only" => 1}, "${tmp}..master");
+            return @diff;
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 ############################################################
@@ -119,41 +119,38 @@ sub is_updated_buffer {
 # @param1 uid
 #
 sub get_user_logs {
-  my $self = shift;
-  my $uid = shift;
+    my $self = shift;
+    my $uid = shift;
 
-  my @userlogs;
-  my $branch = "$self->{branch_prefix}${uid}";
-  for($self->{git}->log("master.." . $branch)){
-    my $obj = eval {$_};
-    $obj->{user} = $uid;
-    push @userlogs, $self->adjust_log($obj);
-  }
+    my @userlogs;
+    my $branch = "$self->{branch_prefix}${uid}";
+    for( $self->{git}->log("master.." . $branch) ){
+        my $obj = eval {$_};
+        $obj->{user} = $uid;
+        push @userlogs, $self->adjust_log($obj);
+    }
 
-  return \@userlogs;
+    return \@userlogs;
 }
 
 ############################################################
 #編集リポジトリを所有するユーザー一覧を返す
-# @param uid
 #
 sub get_other_users {
-  my $self = shift;
-  my $uid = shift;
-  my @users;
+    my $self = shift;
+    my @users;
 
-  foreach ($self->{git}->branch) {
-     my $branch = $_;
-     $branch =~ s/^[\s\*]*(.*)\s*/\1/;
-     next if($branch =~ m/master/);
+    foreach( $self->{git}->branch ){
+        my $branch = $_;
+        $branch =~ s/^[\s\*]*(.*)\s*/\1/;
+        next if($branch =~ m/master/);
 
-     $branch =~ s/$self->{branch_prefix}(.*)/\1/;
-     next if($branch =~ m/[0-9]+_tmp/ );
-#     $branch =~ s/([0-9]+)_tmp/\1/;
-     next if($branch eq $uid);
-     push @users, $branch;
-  }
-  return @users;
+        $branch =~ s/$self->{branch_prefix}(.*)/\1/;
+        next if($branch =~ m/[0-9]+_tmp/ );
+#        $branch =~ s/([0-9]+)_tmp/\1/;
+        push @users, $branch;
+    }
+    return @users;
 }
 
 
