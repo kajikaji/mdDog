@@ -74,13 +74,13 @@ sub set_outline_buffer{
 #ログイン処理
 #
 sub login {
-  my $self = shift;
+    my $self = shift;
 
-  if($self->qParam('login')){
-    my $account   = $self->qParam('account');
-    my $password  = $self->qParam('password');
+    if( $self->qParam('login') ){
+        my $account  = $self->qParam('account');
+        my $password = $self->qParam('password');
 
-    my $sql = << "SQL";
+        my $sql = << "SQL";
 SELECT
   id
 FROM
@@ -90,22 +90,22 @@ WHERE
   AND password = md5('$password')
   AND is_used = true;
 SQL
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    if(@ary){
-      $self->{s}->param("login", $ary[0]);
+        my @ary = $self->{dbh}->selectrow_array($sql);
+        if( @ary ){
+            $self->{s}->param("login", $ary[0]);
+        }
     }
-  }
 
-  #ログアウト処理
-  if($self->qParam('logout')){
-    $self->{s}->clear("login");
-    $self->{s}->close;
-    $self->{s}->delete;
-  }
+    #ログアウト処理
+    if($self->qParam('logout')){
+        $self->{s}->clear("login");
+        $self->{s}->close;
+        $self->{s}->delete;
+    }
 
-  my $id = $self->{s}->param("login");
-  if($id){
-    my $sql = << "SQL";
+    my $id = $self->{s}->param("login");
+    if( $id ){
+        my $sql = << "SQL";
 SELECT
   account, mail, nic_name, may_admin, may_approve, may_delete
 FROM
@@ -114,18 +114,16 @@ WHERE
   id = ${id}
   AND is_used = true;
 SQL
-    my $ha = $self->{dbh}->selectrow_hashref($sql);
-    $self->{user} = {
-      account     => $ha->{account},
-      mail        => $ha->{mail},
-      nic_name    => $ha->{nic_name},
-      is_admin    => $ha->{may_admin},
-#      may_approve => $ha->{may_approve},
-#      may_delete  => $ha->{may_delete},
-    };
-    return 1;
-  }
-  return 0;
+        my $ha = $self->{dbh}->selectrow_hashref($sql);
+        $self->{user} = {
+          account     => $ha->{account},
+          mail        => $ha->{mail},
+          nic_name    => $ha->{nic_name},
+          is_admin    => $ha->{may_admin},
+        };
+        return 1;
+    }
+    return 0;
 }
 
 
@@ -213,7 +211,8 @@ sub check_auths {
     my $fid   = $self->qParam('fid');
     my $uid   = $self->{s}->param('login');
 
-    my $sql_auth = << "SQL";
+    if( $uid ){
+        my $sql_auth = << "SQL";
 SELECT
   da.*,
   di.created_by
@@ -223,12 +222,13 @@ WHERE
   da.info_id = ${fid}
   AND da.user_id = ${uid}
 SQL
-    my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
-    if($ary) {
-      $self->{user}->{is_approve} = $ary->{may_approve};
-      $self->{user}->{is_edit}    = $ary->{may_edit};
-      $self->{user}->{is_delete}  = $ary->{may_delete};
-      $self->{user}->{is_owned}   = $ary->{created_by} == $uid?1:0;
+        my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
+        if($ary) {
+            $self->{user}->{is_approve} = $ary->{may_approve};
+            $self->{user}->{is_edit}    = $ary->{may_edit};
+            $self->{user}->{is_delete}  = $ary->{may_delete};
+            $self->{user}->{is_owned}   = $ary->{created_by} == $uid?1:0;
+        }
     }
 
     foreach (@_) {
@@ -336,15 +336,15 @@ SQL
 ############################################################
 # ドキュメント情報を取得してテンプレートにセット
 sub set_document_info {
-  my $self = shift;
+    my $self = shift;
 
-  my $fid   = $self->qParam('fid');
-  my $uid   = $self->{s}->param('login');
-  my $user  = $self->qParam('user');
-  my $ver   = $self->qParam('revision');
-  return unless($fid);    # NULL CHECK
+    my $fid   = $self->qParam('fid');
+    my $uid   = $self->{s}->param('login');
+    my $user  = $self->qParam('user');
+    my $ver   = $self->qParam('revision');
+    return unless($fid);        # NULL CHECK
 
-  my $sql = << "SQL";
+    my $sql   = << "SQL";
 SELECT
   di.*,
   du.nic_name AS nic_name,
@@ -357,45 +357,30 @@ JOIN docx_users du
 WHERE
   di.id = $fid;
 SQL
-  my $ary = $self->{dbh}->selectrow_hashref($sql);
-  if($ary) {
 
-    $self->{t}->{file_name}       = $ary->{file_name};
-    $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
-    $self->{t}->{created_by}      = $ary->{nic_name};
-    $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
-    $self->{t}->{is_public}       = $ary->{is_public};
-    $self->{t}->{is_owned}        = $ary->{created_by} == $self->{s}->param('login')?1:0;
+    my $ary = $self->{dbh}->selectrow_hashref($sql);
 
-    my @logs = $self->{git}->get_shared_logs();
-    $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
-  }
+    if( $ary ){
+        $self->{t}->{file_name}       = $ary->{file_name};
+        $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
+        $self->{t}->{created_by}      = $ary->{nic_name};
+        $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
+        $self->{t}->{is_public}       = $ary->{is_public};
+        $self->{t}->{is_owned}        = $ary->{created_by} == $self->{s}->param('login')?1:0;
 
-  if( $uid ){
-=pod
-    # 権限の取得
-    my $sql_auth = << "SQL";
-SELECT * FROM docx_auths
-WHERE
-  info_id = ${fid}
-  AND user_id = ${uid}
-SQL
-    my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
-    if($ary) {
-      $self->{t}->{is_approve} = $ary->{may_approve};
-      $self->{t}->{is_edit}    = $ary->{may_edit};
-      $self->{t}->{is_delete}  = $ary->{may_delete};
+        my @logs = $self->{git}->get_shared_logs();
+        $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
     }
-=cut
-      $self->{t}->{is_approve} = $self->{user}->{is_approve};
-      $self->{t}->{is_edit}    = $self->{user}->{is_edit};
-      $self->{t}->{is_delete}  = $self->{user}->{is_delete};
-  }
 
-  $self->{t}->{fid}      = $fid;
-  $self->{t}->{user}     = $user;
-  $self->{t}->{revision} = $ver if($ver);
+    if( $uid ){
+        $self->{t}->{is_approve} = $self->{user}->{is_approve};
+        $self->{t}->{is_edit}    = $self->{user}->{is_edit};
+        $self->{t}->{is_delete}  = $self->{user}->{is_delete};
+    }
 
+    $self->{t}->{fid}      = $fid;
+    $self->{t}->{user}     = $user;
+    $self->{t}->{revision} = $ver if($ver);
 }
 
 
