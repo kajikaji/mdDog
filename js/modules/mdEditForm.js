@@ -21,7 +21,7 @@ define(function(){
             var tt      = newForm.find('textarea.Editdata');
 
             this.id     = Number(this.src.attr('id').slice(2));
-            this.mdId   = 'md' + this.id;
+            this.mdId   = 'md'   + this.id;
             this.formId = 'edit' + this.id;
 
             tt.attr('id', 'editdata' + this.id);
@@ -166,10 +166,10 @@ define(function(){
                 function(){ $(this).addClass('Focus'); },
                 function(){ $(this).removeClass('Focus'); }
             );
-            $newObj.click(function(){
-                var eForm = new mdEditForm($(this));
+            $newObj.click($.proxy(function(ev){
+                var eForm = new mdEditForm($(ev.target), this.fid);
                 eForm.init();
-            });
+            }, this));
             this.checkBlankDocument();
         },
         deleteSuccess: function(res){
