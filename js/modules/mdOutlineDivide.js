@@ -4,7 +4,9 @@
  */
 
 define(function(){
-    var mdOutlineDivide = function() {};
+    var mdOutlineDivide = function() {
+        this.activeIndex = 0;
+    };
     mdOutlineDivide.prototype = {
         init: function (){
             var divide = [];
@@ -12,15 +14,20 @@ define(function(){
                 divide.push($(obj).data('elm'));
                 $(obj).data('id', index);
                 $(obj).click($.proxy(function(ev){
-                    $('.MdBuffer .Document .Md').hide();
+                    var id = Number($(ev.target).data('id'));
+                    if(id === this.activeIndex){
+                        return;
+                    }
 
-                    var id = $(ev.target).data('id');
+                    $('.MdBuffer .Document .Md').hide();
+                    $('.MdBuffer .Document .Editform').remove();
 	                this.showPage(divide, id);
 	                this.activeNum(id);
+                    this.activeIndex = id;
                 }, this));
             }, this));
-            this.showPage(divide, 0);
-            this.activeNum(0);
+            this.showPage(divide, this.activeIndex);
+            this.activeNum(this.activeIndex);
         },
 
         showPage: function(dividesAr, id){
