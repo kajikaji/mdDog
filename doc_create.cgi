@@ -11,7 +11,7 @@ use mdDog;
 my $dog = mdDog->new();
 $dog->setup_config();
 unless($dog->login()){
-    $dog->{t}->{error} = "この操作はログインする必要があります<br>create.cgi";
+    $dog->{t}->{error} = "この操作はログインする必要があります<br>doc_create.cgi";
 }else{
     if($dog->qParam('create')){
 	$dog->create_file();

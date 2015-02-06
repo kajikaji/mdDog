@@ -10,7 +10,7 @@
     <span class="Title">ドキュメント一覧</span>
   [% IF login %]
     <div class="Menu">
-      <a href="create.cgi" class="Button"><i class="Glyph Plus"></i>新規追加</a>
+      <a href="doc_create.cgi" class="Button"><i class="Glyph Plus"></i>新規追加</a>
     </div>
   [% END %]
   </div>
@@ -23,9 +23,9 @@
 
           [% UNLESS info.deleted_at %]
           <div class="DocCtrl">
-            <a href="md_output.cgi?fid=[% info.id %]" class="Glyph File"></a>
+            <a href="doc_outline.cgi?fid=[% info.id %]" class="Glyph File"></a>
             [%IF info.is_owned || is_admin %]
-            <a href="docsetting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
+            <a href="doc_setting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
             [%END %]
             <form action="" method="post">
             [%IF info.is_owned || is_admin || is_delete %]
@@ -52,7 +52,7 @@
               [% IF info.deleted_at %]
                 [% info.file_name %]
               [% ELSIF info.is_used %]
-                <a href="docinfo.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+                <a href="doc_history.cgi?fid=[% info.id %]">[% info.file_name %]</a>
               [% ELSE %]
                 [% info.file_name %]
               [% END %]

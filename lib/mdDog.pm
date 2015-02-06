@@ -196,7 +196,7 @@ sub login_user_document {
       exit();
   }
   unless($self->login()){
-      print "Location: docinfo.cgi?fid=${fid}\n\n";
+      print "Location: doc_history.cgi?fid=${fid}\n\n";
       exit();
   }
 
@@ -252,7 +252,7 @@ SQL
       }
     }
     if ( $fid ){
-      print "Location: docinfo.cgi?fid=${fid}\n\n";
+      print "Location: doc_history.cgi?fid=${fid}\n\n";
     } else {
       print "Location: index.cgi\n\n";
     }
