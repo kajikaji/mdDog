@@ -361,6 +361,7 @@ SQL
     my $ary = $self->{dbh}->selectrow_hashref($sql);
 
     if( $ary ){
+        $self->{t}->{doc_name}        = $ary->{doc_name};
         $self->{t}->{file_name}       = $ary->{file_name};
         $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
         $self->{t}->{created_by}      = $ary->{nic_name};
@@ -536,22 +537,30 @@ sub create_file {
   my $self = shift;
   my $uid  = $self->{s}->param("login");
 
-  my $docname = nkf("-w", $self->qParam('docname'));
+  my $docname = nkf("-w", $self->qParam('doc_name'));
+  my $filename = nkf("-w", $self->qParam('file_name'));
   $docname =~ s/^\s*(.*)\s*$/\1/;
   $docname =~ s/\s/_/g;
   $docname =~ s/^(.*)\..*$/\1/;
   return unless($docname);
+  unless( $filename ){
+    $filename = $docname;
+  }else{
+    $filename =~ s/^\s*(.*)\s*$/\1/;
+    $filename =~ s/\s/_/g;
+    $filename =~ s/^(.*)\..*$/\1/;
+  }
 
-  my $filename = $docname . "\.md";
-  my $fid      = $self->_setup_new_file($filename, $uid);
+  my $fname = $filename . "\.md";
+  my $fid      = $self->_setup_new_file($docname, $fname, $uid);
   my $workdir  = "$self->{repodir}/${fid}";
-  my $filepath = "${workdir}/${filename}";
+  my $filepath = "${workdir}/${fname}";
   open my $hF, ">", $filepath || die "Create Error!. $filepath";
   close($hF);
 
   $self->{git}     = GitCtrl->new($workdir);
   $self->{outline} = OutlineCtrl->new($workdir);
-  $self->{git}->init($fid, [$filename, $self->{outline}->{filename}], $self->_get_author($uid));
+  $self->{git}->init($fid, [$fname, $self->{outline}->{filename}], $self->_get_author($uid));
 
   $self->dbCommit();
 }
@@ -563,14 +572,15 @@ sub create_file {
 #
 sub _setup_new_file{
   my $self     = shift;
+  my $docname  = shift;
   my $filename = shift;
   my $uid      = shift;
 
  my $sql_insert = << "SQL";
 INSERT INTO
-  docx_infos(file_name, created_at, created_by)
+  docx_infos(doc_name, file_name, created_at, created_by)
 VALUES
-  ('$filename',now(),$uid);
+  ('$docname', '$filename',now(),$uid);
 SQL
   $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error _setup_new_file infos", 1);
 
@@ -1197,6 +1207,24 @@ sub split_for_md {
   }
 
   return ($rowdata, @partsAry);
+}
+
+sub change_doc_name {
+    my $self     = shift;
+    my $fid      = $self->qParam('fid');
+    my $doc_name = $self->qParam('doc_name');
+    return 0 unless($fid && $doc_name);
+
+    my $sql_update = << "SQL";
+UPDATE docx_infos
+SET doc_name = '${doc_name}'
+WHERE id = ${fid}
+SQL
+    $self->{dbh}->do($sql_update)
+      || errorMessage("Error Update:change_doc_name");
+
+    $self->dbCommit();
+    return 1;
 }
 
 1;

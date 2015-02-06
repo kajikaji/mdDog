@@ -14,6 +14,11 @@ $dog->setup_config();
 $dog->login_user_document();
 $dog->check_auths("is_owned", "is_admin");
 
+if( $dog->qParam("change_name") ){
+    #ドキュメントの名前変更
+    $dog->change_doc_name();
+}
+
 $dog->get_document_users();
 $dog->set_document_info();
 
