@@ -931,6 +931,7 @@ section.Outline{
                     padding-left: 100px;
                 }
                 .PageNum{
+display: inline-block;
                     float: right;
                 }
                 @include clearfix();

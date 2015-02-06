@@ -709,6 +709,7 @@ section.Outline {
         font-size: 70%;
         padding-left: 100px; }
       section.Outline .Contents > ul.List li .PageNum {
+        display: inline-block;
         float: right; }
       section.Outline .Contents > ul.List li:after, section.Outline .Contents > ul.List li:before {
         display: table;

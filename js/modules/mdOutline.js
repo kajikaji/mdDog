@@ -67,7 +67,7 @@ define(function(){
                         var disp = $(elm).css('display');
                         if( disp === 'block' || disp === 'table' || disp === 'list-item' ) {
                             if( index === 0 ){
-                                $('.' + className + '.Page.P' + this.page).append($('<' + obj.tagName + '>'));
+                                $('.' + className + '.Page.P' + this.page).append($('<' + obj.tagName + '>').addClass(obj.className));
                             }
                             cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, depth + 1);
                         }else{
