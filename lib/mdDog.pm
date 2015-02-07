@@ -315,6 +315,7 @@ SQL
       my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
       my $info = {
         id              => $_->{id},
+        doc_name        => $_->{doc_name},
         file_name       => $_->{file_name},
         is_used         => $_->{is_used},
         created_at      => MYUTIL::format_date2($_->{created_at}),
@@ -540,16 +541,16 @@ sub create_file {
   my $docname = nkf("-w", $self->qParam('doc_name'));
   my $filename = nkf("-w", $self->qParam('file_name'));
   $docname =~ s/^\s*(.*)\s*$/\1/;
-  $docname =~ s/\s/_/g;
   $docname =~ s/^(.*)\..*$/\1/;
   return unless($docname);
   unless( $filename ){
     $filename = $docname;
   }else{
     $filename =~ s/^\s*(.*)\s*$/\1/;
-    $filename =~ s/\s/_/g;
     $filename =~ s/^(.*)\..*$/\1/;
   }
+  $filename =~ s/　/ /g;
+  $filename =~ s/\s/_/g;
 
   my $fname = $filename . "\.md";
   my $fid      = $self->_setup_new_file($docname, $fname, $uid);

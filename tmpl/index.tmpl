@@ -50,11 +50,11 @@
                 [%IF info.is_owned %]<i class="Mark Round Black">O</i>[%END %]
               [%END %]
               [% IF info.deleted_at %]
-                [% info.file_name %]
+                [% info.doc_name %]
               [% ELSIF info.is_used %]
-                <a href="doc_history.cgi?fid=[% info.id %]">[% info.file_name %]</a>
+                <a href="doc_history.cgi?fid=[% info.id %]">[% info.doc_name %]</a>
               [% ELSE %]
-                [% info.file_name %]
+                [% info.doc_name %]
               [% END %]
 	    </div>
           </div> <!-- doc-subject -->
