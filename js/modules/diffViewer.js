@@ -26,7 +26,7 @@ define(function(){
                     'revision': revision,
                     'dist'    : dist,
                 }
-            }).done(this.show);
+            }).done($.proxy(this.show, this));
         },
         show: function(json){
             $('#diffViewer .Document .Name').text(json.name);
@@ -40,8 +40,16 @@ define(function(){
             });
 
             $('#diffViewer').fadeToggle();
-            $(window).one('keydown', function(){
-                $('#diffViewer').fadeToggle();
+            $(window).one('keydown', $.proxy(function(){
+                $('#diffViewer').fadeToggle(300, this.clear());
+            }, this));
+        },
+        clear: function(){
+            $('#diffViewer .Document .Name').text('');
+            $('#diffViewer .Document .Info .Revision').text('');
+            $('#diffViewer .Document .Info .Dist').text('');
+            $('#diffViewer .Document .Body').children().each(function(){
+                $(this).remove();
             });
         }
     };

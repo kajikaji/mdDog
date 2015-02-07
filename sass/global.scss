@@ -1192,7 +1192,7 @@ section.BufferLog{
 }
 
 .RevisionViewerDialog, .DiffViewerDialog{
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   padding: 50px 40px;
@@ -1231,6 +1231,8 @@ section.BufferLog{
     }
 
     .Body{
+      overflow: scroll;
+      height: 450px;
       @include markdown-set();
     }
   }
@@ -1266,7 +1268,7 @@ section.BufferLog{
 }
 
 .BufferCommitForm{
-  position: absolute;
+  position: fixed;
   top: 0;
   padding: 50px 40px;
   margin: 0;

@@ -1074,7 +1074,7 @@ section.BufferLog .GitLog {
   margin-left: 180px; }
 
 .RevisionViewerDialog, .DiffViewerDialog {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   padding: 50px 40px;
@@ -1110,6 +1110,8 @@ section.BufferLog .GitLog {
       font-weight: bold;
       color: #f33; }
     .RevisionViewerDialog .Document .Body, .DiffViewerDialog .Document .Body {
+      overflow: scroll;
+      height: 450px;
       padding: 10px;
       border: 2px solid #888;
       background-color: #fff;
@@ -1200,7 +1202,7 @@ section.BufferLog .GitLog {
       clear: both; }
 
 .BufferCommitForm {
-  position: absolute;
+  position: fixed;
   top: 0;
   padding: 50px 40px;
   margin: 0;
