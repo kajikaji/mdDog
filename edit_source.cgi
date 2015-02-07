@@ -25,6 +25,11 @@ if ($dog->qParam('commit')) {
     $dog->fix_md_buffer();
 }
 
+#バッファリセット
+if( $dog->qParam('resetBuffer') ){
+    $dog->reset_buffer();
+}
+
 $dog->is_exist_buffer();
 
 $dog->set_md_buffer();

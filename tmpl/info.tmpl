@@ -13,17 +13,13 @@
     [%END %]
     </ul>
   [%END %]
-  [%IF message.buffered %]
-    <ul class="Buffered">
-    [%FOREACH i IN  message.buffered %]
+    <ul class="Buffered [%UNLESS message.buffered %]Disable[%END %]">
       <li>
-        [% i %]
+        コミットされていないバッファがあります
         <form action="?fid=[% fid %]" method="POST" class="ResetBuffer">
           <input type="hidden" name="fid" value="[% fid %]">
           <input type="submit" value="バッファリセット" name="resetBuffer">
         </form>
       </li>
-    [%END %]
     </ul>
-  [%END %]
 </section>

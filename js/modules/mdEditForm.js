@@ -183,10 +183,8 @@ define(function(){
             this.checkBlankDocument();
         },
         updateMessage: function(){
-            if( $('section.Message').is(":hidden") ){
-                var info = $('<div>').addClass('Info').text("コミットされていないバッファがあります");
-                $('section.Message').append(info);
-                $('section.Message').show();
+            if( $('section.Message ul.Buffered').hasClass('Disable') ){
+                $('section.Message ul.Buffered').removeClass('Disable');
             }
         },
         resetTreeId: function(obj, inc, prefix){

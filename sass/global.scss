@@ -413,12 +413,15 @@ section.Message{
   >ul{
     list-style: none;
     margin-left: 30px;
+    margin-bottom: 5px;
     background-color: #fff;
     font-weight: bold;
     @include round-corner(5px);
 
     &.Info{
-        border: 1px solid #4169e1;
+        color: #333;
+        font-weight: normal;
+        border: 1px solid #ccc;
     }
     &.Error{
         color: #f00;
@@ -426,6 +429,9 @@ section.Message{
     }
     &.Buffered{
         border: 1px solid #4169e1;
+        &.Disable{
+            display: none;
+        }
     }
     li{
       padding: 2px 5px;

@@ -21,7 +21,7 @@ define(function(){
                         $(this).addClass("Uneditable");
                     }
                 });
-                if($('.BufferEdit div.Document').children().length == 0){
+                if($('.BufferEdit div.Document').children().length === 0){
                     var blank = $('<div>').addClass("Blank").attr("id", "md-1");
                     $('.BufferEdit div.Document').append(blank);
                     blank.hover(

@@ -395,7 +395,7 @@ sub is_exist_buffer {
 
     if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
       && $self->{git}->is_updated_buffer($uid)){
-        push @{$self->{t}->{message}->{buffered}}, "コミットされていないバッファがあります";
+        push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
 }
 
