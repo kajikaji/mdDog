@@ -495,9 +495,11 @@ sub reset_buffer {
     my $uid        = shift;
     my $branch_tmp = "$self->{branch_prefix}${uid}_tmp";
 
-    $self->lock_dir();
-    $self->{git}->branch("-D", $branch_tmp);
-    $self->unlock_dir();
+    if( $self->is_exist_user_branch($uid, 'tmp') ){
+        $self->lock_dir();
+        $self->{git}->branch("-D", $branch_tmp);
+        $self->unlock_dir();
+    }
     return 1;
 }
 
