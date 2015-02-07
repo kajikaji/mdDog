@@ -12,6 +12,7 @@
 </section><!-- docinfo -->
 
 <section class="DocSetting">
+  <h2>ドキュメントの設定</h2>
   <h3>仕様書名</h3>
   <form action="?fid=[% fid %]" method="post">
     <input type="text"   name="doc_name" value="[% doc_name %]">
@@ -19,50 +20,55 @@
     <input type="submit" name="change_name" value="変更">
   </form>
   <h3>全体公開フラグ</h3>
-  <div><label id="PublicMark">全体に公開する場合はチェックをつける<input type="checkbox" [%IF is_public %]checked[%END %]></label></div>
+  <div class="PublicMark"><label id="PublicMark">全体に公開する場合はチェックをつける<input type="checkbox" [%IF is_public %]checked[%END %]></label></div>
 
   <h3>ユーザー権限</h3>
-  <div class="AllowUsersList">
-    <table class="UsersTable">
-      <thead>
-	<tr>
-	  <th></th>
-	  <th>名前</th>
-	  <th>承認</th>
-          <th>編集</th>
-	  <th>削除</th>
-	</tr>
-      </thead>
-      <tbody>
-	[%FOREACH u IN users %]
-	<tr class="User" id="User[% u.user_id %]">
-	  <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
-	  <td class="Name">[% u.nic_name %]</td>
-	  <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
-          <td class="Edit"><input type="checkbox" [%IF u.may_edit %]checked[%END %]></td>
-	  <td class="Delete"><input type="checkbox" [%IF u.may_delete %]checked[%END %]></td>
-	</tr>
+  <div class="UsersCtrl">
+    <div class="AllowUsersList">
+      <div class="subject">許可されたユーザー一覧</div>
+      <table class="UsersTable">
+	<thead>
+	  <tr>
+	    <th class="CheckBox"></th>
+	    <th class="Text">名前</th>
+	    <th class="CheckBox">承認</th>
+            <th class="CheckBox">編集</th>
+	    <th class="CheckBox">削除</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  [%FOREACH u IN users %]
+	  <tr class="User" id="User[% u.user_id %]">
+	    <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
+	    <td class="Name">[% u.nic_name %]</td>
+	    <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
+            <td class="Edit"><input type="checkbox" [%IF u.may_edit %]checked[%END %]></td>
+	    <td class="Delete"><input type="checkbox" [%IF u.may_delete %]checked[%END %]></td>
+	  </tr>
+	  [%END %]
+	  <tr class="UserTmpl" style="display: none;">
+	    <td class="Select"><input type="checkbox"></td>
+	    <td class="Name"></td>
+	    <td class="Approve"><input type="checkbox"></td>
+            <td class="Edit"><input type="checkbox"></td>
+	    <td class="Delete"><input type="checkbox"></td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <ul class="CtrlButtons">
+      <li><button class="RemoveUser">削除 &gt;</button></li>
+      <li><button class="AddUser">&lt; 追加</button></li>
+    </ul>
+    <div class="UnallowUsersList">
+      <div class="subject">許可されてないユーザー一覧</div>
+      <select multiple="multiple">
+	[%FOREACH u IN unallow_users %]
+	<option value="[% u.id %]">[%u. nic_name %]</option>
 	[%END %]
-	<tr class="UserTmpl" style="display: none;">
-	  <td class="Select"><input type="checkbox"></td>
-	  <td class="Name"></td>
-	  <td class="Approve"><input type="checkbox"></td>
-          <td class="Edit"><input type="checkbox"></td>
-	  <td class="Delete"><input type="checkbox"></td>
-	</tr>
-      </tbody>
-    </table>
-    <button class="RemoveUser">削除</button>
-  </div>
-
-  <div class="UnallowUsersList">
-    <button class="AddUser">追加</button>
-    <select multiple="multiple">
-      [%FOREACH u IN unallow_users %]
-      <option value="[% u.id %]">[%u. nic_name %]</option>
-      [%END %]
-    </select>
-  </div>
+      </select>
+    </div>
+  </div> <!-- UsersCtrl -->
 
   <h3>ヘッダとフッダ</h3>
 

@@ -170,6 +170,17 @@ $corner_b: 5px;
     }
 }
 
+@mixin button_face {
+  @include round-corner(4px);
+  border: 1px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  font-size: 85%;
+  font-weight: bold;
+  color: #000;
+  background-color: #fff;
+}
+
 /*
  * MARK
  */
@@ -324,17 +335,14 @@ form{
   }
 }
 
+Button{
+  @include button_face();
+}
+
 a.Btn{
-  @include round-corner(4px);
-  border: 1px solid #555;
-  padding: 4px 6px;
-  text-align: center;
+  @include button_face();
   display: table;
   float: left;
-  font-size: 85%;
-  font-weight: bold;
-  color: #000;
-  background-color: #fff;
   
   &:hover{
     background-color: #f5deb3;
@@ -838,12 +846,82 @@ section.Docinfo{
 }
 
 section.DocSetting{
+  margin-bottom: 50px;
 
-  .UnallowUsersList{
-    select{
-      padding: 5px;
-      font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
-      font-size: 10pt;
+  h2{
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+  }
+
+  h3{
+    margin-top: 30px;
+    font-size: 16px;
+    padding-left: 10px;
+    border-left: 15px solid #4169e1;
+  }
+
+  .PublicMark{
+    input[type=checkbox] {
+      margin-left: 10px;
+    }
+  }
+
+  .UsersCtrl{
+    @include clearfix();
+    .AllowUsersList{
+      float: left;
+      width: 450px;
+
+	.subject{
+	    font-size: 12px;
+	    margin-bottom: 5px;
+	}
+
+	table.UsersTable{
+	    margin-bottom: 5px;
+	    th{
+		background-color: #808080;
+		color: #fff;
+		font-size: 80%;
+		font-weight: normal;
+		&.Text{
+		    padding-left: 10px;
+		}
+		&.CheckBox{
+		    width: 45px;
+		    text-align: center;
+		}
+	    }
+	    td{
+		&.Select, &.Approve, &.Edit, &.Delete{
+		    text-align: center;
+		}
+		&.Name {
+		    padding-left: 10px;
+		}
+	    }
+	}
+    }
+    .CtrlButtons{
+      float: left;
+      margin: 20px 20px 0;
+      list-style: none;
+      li{
+        margin-bottom: 5px;
+      }
+    }
+    .UnallowUsersList{
+	float: left;
+	.subject{
+	    font-size: 12px;
+	    margin-bottom: 5px;
+	}
+	select{
+	    padding: 5px;
+	    font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+	    font-size: 10pt;
+	}
     }
   }
 }

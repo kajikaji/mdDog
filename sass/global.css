@@ -143,6 +143,18 @@ form input[type=text], form input[type=password], form textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px; }
 
+Button {
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border: 1px solid #555;
+  padding: 4px 6px;
+  text-align: center;
+  font-size: 85%;
+  font-weight: bold;
+  color: #000;
+  background-color: #fff; }
+
 a.Btn {
   border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -150,12 +162,12 @@ a.Btn {
   border: 1px solid #555;
   padding: 4px 6px;
   text-align: center;
-  display: table;
-  float: left;
   font-size: 85%;
   font-weight: bold;
   color: #000;
-  background-color: #fff; }
+  background-color: #fff;
+  display: table;
+  float: left; }
   a.Btn:hover {
     background-color: #f5deb3;
     color: #222; }
@@ -589,10 +601,62 @@ section.Docinfo .OutputMenu {
     background-color: #f5deb3;
     color: #222; }
 
-section.DocSetting .UnallowUsersList select {
-  padding: 5px;
-  font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
-  font-size: 10pt; }
+section.DocSetting {
+  margin-bottom: 50px; }
+  section.DocSetting h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-bottom: 5px; }
+  section.DocSetting h3 {
+    margin-top: 30px;
+    font-size: 16px;
+    padding-left: 10px;
+    border-left: 15px solid #4169e1; }
+  section.DocSetting .PublicMark input[type=checkbox] {
+    margin-left: 10px; }
+  section.DocSetting .UsersCtrl:after, section.DocSetting .UsersCtrl:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+  section.DocSetting .UsersCtrl:after {
+    clear: both; }
+  section.DocSetting .UsersCtrl .AllowUsersList {
+    float: left;
+    width: 450px; }
+    section.DocSetting .UsersCtrl .AllowUsersList .subject {
+      font-size: 12px;
+      margin-bottom: 5px; }
+    section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable {
+      margin-bottom: 5px; }
+      section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable th {
+        background-color: #808080;
+        color: #fff;
+        font-size: 80%;
+        font-weight: normal; }
+        section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable th.Text {
+          padding-left: 10px; }
+        section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable th.CheckBox {
+          width: 45px;
+          text-align: center; }
+      section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Select, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Approve, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Edit, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Delete {
+        text-align: center; }
+      section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Name {
+        padding-left: 10px; }
+  section.DocSetting .UsersCtrl .CtrlButtons {
+    float: left;
+    margin: 20px 20px 0;
+    list-style: none; }
+    section.DocSetting .UsersCtrl .CtrlButtons li {
+      margin-bottom: 5px; }
+  section.DocSetting .UsersCtrl .UnallowUsersList {
+    float: left; }
+    section.DocSetting .UsersCtrl .UnallowUsersList .subject {
+      font-size: 12px;
+      margin-bottom: 5px; }
+    section.DocSetting .UsersCtrl .UnallowUsersList select {
+      padding: 5px;
+      font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+      font-size: 10pt; }
 
 section.Outline.PrintFormat {
   padding: 0; }
