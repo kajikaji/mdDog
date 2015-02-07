@@ -263,6 +263,9 @@ i.Glyph{
 .Glyph.File{
     background-image: url("../img/036_file.png");
 }
+.Glyph.CircleRemove{
+    background-image: url("../img/192_circle_remove.png");
+}
 a.Glyph {
   display: inline-block;
   float: left;
@@ -422,6 +425,14 @@ section.Message{
         color: #333;
         font-weight: normal;
         border: 1px solid #ccc;
+
+        .Ctrl{
+            float: right;
+            a:hover{
+                cursor: pointer;
+            }
+        }
+        @include clearfix();
     }
     &.Error{
         color: #f00;

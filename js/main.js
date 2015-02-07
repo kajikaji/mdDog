@@ -12,6 +12,7 @@ requirejs.config({
         mdOutlineDivide: 'mdOutlineDivide',
         mdOutlnieEditor: 'mdOutlineEditor',
         mdCommitBuffer:  'mdCommitBuffer',
+        bufferMessage:   'bufferMessage',
         logTableChanger: 'logTableChanger',
         diffViewer:      'diffViewer',
         revisionViewer:  'revisionViewer',
@@ -23,6 +24,9 @@ requirejs.config({
         'mddog': {
             deps: ['jquery']
         },
+	'bufferMessage': {
+            deps: ['jquery']
+	},
         'mdOutline': {
             deps: ['jquery']
         },
@@ -107,6 +111,11 @@ requirejs(['jquery'], function($){
     //ドキュメント設定ページ　ユーザー管理
     if($('.DocSetting').length){
         require(['userManager'], function(UserManager){});
+    }
+
+    //バッファメッセージの管理
+    if( $('section.Message').length ){
+        require(['bufferMessage'], function(BufferMessage){});
     }
 });
 

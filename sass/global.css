@@ -84,6 +84,9 @@ i.Glyph {
 .Glyph.File {
   background-image: url("../img/036_file.png"); }
 
+.Glyph.CircleRemove {
+  background-image: url("../img/192_circle_remove.png"); }
+
 a.Glyph {
   display: inline-block;
   float: left; }
@@ -227,6 +230,16 @@ section.Message {
       color: #333;
       font-weight: normal;
       border: 1px solid #ccc; }
+      section.Message > ul.Info .Ctrl {
+        float: right; }
+        section.Message > ul.Info .Ctrl a:hover {
+          cursor: pointer; }
+      section.Message > ul.Info:after, section.Message > ul.Info:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Message > ul.Info:after {
+        clear: both; }
     section.Message > ul.Error {
       color: #f00;
       border: 1px solid #f00; }

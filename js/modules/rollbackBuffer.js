@@ -21,7 +21,7 @@ define(function(){
                     'fid'     : fid,
                     'revision': revision,
                 }
-            }).done(function(res){
+            }).done($.proxy(function(res){
                 var logId   = '#Log' + res.revision;
                 var nextLog = $(logId).next('tr.Log');
                 var nextId = nextLog.attr('id').substr(3);
@@ -34,8 +34,16 @@ define(function(){
                 });
 
                 $(logId).slideUp();
-            });
-        }
+		this.updateMessage();
+            }, this));
+        },
+        updateMessage: function(){
+            if( $('section.Message ul.Buffered').hasClass('Disable') ){
+                $('section.Message ul.Buffered').slideDown(300, function(){
+                    $('section.Message ul.Buffered').removeClass('Disable');
+                });
+            }
+        },
     };
 
     return rollbackBuffer;

@@ -9,7 +9,9 @@
   [%IF message.info %]
     <ul class="Info">
     [%FOREACH i IN  message.info %]
-      <li>[% i %]</li>
+      <li>[% i %]
+        <div class="Ctrl"><a class="Glyph CircleRemove CloseBtn"></a></div>
+      </li>
     [%END %]
     </ul>
   [%END %]
