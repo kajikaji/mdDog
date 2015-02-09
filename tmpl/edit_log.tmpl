@@ -17,7 +17,12 @@
   [%INCLUDE buffer_menu.tmpl %]
 
   <div class="GitLog">
-    [%INCLUDE table_gitlog.tmpl %]
+    [%IF !loglist || loglist.size == 0 %]
+      <div class="Description">編集履歴はありません</div>
+    [%ELSE %]
+      [%UNLESS is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
+      [%INCLUDE table_gitlog.tmpl %]
+    [%END %]<!-- loglist.size -->
   </div>
 </section>
 

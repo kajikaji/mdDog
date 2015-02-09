@@ -1266,6 +1266,17 @@ section.BufferLog{
 
     .GitLog{
         margin-left: 180px;
+
+	.Description{
+	    font-size: 80%;
+	    padding: 5px;
+	    border: 1px solid #000;
+	    background-color: #fff;
+	    &.Alert{
+		color: #f00;
+	    }
+	}
+
     } 
 }
 

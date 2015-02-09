@@ -1136,6 +1136,13 @@ section.BufferLog ul.BufferEditMenu {
       border-left: 10px solid #000; }
 section.BufferLog .GitLog {
   margin-left: 180px; }
+  section.BufferLog .GitLog .Description {
+    font-size: 80%;
+    padding: 5px;
+    border: 1px solid #000;
+    background-color: #fff; }
+    section.BufferLog .GitLog .Description.Alert {
+      color: #f00; }
 
 .RevisionViewerDialog, .DiffViewerDialog {
   position: fixed;
