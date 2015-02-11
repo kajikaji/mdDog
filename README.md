@@ -1,16 +1,32 @@
-mdDog
-=======
+# mdDog
+
+----
+
+仕様書作成に特化したドキュメント管理ツールです。<br>
+長期的な仕様書のメンテを手助けすることを目的としています。<br>
+ドキュメントのフォーマットはMarkdownを用いて、仕様書に適した出力を目指しています。<br>
+ドキュメントのファイル管理はgitを利用しており、更新履歴は自動生成して出力されます。<br>
+また目次も自動生成して出力されます。<br>
+
+
+## DEPENDENCIES
+
+- git
+- PostgreSQL
+- NKF
+- CGI.pm
+- CGI::Session.pm
+- DBI.pm
+- Git::Wrapper.pm
+- Image::Magick.pm
+- JSON.pm
+- Template.pm
+- Text::Markdown::Discount.pm
+- ....
+
+
+## NEWS
+
+> 2015/2/11 GPLv3ライセンスを適用しました
 
 > 2015/1/7 プロジェクト名を"docxlog"から"mdDog"に変更しました。
-
-~gitを利用したdocxファイルの履歴管理ツールです。~
-gitを利用したMarkdownドキュメントの管理ツールです。
-仕様書の作成を目的としており、更新履歴と目次を自動生成して印刷しやすいフォーマットで出力します。
-
-以下のプログラムとモジュールに依存しています。
-- git
-- docx2txt
-- PostgreSQL
-- Git::Wrapper
-- Text::Markdown::Discount
--その他たくさんのperlのモジュール
