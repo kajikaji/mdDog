@@ -1,5 +1,6 @@
 create table docx_infos(
 id serial primary key,
+doc_name text not null,
 file_name text not null,
 is_used boolean default true,
 is_public boolean default false,
