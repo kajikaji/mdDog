@@ -22,6 +22,8 @@
 - JSON.pm
 - Template.pm
 - Text::Markdown::Discount.pm
+- Date::Manip.pm
+- Data::Dumper.pm
 - ....
 
 
