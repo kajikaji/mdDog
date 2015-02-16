@@ -439,7 +439,7 @@ sub git_log {
         #自分のリポジトリ
         my $mylog = {
                    uid     => $uid,
-                   name    => $self->{user}->{account},
+                   name    => $self->{user}->{nic_name},
                    loglist => [],
                   };
         if( $gitctrl->is_exist_user_branch($uid) ){
@@ -456,7 +456,7 @@ sub git_log {
                 next if($_ eq $uid);
                 my $userlog = {
                          uid       => $_,
-                         name      => $self->_get_account($_),
+                         name      => $self->_get_nic_name($_),
                          loglist   => $gitctrl->get_user_logs($_),
                 };
 
@@ -729,6 +729,17 @@ sub _get_account {
   my @ary  = $self->{dbh}->selectrow_array($sql);
   return $ary[0];
 }
+############################################################
+# @param1 uid
+#
+sub _get_nic_name {
+  my $self = shift;
+  my $uid  = shift;
+
+  my $sql  = "select nic_name from docx_users where id = $uid;";
+  my @ary  = $self->{dbh}->selectrow_array($sql);
+  return $ary[0];
+}
 
 ############################################################
 # @param1 uid
@@ -737,7 +748,7 @@ sub _get_author {
   my $self = shift;
   my $uid  = shift;
 
-  my $sql  = "select account || ' <' || mail || '>' from docx_users where id = $uid;";
+  my $sql  = "select nic_name || ' <' || mail || '>' from docx_users where id = $uid;";
   my @ary  = $self->{dbh}->selectrow_array($sql);
   return $ary[0];
 }

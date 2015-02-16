@@ -567,6 +567,7 @@ sub adjust_log {
   $obj->{sha1_name} = $obj->{id};
   $obj->{sha1_name} =~ s/^(.{7}).*/\1/;
 
+  $obj->{raw}     = $obj->{message};
   $obj->{message} =~ s/</&lt;/g;
   $obj->{message} =~ s/>/&gt;/g;
   $obj->{message} =~ s/\n/<br>/g;
