@@ -33,7 +33,8 @@ Dockerhubにデモ環境を用意しました。
 dockerを既に用意されている方は、
 dockerhubにログインして以下のコマンドで最新版の環境を試せます。
 
-````docker pull gm2bv/mddog_test
+````
+docker pull gm2bv/mddog_test
 docker run -p 80:80 gm2bv/mddog_test
 ````
 - ユーザー；admin
