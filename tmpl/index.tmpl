@@ -23,17 +23,19 @@
 
           [% UNLESS info.deleted_at %]
           <div class="DocCtrl">
-            <a href="doc_outline.cgi?fid=[% info.id %]" class="Glyph File"></a>
-            [%IF info.is_owned || is_admin %]
-            <a href="doc_setting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
+            [%IF info.is_used %]
+              <a href="doc_outline.cgi?fid=[% info.id %]" class="Glyph File"></a>
+              [%IF info.is_owned || is_admin %]
+                <a href="doc_setting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
+              [%END %]
             [%END %]
             <form action="" method="post">
             [%IF info.is_owned || is_admin || is_delete %]
               [%IF info.is_used %]
-              <input type="submit" name="unuse" value=" " class="Glyph Ban">
+                <input type="submit" name="unuse" value=" " class="Glyph Ban">
               [% ELSE %]
-              <input type="submit" name="use" value=" " class="Glyph Ok">
-              <input type="submit" name="delete" value=" " class="Glyph Bin">
+                <input type="submit" name="use" value=" " class="Glyph Ok">
+                <input type="submit" name="delete" value=" " class="Glyph Bin">
               [% END %]
               <input type="hidden" name="fid" value="[% info.id %]">
             [%END %]
