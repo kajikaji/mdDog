@@ -17,6 +17,7 @@ requirejs.config({
         diffViewer:      'diffViewer',
         revisionViewer:  'revisionViewer',
 	rollbackBuffer:  'rollbackBuffer',
+	editLogComment:  'editLogComment',
 	addAccountForm:  'addAccountForm',
         userManager:     'userManager'
     },
@@ -46,6 +47,9 @@ requirejs.config({
             deps: ['jquery']
         },
 	'rollbackBuffer': {
+	    deps: ['jquery']
+	},
+	'editLogComment': {
 	    deps: ['jquery']
 	},
         'logTableChanger': {
@@ -91,7 +95,8 @@ requirejs(['jquery'], function($){
     }
 
     //履歴テーブルにビューアーの埋め込み
-    if(!$('body > section.Outline').length && $('table.Gitlog').length){
+    if( !$('body > section.Outline').length
+         && $('table.Gitlog').length ){
         require(['diffViewer'], function(DiffViewer){
             new DiffViewer().init();
         });
@@ -100,6 +105,9 @@ requirejs(['jquery'], function($){
         });
         require(['rollbackBuffer'], function(RollbackBuffer){
 	    new RollbackBuffer().init();
+	});
+        require(['editLogComment'], function(EditLogComment){
+	    new EditLogComment().init();
 	});
     }
 

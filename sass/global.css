@@ -899,9 +899,14 @@ table.Gitlog {
     table.Gitlog tbody tr td.Ctrl > ul {
       list-style: none;
       margin-left: 0; }
+  table.Gitlog .Message textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px; }
   table.Gitlog .RevisionCtrl a.RevisionViewer, table.Gitlog .RevisionCtrl a.RevisionViewer:hover,
   table.Gitlog .RevisionCtrl a.DiffViewer, table.Gitlog .RevisionCtrl a.DiffViewer:hover,
-  table.Gitlog .RevisionCtrl a.Rollback, table.Gitlog .RevisionCtrl a.Rollback:hover {
+  table.Gitlog .RevisionCtrl a.Rollback, table.Gitlog .RevisionCtrl a.Rollback:hover,
+  table.Gitlog .RevisionCtrl a.EditLogComment, table.Gitlog .RevisionCtrl a.EditLogComment:hover {
     cursor: pointer; }
   table.Gitlog .Ctrl .CtrlTemp {
     display: none; }
@@ -1318,4 +1323,56 @@ section.BufferLog .GitLog {
       content: "";
       line-height: 0; }
     .BufferCommitForm .MdBufferFix .Ctrl:after {
+      clear: both; }
+
+.EditDialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 50px 40px;
+  margin: 0;
+  background-color: rgba(188, 188, 188, 0.4);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box; }
+  .EditDialog .EditLogCommentForm {
+    color: #000;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #000;
+    width: 50%;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px; }
+    .EditDialog .EditLogCommentForm h3 {
+      margin-top: 0; }
+    .EditDialog .EditLogCommentForm .Subtitle {
+      font-size: 75%; }
+    .EditDialog .EditLogCommentForm textarea.Message {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 5px; }
+    .EditDialog .EditLogCommentForm .Ctrl input[type=submit], .EditDialog .EditLogCommentForm .Ctrl a.Btn, .EditDialog .EditLogCommentForm .Ctrl a.Btn:link {
+      float: left;
+      margin-right: 5px;
+      cursor: pointer;
+      padding: 4px 6px;
+      text-align: center;
+      line-height: 1.0em;
+      font-size: 85%;
+      font-weight: bold;
+      background-color: #fff;
+      border: 1px solid #aaa;
+      color: #555;
+      border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px; }
+    .EditDialog .EditLogCommentForm .Ctrl input[type=submit]:hover, .EditDialog .EditLogCommentForm .Ctrl a.Btn:hover {
+      background-color: #f5deb3;
+      color: #222; }
+    .EditDialog .EditLogCommentForm .Ctrl:after, .EditDialog .EditLogCommentForm .Ctrl:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    .EditDialog .EditLogCommentForm .Ctrl:after {
       clear: both; }

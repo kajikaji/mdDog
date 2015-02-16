@@ -638,4 +638,16 @@ sub rollback_buffer {
     return $json->encode({action => 'reset', revision => $revision});
 }
 
+############################################################
+#[API]
+#
+sub edit_log {
+    my $self     = shift;
+    my $fid      = $self->qParam('fid');
+    my $revision = $self->qParam('revision');
+    my $comment  = $self->qParam('comment');
+    my $uid      = $self->{s}->param('login');
+
+}
+
 1;

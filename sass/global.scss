@@ -1105,10 +1105,19 @@ section.OutlineEditor{
 table.Gitlog {
   @include table-gitlog();
 
+  .Message{
+    textarea{
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 5px;
+    }
+  }
+
   .RevisionCtrl{
     a.RevisionViewer, a.RevisionViewer:hover,
     a.DiffViewer, a.DiffViewer:hover,
-    a.Rollback, a.Rollback:hover{
+    a.Rollback, a.Rollback:hover,
+    a.EditLogComment, a.EditLogComment:hover{
       cursor: pointer;
     }
   }
@@ -1267,16 +1276,15 @@ section.BufferLog{
     .GitLog{
         margin-left: 180px;
 
-	.Description{
-	    font-size: 80%;
-	    padding: 5px;
-	    border: 1px solid #000;
-	    background-color: #fff;
-	    &.Alert{
-		color: #f00;
-	    }
-	}
-
+        .Description{
+            font-size: 80%;
+            padding: 5px;
+            border: 1px solid #000;
+            background-color: #fff;
+            &.Alert{
+                color: #f00;    
+            }
+        }
     } 
 }
 
@@ -1378,6 +1386,61 @@ section.BufferLog{
         margin-top: 0;
     }
     textarea.History{
+        width: 100%;
+        height: 100px;
+        margin-bottom: 5px;
+    }
+    .Ctrl{
+        input[type=submit], a.Btn, a.Btn:link{
+            float: left;
+            margin-right: 5px;
+            cursor: pointer;
+            padding: 4px 6px;
+            text-align: center;
+            line-height: 1.0em;
+            font-size: 85%;
+            font-weight: bold;
+            background-color: #fff;
+            border: 1px solid #aaa;
+            color: #555;
+
+            @include round-corner(3px);
+        }
+        input[type=submit]:hover, a.Btn:hover{
+            background-color: #f5deb3;
+            color: #222;
+        }
+        @include clearfix();
+    }
+  }
+}
+
+.EditDialog{
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 50px 40px;
+  margin: 0;
+  background-color: rgba(188,188,188,0.4);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+
+  .EditLogCommentForm{
+    color: #000;
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #000;
+    width: 50%;
+    @include round-corner(10px);
+
+    h3{
+        margin-top: 0;
+    }
+    .Subtitle{
+      font-size: 75%;
+    }
+    textarea.Message{
         width: 100%;
         height: 100px;
         margin-bottom: 5px;

@@ -17,9 +17,12 @@ $dog->check_auths("is_edit", "is_admin");
 print "Content-type: application/json; charset=utf-8\n\n";
 if(     $ENV{'REQUEST_METHOD'} eq 'GET'  ){
 }elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
-  if( $dog->qParam('action') eq 'rollback' ){
-    print $dog->rollback_buffer();
-  }
+    if( $dog->qParam('action') eq 'rollback' ){
+        print $dog->rollback_buffer();
+    }
+    if( $dog->qParam('action') eq 'editLog' ){
+	print $dog->edit_log();
+    }
 }
 
 exit();
