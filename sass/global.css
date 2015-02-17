@@ -307,7 +307,11 @@ section.Error div.Error {
   .UserInfo .Account a:hover,
   .UserInfo .Account a:visited,
   .UserInfo .Account a:link,
-  .UserInfo .Account a:active, .UserInfo .Admin a, .UserInfo .Admin a:hover, .UserInfo .Admin a:visited, .UserInfo .Admin a:link, .UserInfo .Admin a:active {
+  .UserInfo .Account a:active, .UserInfo .Admin a,
+  .UserInfo .Admin a:hover,
+  .UserInfo .Admin a:visited,
+  .UserInfo .Admin a:link,
+  .UserInfo .Admin a:active {
     color: #fff; }
   .UserInfo .Account a:hover, .UserInfo .Admin a:hover {
     text-decoration: underline; }
@@ -803,6 +807,7 @@ section.Outline {
 section.OutlineEditor ul.BufferEditMenu {
   position: absolute;
   list-style: none;
+  margin-top: 10px;
   margin-right: 0;
   width: 140px; }
   section.OutlineEditor ul.BufferEditMenu > li a {
@@ -914,6 +919,7 @@ table.Gitlog {
 section.MdBuffer ul.BufferEditMenu {
   position: absolute;
   list-style: none;
+  margin-top: 10px;
   margin-right: 0;
   width: 140px; }
   section.MdBuffer ul.BufferEditMenu > li a {
@@ -1116,6 +1122,7 @@ section.MdBuffer .ImageManager {
 section.BufferLog ul.BufferEditMenu {
   position: absolute;
   list-style: none;
+  margin-top: 10px;
   margin-right: 0;
   width: 140px; }
   section.BufferLog ul.BufferEditMenu > li a {

@@ -3,31 +3,32 @@ requirejs.config({
     baseUrl: 'js/modules',
     urlArgs: 'rev=20150125b',
     paths: {
-        jquery:          'jquery-1.11.1.min',
-        mddog:           'mddog',
-        UTIL:            'UTIL',
-        mdOutline:       'mdOutline',
-        mdBufferEditor:  'mdBufferEditor',
-        mdEditForm:      'mdEditForm',
-        mdOutlineDivide: 'mdOutlineDivide',
-        mdOutlnieEditor: 'mdOutlineEditor',
-        mdCommitBuffer:  'mdCommitBuffer',
-        bufferMessage:   'bufferMessage',
-        logTableChanger: 'logTableChanger',
-        diffViewer:      'diffViewer',
-        revisionViewer:  'revisionViewer',
-	rollbackBuffer:  'rollbackBuffer',
-	editLogComment:  'editLogComment',
-	addAccountForm:  'addAccountForm',
-        userManager:     'userManager'
+        jquery          :'jquery-1.11.1.min',
+        mddog           :'mddog',
+        UTIL            :'UTIL',
+        mdOutline       :'mdOutline',
+        mdBufferEditor  :'mdBufferEditor',
+        mdEditForm      :'mdEditForm',
+        mdOutlineDivide :'mdOutlineDivide',
+        mdOutlnieEditor :'mdOutlineEditor',
+        mdCommitBuffer  :'mdCommitBuffer',
+        bufferMessage   :'bufferMessage',
+        logTableChanger :'logTableChanger',
+        diffViewer      :'diffViewer',
+        revisionViewer  :'revisionViewer',
+        rollbackBuffer  :'rollbackBuffer',
+        editLogComment  :'editLogComment',
+        addAccountForm  :'addAccountForm',
+        userManager     :'userManager',
+        bufferEditor    :'bufferEditor'
     },
     shim: {
         'mddog': {
             deps: ['jquery']
         },
-	'bufferMessage': {
+	    'bufferMessage': {
             deps: ['jquery']
-	},
+	    },
         'mdOutline': {
             deps: ['jquery']
         },
@@ -46,21 +47,24 @@ requirejs.config({
         'revisionViewer': {
             deps: ['jquery']
         },
-	'rollbackBuffer': {
-	    deps: ['jquery']
-	},
-	'editLogComment': {
-	    deps: ['jquery']
-	},
+	    'rollbackBuffer': {
+	        deps: ['jquery']
+	    },
+	    'editLogComment': {
+	        deps: ['jquery']
+	    },
         'logTableChanger': {
             deps: ['jquery']
         },
-	'addAccountForm': {
-	    deps: ['jquery']
-	},
+	    'addAccountForm': {
+	        deps: ['jquery']
+	    },
         'userManager' : {
-	    deps: ['jquery', 'UTIL']
-	}
+	        deps: ['jquery', 'UTIL']
+	    },
+        'bufferEditor' : {
+	        deps: ['jquery', 'UTIL']
+        }
     }
 });
 
@@ -73,10 +77,18 @@ requirejs(['jquery'], function($){
             new Outline().init();
         });
     }
+
+    //編集バッファ
+    if( $('.BufferEditMenu').length ){
+        require(['bufferEditor'], function(BufferEditor){
+            new BufferEditor().init();
+        });
+    }
+
     //編集バッファ
     if($('body > section.MdBuffer .BufferEdit').length){
-        require(['mdBufferEditor'], function(BufferEditor){
-            new BufferEditor().init();
+        require(['mdBufferEditor'], function(MdBufferEditor){
+            new MdBufferEditor().init();
         });
     }
     //アウトラインエディタ
@@ -89,11 +101,6 @@ requirejs(['jquery'], function($){
     if($('body > section.DocApprove').length){
         require(['logTableChanger'], function(changer){});
     }
-    //コミットフォーム
-    if($('.BufferEditMenu').length){
-        require(['mdCommitBuffer'], function(CommitBuffer){});
-    }
-
     //履歴テーブルにビューアーの埋め込み
     if( !$('body > section.Outline').length
          && $('table.Gitlog').length ){
@@ -104,21 +111,26 @@ requirejs(['jquery'], function($){
             new RevisionViewer().init();
         });
         require(['rollbackBuffer'], function(RollbackBuffer){
-	    new RollbackBuffer().init();
-	});
+            new RollbackBuffer().init();
+        });
         require(['editLogComment'], function(EditLogComment){
-	    new EditLogComment().init();
-	});
+            new EditLogComment().init();
+        });
     }
 
     //管理ページ　アカウント管理
     if($('.AddAccountForm').length){
-	require(['addAccountForm'], function(AddAccountForm){});
+        require(['addAccountForm'], function(AddAccountForm){});
     }
 
     //ドキュメント設定ページ　ユーザー管理
     if($('.DocSetting').length){
         require(['userManager'], function(UserManager){});
+    }
+
+    //コミットフォーム
+    if($('.BufferEditMenu').length){
+        require(['mdCommitBuffer'], function(CommitBuffer){});
     }
 
     //バッファメッセージの管理
