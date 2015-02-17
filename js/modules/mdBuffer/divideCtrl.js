@@ -4,10 +4,10 @@
  */
 
 define(function(){
-    var mdOutlineDivide = function() {
+    var divideCtrl = function() {
         this.activeIndex = 0;
     };
-    mdOutlineDivide.prototype = {
+    divideCtrl.prototype = {
         init: function (){
             var divide = [];
             $('.MdBuffer  ul.Pagenav').find('a.OutlinePage').each($.proxy(function(index, obj){
@@ -66,5 +66,5 @@ define(function(){
         }
     };
 
-    return mdOutlineDivide;
+    return divideCtrl;
 });

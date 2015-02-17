@@ -7,11 +7,9 @@ requirejs.config({
         mddog           :'mddog',
         UTIL            :'UTIL',
         mdOutline       :'mdOutline',
-        mdBufferEditor  :'mdBufferEditor',
         mdEditForm      :'mdEditForm',
         mdOutlineDivide :'mdOutlineDivide',
         mdOutlnieEditor :'mdOutlineEditor',
-        mdCommitBuffer  :'mdCommitBuffer',
         bufferMessage   :'bufferMessage',
         logTableChanger :'logTableChanger',
         diffViewer      :'diffViewer',
@@ -20,7 +18,11 @@ requirejs.config({
         editLogComment  :'editLogComment',
         addAccountForm  :'addAccountForm',
         userManager     :'userManager',
-        bufferEditor    :'bufferEditor'
+        bufferEditor    :'bufferEditor',
+        commitForm      :'mdBuffer/commitForm',
+        mdBufferEditor  :'mdBuffer/editor',
+        mdBufferFormCtrl:'mdBuffer/formCtrl',
+        mdBufferDivideCtrl:'mdBuffer/divideCtrl'
     },
     shim: {
         'mddog': {
@@ -32,14 +34,8 @@ requirejs.config({
         'mdOutline': {
             deps: ['jquery']
         },
-        'mdBufferEditor': {
-            deps: ['jquery', 'UTIL', 'mdEditForm', 'mdOutlineDivide']
-        },
         'mdOutlineEditor':{
             deps: ['jquery', 'UTIL']
-        },
-        'mdCommitbuffer': {
-            deps: ['jquery']
         },
         'diffViewer': {
             deps: ['jquery']
@@ -63,7 +59,14 @@ requirejs.config({
 	        deps: ['jquery', 'UTIL']
 	    },
         'bufferEditor' : {
-	        deps: ['jquery', 'UTIL']
+	        deps: [
+                'jquery',
+                'UTIL',
+                'commitForm',
+                'mdBufferEditor',
+                'mdBufferFormCtrl',
+                'mdBufferDivideCtrl'
+            ]
         }
     }
 });
@@ -85,12 +88,6 @@ requirejs(['jquery'], function($){
         });
     }
 
-    //編集バッファ
-    if($('body > section.MdBuffer .BufferEdit').length){
-        require(['mdBufferEditor'], function(MdBufferEditor){
-            new MdBufferEditor().init();
-        });
-    }
     //アウトラインエディタ
     if($('body > section.OutlineEditor .BufferEdit').length){
         require(['mdOutlineEditor'], function(OutlineEditor){
@@ -126,11 +123,6 @@ requirejs(['jquery'], function($){
     //ドキュメント設定ページ　ユーザー管理
     if($('.DocSetting').length){
         require(['userManager'], function(UserManager){});
-    }
-
-    //コミットフォーム
-    if($('.BufferEditMenu').length){
-        require(['mdCommitBuffer'], function(CommitBuffer){});
     }
 
     //バッファメッセージの管理
