@@ -19,10 +19,10 @@ requirejs.config({
         addAccountForm  :'addAccountForm',
         userManager     :'userManager',
         bufferEditor    :'bufferEditor',
-        commitForm      :'mdBuffer/commitForm',
-        mdBufferEditor  :'mdBuffer/editor',
-        mdBufferFormCtrl:'mdBuffer/formCtrl',
-        mdBufferDivideCtrl:'mdBuffer/divideCtrl'
+        mdBufferCommitForm  :'mdBuffer/commitForm',
+        mdBufferEditor      :'mdBuffer/editor',
+        mdBufferFormCtrl    :'mdBuffer/formCtrl',
+        mdBufferDivideCtrl  :'mdBuffer/divideCtrl'
     },
     shim: {
         'mddog': {
@@ -62,7 +62,7 @@ requirejs.config({
 	        deps: [
                 'jquery',
                 'UTIL',
-                'commitForm',
+                'mdBufferCommitForm',
                 'mdBufferEditor',
                 'mdBufferFormCtrl',
                 'mdBufferDivideCtrl'

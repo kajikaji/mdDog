@@ -6,7 +6,7 @@ define(function(){
         init: function(){
             this.movableMenu();
 
-            require(['commitForm'], function(CommitForm){
+            require(['mdBufferCommitForm'], function(CommitForm){
                 new CommitForm().init();
             });
             
