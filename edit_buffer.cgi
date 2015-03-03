@@ -42,7 +42,7 @@ if( $dog->qParam('resetBuffer') ){
 
 $dog->is_exist_buffer();
 
-$dog->set_md_buffer(1);
+$dog->set_buffer_md();
 $dog->set_document_info();
 $dog->set_outline_buffer();
 

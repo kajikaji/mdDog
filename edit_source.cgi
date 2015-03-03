@@ -48,7 +48,7 @@ if( $dog->qParam('resetBuffer') ){
 
 $dog->is_exist_buffer();
 
-$dog->set_md_buffer();
+$dog->set_buffer_raw();
 $dog->set_document_info();
 
 $dog->print_page();

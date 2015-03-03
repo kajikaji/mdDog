@@ -8,20 +8,18 @@ define(function(){
     editor.prototype = {
         init: function() {
             require(['mdBufferFormCtrl', 'mdBufferDivideCtrl'], function(FormCtrl,DivideCtrl){
-                $('.BufferEdit div.Document').children().each(function(){
-                    if($(this).hasClass("Md")){
-                        $(this).hover(
-                            function(){ $(this).addClass('Focus'); },
-                            function(){ $(this).removeClass('Focus'); }
-                        );
-                        $(this).click(function(){
-                            new FormCtrl($(this), getParam("fid")).init();;
-                        });
-                    }else{
-                        $(this).addClass("Uneditable");
-                    }
+                $('.BufferEdit.Markdown .Document').children().each(function(i, elm){
+                    $(this).addClass("Md");
+                    $(this).attr("id", "md" + i);
+                    $(this).hover(
+                        function(){ $(this).addClass('Focus'); },
+                        function(){ $(this).removeClass('Focus'); }
+                    );
+                    $(this).click(function(){
+                        new FormCtrl($(this), getParam("fid")).init();;
+                    });
                 });
-                if($('.BufferEdit div.Document').children().length === 0){
+                if($('.BufferEdit.Markdown .Document').children().length === 0){
                     var blank = $('<div>').addClass("Blank").attr("id", "md-1");
                     $('.BufferEdit div.Document').append(blank);
                     blank.hover(
@@ -33,7 +31,7 @@ define(function(){
                     });
                 }
                 //アウトラインでページ分割
-                new DivideCtrl().init();
+//                new DivideCtrl().init();
             });
         }
     };

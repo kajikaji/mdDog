@@ -82,7 +82,7 @@ requirejs(['jquery'], function($){
     }
 
     //編集バッファ
-    if( $('.BufferEditMenu').length ){
+    if( $('section.MdBuffer .BufferEdit.Markdown').length ){
         require(['bufferEditor'], function(BufferEditor){
             new BufferEditor().init();
         });

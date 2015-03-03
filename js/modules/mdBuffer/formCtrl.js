@@ -14,30 +14,45 @@ define(function(){
         this.elmId;
         this.mdId;
         this.formId;
+        this.tt;
     };
     mdEditForm.prototype = {
         init: function() {
             var newForm = $('#' + this.formtmpl).clone()
-            var tt      = newForm.find('textarea.Editdata');
 
             this.id     = Number(this.src.attr('id').slice(2));
             this.mdId   = 'md'   + this.id;
             this.formId = 'edit' + this.id;
-
-            tt.attr('id', 'editdata' + this.id);
-            newForm.attr('id', this.formId);
+            this.tt      = newForm.find('textarea.Editdata');
 
             if( this.id >= 0 ){
-                this.elmId = 'elm' + this.id;
-
-                var data = $('#' + this.elmId).text();
-                var n    = data.match(/\n/g).length + 1;
-                tt.text(data).attr('rows', n);
+                this.getRawData();
             }
+
+            this.tt.attr('id', 'editdata' + this.id);
+            newForm.attr('id', this.formId);
+
 
             this.src.after(newForm);
             newForm.show(); this.src.hide();
             this.attachButton();
+        },
+
+        getRawData: function() {
+            $.ajax({
+                url  : this.api,
+                type : 'GET',
+                data : {
+                    fid    : this.fid, 
+                    eid    : this.id > 0?this.id:'0',
+                    action : undefined
+                },
+                timeout: 3000,
+            }).done($.proxy(function(res){
+                var data = res[0].data;
+                var n    = data.match(/\n/g).length + 1;
+                this.tt.text(data).attr('rows', n);
+            }, this));
         },
 
         attachButton: function(){
@@ -60,13 +75,13 @@ define(function(){
         },
 
         btnUpdate: function(){
-            var editdata = $('#' + this.formId).find('textarea.Editdata').val();
+            var editdata = this.tt.val();
             $.ajax({
                 url  : this.api,
                 type : 'POST',
                 data : {
                     fid    : this.fid, 
-                    eid    : this.id,
+                    eid    : this.id>=0?this.id:0,
                     action : 'update', 
                     data   : editdata
                 }
@@ -81,7 +96,7 @@ define(function(){
                 type : 'POST',
                 data :{
                     fid    : this.fid, 
-                    eid    : this.id,
+                    eid    : this.id>=0?this.id:0,
                     action : 'delete',
                 }
             }).done($.proxy(function(res){
@@ -140,46 +155,36 @@ define(function(){
         updateSuccess: function(res){
             $('#' + this.formId).remove();
             $('#' + this.mdId).attr('id', this.mdId + 'org');
-            var $newObj = $(res.md);
-            $('#' + this.mdId + 'org').after($newObj);
-            $newObj.show();
-            $('#' + this.mdId + 'org').remove();
-            var leng = $newObj.length;
-            if( leng > 1 ){
-                this.resetTreeId($newObj.last().next(), leng - 1, 'md');
-            }
-
-            if( this.elmId !== undefined ){
-                $('#' + this.elmId).attr('id', this.elmId + 'org');
-                var $elmObj = $(res.row);
-                $('#' + this.elmId + 'org').after($elmObj);
-                $('#' + this.elmId + 'org').remove();
-                var eLeng = $elmObj.length;
-                if( eLeng > 1 ){
-                    this.resetTreeId($elmObj.last().next(), eLeng - 1, 'elm');
-                }
-            }else{
-                $('#bufferCommitForm .Rowdata').append(res.row);
-            }
-
-            $newObj.hover(
-                function(){ $(this).addClass('Focus'); },
-                function(){ $(this).removeClass('Focus'); }
-            );
-            $newObj.click($.proxy(function(ev){
-                var eForm = new mdEditForm($(ev.target), this.fid);
-                eForm.init();
+            var $tmp = $('#' + this.mdId + 'org');
+            $(res.md).each($.proxy(function(i, elm){
+                $tmp.after(elm);
+                $(elm).addClass("Md");
+                $(elm).hover(
+                    function(){ $(this).addClass('Focus'); },
+                    function(){ $(this).removeClass('Focus'); }
+                );
+                $(elm).click($.proxy(function(ev){
+                    var eForm;
+                    if($(ev.target).hasClass('Md')){
+                        eForm = new mdEditForm($(ev.target), this.fid);
+                    }else{
+                        var $elm = $(ev.target).parents('.Md');
+                        eForm = new mdEditForm($elm, this.fid);
+                    }
+                    eForm.init();
+                }, this));
+                $tmp = $(elm);
             }, this));
+
+            this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
+            $('#' + this.mdId + 'org').remove();
             this.checkBlankDocument();
         },
         deleteSuccess: function(res){
             $('#' + this.formId).remove();
             var $nextMd = $('#' + this.mdId).next();
             $('#' + this.mdId).remove();
-            this.resetTreeId($nextMd, -1, 'md');
-            var $nextElm = $('#' + this.elmId).next();
-            $('#' + this.elmId).remove();
-            this.resetTreeId($nextElm, -1, 'elm');
+            this.resetTreeId($nextMd, this.id, 'md');
             this.checkBlankDocument();
         },
         updateMessage: function(){
@@ -191,26 +196,22 @@ define(function(){
         },
         resetTreeId: function(obj, inc, prefix){
             while( obj.length > 0 ){
-                var id = obj.attr('id');
-                if( id ){
-                    id  = Number(id.substr(prefix.length));
-                    id += inc;
-                    obj.attr('id', prefix + id);
-                }
+                obj.attr('id', prefix + inc);
+                inc++;
                 obj = obj.next();
             }
         },
         checkBlankDocument: function(){
-            if( $('.MdBuffer div.Document').children().length == 0 ){
+            if( $('.BufferEdit.Markdown .Document').children().length == 0 ){
                 var blank = $('<div>').addClass("Blank").attr("id", "md-1");
                 $('.MdBuffer div.Document').append(blank);
                 blank.hover(
                     function(){ blank.addClass('Focus'); },
                     function(){ blank.removeClass('Focus'); }
                 );
-                blank.click(function(){
-                    new mdEditForm(blank).init();;
-                });
+                blank.click($.proxy(function(ev){
+                    new mdEditForm($(ev.target), this.fid).init();;
+                }, this));
             }
         }
     };

@@ -28,7 +28,7 @@ use File::Copy;
 use File::Basename;
 use File::Path;
 use Date::Manip;
-use Text::Markdown::Discount qw(markdown);
+use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph/;
 use NKF;
 use Cwd;
 use Image::Magick;
@@ -836,39 +836,53 @@ sub set_master_outline{
 }
 
 ############################################################
-# MDドキュメントの編集バッファをテンプレートにセットする
-# @param1 ドキュメントを構造解析するかのフラグ
+# MDドキュメントをテンプレートにセットする
 #
-sub set_md_buffer{
-  my $self     = shift;
-  my $preview  = shift;
+sub set_buffer_raw{
+    my $self     = shift;
 
-  my $uid      = $self->{s}->param("login");
-  return unless($uid);
-  my $fid      = $self->qParam('fid');
-  my $document = $self->get_user_document($uid, $fid);
-
-  unless($preview){
+    my $uid      = $self->{s}->param("login");
+    return unless($uid);
+    my $fid      = $self->qParam('fid');
+    my $document = $self->get_user_document($uid, $fid);
     $self->{t}->{document} = $document;
-  }else {
+}
+
+############################################################
+# MDドキュメントの編集バッファをテンプレートにセットする
+#
+sub set_buffer_md{
+    my $self     = shift;
+
+    my $uid      = $self->{s}->param("login");
+    return unless($uid);
+    my $fid      = $self->qParam('fid');
+    my $document = $self->get_user_document($uid, $fid);
+
+    my $md = markdown($document);
+#    $md =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
+#    $md =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
+    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
+
+    $self->{t}->{markdown} = $md;
+=pod
     my ($rowdata, @partsAry) = $self->split_for_md($document);
     my $md;
     my $cnt = 0;
 
     foreach (@partsAry) {
-      my $conv = markdown($_);
+        my $conv = markdown($_);
 
-      $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
-      $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
-      $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
+        $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
+        $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
+        $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
 
-      $md .= $conv;
-      $cnt++;
+        $md .= $conv;
+        $cnt++;
     }
-
     $self->{t}->{rowdata} = $rowdata;
     $self->{t}->{markdown} = $md;
-  }
+=cut
 }
 
 ############################################################
@@ -926,9 +940,6 @@ sub fix_md_buffer {
     return 0;
   }
 
-  if($self->qParam('document')){
-    return 0 unless($self->update_md_buffer());
-  }
   my $ret = $gitctrl->fix_tmp($uid, $self->_get_author($uid), $comment);
   unless($ret){
     push @{$self->{t}->{message}->{error}}, "編集バッファのコミットに失敗しました";
@@ -1172,6 +1183,7 @@ sub split_for_md {
   my $blockquote = 0;
   my $quote      = 0;
   my $cnt        = $index?$index:0;
+
   foreach (split(/\n/, $document)) {
     if ( $blockquote && $_ !~ m/^> .*/ ) {
       $blockquote = 0;

@@ -1185,16 +1185,16 @@ section.MdBuffer{
                 @include round-corner(3px);
             }
 
-            >.Md{
-                display: none;
-            }
+//            >.Md{
+//                display: none;
+//            }
             >.Uneditable{
                 background-color: #ecc;
                 color: #888;
             }
->.Blank{
-height: 10px;
-}
+            >.Blank{
+                height: 10px;
+            }
 
             .Editform{
                 textarea.Editdata{

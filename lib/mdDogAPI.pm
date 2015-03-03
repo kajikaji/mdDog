@@ -22,7 +22,7 @@ package mdDogAPI;
 
 use strict; no strict "subs";
 use base mdDog;
-use Text::Markdown::Discount qw(markdown);
+use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph/;
 
 use constant USER_AUTH_ADMIN   => 1;
 use constant USER_AUTH_APPROVE => 2;
@@ -32,45 +32,44 @@ use constant USER_AUTH_DELETE  => 3;
 #[API] JSONを返す
 #
 sub get_data {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid');
-  my $eid = $self->qParam('eid');
-  my $data;
+    my $self = shift;
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
+    my $fid = $self->qParam('fid') + 0;
+    my $eid = $self->qParam('eid') + 0;
+    my $data;
 
-  if($self->qParam('action') eq 'image_list'){
-      $self->{git}->attach_local_tmp($uid);
-      my $imgdir = "$self->{repodir}/${fid}/image";
-      if( -d $imgdir){
-          my @images = glob "$imgdir/*";
-          $self->{git}->detach_local();
+    if ($self->qParam('action') eq 'image_list') {
+        $self->{git}->attach_local_tmp($uid);
+        my $imgdir = "$self->{repodir}/${fid}/image";
+        if ( -d $imgdir) {
+            my @images = glob "$imgdir/*";
+            $self->{git}->detach_local();
 
-          foreach (@images) {
-              my $path = $_;
-              $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
-              push @$data, {filename => $path};
-          }
-      }
-  } else {
-      my $document = $self->get_user_document($uid, $fid);
-      my ($rowdata, @partsAry) = $self->split_for_md($document);
-      my $cnt = 0;
-
-      foreach (@partsAry) {
-          if ($eid) {
-              if ($eid == $cnt) {
-                  $data = [{eid => ${cnt}, data => $_}];
-                  last;
-              }
-          } else {
-              push @$data, { eid => ${cnt}, data => $_ };
-          }
-          $cnt++;
-      }
-  }
-  my $json = JSON->new();
-  return $json->encode($data);
+            foreach (@images) {
+                my $path = $_;
+                $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
+                push @$data, {filename => $path};
+            }
+        }
+    } else {
+        my $document = $self->get_user_document($uid, $fid);
+        if ( $eid >= 0) {
+            my $ret = paragraph_raw($document, $eid);
+            $ret  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+            $data = [{eid => ${eid}, data => ${ret}}];
+        } else {
+            my $cnt = 0;
+            while ( my $ret = paragraph_raw($document, $cnt) ) {
+                last if( $ret =~ m/^\n/ );
+                $ret  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+                push @$data, { eid => ${cnt}, data => ${ret} };
+                $cnt++;
+            }
+        }
+    }
+    my $json = JSON->new();
+    return $json->encode($data);
 }
 
 ############################################################
@@ -86,6 +85,24 @@ sub post_data {
   $data .= "\n" if( $data !~ m/(.*)\n$/);
   $data .= "\n" if( $data !~ m/(.*)\n\n$/);
   my $document = $self->get_user_document($uid, $fid);
+
+  $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
+  $self->{git}->attach_local_tmp($uid, 1);
+
+  #ファイル書き込み
+  # TODO: ファイル名取得ルーチンが重複！
+  my $sql = "select file_name from docx_infos where id = ${fid};";
+  my @ary = $self->{dbh}->selectrow_array($sql);
+  return unless(@ary);
+  my $filename = $ary[0];
+  my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+  open my $hF, '>', $filepath || return undef;
+  syswrite $hF, $document, length($document);
+  close $hF;
+
+
+=pod
   my ($rowdata, @partsAry) = $self->split_for_md($document);
 
   $self->{git}->attach_local_tmp($uid, 1);
@@ -117,11 +134,18 @@ sub post_data {
       syswrite $hF, $line, length($line);
   }
   close $hF;
+=cut
 
   my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
 
+  my $json = JSON->new();
+  my $md = markdown($data);
+  $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
+  return $json->encode({md => ${md}});
+
+=pod
   my $json = JSON->new();
   my $md;# = markdown($data);
   $eid = 0 if($eid < 0);
@@ -137,19 +161,45 @@ sub post_data {
     $cnt++;
   }
   return $json->encode({eid => ${eid}, md => ${md}, row => ${row}});
+=cut
 }
 
 ############################################################
 #[API]
 #
 sub delete_data {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-  my $eid = $self->qParam('eid');
+    my $self = shift;
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
+    my $fid = $self->qParam('fid') + 0;
+    my $eid = $self->qParam('eid') + 0;
+    my $document = $self->get_user_document($uid, $fid);
 
-  my $document = $self->get_user_document($uid, $fid);
+    $document = alter_paragraph($document, $eid, "");
+
+    $self->{git}->attach_local_tmp($uid, 1);
+
+    #ファイル書き込み
+    # TODO: ファイル名取得ルーチンが重複！
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+    open my $hF, '>', $filepath || return undef;
+    syswrite $hF, $document, length($document);
+    close $hF;
+
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->detach_local();
+
+    my $json = JSON->new();
+    return $json->encode({eid => ${eid}});
+
+
+=pod
   my ($rowdata, @partsAry) = $self->split_for_md($document);
 
   $self->{git}->attach_local_tmp($uid, 1);
@@ -179,6 +229,7 @@ sub delete_data {
 
   my $json = JSON->new();
   return $json->encode({eid => ${eid}});
+=cut
 }
 
 ############################################################
