@@ -87,6 +87,13 @@ i.Glyph {
 .Glyph.CircleRemove {
   background-image: url("../img/192_circle_remove.png"); }
 
+.Glyph.Eject {
+  background-position: 3px 3px;
+  background-image: url("../img/179_eject.png"); }
+
+.Glyph.DeletePoint {
+  background-image: url("../img/256_delete_point.png"); }
+
 a.Glyph {
   display: inline-block;
   float: left; }
@@ -956,6 +963,7 @@ section.MdBuffer .BufferEdit {
       -webkit-border-radius: 0;
       -moz-border-radius: 0; }
   section.MdBuffer .BufferEdit ul.Pagenav {
+    display: none;
     list-style: none; }
     section.MdBuffer .BufferEdit ul.Pagenav li {
       float: left;
@@ -984,49 +992,73 @@ section.MdBuffer .BufferEdit {
     background-color: #fff;
     font-size: 14px;
     line-height: 1.2em; }
-    section.MdBuffer .BufferEdit .Document > * {
+    section.MdBuffer .BufferEdit .Document > .PageDivide {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background-color: #ff6347;
+      height: 1px; }
+    section.MdBuffer .BufferEdit .Document > .Md > .MdBody {
+      width: 92%;
+      float: left;
       border: 3px solid #fff; }
-    section.MdBuffer .BufferEdit .Document > .Focus {
+    section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl {
+      float: right; }
+      section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn {
+        float: right;
+        text-align: right; }
+        section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn:hover, section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn:link {
+          cursor: pointer; }
+    section.MdBuffer .BufferEdit .Document > .Md:after, section.MdBuffer .BufferEdit .Document > .Md:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.MdBuffer .BufferEdit .Document > .Md:after {
+      clear: both; }
+    section.MdBuffer .BufferEdit .Document > .Md > .Focus {
       background-color: #b0c4de;
-      border: 3px solid #9fb3cd;
+      border: 3px solid #b0c4de- #111;
       cursor: pointer;
       border-radius: 3px;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px; }
-    section.MdBuffer .BufferEdit .Document > .Uneditable {
+    section.MdBuffer .BufferEdit .Document > .Md > .Uneditable {
       background-color: #ecc;
       color: #888; }
-    section.MdBuffer .BufferEdit .Document > .Blank {
+    section.MdBuffer .BufferEdit .Document > .Md > .Blank {
       height: 10px; }
-    section.MdBuffer .BufferEdit .Document .Editform textarea.Editdata {
-      width: 100%;
-      box-sizing: boder-box;
-      margin-bottom: 5px;
-      border-radius: 5px;
-      -webkit-border-radius: 5px;
-      -moz-border-radius: 5px; }
-    section.MdBuffer .BufferEdit .Document .Editform button {
-      border-radius: 3px;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px; }
-    section.MdBuffer .BufferEdit .Document .Editform ul.ImageList {
-      border: 1px dashed #b0c4de;
-      border-radius: 10px;
-      -webkit-border-radius: 10px;
-      -moz-border-radius: 10px;
-      margin: 5px 0 20px;
-      padding: 10px;
-      background-color: #e6e6fa;
-      list-style: none; }
-      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList > li {
-        float: left;
-        margin: 5px; }
-      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:after, section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:before {
-        display: table;
-        content: "";
-        line-height: 0; }
-      section.MdBuffer .BufferEdit .Document .Editform ul.ImageList:after {
-        clear: both; }
+    section.MdBuffer .BufferEdit .Document > .Md .Editform {
+      float: left;
+      width: 92%; }
+      section.MdBuffer .BufferEdit .Document > .Md .Editform textarea.Editdata {
+        width: 100%;
+        box-sizing: boder-box;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px; }
+      section.MdBuffer .BufferEdit .Document > .Md .Editform button {
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px; }
+      section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList {
+        border: 1px dashed #b0c4de;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        margin: 5px 0 20px;
+        padding: 10px;
+        background-color: #e6e6fa;
+        list-style: none; }
+        section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList > li {
+          float: left;
+          margin: 5px; }
+        section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList:after, section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList:before {
+          display: table;
+          content: "";
+          line-height: 0; }
+        section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList:after {
+          clear: both; }
     section.MdBuffer .BufferEdit .Document h1, section.MdBuffer .BufferEdit .Document h2, section.MdBuffer .BufferEdit .Document h3, section.MdBuffer .BufferEdit .Document h4, section.MdBuffer .BufferEdit .Document h5, section.MdBuffer .BufferEdit .Document h6, section.MdBuffer .BufferEdit .Document h7 {
       margin: 0;
       padding: 30px 0 10px 0; }
@@ -1381,3 +1413,5 @@ section.BufferLog .GitLog {
       line-height: 0; }
     .EditDialog .EditLogCommentForm .Ctrl:after {
       clear: both; }
+
+/*# sourceMappingURL=global.css.map */

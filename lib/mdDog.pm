@@ -72,17 +72,17 @@ sub setup_config {
 ###################################################
 #
 sub set_outline_buffer{
-  my $self = shift;
+    my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
 
-  $self->{git}->attach_local_tmp($uid);
-  $self->{outline}->init();
-  $self->{git}->detach_local();
+    $self->{git}->attach_local_tmp($uid);
+    $self->{outline}->init();
+    $self->{git}->detach_local();
 
-  my $divides = $self->{outline}->get_divides();
-  $self->{t}->{divides} = $divides;
+    my $divides = $self->{outline}->get_divides();
+    $self->{t}->{divides} = $divides;
 }
 
 ############################################################
@@ -1164,6 +1164,18 @@ sub get_user_document {
   $self->{git}->detach_local();
 
   return $document;
+}
+
+sub count_paragraph {
+    my ($self, $data) = @_;
+
+    my $tmp = $data;
+    my $cnt = 0;
+    my $next = 0;
+    while( $tmp =~ m/^.*<[a-z][a-z0-9]*>.*/ ){
+        $tmp =~ s/^.*<[a-z][a-z0-9]*>(.*)/\1/;
+print $tmp;
+    }
 }
 
 ############################################################

@@ -18,17 +18,25 @@ define(function(){
     };
     mdEditForm.prototype = {
         init: function() {
-            var newForm = $('#' + this.formtmpl).clone()
+            this.src.hover(
+                function(){ $(this).addClass('Focus'); },
+                function(){ $(this).removeClass('Focus'); }
+            );
+            this.src.click($.proxy(function(){
+                this.show();
+            }, this));
+        },
 
-            this.id     = Number(this.src.attr('id').slice(2));
+        show:function(){
+            var newForm = $('#' + this.formtmpl).clone()
+            this.tt      = newForm.find('textarea.Editdata');
+            this.id     = Number(this.src.parent().attr('id').slice(2));
             this.mdId   = 'md'   + this.id;
             this.formId = 'edit' + this.id;
-            this.tt      = newForm.find('textarea.Editdata');
 
             if( this.id >= 0 ){
                 this.getRawData();
             }
-
             this.tt.attr('id', 'editdata' + this.id);
             newForm.attr('id', this.formId);
 
@@ -156,27 +164,20 @@ define(function(){
             $('#' + this.formId).remove();
             $('#' + this.mdId).attr('id', this.mdId + 'org');
             var $tmp = $('#' + this.mdId + 'org');
+            var $cnt = 0;
             $(res.md).each($.proxy(function(i, elm){
-                $tmp.after(elm);
-                $(elm).addClass("Md");
-                $(elm).hover(
-                    function(){ $(this).addClass('Focus'); },
-                    function(){ $(this).removeClass('Focus'); }
-                );
-                $(elm).click($.proxy(function(ev){
-                    var eForm;
-                    if($(ev.target).hasClass('Md')){
-                        eForm = new mdEditForm($(ev.target), this.fid);
-                    }else{
-                        var $elm = $(ev.target).parents('.Md');
-                        eForm = new mdEditForm($elm, this.fid);
-                    }
-                    eForm.init();
-                }, this));
-                $tmp = $(elm);
+                if( elm.nodeType != 1 ) return;
+                var formCtrl = new mdEditForm($(elm), this.fid);
+                formCtrl.init();
+                var $mdPrgh = formCtrl.getMdParagraph();
+                $tmp.after($mdPrgh);
+                $tmp = $mdPrgh;
+                $cnt++;
             }, this));
 
-            this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
+            if( $cnt > 1 ){
+                this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
+            }
             $('#' + this.mdId + 'org').remove();
             this.checkBlankDocument();
         },
@@ -196,8 +197,10 @@ define(function(){
         },
         resetTreeId: function(obj, inc, prefix){
             while( obj.length > 0 ){
-                obj.attr('id', prefix + inc);
-                inc++;
+                if( obj.hasClass('Md') ){
+                    obj.attr('id', prefix + inc);
+                    inc++;
+                }
                 obj = obj.next();
             }
         },
@@ -213,6 +216,12 @@ define(function(){
                     new mdEditForm($(ev.target), this.fid).init();;
                 }, this));
             }
+        },
+
+        getMdParagraph: function() {
+            this.src.addClass('MdBody');
+            var divideCtrl = $('<div>').addClass('DivideCtrl');
+            return $('<div>').addClass('Md').append(this.src).append(divideCtrl);
         }
     };
 

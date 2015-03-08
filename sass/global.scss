@@ -278,6 +278,13 @@ i.Glyph{
 .Glyph.CircleRemove{
     background-image: url("../img/192_circle_remove.png");
 }
+.Glyph.Eject{
+    background-position: 3px 3px;
+    background-image: url("../img/179_eject.png");
+}
+.Glyph.DeletePoint{
+    background-image: url("../img/256_delete_point.png");
+}
 a.Glyph {
   display: inline-block;
   float: left;
@@ -1149,6 +1156,7 @@ section.MdBuffer{
         }
 
         ul.Pagenav{
+            display: none;
             list-style: none;
             li{
                 float: left;
@@ -1174,52 +1182,74 @@ section.MdBuffer{
             padding: 10px;
             margin-bottom: 30px;
 
-            >*{
-                border: 3px solid #fff;;
+            >.PageDivide{
+                padding: 0;
+                margin: 0;
+                border: 0;
+                background-color: #ff6347; 
+                height: 1px;            
             }
 
-            >.Focus{
-                background-color: #b0c4de;
-                border: 3px solid #b0c4de-#111;;
-                cursor: pointer;
-                @include round-corner(3px);
-            }
-
-//            >.Md{
-//                display: none;
-//            }
-            >.Uneditable{
-                background-color: #ecc;
-                color: #888;
-            }
-            >.Blank{
-                height: 10px;
-            }
-
-            .Editform{
-                textarea.Editdata{
-                    width: 100%;
-                    box-sizing: boder-box;
-                    margin-bottom: 5px;
-                    @include round-corner(5px);
+            >.Md{
+                >.MdBody{
+                    width: 92%;
+                    float:left;
+                    border: 3px solid #fff;;
                 }
-                button{
+                >.DivideCtrl{
+                    float: right;
+                    .DivideBtn{
+                        float: right;
+                        text-align: right;
+                        &:hover, &:link{
+                            cursor: pointer;
+                        }
+                    }
+                }
+                @include clearfix();
+
+                >.Focus{
+                    background-color: #b0c4de;
+                    border: 3px solid #b0c4de-#111;;
+                    cursor: pointer;
                     @include round-corner(3px);
                 }
-		ul.ImageList{
-		    border: 1px dashed #b0c4de;
-		    @include round-corner(10px);
-		    margin: 5px 0 20px;
-		    padding: 10px;
-		    background-color: #e6e6fa;
 
-		    list-style: none;
-		    >li{
-			float: left;
-			margin: 5px;
-		    }
-		    @include clearfix();
-		}
+                >.Uneditable{
+                    background-color: #ecc;
+                    color: #888;
+                }
+                >.Blank{
+                    height: 10px;
+                }
+
+                .Editform{
+                    float: left;
+                    width: 92%;
+                    textarea.Editdata{
+                        width: 100%;
+                        box-sizing: boder-box;
+                        margin-bottom: 5px;
+                        @include round-corner(5px);
+                    }
+                    button{
+                        @include round-corner(3px);
+                    }
+		            ul.ImageList{
+		                border: 1px dashed #b0c4de;
+		                @include round-corner(10px);
+		                margin: 5px 0 20px;
+		                padding: 10px;
+		                background-color: #e6e6fa;
+
+		                list-style: none;
+		                >li{
+			                float: left;
+			                margin: 5px;
+		                }
+		                @include clearfix();
+		            }
+                }
             }
             @include markdown-set;
         }
@@ -1238,8 +1268,8 @@ section.MdBuffer{
     .UploadForm {
         margin-left: 180px;
         h3{
-          margin-top: 0;
-          margin-left: 0;
+            margin-top: 0;
+            margin-left: 0;
         }
     }
 
@@ -1252,22 +1282,22 @@ section.MdBuffer{
         border: 2px solid #888;
         padding: 10px;
 
-	form.ImageAction{
-	    margin: 30px 0;
+	    form.ImageAction{
+	        margin: 30px 0;
             ul.Thumbnail{
-		list-style: none;
+		        list-style: none;
 
-		margin: 10px 0;
+		        margin: 10px 0;
 
-		li{
-		    float: left;
-		    .Info{
-			font-size: 9pt;
-		    }
-		}
-		@include clearfix();
+		        li{
+		            float: left;
+		            .Info{
+			            font-size: 9pt;
+		            }
+		        }
+		        @include clearfix();
             }
-	}
+	    }
     }
 }
 

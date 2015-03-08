@@ -20,8 +20,8 @@ define(function(){
 
             this.page = 0;
             $('.Outline').find('.Document.Page').each($.proxy(function(i, elm){
-                this.adjustDocumentPage(elm);
-                $(elm).remove();
+//                this.adjustDocumentPage(elm);
+//                $(elm).remove();
             }, this));
 
             //目次にページ番号を挿入

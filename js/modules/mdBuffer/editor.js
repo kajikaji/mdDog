@@ -7,32 +7,29 @@ define(function(){
     var editor = function(){};
     editor.prototype = {
         init: function() {
-            require(['mdBufferFormCtrl', 'mdBufferDivideCtrl'], function(FormCtrl,DivideCtrl){
-                $('.BufferEdit.Markdown .Document').children().each(function(i, elm){
-                    $(this).addClass("Md");
-                    $(this).attr("id", "md" + i);
-                    $(this).hover(
-                        function(){ $(this).addClass('Focus'); },
-                        function(){ $(this).removeClass('Focus'); }
-                    );
-                    $(this).click(function(){
-                        new FormCtrl($(this), getParam("fid")).init();;
-                    });
-                });
-                if($('.BufferEdit.Markdown .Document').children().length === 0){
-                    var blank = $('<div>').addClass("Blank").attr("id", "md-1");
-                    $('.BufferEdit div.Document').append(blank);
-                    blank.hover(
-                        function(){ blank.addClass('Focus'); },
-                        function(){ blank.removeClass('Focus'); }
-                    );
-                    blank.click(function(){
-                        new FormCtrl(blank, getParam("fid")).init();;
-                    });
-                }
-                //アウトラインでページ分割
-//                new DivideCtrl().init();
-            });
+            require(['mdBufferFormCtrl', 'mdBufferDivideCtrl'], 
+                $.proxy(function(FormCtrl, DivideCtrl){
+                    var cnt = 0;
+                    $('.BufferEdit.Markdown .Document').children().each($.proxy(function(i, elm){
+                        var formCtrl = new FormCtrl($(elm), getParam("fid"));
+                        formCtrl.init();
+                        var mdObj = formCtrl.getMdParagraph();
+                        $(mdObj).attr("id", "md" + i);
+
+                        $('.BufferEdit.Markdown .Document').append(mdObj);
+                        cnt++;
+                    }, this));
+                    if( cnt == 0 ){
+                        var formCtrl = new FormCtrl($('<div>').addClass('Blank'), getParam("fid"));
+                        formCtrl.init();
+                        var mdObj = formCtrl.getMdParagraph();
+                        $(mdObj).attr("id", "md-1");
+
+                        $('.BufferEdit.Markdown .Document').append(mdObj);
+                    }
+
+                    new DivideCtrl().init();
+            }, this));
         }
     };
 

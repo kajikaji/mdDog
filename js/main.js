@@ -58,11 +58,13 @@ requirejs.config({
         'userManager' : {
 	        deps: ['jquery', 'UTIL']
 	    },
+        'mdBufferCommitForm' : {
+	        deps: ['jquery', 'UTIL']
+        },
         'bufferEditor' : {
 	        deps: [
                 'jquery',
                 'UTIL',
-                'mdBufferCommitForm',
                 'mdBufferEditor',
                 'mdBufferFormCtrl',
                 'mdBufferDivideCtrl'
@@ -78,6 +80,12 @@ requirejs(['jquery'], function($){
     if($('body > section.Outline').length){
         require(['mdOutline'], function(Outline){
             new Outline().init();
+        });
+    }
+
+    if( $('section.MdBuffer .BufferEditMenu').length ){
+        require(['mdBufferCommitForm'], function(CommitForm){
+            new CommitForm().init();
         });
     }
 

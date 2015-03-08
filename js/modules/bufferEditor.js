@@ -5,11 +5,6 @@ define(function(){
     bufferEditor.prototype = {
         init: function(){
             this.movableMenu();
-
-            require(['mdBufferCommitForm'], function(CommitForm){
-                new CommitForm().init();
-            });
-            
             if($('body > section.MdBuffer .BufferEdit').length){
                 require(['mdBufferEditor'], function(MdBufferEditor){
                     new MdBufferEditor().init();

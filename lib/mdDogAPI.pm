@@ -84,10 +84,10 @@ sub post_data {
   my $data = $self->qParam('data');
   $data .= "\n" if( $data !~ m/(.*)\n$/);
   $data .= "\n" if( $data !~ m/(.*)\n\n$/);
-  my $document = $self->get_user_document($uid, $fid);
 
-  $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
   $self->{git}->attach_local_tmp($uid, 1);
+  my $document = $self->get_user_document($uid, $fid);
+  $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
 
   #ファイル書き込み
   # TODO: ファイル名取得ルーチンが重複！
@@ -101,41 +101,6 @@ sub post_data {
   syswrite $hF, $document, length($document);
   close $hF;
 
-
-=pod
-  my ($rowdata, @partsAry) = $self->split_for_md($document);
-
-  $self->{git}->attach_local_tmp($uid, 1);
-
-  #ファイル書き込み
-  # TODO: ファイル名取得ルーチンが重複！
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-
-  open my $hF, '>', $filepath || return undef;
-  my $cnt = 0;
-  my @newAry;
-  my $line;
-  if($eid >= 0){
-      foreach (@partsAry) {
-          if ($eid == $cnt) {
-              $line = $data . "\n";
-          } else {
-              $line = $_ . "\n";
-          }
-          syswrite $hF, $line, length($line);
-          $cnt++;
-      }
-  } else {
-      $line = $data . "\n";
-      syswrite $hF, $line, length($line);
-  }
-  close $hF;
-=cut
-
   my $author = $self->_get_author($self->{s}->param('login'));
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
@@ -144,24 +109,6 @@ sub post_data {
   my $md = markdown($data);
   $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
   return $json->encode({md => ${md}});
-
-=pod
-  my $json = JSON->new();
-  my $md;# = markdown($data);
-  $eid = 0 if($eid < 0);
-  my ($row, @parts) = $self->split_for_md($data, $eid);
-  $cnt = $eid;
-  foreach(@parts){
-    my $conv .= markdown($_)    if($_ !~ m/^\n*$/);
-    $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
-    $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
-    $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
-    $conv =~ s/^(.*)\n$/\1/;
-    $md .= $conv;
-    $cnt++;
-  }
-  return $json->encode({eid => ${eid}, md => ${md}, row => ${row}});
-=cut
 }
 
 ############################################################
