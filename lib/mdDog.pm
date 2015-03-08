@@ -1174,7 +1174,6 @@ sub count_paragraph {
     my $next = 0;
     while( $tmp =~ m/^.*<[a-z][a-z0-9]*>.*/ ){
         $tmp =~ s/^.*<[a-z][a-z0-9]*>(.*)/\1/;
-print $tmp;
     }
 }
 

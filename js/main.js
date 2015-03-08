@@ -9,7 +9,6 @@ requirejs.config({
         mdOutline       :'mdOutline',
         mdEditForm      :'mdEditForm',
         mdOutlineDivide :'mdOutlineDivide',
-        mdOutlnieEditor :'mdOutlineEditor',
         bufferMessage   :'bufferMessage',
         logTableChanger :'logTableChanger',
         diffViewer      :'diffViewer',
@@ -33,9 +32,6 @@ requirejs.config({
 	    },
         'mdOutline': {
             deps: ['jquery']
-        },
-        'mdOutlineEditor':{
-            deps: ['jquery', 'UTIL']
         },
         'diffViewer': {
             deps: ['jquery']
@@ -96,12 +92,6 @@ requirejs(['jquery'], function($){
         });
     }
 
-    //アウトラインエディタ
-    if($('body > section.OutlineEditor .BufferEdit').length){
-        require(['mdOutlineEditor'], function(OutlineEditor){
-            new OutlineEditor().init();
-        });
-    }
     //承認ページの履歴テーブル制御
     if($('body > section.DocApprove').length){
         require(['logTableChanger'], function(changer){});
