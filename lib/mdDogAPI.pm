@@ -22,7 +22,7 @@ package mdDogAPI;
 
 use strict; no strict "subs";
 use base mdDog;
-use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph/;
+use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
 
 use constant USER_AUTH_ADMIN   => 1;
 use constant USER_AUTH_APPROVE => 2;
@@ -85,7 +85,6 @@ sub post_data {
   $data .= "\n" if( $data !~ m/(.*)\n$/);
   $data .= "\n" if( $data !~ m/(.*)\n\n$/);
 
-  $self->{git}->attach_local_tmp($uid, 1);
   my $document = $self->get_user_document($uid, $fid);
   $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
 
@@ -97,6 +96,7 @@ sub post_data {
   my $filename = $ary[0];
   my $filepath = "$self->{repodir}/${fid}/${filename}";
 
+  $self->{git}->attach_local_tmp($uid, 1);
   open my $hF, '>', $filepath || return undef;
   syswrite $hF, $document, length($document);
   close $hF;
@@ -105,10 +105,17 @@ sub post_data {
   $self->{git}->commit($filename, $author, "temp saved");
   $self->{git}->detach_local();
 
+  my $mds;
+  my $raws = paragraphs($data);
+  foreach( @$raws ){
+    my $raw = $_;
+    my $md = markdown($raw);
+    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
+    push @$mds, {md => $md, raw => $raw};
+  }
+
   my $json = JSON->new();
-  my $md = markdown($data);
-  $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
-  return $json->encode({md => ${md}});
+  return $json->encode($mds);
 }
 
 ############################################################

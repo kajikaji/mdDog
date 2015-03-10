@@ -57,6 +57,13 @@ requirejs.config({
         'mdBufferCommitForm' : {
 	        deps: ['jquery', 'UTIL']
         },
+        'mdBufferFormCtrl' : {
+            deps: [
+                'jquery',
+                'UTIL',
+                'mdBufferDivideCtrl'
+            ]
+        },
         'bufferEditor' : {
 	        deps: [
                 'jquery',

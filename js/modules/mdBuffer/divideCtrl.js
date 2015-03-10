@@ -18,21 +18,6 @@ define(function(){
                     var target = $("#md" + id);
                     target.before($('<div>').addClass('PageDivide'));
                 }
-/*
-                $(obj).data('id', index);
-                $(obj).click($.proxy(function(ev){
-                    var id = Number($(ev.target).data('id'));
-                    if(id === this.activeIndex){
-                        return;
-                    }
-
-                    $('.MdBuffer .Document .Md').hide();
-                    $('.MdBuffer .Document .Editform').remove();
-	                this.showPage(divide, id);
-	                this.activeNum(id);
-                    this.activeIndex = id;
-                }, this));
-*/
             }, this));
 
             $('.BufferEdit.Markdown .Document').find('.Md').each($.proxy(function(index, obj){
@@ -40,82 +25,46 @@ define(function(){
                 if(id <= 0){
                     return;
                 }
-                var btn = $('<a>').addClass('DivideBtn');
-                var icon = $('<i>').addClass('Glyph');
-                if( $(obj).prev().hasClass('PageDivide') ){
-                    icon.addClass('DeletePoint');
-                }else{
-                    icon.addClass('Eject');
-                }
-                btn.append(icon);
-                btn.click(function(){
-                    var action = 'divide';
-                    if( $(obj).prev().hasClass('PageDivide') ){
-                        action = 'undivide';
-                    }
-                    $.ajax({
-                        url: 'api/outlineEditor.cgi',
-                        type: 'POST',
-                        data: {
-                            fid: getParam('fid'),
-                            action: action,
-                            num: id,
-                        }
-                    }).done(function(res){
-                        var target = $("#md" + res.num);
-                        if( res.action === 'divide'){
-                            target.before($('<div>').addClass('PageDivide'));
-                            target.find('.DivideBtn i').addClass('DeletePoint').removeClass('Eject');
-                        }else{
-                            target.prev('.PageDivide').remove();
-                            target.find('.DivideBtn i').addClass('Eject').removeClass('DeletePoint');
-                        }
-                    });
-                });
-                $(obj).find('.DivideCtrl').append(btn);
+                $(obj).find('.DivideCtrl').append(this.getDivideBtn(obj));
             }, this));
+        },
 
-//            this.showPage(divide, this.activeIndex);
-//            this.activeNum(this.activeIndex);
-        }
-
-/*
-        showPage: function(dividesAr, id){
-            var tmp = undefined;
-            for(var i=0; i < dividesAr.length; i++) 
-            {
-                if( i === id ){
-                    tmp = dividesAr[i];
-                }else{
-                    if( tmp !== undefined ){
-                        for(var j=tmp; j < dividesAr[i]; j++){
-                            $('#md' + j).show();
-                        }
-                        tmp = undefined;
-                    }
-                }
+        getDivideBtn: function(obj){
+            var btn = $('<a>').addClass('DivideBtn');
+            var icon = $('<i>').addClass('Glyph');
+            if( $(obj).prev().hasClass('PageDivide') ){
+                icon.addClass('DeletePoint');
+            }else{
+                icon.addClass('Eject');
             }
-            if( tmp !== undefined ){
-                $('.MdBuffer .Document').find('.Md').each(function(){
-                    var objId = $(this).attr('id').substr(2);
-                    if( objId >= tmp ){
-                        $(this).show();
+            btn.append(icon);
+            btn.click($.proxy(function(){
+                var action = 'divide';
+                if( $(obj).prev().hasClass('PageDivide') ){
+                    action = 'undivide';
+                }
+                var mdId = Number($(obj).attr('id').substr(2));
+                $.ajax({
+                    url: 'api/outlineEditor.cgi',
+                    type: 'POST',
+                    data: {
+                        fid: getParam('fid'),
+                        action: action,
+                        num: mdId,
+                    }
+                }).done(function(res){
+                    var target = $("#md" + res.num);
+                    if( res.action === 'divide'){
+                        target.before($('<div>').addClass('PageDivide'));
+                        target.find('.DivideBtn i').addClass('DeletePoint').removeClass('Eject');
+                    }else{
+                        target.prev('.PageDivide').remove();
+                        target.find('.DivideBtn i').addClass('Eject').removeClass('DeletePoint');
                     }
                 });
-            }
-        },
-*/
-/*
-        activeNum: function(num){
-            $('.MdBuffer ul.Pagenav').find('a.OutlinePage').each(function(index){
-                if( index === num ){
-                    $(this).addClass('Active');
-                }else{
-                    $(this).removeClass('Active');
-                }
-            });
+            }, this));
+            return btn;
         }
-*/
     };
 
     return divideCtrl;

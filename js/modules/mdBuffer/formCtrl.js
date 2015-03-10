@@ -165,17 +165,23 @@ define(function(){
             $('#' + this.mdId).attr('id', this.mdId + 'org');
             var $tmp = $('#' + this.mdId + 'org');
             var $cnt = 0;
-            $(res.md).each($.proxy(function(i, elm){
-                if( elm.nodeType != 1 ) return;
-                var formCtrl = new mdEditForm($(elm), this.fid);
+            $(res).each($.proxy(function(i, elm){
+                var formCtrl = new mdEditForm($(elm.md), this.fid);
                 formCtrl.init();
                 var $mdPrgh = formCtrl.getMdParagraph();
+                if( this.id >= 0 ){
+                    require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                        $mdPrgh.find('.DivideCtrl').append(
+                            new DivideCtrl().getDivideBtn($mdPrgh)
+                        );
+                    }, this));
+                }
                 $tmp.after($mdPrgh);
                 $tmp = $mdPrgh;
                 $cnt++;
             }, this));
 
-            if( $cnt > 1 ){
+            if( $cnt > 0 ){
                 this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
             }
             $('#' + this.mdId + 'org').remove();
@@ -221,7 +227,8 @@ define(function(){
         getMdParagraph: function() {
             this.src.addClass('MdBody');
             var divideCtrl = $('<div>').addClass('DivideCtrl');
-            return $('<div>').addClass('Md').append(this.src).append(divideCtrl);
+            var mdParagraph = $('<div>').addClass('Md').append(this.src).append(divideCtrl);
+            return mdParagraph;
         }
     };
 
