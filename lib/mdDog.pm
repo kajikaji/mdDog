@@ -28,7 +28,7 @@ use File::Copy;
 use File::Basename;
 use File::Path;
 use Date::Manip;
-use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph/;
+use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
 use NKF;
 use Cwd;
 use Image::Magick;
@@ -860,29 +860,10 @@ sub set_buffer_md{
     my $document = $self->get_user_document($uid, $fid);
 
     my $md = markdown($document);
-#    $md =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
-#    $md =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
     $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
 
     $self->{t}->{markdown} = $md;
-=pod
-    my ($rowdata, @partsAry) = $self->split_for_md($document);
-    my $md;
-    my $cnt = 0;
-
-    foreach (@partsAry) {
-        my $conv = markdown($_);
-
-        $conv =~ s/^<([a-z1-9]+)>/<\1 id=\"md${cnt}\" class=\"Md\">/;
-        $conv =~ s#^<([a-z1-9]+) />#<\1 id=\"md${cnt}\" class=\"Md\" />#;
-        $conv =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
-
-        $md .= $conv;
-        $cnt++;
-    }
-    $self->{t}->{rowdata} = $rowdata;
-    $self->{t}->{markdown} = $md;
-=cut
+    $self->{t}->{raws} = paragraphs($document);
 }
 
 ############################################################

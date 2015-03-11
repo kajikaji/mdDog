@@ -27,6 +27,11 @@
     <div class="Document">
       [% markdown %]
     </div>
+    <div class="Rawdata">
+      [%FOREACH raw IN raws %]
+        <div id="raw[% loop.index %]" class="Raw">[% raw %]</div> 
+      [%END %]
+    </div>
 
     <div id="editform" class="Editform" style="display: none;">
       <textarea id="editdata" class="Editdata" name="editdata"></textarea>

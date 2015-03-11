@@ -35,7 +35,10 @@ define(function(){
             this.formId = 'edit' + this.id;
 
             if( this.id >= 0 ){
-                this.getRawData();
+//                this.getRawData();
+                var data = $('#raw' + this.id).text();
+                var n    = data.match(/\n/g).length + 1;
+                this.tt.text(data).attr('rows', n);
             }
             this.tt.attr('id', 'editdata' + this.id);
             newForm.attr('id', this.formId);
@@ -106,7 +109,8 @@ define(function(){
                     fid    : this.fid, 
                     eid    : this.id>=0?this.id:0,
                     action : 'delete',
-                }
+                },
+                timeout: 5000
             }).done($.proxy(function(res){
                 this.deleteSuccess(res);
                 this.updateMessage();
@@ -123,7 +127,8 @@ define(function(){
                 data :{
                     fid    : this.fid, 
                     action : 'image_list', 
-                }
+                },
+                timeout: 5000
             }).done($.proxy(function(res){
                 var length = res.length;
                 var list = $('#' + this.formId).find('ul.ImageList');
@@ -163,8 +168,12 @@ define(function(){
         updateSuccess: function(res){
             $('#' + this.formId).remove();
             $('#' + this.mdId).attr('id', this.mdId + 'org');
-            var $tmp = $('#' + this.mdId + 'org');
-            var $cnt = 0;
+            var $tmp  = $('#' + this.mdId + 'org');
+
+            $('#raw' + this.id).attr('id', 'raw' + this.id + 'org');
+            var $tmp2 = $('#raw' +  this.id + 'org');
+
+            var $cnt  = 0;
             $(res).each($.proxy(function(i, elm){
                 var formCtrl = new mdEditForm($(elm.md), this.fid);
                 formCtrl.init();
@@ -178,20 +187,30 @@ define(function(){
                 }
                 $tmp.after($mdPrgh);
                 $tmp = $mdPrgh;
+
+                var $rawPrgh = $('<div>').addClass('Raw').text(elm.raw);
+                $tmp2.after($rawPrgh);
+                $tmp2 = $rawPrgh;
+
                 $cnt++;
             }, this));
 
             if( $cnt > 0 ){
                 this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
+                this.resetTreeId($('#raw' + this.id + 'org').next(), this.id>=0?this.id:0, 'raw');
             }
             $('#' + this.mdId + 'org').remove();
+            $('#raw' + this.id + 'org').remove();
             this.checkBlankDocument();
         },
         deleteSuccess: function(res){
             $('#' + this.formId).remove();
             var $nextMd = $('#' + this.mdId).next();
+            var $nextRaw = $('#raw' + this.id).next();
             $('#' + this.mdId).remove();
+            $('#raw' + this.id).remove();
             this.resetTreeId($nextMd, this.id, 'md');
+            this.resetTreeId($nextRaw, this.id, 'raw');
             this.checkBlankDocument();
         },
         updateMessage: function(){
@@ -203,7 +222,7 @@ define(function(){
         },
         resetTreeId: function(obj, inc, prefix){
             while( obj.length > 0 ){
-                if( obj.hasClass('Md') ){
+                if( obj.hasClass('Md') || obj.hasClass('Raw') ){
                     obj.attr('id', prefix + inc);
                     inc++;
                 }
@@ -212,15 +231,11 @@ define(function(){
         },
         checkBlankDocument: function(){
             if( $('.BufferEdit.Markdown .Document').children().length == 0 ){
-                var blank = $('<div>').addClass("Blank").attr("id", "md-1");
-                $('.MdBuffer div.Document').append(blank);
-                blank.hover(
-                    function(){ blank.addClass('Focus'); },
-                    function(){ blank.removeClass('Focus'); }
-                );
-                blank.click($.proxy(function(ev){
-                    new mdEditForm($(ev.target), this.fid).init();;
-                }, this));
+                var formCtrl = new mdEditForm($('<div>').addClass('Blank'), this.fid);
+                formCtrl.init();
+                var mdObj = formCtrl.getMdParagraph();
+                $(mdObj).attr('id', 'md-1');
+                $('.BufferEdit.Markdown .Document').append(mdObj);
             }
         },
 

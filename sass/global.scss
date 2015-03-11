@@ -1198,6 +1198,10 @@ section.MdBuffer{
                 }
                 >.DivideCtrl{
                     float: right;
+                    border: 1px solid #aaa;
+                    @include round-corner(5px);
+                    padding: 2px 5px 5px;
+
                     .DivideBtn{
                         float: right;
                         text-align: right;
@@ -1252,6 +1256,9 @@ section.MdBuffer{
                 }
             }
             @include markdown-set;
+        }
+        .Rawdata{
+            display: none;
         }
     }
 
