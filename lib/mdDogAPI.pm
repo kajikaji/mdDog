@@ -76,46 +76,53 @@ sub get_data {
 #[API]
 #
 sub post_data {
-  my $self = shift;
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
-  my $eid = $self->qParam('eid') + 0;
-  my $data = $self->qParam('data');
-  $data .= "\n" if( $data !~ m/(.*)\n$/);
-  $data .= "\n" if( $data !~ m/(.*)\n\n$/);
+    my $self = shift;
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
+    my $fid = $self->qParam('fid') + 0;
+    my $eid = $self->qParam('eid') + 0;
+    my $data = $self->qParam('data');
+    $data .= "\n" if( $data !~ m/(.*)\n$/);
+    $data .= "\n" if( $data !~ m/(.*)\n\n$/);
 
-  my $document = $self->get_user_document($uid, $fid);
-  $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
+    my $document = $self->get_user_document($uid, $fid);
+    $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
 
-  #ファイル書き込み
-  # TODO: ファイル名取得ルーチンが重複！
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
+    #ファイル書き込み
+    # TODO: ファイル名取得ルーチンが重複！
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
 
-  $self->{git}->attach_local_tmp($uid, 1);
-  open my $hF, '>', $filepath || return undef;
-  syswrite $hF, $document, length($document);
-  close $hF;
+    $self->{git}->attach_local_tmp($uid, 1);
+    open my $hF, '>', $filepath || return undef;
+    syswrite $hF, $document, length($document);
+    close $hF;
 
-  my $author = $self->_get_author($self->{s}->param('login'));
-  $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detach_local();
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->commit($filename, $author, "temp saved");
 
-  my $mds;
-  my $raws = paragraphs($data);
-  foreach( @$raws ){
-    my $raw = $_;
-    my $md = markdown($raw);
-    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
-    push @$mds, {md => $md, raw => $raw};
-  }
+    my $mds;
+    my $cnt = 0;
+    my $raws = paragraphs($data);
+    foreach ( @$raws ) {
+        my $raw = $_;
+        my $md = markdown($raw);
+        $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
+        push @$mds, {md => $md, raw => $raw};
+        $cnt++;
+    }
 
-  my $json = JSON->new();
-  return $json->encode($mds);
+    my $comment = "SLIDE_DOWN DIVIDE";
+    $self->{outline}->slide_down_divide($eid, $cnt - 1);
+    $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+
+    $self->{git}->detach_local();
+
+    my $json = JSON->new();
+    return $json->encode($mds);
 }
 
 ############################################################
@@ -147,43 +154,15 @@ sub delete_data {
 
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->commit($filename, $author, "temp saved");
+
+    my $comment = "SLIDE_UP DIVIDE";
+    $self->{outline}->slide_up_divide($eid);
+    $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+
     $self->{git}->detach_local();
 
     my $json = JSON->new();
     return $json->encode({eid => ${eid}});
-
-
-=pod
-  my ($rowdata, @partsAry) = $self->split_for_md($document);
-
-  $self->{git}->attach_local_tmp($uid, 1);
-
-  #ファイル書き込み
-  # TODO: ファイル名取得ルーチンが重複！
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-
-  open my $hF, '>', $filepath || return undef;
-  my $cnt = 0;
-  foreach(@partsAry) {
-    if($eid != $cnt){
-      my $line = $_ . "\n";
-      syswrite $hF, $line, length($line);
-    }
-    $cnt++;
-  }
-  close $hF;
-
-  my $author = $self->_get_author($self->{s}->param('login'));
-  $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detach_local();
-
-  my $json = JSON->new();
-  return $json->encode({eid => ${eid}});
-=cut
 }
 
 ############################################################

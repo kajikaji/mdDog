@@ -137,4 +137,57 @@ sub get_divides {
   return $ret;
 }
 
+####################################################################
+#
+sub slide_down_divide {
+    my ($self, $num, $cnt) = @_;
+
+    $self->init();
+    for( sort { $a <=> $b } (keys %{$self->{'DIVIDE'}}) ){
+        next if( $_ <= $num );
+        my $value = $self->{'DIVIDE'}->{$_};
+        delete $self->{'DIVIDE'}->{$_};
+        $self->{'DIVIDE'}->{$_ + $cnt} = $value;
+    }
+
+    my $datpath = "$self->{workdir}/$self->{filename}";
+    open my $hF, '>', $datpath || die "can't open ${datpath}";
+    for( keys %{$self->{'DIVIDE'}} ){
+        my $cnum = $_;
+        my $ccomment = $self->{'DIVIDE'}->{$cnum};
+        my $line = "${cnum}:DIVIDE:${ccomment}\n";
+        print $hF $line;
+    }
+    close $hF;
+}
+
+####################################################################
+# slide up は1行のみ可能
+#
+sub slide_up_divide {
+    my ($self, $num) = @_;
+    my $cnt = 1;
+
+    $self->init();
+    for( sort { $a <=> $b } (keys %{$self->{'DIVIDE'}}) ){
+        next if( $_ <= $num );
+        my $value = $self->{'DIVIDE'}->{$_};
+        delete $self->{'DIVIDE'}->{$_};
+        if( $_ - $cnt > $num ){
+            $self->{'DIVIDE'}->{$_ - $cnt} = $value;
+        }
+    }
+
+    my $datpath = "$self->{workdir}/$self->{filename}";
+    open my $hF, '>', $datpath || die "can't open ${datpath}";
+    for( keys %{$self->{'DIVIDE'}} ){
+        my $cnum = $_;
+        my $ccomment = $self->{'DIVIDE'}->{$cnum};
+        my $line = "${cnum}:DIVIDE:${ccomment}\n";
+        print $hF $line;
+    }
+    close $hF;
+
+}
+
 1;
