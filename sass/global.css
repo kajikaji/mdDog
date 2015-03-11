@@ -789,27 +789,30 @@ section.Outline {
       font-size: 10pt;
       line-height: 1.0em;
       list-style: none; }
-      section.Outline .Contents > ul.List li.Level1 {
-        margin-top: 10px;
-        border-bottom: 1px dashed #aaa; }
-      section.Outline .Contents > ul.List li.Level2 {
-        font-size: 80%;
-        padding-left: 50px; }
-      section.Outline .Contents > ul.List li.Level3 {
-        font-size: 70%;
-        padding-left: 80px; }
-      section.Outline .Contents > ul.List li.Level4 {
-        font-size: 70%;
-        padding-left: 100px; }
-      section.Outline .Contents > ul.List li .PageNum {
-        display: inline-block;
-        float: right; }
-      section.Outline .Contents > ul.List li:after, section.Outline .Contents > ul.List li:before {
-        display: table;
-        content: "";
-        line-height: 0; }
-      section.Outline .Contents > ul.List li:after {
-        clear: both; }
+      section.Outline .Contents > ul.List li {
+        margin-top: 5px;
+        padding-bottom: 5px; }
+        section.Outline .Contents > ul.List li.Level1 {
+          margin-top: 20px;
+          border-bottom: 1px solid #aaa; }
+        section.Outline .Contents > ul.List li.Level2 {
+          padding-left: 50px;
+          border-bottom: 1px dashed #ccc; }
+        section.Outline .Contents > ul.List li.Level3 {
+          font-size: 70%;
+          padding-left: 80px; }
+        section.Outline .Contents > ul.List li.Level4 {
+          font-size: 70%;
+          padding-left: 100px; }
+        section.Outline .Contents > ul.List li .PageNum {
+          display: inline-block;
+          float: right; }
+        section.Outline .Contents > ul.List li:after, section.Outline .Contents > ul.List li:before {
+          display: table;
+          content: "";
+          line-height: 0; }
+        section.Outline .Contents > ul.List li:after {
+          clear: both; }
 
 section.OutlineEditor ul.BufferEditMenu {
   position: absolute;

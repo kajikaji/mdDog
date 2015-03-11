@@ -1017,13 +1017,15 @@ section.Outline{
             list-style: none;
 
             li{
+                margin-top: 5px;
+                padding-bottom: 5px;
                 &.Level1{
-                    margin-top: 10px;
-                    border-bottom: 1px dashed #aaa;
+                    margin-top: 20px;
+                    border-bottom: 1px solid #aaa;
                 }
                 &.Level2{
-                    font-size: 80%;
                     padding-left: 50px;
+                    border-bottom: 1px dashed #ccc;
                 }
                 &.Level3{
                     font-size: 70%;
@@ -1034,7 +1036,7 @@ section.Outline{
                     padding-left: 100px;
                 }
                 .PageNum{
-display: inline-block;
+                    display: inline-block;
                     float: right;
                 }
                 @include clearfix();

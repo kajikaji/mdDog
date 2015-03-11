@@ -757,82 +757,88 @@ sub _get_author {
 # またドキュメントの情報もテンプレートにセットする
 #
 sub set_master_outline{
-  my $self = shift;
+    my $self = shift;
 
-  my $fid  = $self->qParam('fid');
-  return unless($fid);  # NULL CHECK
+    my $fid  = $self->qParam('fid');
+    return unless($fid);  # NULL CHECK
 
-  my $sql  = "select file_name from docx_infos where id = ${fid};";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
+    my $sql  = "select file_name from docx_infos where id = ${fid};";
+    my @ary  = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
 
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $md;
-  my $user     = undef;
-  my $revision = undef;
-  my $gitctrl  = $self->{git};
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    my $data;
+    my $user     = undef;
+    my $revision = undef;
+    my $gitctrl  = $self->{git};
 
-  #MDファイルの更新履歴の整形
-  $self->{t}->{loglist} = $gitctrl->get_shared_logs("DESC");
+    #MDファイルの更新履歴の整形
+    $self->{t}->{loglist} = $gitctrl->get_shared_logs("DESC");
 
-  #ドキュメントの読み込み
-  $gitctrl->attach_local($user);
-  $gitctrl->checkout_version($revision);
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $md, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
-  $gitctrl->detach_local();
+    #ドキュメントの読み込み
+    $gitctrl->attach_local($user);
+    $gitctrl->checkout_version($revision);
+    open my $hF, '<', $filepath || die "failed to read ${filepath}";
+    my $pos = 0;
+    while (my $length = sysread $hF, $data, 1024, $pos) {
+        $pos += $length;
+    }
+    close $hF;
+    $gitctrl->detach_local();
 
-  my @contents;
+    my @contents;
 
-  $self->{outline}->init();
-  my $divides = $self->{outline}->get_divides();
-  my ($rowdata, @partsAry) = $self->split_for_md($md);
-  my ($i, $j) = (0, 0);
-  my ($docs, $dat);
-  foreach (@partsAry) {
-    if($divides){
-      #改ページ
-      if(@$divides[$i] == $j){
+    $self->{outline}->init();
+    my $divides = $self->{outline}->get_divides();
+    my $rawdata = paragraphs($data);
+
+    #  my ($rowdata, @partsAry) = $self->split_for_md($data);
+    my ($i, $j) = (0, 0);
+    my $docs;
+    my $dat = undef;
+    #  foreach (@partsAry) {
+    for ( @$rawdata ) {
+        if ($divides) {
+            #改ページ
+            if (@$divides[$i] == $j) {
+                push @$docs, $dat;
+                $dat = undef;
+                $i++;
+            }
+        }
+
+        my $line = markdown($_);
+        $line =~ s#^<([a-z1-9]+)>#<\1 id="document${j}">#;
+        $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
+        $dat .= $line;
+
+        #目次の生成
+        if ( $line =~ m/<h1.*>/) {
+            $line =~ s#<h1.*>(.*)</h1>#\1#;
+            push @contents, {level => 1, line => $line, num => $j};
+        } elsif ( $line =~ m/<h2.*>/ ) {
+            $line =~ s#<h2.*>(.*)</h2>#\1#;
+            push @contents, {level => 2, line => $line, num => $j};
+        } elsif ( $line =~ m/<h3.*>/ ) {
+            $line =~ s#<h3.*>(.*)</h3>#\1#;
+            push @contents, {level => 3, line => $line, num => $j};
+        }
+#        elsif ( $line =~ m/<h4.*>/ ) {
+#            $line =~ s#<h4.*>(.*)</h4>#\1#;
+#            push @contents, {level => 4, line => $line, num => $j};
+#        }
+
+        $j++;
+    }
+
+    if ($dat ne "") {
         push @$docs, $dat;
-        $dat = undef;
-        $i++;
-      }
     }
 
-    my $line = markdown($_);
-    $line =~ s#^<([a-z1-9]+)>#<\1 id="document${j}">#;
-    $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
-    $dat .= $line;
-
-    #目次の生成
-    if( $line =~ m/<h1.*>/){
-      $line =~ s#<h1.*>(.*)</h1>#\1#;
-      push @contents, {level => 1, line => $line, num => $j};
-    }elsif( $line =~ m/<h2.*>/ ){
-      $line =~ s#<h2.*>(.*)</h2>#\1#;
-      push @contents, {level => 2, line => $line, num => $j};
-    }elsif( $line =~ m/<h3.*>/ ){
-      $line =~ s#<h3.*>(.*)</h3>#\1#;
-      push @contents, {level => 3, line => $line, num => $j};
-    }elsif( $line =~ m/<h4.*>/ ){
-      $line =~ s#<h4.*>(.*)</h4>#\1#;
-      push @contents, {level => 4, line => $line, num => $j};
-    }
-
-    $j++;
-  }
-  if($dat ne ""){
-    push @$docs, $dat;
-  }
-
-  $self->{t}->{revision} = $revision;
-  $self->{t}->{contents} = \@contents;
-  $self->{t}->{docs}     = $docs;
+    $self->{t}->{revision} = $revision;
+    $self->{t}->{contents} = \@contents;
+    $self->{t}->{docs}     = $docs;
 }
 
 ############################################################

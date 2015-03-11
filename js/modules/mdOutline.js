@@ -20,8 +20,8 @@ define(function(){
 
             this.page = 0;
             $('.Outline').find('.Document.Page').each($.proxy(function(i, elm){
-//                this.adjustDocumentPage(elm);
-//                $(elm).remove();
+                this.adjustDocumentPage(elm);
+                $(elm).remove();
             }, this));
 
             //目次にページ番号を挿入
@@ -30,7 +30,7 @@ define(function(){
 		            var num     = Number($(this).attr('id').substr(7));
 		            var pageObj = $('#document' + num).parent('.Document.Page');
 		            var page    = Number(pageObj.attr('class').split(' ')[2].substr(1)) + 1;
-		            $(this).find('.PageNum').text(page);
+		            $(this).find('span').addClass('PageNum').text(page);
 	            });
 	        }, this));
 
@@ -39,18 +39,22 @@ define(function(){
 
         addPage : function (className, cPage, depth, obj){
             var newPage = $('<div>').addClass(className + ' Page  P' + (cPage + 1));
-            var blk     = obj;
+            var oldPage = $(obj).parents('.Page');
+            var blk     = oldPage;
             var ch      = undefined;
             for(var i=0; i < depth; i++){
-                var pObj    = $(blk).parent().get(0);
-                var pNewObj = $('<' + pObj.tagName + '>');
-                if( ch !== undefined ){
-                    pNewObj.append(ch);
+                var pObjs = blk.children();
+                var k=0;
+                while($(pObjs.get(k)).hasClass('Subject')){
+                    k++;
                 }
-                ch  = pNewObj;
+                var pObj = pObjs.get(k);
+                var pNewObj = $('<' + pObj.tagName + '>');
+                pNewObj.addClass(pObj.className);
+                newPage.append(pNewObj)
+
                 blk = pObj;
             }
-            newPage.prepend(ch);
             $('.' + className + '.Page.P' + cPage).after(newPage);
             $(obj).prev().addClass("AdjustBlock");
         },
