@@ -1178,6 +1178,10 @@ section.MdBuffer{
             @include clearfix();
         }
 
+        .Raw{
+            display: none;
+        }
+
         .Document{
             background-color: #fff;
             border: 2px solid #888;
@@ -1258,9 +1262,6 @@ section.MdBuffer{
                 }
             }
             @include markdown-set;
-        }
-        .Rawdata{
-            display: none;
         }
     }
 

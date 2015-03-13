@@ -15,7 +15,8 @@ define(function(){
                         formCtrl.init();
                         var mdObj = formCtrl.getMdParagraph();
                         $(mdObj).attr("id", "md" + i);
-
+                        $(mdObj).find('.Raw').text($('#raw' + i).text());
+                        $('#raw' + i).remove();
                         $('.BufferEdit.Markdown .Document').append(mdObj);
                         cnt++;
                     }, this));

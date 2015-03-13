@@ -35,8 +35,7 @@ define(function(){
             this.formId = 'edit' + this.id;
 
             if( this.id >= 0 ){
-//                this.getRawData();
-                var data = $('#raw' + this.id).text();
+                var data = $('#' + this.mdId).find('.Raw').text();
                 var n    = data.match(/\n/g).length + 1;
                 this.tt.text(data).attr('rows', n);
             }
@@ -47,23 +46,6 @@ define(function(){
             this.src.after(newForm);
             newForm.show(); this.src.hide();
             this.attachButton();
-        },
-
-        getRawData: function() {
-            $.ajax({
-                url  : this.api,
-                type : 'GET',
-                data : {
-                    fid    : this.fid, 
-                    eid    : this.id > 0?this.id:'0',
-                    action : undefined
-                },
-                timeout: 3000,
-            }).done($.proxy(function(res){
-                var data = res[0].data;
-                var n    = data.match(/\n/g).length + 1;
-                this.tt.text(data).attr('rows', n);
-            }, this));
         },
 
         attachButton: function(){
@@ -169,10 +151,6 @@ define(function(){
             $('#' + this.formId).remove();
             $('#' + this.mdId).attr('id', this.mdId + 'org');
             var $tmp  = $('#' + this.mdId + 'org');
-
-            $('#raw' + this.id).attr('id', 'raw' + this.id + 'org');
-            var $tmp2 = $('#raw' +  this.id + 'org');
-
             var $cnt  = 0;
             $(res).each($.proxy(function(i, elm){
                 var formCtrl = new mdEditForm($(elm.md), this.fid);
@@ -185,32 +163,24 @@ define(function(){
                         );
                     }, this));
                 }
+                $mdPrgh.find('.Raw').text(elm.raw);
                 $tmp.after($mdPrgh);
                 $tmp = $mdPrgh;
-
-                var $rawPrgh = $('<div>').addClass('Raw').text(elm.raw);
-                $tmp2.after($rawPrgh);
-                $tmp2 = $rawPrgh;
 
                 $cnt++;
             }, this));
 
             if( $cnt > 0 ){
                 this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
-                this.resetTreeId($('#raw' + this.id + 'org').next(), this.id>=0?this.id:0, 'raw');
             }
             $('#' + this.mdId + 'org').remove();
-            $('#raw' + this.id + 'org').remove();
             this.checkBlankDocument();
         },
         deleteSuccess: function(res){
             $('#' + this.formId).remove();
             var $nextMd = $('#' + this.mdId).next();
-            var $nextRaw = $('#raw' + this.id).next();
             $('#' + this.mdId).remove();
-            $('#raw' + this.id).remove();
             this.resetTreeId($nextMd, this.id, 'md');
-            this.resetTreeId($nextRaw, this.id, 'raw');
             this.checkBlankDocument();
         },
         updateMessage: function(){
@@ -242,7 +212,8 @@ define(function(){
         getMdParagraph: function() {
             this.src.addClass('MdBody');
             var divideCtrl = $('<div>').addClass('DivideCtrl');
-            var mdParagraph = $('<div>').addClass('Md').append(this.src).append(divideCtrl);
+            var rawdata = $('<div>').addClass('Raw');
+            var mdParagraph = $('<div>').addClass('Md').append(this.src).append(divideCtrl).append(rawdata);
             return mdParagraph;
         }
     };
