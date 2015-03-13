@@ -148,39 +148,92 @@ define(function(){
         },
 
         updateSuccess: function(res){
-            $('#' + this.formId).remove();
-            $('#' + this.mdId).attr('id', this.mdId + 'org');
-            var $tmp  = $('#' + this.mdId + 'org');
-            var $cnt  = 0;
-            $(res).each($.proxy(function(i, elm){
-                var formCtrl = new mdEditForm($(elm.md), this.fid);
-                formCtrl.init();
-                var $mdPrgh = formCtrl.getMdParagraph();
-                if( this.id >= 0 ){
-                    require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
-                        $mdPrgh.find('.DivideCtrl').append(
-                            new DivideCtrl().getDivideBtn($mdPrgh)
-                        );
-                    }, this));
+            require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                $('#' + this.formId).remove();
+                $('#' + this.mdId).attr('id', this.mdId + 'org');
+                var $ptr = $('#' + this.mdId + 'org');
+                var $tmp  = $ptr;
+                var $cnt  = 0;
+                if( this.id < 0 ){  this.id = 0;  }
+
+                $(res).each($.proxy(function(i, elm){
+                    var formCtrl = new mdEditForm($(elm.md), this.fid);
+                    formCtrl.init();
+                    var $mdPrgh = formCtrl.getMdParagraph();
+                    $mdPrgh.find('.Raw').text(elm.raw);
+                    $tmp.after($mdPrgh);
+                    if( $tmp.attr('id') === this.mdId + 'org' ){
+                        $ptr = $tmp.next();
+                        $tmp.remove();
+                    }
+
+                    if( this.id === 0 && i === 0 ){
+                        $mdPrgh.find('.DivideCtrl').append( new DivideCtrl().getPageNum(0) );
+                    }else{
+                        $mdPrgh.find('.DivideCtrl').append( new DivideCtrl().getDivideBtn($mdPrgh) );
+                        if( $mdPrgh.prev().hasClass('PageDivide') ){
+                            var pagenum = Number($mdPrgh.prev().attr('id').substr(4));
+                            $mdPrgh.find('.DivideCtrl').append( new DivideCtrl().getPageNum(pagenum) );
+                        }
+                    }
+                    $tmp = $mdPrgh;
+                    $cnt++;
+                }, this));
+                if( $cnt > 0 ){
+                    this.resetTreeId($ptr, this.id>=0?this.id:0, 'md');
                 }
-                $mdPrgh.find('.Raw').text(elm.raw);
-                $tmp.after($mdPrgh);
-                $tmp = $mdPrgh;
-
-                $cnt++;
+                this.checkBlankDocument();
             }, this));
-
-            if( $cnt > 0 ){
-                this.resetTreeId($('#' + this.mdId + 'org').next(), this.id>=0?this.id:0, 'md');
-            }
-            $('#' + this.mdId + 'org').remove();
-            this.checkBlankDocument();
         },
         deleteSuccess: function(res){
             $('#' + this.formId).remove();
+            var divideFlg = false;
+            if( $('#' + this.mdId).prev().hasClass('PageDivide') ){
+                divideFlg = true;
+            }
             var $nextMd = $('#' + this.mdId).next();
             $('#' + this.mdId).remove();
-            this.resetTreeId($nextMd, this.id, 'md');
+
+            if( $nextMd.length ){
+                if( $nextMd.hasClass('PageDivide')
+                    && (this.id === 0 || divideFlg) ){
+                    var pagenum = Number($nextMd.attr('id').substr(4));
+                    var $tmp = $nextMd.next();
+                    $nextMd.remove();
+                    $nextMd = $tmp;
+                }
+
+                //MD段落のid制御
+                this.resetTreeId($nextMd, this.id, 'md');
+
+                //改ページコントロール部の制御
+                if( this.id === 0 ){
+                    $nextMd.find('.DivideCtrl').find('.DivideBtn').remove();
+                    require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                        if( $nextMd.find('.DivideCtrl .PageNum').length ){
+                            $nextMd.find('.DivideCtrl .PageNum').text('P 1');
+                        }else{
+                            $nextMd.find('.DivideCtrl').append(
+                                new DivideCtrl().getPageNum(0)
+                            );
+                        }
+                    }, this));
+                    this.resetPageNum($nextMd, 1);
+                }
+                if( $nextMd.prev().hasClass('PageDivide') ){
+                    if( !$nextMd.find('.DivideCtrl .PageNum').length ){
+                        $nextMd.find('.DivideBtn').after($('<div>').addClass('PageNum'));
+                    }
+                    var pagenum = Number($nextMd.prev().attr('id').substr(4));
+                    $nextMd.find('.DivideCtrl .PageNum').text('P ' + (pagenum + 1));
+                    $nextMd.find('.DivideBtn i').addClass('DeletePoint').removeClass('Eject');
+                    pagenum++;
+                    this.resetPageNum($nextMd, pagenum);
+                }
+            }else if( divideFlg ){ //ドキュメント最後に改ページが残った時の対処
+                var $lastDivide = $('.BufferEdit.Markdown .Document').children().last();
+                $lastDivide.remove();
+            }
             this.checkBlankDocument();
         },
         updateMessage: function(){
@@ -192,9 +245,26 @@ define(function(){
         },
         resetTreeId: function(obj, inc, prefix){
             while( obj.length > 0 ){
-                if( obj.hasClass('Md') || obj.hasClass('Raw') ){
+                if( obj.hasClass('Md') ){
                     obj.attr('id', prefix + inc);
                     inc++;
+                }
+                obj = obj.next();
+            }
+        },
+        resetPageNum: function(obj, num){
+            while( obj.length ){
+                if( obj.hasClass('PageDivide') ){
+                    if( obj.next('.Md').length ){
+                        obj.attr('id', 'page' + num);
+                        obj.next('.Md').find('.PageNum').text('P ' + (num + 1));
+                    }else{ //ドキュメントの最終段落の場合
+                        var tmp = obj.next();
+                        obj.remove();
+                        obj = tmp;
+                        break;
+                    }
+                    num++;
                 }
                 obj = obj.next();
             }
@@ -205,6 +275,11 @@ define(function(){
                 formCtrl.init();
                 var mdObj = formCtrl.getMdParagraph();
                 $(mdObj).attr('id', 'md-1');
+                require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                    $(mdObj).find('.DivideCtrl').append(
+                        new DivideCtrl().getPageNum(0)
+                    );
+                }, this));
                 $('.BufferEdit.Markdown .Document').append(mdObj);
             }
         },

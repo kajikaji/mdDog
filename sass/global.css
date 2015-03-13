@@ -92,6 +92,7 @@ i.Glyph {
   background-image: url("../img/179_eject.png"); }
 
 .Glyph.DeletePoint {
+  height: 18px;
   background-image: url("../img/256_delete_point.png"); }
 
 a.Glyph {
@@ -1013,12 +1014,20 @@ section.MdBuffer .BufferEdit {
       border-radius: 5px;
       -webkit-border-radius: 5px;
       -moz-border-radius: 5px;
-      padding: 2px 5px 5px; }
+      padding: 2px 5px 5px;
+      text-align: right; }
       section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn {
-        float: right;
         text-align: right; }
         section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn:hover, section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .DivideBtn:link {
           cursor: pointer; }
+      section.MdBuffer .BufferEdit .Document > .Md > .DivideCtrl .PageNum {
+        font-size: 9px;
+        color: #888;
+        font-style: italic;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+        width: 26px; }
     section.MdBuffer .BufferEdit .Document > .Md:after, section.MdBuffer .BufferEdit .Document > .Md:before {
       display: table;
       content: "";
