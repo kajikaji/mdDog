@@ -294,7 +294,7 @@ sub add_account {
 INSERT INTO docx_users
   (account, nic_name, mail, password, created_at)
 VALUES
-  ('$account', '$nicname', '$mail', md5('$password'), now())
+  ('${account}', '${nicname}', '${mail}', md5('${password}'), now())
 SQL
 
     $self->{dbh}->do($sql_insert)
