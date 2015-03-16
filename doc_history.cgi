@@ -31,10 +31,10 @@ $dog->login();
 $dog->check_auths("all");
 
 if(!$dog->qParam('fid')) {
-  $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>doc_history.cgi<br>Err001";
+    $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>doc_history.cgi<br>Err001";
 } else {
-  $dog->git_log();
-  $dog->set_document_info();
+    $dog->set_document_log();
+    $dog->set_document_info();
 }
 
 $dog->print_page();

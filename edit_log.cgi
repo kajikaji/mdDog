@@ -42,7 +42,7 @@ if( $dog->qParam('resetBuffer') ){
 
 $dog->is_exist_buffer();
 
-$dog->git_my_log();
+$dog->set_my_log();
 $dog->set_document_info();
 
 $dog->print_page();

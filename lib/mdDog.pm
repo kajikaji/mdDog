@@ -414,68 +414,55 @@ sub is_exist_buffer {
     }
 }
 
-
 ############################################################
 #ドキュメントのログを取得
 #
-# @param1 全ての編集ユーザーのログを取得するかのフラグ
+sub set_document_log(){
+    my $self    = shift;
+    my $gitctrl = $self->{git};
+    my $tmpl    = $self->{t};
+
+    #共有リポジトリ(master)
+    $tmpl->{sharedlist} = $gitctrl->get_shared_logs();
+}
+
+############################################################
+#ドキュメントのログを取得(承認者用)
 #
-sub git_log {
+sub set_user_log {
     my $self = shift;
-    my $all  = shift;
 
     my $fid  = $self->qParam("fid");
     my $uid  = $self->{s}->param("login");
 
     my @userary;
-    my $latest_rev = undef;
     my $gitctrl    = $self->{git};
+    my $latest_rev = undef;
+    my $doclogs    = $gitctrl->get_shared_logs();
+    $latest_rev    = $doclogs->[0]->{id} if( @$doclogs );
 
-    #共有リポジトリ(master)
-    $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
-    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
+    foreach ( $gitctrl->get_other_users() ) {
+        my $userlog = {
+                       uid       => $_,
+                       name      => $self->_get_nic_name($_),
+                       loglist   => $gitctrl->get_user_logs($_),
+                      };
 
-    if( $all and $uid ){        #ユーザーリポジトリ
-        #自分のリポジトリ
-        my $mylog = {
-                   uid     => $uid,
-                   name    => $self->{user}->{nic_name},
-                   loglist => [],
-                  };
-        if( $gitctrl->is_exist_user_branch($uid) ){
-            $mylog->{loglist} = $gitctrl->get_user_logs($uid);
-            my $user_root = $gitctrl->get_branch_root($uid);
-            $mylog->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
-        }else{
-            $mylog->{is_live} = 1;
-        }
-        push @userary, $mylog;
-        if( $self->{user}->{is_approve} ){
-            #承認者
-            foreach( $gitctrl->get_other_users() ){
-                next if($_ eq $uid);
-                my $userlog = {
-                         uid       => $_,
-                         name      => $self->_get_nic_name($_),
-                         loglist   => $gitctrl->get_user_logs($_),
-                };
-
-                my $userRoot = $gitctrl->get_branch_root($_);
-                if( $latest_rev =~ m/${userRoot}[0-9a-z]+/
-                    && (@{$userlog->{loglist}}) ){
-                    $userlog->{is_live} = 1;
-                    push @userary, $userlog;
-                }
-            }
+        my $userRoot = $gitctrl->get_branch_root($_);
+        if ( $latest_rev =~ m/${userRoot}[0-9a-z]+/
+             && (@{$userlog->{loglist}}) ) {
+            $userlog->{is_live} = 1;
+            push @userary, $userlog;
         }
     }
+
     $self->{t}->{userlist} = \@userary;
 }
 
 ############################################################
 #ログインユーザー自身の編集バッファのログの取得
 #
-sub git_my_log {
+sub set_my_log {
     my $self = shift;
 
     my $fid  = $self->qParam("fid");

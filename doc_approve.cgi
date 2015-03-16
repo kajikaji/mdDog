@@ -36,7 +36,7 @@ if( $dog->qParam('approve') ){
     $dog->set_approve_list();
 }
 
-$dog->git_log('all');
+$dog->set_user_log();
 $dog->set_document_info();
 
 $dog->print_page();

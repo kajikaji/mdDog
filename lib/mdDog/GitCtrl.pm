@@ -165,6 +165,7 @@ sub get_other_users {
 #        $branch =~ s/([0-9]+)_tmp/\1/;
         push @users, $branch;
     }
+
     return @users;
 }
 
