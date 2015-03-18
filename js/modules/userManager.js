@@ -1,6 +1,45 @@
 'use strict'
 
 $(function(){
+    function setUserAuthority(fid, obj){
+        var uid_ = obj.find('.Select input[type=checkbox]').data('id');
+        //承認フラグ
+        obj.find('.Approve input[type=checkbox]').on('click', function(){
+            var checked_ = $(this).prop('checked')===true?1:0;
+            $.ajax({
+                url  : 'api/userManager.cgi',
+                type : 'POST',
+                data : {
+                    action  : 'user_may_approve',
+                    type    : 'POST',
+                    fid     : fid,
+                    uid     : uid_,
+                    checked : checked_
+                }
+            }).done(function(res){
+            });
+        });
+        //編集フラグ
+        obj.find('.Edit input[type=checkbox]').on('click', function(){
+            var checked_ = $(this).prop('checked')===true?1:0;
+            $.ajax({
+                url  : 'api/userManager.cgi',
+                type : 'POST',
+                data : {
+                    action  : 'user_may_edit',
+                    type    : 'POST',
+                    fid     : fid,
+                    uid     : uid_,
+                    checked : checked_
+                }
+            }).done(function(res){
+            });
+        });
+        //削除フラグ
+        obj.find('.Delete input[type=checkbox]').on('click', function(){
+        });
+    };
+
     //ユーザー削除ボタン
     $('button.RemoveUser').click($.proxy(function(){
         var fid_   = getParam('fid');
@@ -57,6 +96,7 @@ $(function(){
                 $tmpl.find('.Name').text(res[i].nic_name);
 
                 $('.UsersTable tbody').prepend($tmpl.show());
+                setUserAuthority(fid_, $tmpl);
 
                 $('.UnallowUsersList select').find('option').each($.proxy(function(j, elm){
                     if(Number(elm.value) === res[i].id){
@@ -74,41 +114,7 @@ $(function(){
     $('.UsersTable tbody').find('tr.User').each(function(){
         var uid_ = $(this).find('.Select input[type=checkbox]').data('id');
         var fid_ = getParam('fid');
-        //承認フラグ
-        $(this).find('.Approve input[type=checkbox]').on('click', function(){
-            var checked_ = $(this).prop('checked')===true?1:0;
-            $.ajax({
-                url  : 'api/userManager.cgi',
-                type : 'POST',
-                data : {
-                    action  : 'user_may_approve',
-                    type    : 'POST',
-                    fid     : fid_,
-                    uid     : uid_,
-                    checked : checked_
-                }
-            }).done(function(res){
-            });
-        });
-        //編集フラグ
-        $(this).find('.Edit input[type=checkbox]').on('click', function(){
-            var checked_ = $(this).prop('checked')===true?1:0;
-            $.ajax({
-                url  : 'api/userManager.cgi',
-                type : 'POST',
-                data : {
-                    action  : 'user_may_edit',
-                    type    : 'POST',
-                    fid     : fid_,
-                    uid     : uid_,
-                    checked : checked_
-                }
-            }).done(function(res){
-            });
-        });
-        //削除フラグ
-        $(this).find('.Delete input[type=checkbox]').on('click', function(){
-        });
+        setUserAuthority(fid_, $(this));
     });
 
     //公開フラグ
