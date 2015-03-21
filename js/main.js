@@ -19,6 +19,7 @@ requirejs.config({
         userManager     :'userManager',
         bufferEditor    :'bufferEditor',
         mdBufferCommitForm  :'mdBuffer/commitForm',
+        mdBufferHeadline    :'mdBuffer/headline',
         mdBufferEditor      :'mdBuffer/editor',
         mdBufferFormCtrl    :'mdBuffer/formCtrl',
         mdBufferDivideCtrl  :'mdBuffer/divideCtrl'
@@ -57,6 +58,9 @@ requirejs.config({
         'mdBufferCommitForm' : {
 	        deps: ['jquery', 'UTIL']
         },
+        'mdBufferHeadline' : {
+	        deps: ['jquery', 'UTIL']
+        },
         'mdBufferFormCtrl' : {
             deps: [
                 'jquery',
@@ -89,6 +93,13 @@ requirejs(['jquery'], function($){
     if( $('section.MdBuffer .BufferEditMenu').length ){
         require(['mdBufferCommitForm'], function(CommitForm){
             new CommitForm().init();
+        });
+    }
+
+    //見出しマップ
+    if( $('#headlineBtn').length ){
+        require(['mdBufferHeadline'], function(Headline){
+            new Headline().init();
         });
     }
 

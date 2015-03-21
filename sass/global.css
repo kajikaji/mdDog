@@ -95,6 +95,9 @@ i.Glyph {
   height: 18px;
   background-image: url("../img/256_delete_point.png"); }
 
+.Glyph.ShowThumbnailsWithLines {
+  background-image: url("../img/156_show_thumbnails_with_lines.png"); }
+
 a.Glyph {
   display: inline-block;
   float: left; }
@@ -1380,6 +1383,48 @@ section.BufferLog .GitLog {
       line-height: 0; }
     .BufferCommitForm .MdBufferFix .Ctrl:after {
       clear: both; }
+
+.Headline {
+  width: 170px;
+  position: fixed;
+  top: 0;
+  left: -170px;
+  height: 100%;
+  background-color: #fff;
+  border-right: 3px double #000;
+  overflow: scroll; }
+  .Headline div.Subject {
+    margin: 0;
+    padding: 10px 5px 5px;
+    border-bottom: 1px solid #000;
+    font-size: 18px;
+    font-weight: bold; }
+    .Headline div.Subject button.CloseBtn {
+      margin-left: 5px;
+      padding: 0;
+      border: 0; }
+  .Headline ul.headlist {
+    margin: 10px 5px 30px;
+    list-style: none;
+    line-height: 1.2em; }
+    .Headline ul.headlist li.h1 {
+      font-size: 14px;
+      margin-top: 10px; }
+    .Headline ul.headlist li.h2 {
+      margin-left: 10px;
+      font-size: 10px; }
+    .Headline ul.headlist li.h3 {
+      margin-left: 15px;
+      font-size: 9px; }
+    .Headline ul.headlist li.h4 {
+      margin-left: 25px;
+      font-size: 9px; }
+    .Headline ul.headlist li a, .Headline ul.headlist li a:hover, .Headline ul.headlist li a:link, .Headline ul.headlist li a:visited {
+      cursor: pointer; }
+    .Headline ul.headlist li a {
+      color: #888; }
+    .Headline ul.headlist li a:hover {
+      color: #000; }
 
 .EditDialog {
   position: fixed;

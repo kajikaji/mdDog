@@ -286,6 +286,9 @@ i.Glyph{
     height: 18px;
     background-image: url("../img/256_delete_point.png");
 }
+.Glyph.ShowThumbnailsWithLines{
+    background-image: url("../img/156_show_thumbnails_with_lines.png");
+}
 a.Glyph {
   display: inline-block;
   float: left;
@@ -1463,6 +1466,64 @@ section.BufferLog{
         @include clearfix();
     }
   }
+}
+
+.Headline{
+    width: 170px;
+    position: fixed;
+    top: 0;
+    left: -170px;
+    height: 100%;
+    background-color: #fff;
+
+    border-right: 3px double #000;
+    overflow: scroll;
+
+    div.Subject{
+        margin: 0;
+        padding: 10px 5px 5px;
+        border-bottom: 1px solid #000;
+        font-size: 18px;
+        font-weight: bold;
+        button.CloseBtn{
+            margin-left: 5px;
+            padding: 0;
+            border: 0;
+        }
+    }
+
+    ul.headlist{
+        margin: 10px 5px 30px;
+        list-style: none;
+        line-height: 1.2em;
+        li{
+            &.h1{
+                font-size: 14px;
+                margin-top: 10px;
+            }
+            &.h2{
+                margin-left: 10px;
+                font-size: 10px;
+            }
+            &.h3{
+                margin-left: 15px;
+                font-size: 9px;
+            }
+            &.h4{
+                margin-left: 25px;
+                font-size: 9px;
+            }
+            a, a:hover, a:link, a:visited{
+                cursor: pointer;
+            }
+            a{
+                color: #888;
+            }
+            a:hover{
+                color: #000;
+            }
+        }
+    }
 }
 
 .EditDialog{

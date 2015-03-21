@@ -5,9 +5,13 @@
   <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a class="Glyph Upload" href="edit_upload.cgi?fid=[% fid %]">UPLOAD</a></li>
   <li [% IF SUBMENU=="編集履歴" %]class="Selected"[% END %]><a class="Glyph Logbook" href="edit_log.cgi?fid=[% fid %]">LOG</a></li>
   <li><a class="Glyph Commit" id="bufferCommitBtn">COMMIT</a></li>
+
+  [%IF SUBMENU=="編集バッファ" %]
+    <li><a class="Glyph ShowThumbnailsWithLines" id="headlineBtn">HEADLINE</a></li>
+  [%END %]
 </ul>
 
-
+<section class="Template">
 <div class="BufferCommitForm" id="bufferCommitForm" style="display: none;">
     <form name="commitForm" action="?fid=[% fid %]" method="post">
       <div class="MdBufferFix">
@@ -21,3 +25,11 @@
       </div>
     </form>
 </div>
+
+<div class="Headline" id="headline">
+    <div class="Subject">[HEADLINE]<button class="CloseBtn"><img src="img/197_remove.png"></button></div>
+    <ul class="headlist">
+    </ul>
+</div>
+
+</section>
