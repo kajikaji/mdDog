@@ -1,7 +1,7 @@
 'use strict'
 requirejs.config({
     baseUrl: 'js/modules',
-    urlArgs: 'rev=20150125b',
+    urlArgs: 'rev=201504010',
     paths: {
         jquery          :'jquery-1.11.1.min',
         mddog           :'mddog',

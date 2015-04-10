@@ -77,7 +77,8 @@ define(function(){
                     eid    : this.id>=0?this.id:0,
                     action : 'update', 
                     data   : editdata
-                }
+                },
+                timeout: 5000
             }).done($.proxy(function(res){
                 this.updateSuccess(res);
                 this.updateMessage();
