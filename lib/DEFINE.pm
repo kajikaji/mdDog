@@ -14,15 +14,16 @@ sub param {
     my $relative = shift;
 
     my $myhash = {
-        maintitle   => 'docxLog',
-        subtitle    => 'made by gm2bv',
-        description => '',
-        aution      => 'gm2bv',
-        copyright   => 'Copyright by gm2bv',
-        program     => 'docxlog',
-        version     => 20141021,
+        maintitle   => 'mdDog',
+        subtitle    => '',
+        description => 'is a MarkDown Document system On Git',
+        author      => 'gm2bv',
+        copyright   => 'gm2bv <gm2bv2001@gmail.com>',
+        program     => 'mdDog',
+        version     => 20150416,
         company     => '',
         repodir     => "${relative}work",
+        paging_top  => 3,
     };
 
     $hash = {%{$hash}, %{$myhash}};

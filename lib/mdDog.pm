@@ -36,6 +36,7 @@ use JSON;
 use MYUTIL;
 use mdDog::GitCtrl;
 use mdDog::OutlineCtrl;
+use SQL;
 
 use constant THUMBNAIL_SIZE => 150;
 
@@ -281,72 +282,54 @@ sub listup_documents {
     my $self = shift;
     my @infos;
     my $uid  = $self->{s}->param("login");
-
-    my $sql;
+    my $page = $self->qParam("page");
+    $page = 0 unless($page);
+    my $offset = $page * $self->{paging_top};
+    my ($sql, $sql_cnt);
 
     if( $uid ){
-        $sql = << "SQL";
-SELECT
-  di.*,
-  du.nic_name    AS nic_name,
-  du.account     AS account,
-  du.mail        AS mail,
-  da.id          AS auth_id,
-  da.may_edit    AS may_edit,
-  da.may_approve AS may_approve
-FROM
-  docx_infos di
-JOIN docx_users du ON du.id = di.created_by
-LEFT OUTER JOIN docx_auths da on da.info_id = di.id and da.user_id = ${uid}
-WHERE
-  di.deleted_at is null
-  and (di.is_public = true or da.id is not null)
-ORDER BY
-  di.is_used DESC, di.created_at DESC;
-SQL
-      }else{
+        $sql = SQL::list_for_index($uid, $offset, $self->{paging_top});
+        $sql_cnt = SQL::document_list($uid);
+    }else{
         #ログインなし
-        $sql = << "SQL";
-SELECT
-  di.*,
-  du.nic_name AS nic_name,
-  du.account AS account,
-  du.mail AS mail
-FROM
-  docx_infos di
-JOIN docx_users du ON du.id = di.created_by
-WHERE
-  di.deleted_at is null
-  and di.is_public = true
-ORDER BY
-  di.is_used DESC, di.created_at DESC;
-SQL
-      }
-
-  my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
-     || $self->errorMessage("DB:Error",1);
-  if(@$ary){
-    foreach (@$ary) {
-      my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
-      my $info = {
-        id              => $_->{id},
-        doc_name        => $_->{doc_name},
-        file_name       => $_->{file_name},
-        is_used         => $_->{is_used},
-        created_at      => MYUTIL::format_date2($_->{created_at}),
-        deleted_at      => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
-        created_by      => $_->{nic_name},
-        file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
-        last_updated_at => ${logs}[0][0]->{attr}->{date},
-        is_editable     => $_->{may_edit}?1:0,
-        is_approve      => $_->{may_approve}?1:0,
-        is_public       => $_->{is_public},
-        is_owned        => $_->{created_by}==${uid}?1:0,
-      };
-      push @infos, $info;
+        $sql = SQL::list_for_index_without_login($offset, $self->{paging_top});
+        $sql_cnt = SQL::document_list_without_login();
     }
-    $self->{t}->{infos} = \@infos;
-  }
+
+    my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
+       || $self->errorMessage("DB:Error",1);
+    if (@$ary) {
+        foreach (@$ary) {
+            my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
+            my $info = {
+                id              => $_->{id},
+                doc_name        => $_->{doc_name},
+                file_name       => $_->{file_name},
+                is_used         => $_->{is_used},
+                created_at      => MYUTIL::format_date2($_->{created_at}),
+                deleted_at      => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
+                created_by      => $_->{nic_name},
+                file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
+                last_updated_at => ${logs}[0][0]->{attr}->{date},
+                is_editable     => $_->{may_edit}?1:0,
+                is_approve      => $_->{may_approve}?1:0,
+                is_public       => $_->{is_public},
+                is_owned        => $_->{created_by}==${uid}?1:0,
+            };
+            push @infos, $info;
+        }
+        $self->{t}->{infos} = \@infos;
+    }
+    my $cnt = $self->{dbh}->selectall_arrayref($sql_cnt)
+      || $self->viewAccident("DB:Error", 1);
+    my $pages = @$cnt / $self->{paging_top};
+    my $paging;
+    for( my $i = 0; $i < $pages; $i++ ){
+        push @$paging, $i;
+    }
+    $self->{t}->{document_count} = @$cnt;
+    $self->{t}->{page} = $page;
+    $self->{t}->{paging} = $paging;
 }
 
 ############################################################

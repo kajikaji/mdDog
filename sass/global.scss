@@ -730,6 +730,13 @@ section.Top{
             }
         }
     }
+    ul.Paging{
+        list-style: none;
+        @include clearfix();
+        li{
+            float: left;
+        }
+    }
   } // .top-menu
 }
 

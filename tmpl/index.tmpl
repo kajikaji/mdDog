@@ -75,6 +75,11 @@
       [% END %]
     </tbody>
   </table>
+  <ul class="Paging">
+    [%FOREACH p IN paging %]
+      <li>[%IF p == page %]<span class="Selected">[% p + 1 %]</span>[%ELSE %]<a href="?page=[% p %]">[% p + 1%]</a>[%END %]</li>
+    [%END %]
+  </ul>
   [% ELSE %]
   <div class="NoFile">
     ファイルは登録されていません

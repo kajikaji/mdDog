@@ -502,6 +502,16 @@ section.Top .TopMenu {
         line-height: 0; }
       section.Top .TopMenu table.DocList tr td .DocDetail:after {
         clear: both; }
+  section.Top .TopMenu ul.Paging {
+    list-style: none; }
+    section.Top .TopMenu ul.Paging:after, section.Top .TopMenu ul.Paging:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.Top .TopMenu ul.Paging:after {
+      clear: both; }
+    section.Top .TopMenu ul.Paging li {
+      float: left; }
 
 section.Docinfo h1, section.Docinfo h2 {
   margin-top: 0; }
