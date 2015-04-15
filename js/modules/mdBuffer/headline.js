@@ -29,10 +29,15 @@ define(function(){
                         hd = hd.substring(0, 10);
                         hd += '...';
                     }
-                    var hdlink = $('<a>').attr('href', '#' + id).text(hd);
+                    var hdlink = $('<a>').data('hdr', id).text(hd);
                     var level = tag.replace(/h([1-4])/i, "$1");
                     var hdobj = $('<li>').append(hdlink).addClass("h" + level);
                     $('#headline .headlist').append(hdobj);
+                    hdlink.click(function(){
+                        var hdr = $(this).data('hdr');
+                        var top = $('#' + hdr).offset().top;
+                        $('html, body').animate({scrollTop: top}, 'fast');
+                    });
                 }
             });
         },

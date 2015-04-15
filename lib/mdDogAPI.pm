@@ -107,6 +107,7 @@ sub post_data {
     my $mds;
     my $cnt = 0;
     my $raws = paragraphs($data);
+
     foreach ( @$raws ) {
         my $raw = $_;
         my $md = markdown($raw);
