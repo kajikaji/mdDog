@@ -442,75 +442,196 @@ section.Gitlog, section.DocApprove {
     section.Gitlog table.Gitlog tbody tr.UserBranch.Old, section.DocApprove table.Gitlog tbody tr.UserBranch.Old {
       background-color: #aaaaaa; }
 
-section.Top .TopMenu {
+section.Top .Main {
   margin-top: 20px;
   margin-bottom: 20px; }
-  section.Top .TopMenu .Subject {
+  section.Top .Main .Subject {
     margin-bottom: 20px; }
-    section.Top .TopMenu .Subject .Title {
+    section.Top .Main .Subject .Title {
       font-weight: bold;
       font-size: 2.0em; }
-    section.Top .TopMenu .Subject.Disable {
+    section.Top .Main .Subject.Disable {
       color: #888; }
-    section.Top .TopMenu .Subject + .Caution {
+    section.Top .Main .Subject + .Caution {
       font-size: 60%;
       margin-left: 10px;
       color: #f00; }
-    section.Top .TopMenu .Subject .Menu {
+    section.Top .Main .Subject .Menu {
       float: right; }
-  section.Top .TopMenu table.DocList {
+  section.Top .Main ul.DocFilter {
+    list-style: none;
+    font-size: 8pt; }
+    section.Top .Main ul.DocFilter li {
+      float: left;
+      padding: 2px 5px; }
+  section.Top .Main table.DocList {
     box-sizing: border-box; }
-    section.Top .TopMenu table.DocList tr.Nonactive {
+    section.Top .Main table.DocList tr.Nonactive {
       background-color: #ddd; }
-      section.Top .TopMenu table.DocList tr.Nonactive.Deleted {
+      section.Top .Main table.DocList tr.Nonactive.Deleted {
         background-color: #aaa; }
-    section.Top .TopMenu table.DocList tr td > .DocSubject {
+    section.Top .Main table.DocList tr td > .DocSubject {
       float: left;
       padding: 5px; }
-      section.Top .TopMenu table.DocList tr td > .DocSubject > div {
-        float: left; }
-        section.Top .TopMenu table.DocList tr td > .DocSubject > div.Name a {
-          color: #0129a0;
-          font-weight: bold; }
-          section.Top .TopMenu table.DocList tr td > .DocSubject > div.Name a:hover {
-            color: #ff6437; }
-        section.Top .TopMenu table.DocList tr td > .DocSubject > div:after, section.Top .TopMenu table.DocList tr td > .DocSubject > div:before {
-          display: table;
-          content: "";
-          line-height: 0; }
-        section.Top .TopMenu table.DocList tr td > .DocSubject > div:after {
-          clear: both; }
-    section.Top .TopMenu table.DocList tr td > .DocCtrl {
-      float: right;
-      padding: 5px; }
-      section.Top .TopMenu table.DocList tr td > .DocCtrl input.Glyph {
-        margin-left: 5px; }
-      section.Top .TopMenu table.DocList tr td > .DocCtrl form {
-        display: inline; }
-    section.Top .TopMenu table.DocList tr td .DocDetail {
-      clear: both;
-      font-size: 8pt;
-      border-top: 1px dashed rgba(0, 0, 0, 0.1); }
-      section.Top .TopMenu table.DocList tr td .DocDetail div {
-        float: left;
-        margin-left: 20px; }
-        section.Top .TopMenu table.DocList tr td .DocDetail div:first-child {
-          margin-left: 5px; }
-      section.Top .TopMenu table.DocList tr td .DocDetail:after, section.Top .TopMenu table.DocList tr td .DocDetail:before {
+      section.Top .Main table.DocList tr td > .DocSubject > div.Name a {
+        color: #0129a0;
+        font-weight: bold; }
+        section.Top .Main table.DocList tr td > .DocSubject > div.Name a:hover {
+          color: #ff6437; }
+      section.Top .Main table.DocList tr td > .DocSubject > div:after, section.Top .Main table.DocList tr td > .DocSubject > div:before {
         display: table;
         content: "";
         line-height: 0; }
-      section.Top .TopMenu table.DocList tr td .DocDetail:after {
+      section.Top .Main table.DocList tr td > .DocSubject > div:after {
         clear: both; }
-  section.Top .TopMenu ul.Paging {
-    list-style: none; }
-    section.Top .TopMenu ul.Paging:after, section.Top .TopMenu ul.Paging:before {
+      section.Top .Main table.DocList tr td > .DocSubject ul.Tags {
+        clear: both;
+        list-style: none;
+        font-size: 7px;
+        margin: 3px 0; }
+        section.Top .Main table.DocList tr td > .DocSubject ul.Tags li {
+          float: left;
+          margin-left: 12px; }
+          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public {
+            position: relative; }
+            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div {
+              padding: 0 5px 0 7px;
+              height: 14px;
+              color: #fff;
+              background-color: #ff7f50;
+              border-top-right-radius: 3px;
+              -webkit-border-top-right-radius: 3px;
+              -moz-border-top-right-radius: 3px;
+              border-bottom-right-radius: 3px;
+              -webkit-border-bottom-right-radius: 3px;
+              -moz-border-bottom-right-radius: 3px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div:before {
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                border: 7px solid transparent;
+                border-right: 7px solid #ff7f50;
+                left: -14px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div:after {
+                content: "";
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background-color: #fff;
+                float: left;
+                top: 6px;
+                left: 0;
+                border-radius: 1px;
+                -webkit-border-radius: 1px;
+                -moz-border-radius: 1px; }
+          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver {
+            position: relative; }
+            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div {
+              padding: 0 5px 0 7px;
+              height: 14px;
+              color: #fff;
+              background-color: #0000cd;
+              border-top-right-radius: 3px;
+              -webkit-border-top-right-radius: 3px;
+              -moz-border-top-right-radius: 3px;
+              border-bottom-right-radius: 3px;
+              -webkit-border-bottom-right-radius: 3px;
+              -moz-border-bottom-right-radius: 3px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div:before {
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                border: 7px solid transparent;
+                border-right: 7px solid #0000cd;
+                left: -14px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div:after {
+                content: "";
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background-color: #fff;
+                float: left;
+                top: 6px;
+                left: 0;
+                border-radius: 1px;
+                -webkit-border-radius: 1px;
+                -moz-border-radius: 1px; }
+          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable {
+            position: relative; }
+            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div {
+              padding: 0 5px 0 7px;
+              height: 14px;
+              color: #fff;
+              background-color: #006400;
+              border-top-right-radius: 3px;
+              -webkit-border-top-right-radius: 3px;
+              -moz-border-top-right-radius: 3px;
+              border-bottom-right-radius: 3px;
+              -webkit-border-bottom-right-radius: 3px;
+              -moz-border-bottom-right-radius: 3px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div:before {
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                border: 7px solid transparent;
+                border-right: 7px solid #006400;
+                left: -14px; }
+              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div:after {
+                content: "";
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background-color: #fff;
+                float: left;
+                top: 6px;
+                left: 0;
+                border-radius: 1px;
+                -webkit-border-radius: 1px;
+                -moz-border-radius: 1px; }
+        section.Top .Main table.DocList tr td > .DocSubject ul.Tags:after, section.Top .Main table.DocList tr td > .DocSubject ul.Tags:before {
+          display: table;
+          content: "";
+          line-height: 0; }
+        section.Top .Main table.DocList tr td > .DocSubject ul.Tags:after {
+          clear: both; }
+    section.Top .Main table.DocList tr td > .DocCtrl {
+      float: right;
+      padding: 5px; }
+      section.Top .Main table.DocList tr td > .DocCtrl input.Glyph {
+        margin-left: 5px; }
+      section.Top .Main table.DocList tr td > .DocCtrl form {
+        display: inline; }
+    section.Top .Main table.DocList tr td .DocDetail {
+      clear: both;
+      font-size: 8pt;
+      border-top: 1px dashed rgba(0, 0, 0, 0.1); }
+      section.Top .Main table.DocList tr td .DocDetail div {
+        float: left;
+        margin-left: 20px; }
+        section.Top .Main table.DocList tr td .DocDetail div:first-child {
+          margin-left: 5px; }
+      section.Top .Main table.DocList tr td .DocDetail:after, section.Top .Main table.DocList tr td .DocDetail:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Top .Main table.DocList tr td .DocDetail:after {
+        clear: both; }
+  section.Top .Main ul.Paging {
+    list-style: none;
+    margin-bottom: 10px; }
+    section.Top .Main ul.Paging:after, section.Top .Main ul.Paging:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.Top .TopMenu ul.Paging:after {
+    section.Top .Main ul.Paging:after {
       clear: both; }
-    section.Top .TopMenu ul.Paging li {
+    section.Top .Main ul.Paging li {
+      margin-right: 3px;
+      padding: 3px;
+      border: 1px solid #ccc;
       float: left; }
 
 section.Docinfo h1, section.Docinfo h2 {

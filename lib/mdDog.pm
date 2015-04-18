@@ -281,15 +281,16 @@ SQL
 sub listup_documents {
     my $self = shift;
     my @infos;
-    my $uid  = $self->{s}->param("login");
-    my $page = $self->qParam("page");
+    my $uid   = $self->{s}->param("login");
+    my $page  = $self->qParam("page");
+    my $style = $self->qParam("style");
     $page = 0 unless($page);
     my $offset = $page * $self->{paging_top};
     my ($sql, $sql_cnt);
 
     if( $uid ){
-        $sql = SQL::list_for_index($uid, $offset, $self->{paging_top});
-        $sql_cnt = SQL::document_list($uid);
+        $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top});
+        $sql_cnt = SQL::document_list($uid, $style);
     }else{
         #ログインなし
         $sql = SQL::list_for_index_without_login($offset, $self->{paging_top});
@@ -328,6 +329,7 @@ sub listup_documents {
         push @$paging, $i;
     }
     $self->{t}->{document_count} = @$cnt;
+    $self->{t}->{style} = $style;
     $self->{t}->{page} = $page;
     $self->{t}->{paging} = $paging;
 }

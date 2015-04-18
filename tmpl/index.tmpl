@@ -5,7 +5,7 @@
 
 <section class="Top">
 
-<div class="TopMenu">
+<div class="Main">
   <div class="Subject">
     <span class="Title">ドキュメント一覧</span>
   [% IF login %]
@@ -14,7 +14,14 @@
     </div>
   [% END %]
   </div>
+
   [% IF infos %]
+  <ul class="DocFilter">
+    <li>[%UNLESS style %]一覧[%ELSE %]<a href="?style=">一覧</a>[%END %]</li>
+    <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?style=approver">承認権限</a>[%END %]</li>
+    <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?style=dustbox">ゴミ箱</a>[%END %]</li>
+  </ul>
+
   <table class="DocList">
     <tbody>
       [% FOREACH info IN infos %]
@@ -37,6 +44,8 @@
                 <input type="submit" name="use" value=" " class="Glyph Ok">
                 <input type="submit" name="delete" value=" " class="Glyph Bin">
               [% END %]
+              <input type="hidden" name="style" value="[% style %]">
+              <input type="hidden" name="page" value="[% page %]">
               <input type="hidden" name="fid" value="[% info.id %]">
             [%END %]
             </form>
@@ -44,13 +53,7 @@
           [% END %] <!-- UNLESS info.deleted_at -->
           
           <div class="DocSubject">
-	    <div class="Name">
-              [%IF info.is_used %]
-                [%IF info.is_public %]<i class="Mark Round Orange">P</i>[%END %]
-                [%IF info.is_editable %]<i class="Mark Round Green">E</i>[%END %]
-                [%IF info.is_approve %]<i class="Mark Round Blue">A</i>[%END %]
-                [%IF info.is_owned %]<i class="Mark Round Black">O</i>[%END %]
-              [%END %]
+	        <div class="Name">
               [% IF info.deleted_at %]
                 [% info.doc_name %]
               [% ELSIF info.is_used %]
@@ -58,7 +61,14 @@
               [% ELSE %]
                 [% info.doc_name %]
               [% END %]
-	    </div>
+	        </div>
+            [%IF info.is_used && (info.is_public || info.is_approve || info.is_editable) %]
+              <ul class="Tags">
+                [%IF info.is_public %]<li class="Public"><div>public</div></li>[%END %]
+                [%IF info.is_approve %]<li class="Approver"><div>approver</div></li>[%END %]
+                [%IF info.is_editable %]<li class="Editable"><div>editable</div></li>[%END %]
+              </ul>
+           [%END %]
           </div> <!-- doc-subject -->
 
           <div class="DocDetail">
@@ -66,7 +76,7 @@
             <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
           [%END %]
             <div class="CreateAt">作成日時:[% info.created_at %]</div>
-            <div class="CreatedBy">作成者:[% info.created_by %]</div>
+            <div class="CreatedBy">管理者:[% info.created_by %]</div>
             <div class="LastApprovedAt">最終承認日時:[% info.last_updated_at %]</div>
             <div class="Filesize">最終ファイルサイズ:[% info.file_size %]byte</div>
           </div>
@@ -77,9 +87,10 @@
   </table>
   <ul class="Paging">
     [%FOREACH p IN paging %]
-      <li>[%IF p == page %]<span class="Selected">[% p + 1 %]</span>[%ELSE %]<a href="?page=[% p %]">[% p + 1%]</a>[%END %]</li>
+      <li>[%IF p == page %]<span class="Selected">[% p + 1 %]</span>[%ELSE %]<a href="?style=[% style %]&page=[% p %]">[% p + 1%]</a>[%END %]</li>
     [%END %]
   </ul>
+  <div class="DocumentCount">[% document_count %]件</div>
   [% ELSE %]
   <div class="NoFile">
     ファイルは登録されていません

@@ -1,4 +1,10 @@
 $corner_b: 5px;
+$orange: #ff7f50;
+$blue: #0000cd;
+$green: #006400;
+$black: #000;
+$minimum-font: 8pt;
+
 @mixin round-corner ($radius) {
   border-radius: $radius;
   -webkit-border-radius: $radius;
@@ -14,6 +20,46 @@ $corner_b: 5px;
     clear: both;
   }
 }
+
+@mixin nametag($color) {
+  position: relative;
+
+  div{
+    padding: 0 5px 0 7px;
+    height: 14px;
+    color: #fff;
+    background-color: $color;
+
+    border-top-right-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    -moz-border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -webkit-border-bottom-right-radius: 3px;
+    -moz-border-bottom-right-radius: 3px;
+    
+    &:before{
+      content: "";
+      width: 0;
+      height: 0;
+      position: absolute;
+      border :7px solid transparent;
+      border-right: 7px solid $color;
+      left: -14px;
+    }
+    &:after{
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background-color: #fff;
+      float: left;
+      top: 6px;
+      left: 0;
+      @include round-corner(1px);
+    }
+  }
+}
+
 
 @mixin table-gitlog {
   font-size: 11px;
@@ -196,19 +242,19 @@ i.Mark{
     }
 
     &.Orange{
-        background-color: #ff7f50;
+        background-color: $orange;
         color: #fff;
     }
     &.Green{
-        background-color: #006400;
+        background-color: $green;
         color: #fff;
     }
     &.Blue{
-        background-color: #0000cd;
+        background-color: $blue;
         color: #fff;
     }
     &.Black{
-        background-color: #000;
+        background-color: $black;
         color: #fff;
     }
 }
@@ -320,7 +366,7 @@ a.Button{
   }
   &.Orange{
     background-color: #ff4500;
-    border: 1px solid #ff7f50;
+    border: 1px solid $orange;
   }
 }
 
@@ -652,7 +698,8 @@ section.Gitlog, section.DocApprove{
 
 
 section.Top{
-  .TopMenu{
+
+  .Main{
     margin-top: 20px;
     margin-bottom: 20px;;
 
@@ -676,6 +723,17 @@ section.Top{
       }
 
     }
+
+    ul.DocFilter{
+      list-style: none;
+      font-size: $minimum-font;
+      
+      li{
+          float: left;
+          padding: 2px 5px;
+      }
+    }
+
     table.DocList{
         box-sizing: border-box;
 
@@ -691,7 +749,6 @@ section.Top{
                   float:left;
                   padding: 5px;
                   > div {
-                      float: left;
                       &.Name {
                           a {
                               color: #4169e0 - #404040;
@@ -703,6 +760,30 @@ section.Top{
                       }
                       @include clearfix();
                   }
+ul.Tags{
+  clear : both;
+  list-style: none;
+  font-size: 7px;
+  margin: 3px 0;
+
+  li{
+    float: left;
+    margin-left: 12px;
+
+    &.Public{
+      @include nametag($orange);
+    }
+    &.Approver{
+      @include nametag($blue);
+    }
+    &.Editable{
+      @include nametag($green);
+    }
+  }
+
+  @include clearfix();
+}
+
                 }
                 >.DocCtrl{
                     float: right;
@@ -716,7 +797,7 @@ section.Top{
                 }
                 .DocDetail{
                     clear: both;
-                    font-size: 8pt;
+                    font-size: $minimum-font;
                     border-top: 1px dashed rgba(0,0,0,0.1);
                     div{
                         float: left;
@@ -732,10 +813,16 @@ section.Top{
     }
     ul.Paging{
         list-style: none;
+        margin-bottom: 10px;
         @include clearfix();
         li{
+            margin-right: 3px;
+            padding: 3px;
+            border: 1px solid #ccc;
             float: left;
         }
+    }
+    .DocumentCount{
     }
   } // .top-menu
 }
@@ -1413,7 +1500,7 @@ section.BufferLog{
           text-align: right;
           background-color: #aaa;
           color: #eee;
-          font-size: 8pt;
+          font-size: $minimum-font;
         }
         .Content{
           padding: 1px;
