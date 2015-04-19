@@ -238,10 +238,8 @@ define(function(){
             this.checkBlankDocument();
         },
         updateMessage: function(){
-            if( $('section.Message ul.Buffered').hasClass('Disable') ){
-                $('section.Message ul.Buffered').slideDown(300, function(){
-                    $('section.Message ul.Buffered').removeClass('Disable');
-                });
+            if( $('#bufferCommitBtn').hasClass('Disabled') ){
+                $('#bufferCommitBtn').removeClass('Disabled');
             }
         },
         resetTreeId: function(obj, inc, prefix){

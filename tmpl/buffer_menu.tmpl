@@ -4,31 +4,43 @@
   <li [% IF SUBMENU=="ソース" %]class="Selected"[% END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
   <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
   <li [% IF SUBMENU=="編集履歴" %]class="Selected"[% END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
-  <li><a id="bufferCommitBtn"><span class="typcn typcn-database"></span>commit</a></li>
+  <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %]"><span class="typcn typcn-database"></span>commit</a></li>
 
   [%IF SUBMENU=="編集バッファ" %]
+    <li class="DivideMenu"></li>
     <li><a id="headlineBtn"><span class="typcn typcn-th-menu"></span>headline</a></li>
-    <li><a class="">DIFF VIEW</a></li>
+    <li><a id="previewBtn"><span class="typcn typcn-printer"></span>preview</a></li>
+    <li><a id="diffBtn"><span class="typcn typcn-directions"></span>diff view</a></li>
+    <li><a id="jumpTopBtn"><span class="typcn typcn-arrow-up"></span>jump top</a></li>
   [%END %]
 </ul>
 
 <section class="Template">
 <div class="BufferCommitForm" id="bufferCommitForm" style="display: none;">
-    <form name="commitForm" action="?fid=[% fid %]" method="post">
-      <div class="MdBufferFix">
-        <h3>変更履歴</h3>
+  <div class="CommitForm">
+    <form name="commitForm" action="?fid=[% fid %]" method="post" class="MdBufferFix">
+        <div class="Title">コミットフォーム</div>
+        <div class="Subject">更新履歴</div>
         <div><textarea name="comment" class="History" rows="3" cols="70"></textarea></div>
         <div class="Ctrl">
           <input type="submit" name="commit" value="コミット" onClick="commitBuffer();">
-          <a class="Btn" id="cancelButton">キャンセル</a>
         </div>
         <input type="hidden" name="fid" value="[% fid %]">
-      </div>
     </form>
+
+    <form action="?fid=[% fid %]" method="POST" class="ResetBuffer">
+     <div class="Title">バッファリセット</div>
+     <div class="Ctrl">
+       <input type="hidden" name="fid" value="[% fid %]">
+       <input type="submit" value="バッファリセット" name="resetBuffer">
+     </div>
+    </form>
+    <div class="CancelCtrl"><a class="Btn" id="cancelButton">キャンセル</a></div>
+  </div>
 </div>
 
 <div class="Headline" id="headline">
-    <div class="Subject">[HEADLINE]<button class="CloseBtn"><span class="typcn typcn-delete-outline"></span></button></div>
+    <div class="Subject">headline<button class="CloseBtn"><span class="typcn typcn-delete-outline"></span></button></div>
     <ul class="headlist">
     </ul>
 </div>

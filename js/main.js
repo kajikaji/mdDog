@@ -96,10 +96,38 @@ requirejs(['jquery'], function($){
         });
     }
 
+    //未コミットメッセージ
+    if( $('#uncommitAlert').length ){
+        require(['mdBufferUncommitAlert'], function(UncommitAlert){
+            new UncommitAlert().init();
+        });
+    }
+
     //見出しマップ
     if( $('#headlineBtn').length ){
         require(['mdBufferHeadline'], function(Headline){
             new Headline().init();
+        });
+    }
+
+    //プレビュー
+    if( $('#previewBtn').length ){
+        $('#previewBtn').on('click', function(){
+            alert('SORRY! THIS FUNCTION IS UNDERCONSTRUCTION.');
+        });
+    }
+
+    //差異表示
+    if( $('#diffBtn').length ){
+        $('#diffBtn').on('click', function(){
+            alert('SORRY! THIS FUNCTION IS UNDERCONSTRUCTION.');
+        });
+    }
+
+    //トップにスクロール
+    if( $('#jumpTopBtn').length ){
+        $('#jumpTopBtn').on('click', function(){
+            $('html, body').animate({scrollTop: 0}, 'fast');
         });
     }
 

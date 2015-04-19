@@ -1,9 +1,9 @@
 [% IF login %]
 <section class="UserInfo">
   <ul>
-  <li class="User Account">ユーザー：<a href="profile.cgi">[% nic_name %]</a></li>
+  <li class="User Account"><span class="typcn typcn-user"></span><span class="Subject">user</span>：<a href="profile.cgi">[% nic_name %]</a></li>
   [% IF is_admin %]
-    <li class="User Admin"><a href="admin.cgi">[管理ページ]</a></li>
+    <li class="User Admin"><a href="admin.cgi">[admin <span class="typcn typcn-spanner"></span>]</a></li>
   [% END %]
   </ul>
 </section>

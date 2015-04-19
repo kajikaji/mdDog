@@ -15,13 +15,4 @@
     [%END %]
     </ul>
   [%END %]
-    <ul class="Buffered [%UNLESS message.buffered %]Disable[%END %]">
-      <li>
-        コミットされていないバッファがあります
-        <form action="?fid=[% fid %]" method="POST" class="ResetBuffer">
-          <input type="hidden" name="fid" value="[% fid %]">
-          <input type="submit" value="バッファリセット" name="resetBuffer">
-        </form>
-      </li>
-    </ul>
 </section>
