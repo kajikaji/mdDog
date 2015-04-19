@@ -242,7 +242,6 @@ SQL
         if($ary) {
             $self->{user}->{is_approve} = $ary->{may_approve};
             $self->{user}->{is_edit}    = $ary->{may_edit};
-            $self->{user}->{is_delete}  = $ary->{may_delete};
             $self->{user}->{is_owned}   = $ary->{created_by} == $uid?1:0;
         }
     }
@@ -258,9 +257,6 @@ SQL
         return;
       }
       if ( $_ =~ m/is_approve/ && $self->{user}->{is_approve} ) {
-        return;
-      }
-      if ( $_ =~ m/is_delete/  && $self->{user}->{is_delete}  ) {
         return;
       }
       if ( $_ =~ m/is_admin/   && $self->{user}->{is_admin}   ) {
@@ -377,7 +373,6 @@ SQL
     if( $uid ){
         $self->{t}->{is_approve} = $self->{user}->{is_approve};
         $self->{t}->{is_edit}    = $self->{user}->{is_edit};
-        $self->{t}->{is_delete}  = $self->{user}->{is_delete};
     }
 
     $self->{t}->{fid}      = $fid;
@@ -579,9 +574,9 @@ SQL
 
   my $sql_auth = << "SQL";
 INSERT INTO
-  docx_auths(info_id, user_id, may_approve, created_at, created_by, updated_at)
+  docx_auths(info_id, user_id, may_approve, may_edit, created_at, created_by, updated_at)
 VALUES
-  (${fid}, ${uid}, 't', now(), ${uid}, now());
+  (${fid}, ${uid}, 't', 't', now(), ${uid}, now());
 SQL
   $self->{dbh}->do($sql_auth) || $self->errorMessage("DB:Error _setup_new_file auth", 1);
 

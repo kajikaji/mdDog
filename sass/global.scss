@@ -978,35 +978,41 @@ section.DocSetting{
       float: left;
       width: 450px;
 
-	.subject{
+	  .subject{
 	    font-size: 12px;
 	    margin-bottom: 5px;
-	}
+	  }
 
-	table.UsersTable{
+	  table.UsersTable{
 	    margin-bottom: 5px;
+background-color: #fff;
 	    th{
 		background-color: #808080;
 		color: #fff;
 		font-size: 80%;
 		font-weight: normal;
-		&.Text{
-		    padding-left: 10px;
-		}
-		&.CheckBox{
-		    width: 45px;
-		    text-align: center;
-		}
+  		    &.Text{
+		      padding-left: 10px;
+		    }
+		    &.CheckBox{
+		      width: 45px;
+		      text-align: center;
+		    }
 	    }
+        tr.User.Owner{
+            .Name{
+                font-weight: bold;
+            }
+        }
 	    td{
-		&.Select, &.Approve, &.Edit, &.Delete{
+   		  &.Select, &.Approve, &.Edit, &.Delete{
 		    text-align: center;
-		}
-		&.Name {
+		  }
+		  &.Name {
 		    padding-left: 10px;
-		}
+		  }
 	    }
-	}
+	  }
     }
     .CtrlButtons{
       float: left;

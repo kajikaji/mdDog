@@ -1,10 +1,4 @@
 /*
- * GENERAL SETTING
- */
-body {
-  background-color: #f5f5f5; }
-
-/*
  * MARK
  */
 i.Mark {
@@ -831,7 +825,8 @@ section.DocSetting {
       font-size: 12px;
       margin-bottom: 5px; }
     section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable {
-      margin-bottom: 5px; }
+      margin-bottom: 5px;
+      background-color: #fff; }
       section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable th {
         background-color: #808080;
         color: #fff;
@@ -842,6 +837,8 @@ section.DocSetting {
         section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable th.CheckBox {
           width: 45px;
           text-align: center; }
+      section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable tr.User.Owner .Name {
+        font-weight: bold; }
       section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Select, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Approve, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Edit, section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Delete {
         text-align: center; }
       section.DocSetting .UsersCtrl .AllowUsersList table.UsersTable td.Name {

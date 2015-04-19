@@ -32,26 +32,32 @@
 	    <th class="CheckBox"></th>
 	    <th class="Text">名前</th>
 	    <th class="CheckBox">承認</th>
-            <th class="CheckBox">編集</th>
-	    <th class="CheckBox">削除</th>
+        <th class="CheckBox">編集</th>
 	  </tr>
 	</thead>
 	<tbody>
 	  [%FOREACH u IN users %]
-	  <tr class="User" id="User[% u.user_id %]">
-	    <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
-	    <td class="Name">[% u.nic_name %]</td>
-	    <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
+        [%IF u.is_owned %]
+	      <tr class="User Owner" id="User[% u.user_id %]">
+	        <td class="Select"></td>
+    	    <td class="Name">[% u.nic_name %] (owner)</td>
+	        <td class="Approve"><input type="checkbox" checked disabled></td>
+            <td class="Edit"><input type="checkbox" checked disabled></td>
+    	  </tr>
+        [%ELSE %]
+	      <tr class="User" id="User[% u.user_id %]">
+	        <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
+    	    <td class="Name">[% u.nic_name %]</td>
+	        <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
             <td class="Edit"><input type="checkbox" [%IF u.may_edit %]checked[%END %]></td>
-	    <td class="Delete"><input type="checkbox" [%IF u.may_delete %]checked[%END %]></td>
-	  </tr>
+    	  </tr>
+        [%END %]
 	  [%END %]
 	  <tr class="UserTmpl" style="display: none;">
 	    <td class="Select"><input type="checkbox"></td>
 	    <td class="Name"></td>
 	    <td class="Approve"><input type="checkbox"></td>
-            <td class="Edit"><input type="checkbox"></td>
-	    <td class="Delete"><input type="checkbox"></td>
+        <td class="Edit"><input type="checkbox"></td>
 	  </tr>
 	</tbody>
       </table>
@@ -64,7 +70,7 @@
       <div class="subject">許可されてないユーザー一覧</div>
       <select multiple="multiple">
 	[%FOREACH u IN unallow_users %]
-	<option value="[% u.id %]">[%u. nic_name %]</option>
+	<option value="[% u.id %]">[% u.nic_name %]</option>
 	[%END %]
       </select>
     </div>

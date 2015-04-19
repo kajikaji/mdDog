@@ -53,17 +53,21 @@ sub get_document_users {
 SELECT
   a.*,
   u.account,
-  u.nic_name
+  u.nic_name,
+  CASE
+    WHEN i.created_by = a.user_id THEN true
+    ELSE false
+  END AS is_owned
 FROM
   docx_auths a
 INNER JOIN docx_users u ON a.user_id = u.id
+INNER JOIN docx_infos i ON a.info_id = i.id
 WHERE
   a.info_id = ${fid};
 SQL
     my $users = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
       || $self->viewAccident("Error: get_document_users", 1);
     $self->{t}->{users} = $users;
-
     my $sql_unallow = << "SQL";
 SELECT
   *

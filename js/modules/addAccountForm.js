@@ -51,22 +51,6 @@ $(function(){
             }).done(function(res){
             });
         });
-        $(this).find('.MayDelete input[type=checkbox]').on('click', function(){
-            var uid_     = $(this).data('uid');
-            var checked_ = $(this).prop('checked')===true?1:0;
-
-            $.ajax({
-                url  : 'api/accountManager.cgi',
-                type : 'POST',
-                data : {
-		    action  : 'account_may_delete',
-		    type    : 'POST',
-		    uid     : uid_,
-		    checked : checked_,
-                }
-            }).done(function(res){
-            });
-        });
     });
    
     //ユーザー追加
@@ -104,9 +88,6 @@ $(function(){
             }
             if(res.may_approve){
                 $tmpl.find('.MayApprove input[type=checkbox]').attr('checked', 'checked');
-            }
-            if(res.may_delete){
-                $tmpl.find('.MayDelete input[type=checkbox]').attr('checked', 'checked');
             }
             if(res.is_used){
                 $tmpl.find('.IsUsed input[type=checkbox]').attr('checked', 'checked');
