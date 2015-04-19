@@ -1,13 +1,13 @@
 <ul class="BufferEditMenu">
-  <li [% IF SUBMENU=="編集バッファ" %]class="Selected"[% END %]><a class="Glyph Edit" href="edit_buffer.cgi?fid=[% fid %]">EDIT</a></li>
-  <li [% IF SUBMENU=="画像" %]class="Selected"[% END %]><a class="Glyph Image" href="edit_image.cgi?fid=[% fid %]">IMAGE</a></li>
-  <li [% IF SUBMENU=="ソース" %]class="Selected"[% END %]><a class="Glyph Source" href="edit_source.cgi?fid=[% fid %]">SOURCE</a></li>
-  <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a class="Glyph Upload" href="edit_upload.cgi?fid=[% fid %]">UPLOAD</a></li>
-  <li [% IF SUBMENU=="編集履歴" %]class="Selected"[% END %]><a class="Glyph Logbook" href="edit_log.cgi?fid=[% fid %]">LOG</a></li>
-  <li><a class="Glyph Commit" id="bufferCommitBtn">COMMIT</a></li>
+  <li [% IF SUBMENU=="編集バッファ" %]class="Selected"[% END %]><a href="edit_buffer.cgi?fid=[% fid %]"><span class="typcn typcn-edit"></span>edit</a></li>
+  <li [% IF SUBMENU=="画像" %]class="Selected"[% END %]><a href="edit_image.cgi?fid=[% fid %]"><span class="typcn typcn-image"></span>image</a></li>
+  <li [% IF SUBMENU=="ソース" %]class="Selected"[% END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
+  <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
+  <li [% IF SUBMENU=="編集履歴" %]class="Selected"[% END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
+  <li><a id="bufferCommitBtn"><span class="typcn typcn-database"></span>commit</a></li>
 
   [%IF SUBMENU=="編集バッファ" %]
-    <li><a class="Glyph ShowThumbnailsWithLines" id="headlineBtn">HEADLINE</a></li>
+    <li><a id="headlineBtn"><span class="typcn typcn-th-menu"></span>headline</a></li>
     <li><a class="">DIFF VIEW</a></li>
   [%END %]
 </ul>

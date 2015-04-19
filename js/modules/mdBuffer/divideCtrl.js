@@ -39,11 +39,11 @@ define(function(){
         },
         getDivideBtn: function(obj){
             var btn = $('<a>').addClass('DivideBtn');
-            var icon = $('<i>').addClass('Glyph');
+            var icon = $('<span>').addClass('typcn');
             if( $(obj).prev().hasClass('PageDivide') ){
-                icon.addClass('DeletePoint');
+                icon.addClass('typcn-backspace');
             }else{
-                icon.addClass('Eject');
+                icon.addClass('typcn-media-eject-outline');
             }
             btn.append(icon);
             btn.click($.proxy(function(){
@@ -64,11 +64,11 @@ define(function(){
                     var target = $("#md" + res.num);
                     if( res.action === 'divide'){
                         target.before($('<div>').addClass('PageDivide'));
-                        target.find('.DivideBtn i').addClass('DeletePoint').removeClass('Eject');
+                        target.find('.DivideBtn span').addClass('typcn-backspace').removeClass('typcn-media-eject-outline');
                         target.find('.DivideCtrl').append(this.getPageNum(0));
                     }else{
                         target.prev('.PageDivide').remove();
-                        target.find('.DivideBtn i').addClass('Eject').removeClass('DeletePoint');
+                        target.find('.DivideBtn span').addClass('typcn-media-eject-outline').removeClass('typcn-backspace');
                         target.find('.DivideCtrl').find('.PageNum').remove();
                     }
 

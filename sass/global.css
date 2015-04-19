@@ -1,4 +1,10 @@
 /*
+ * GENERAL SETTING
+ */
+body {
+  background-color: #f5f5f5; }
+
+/*
  * MARK
  */
 i.Mark {
@@ -22,101 +28,6 @@ i.Mark {
   i.Mark.Black {
     background-color: #000;
     color: #fff; }
-
-/*
- * GLYPH-ICON
- */
-i.Glyph {
-  width: 26px;
-  height: 26px;
-  display: inline-block;
-  background-color: transparent;
-  background-repeat: no-repeat; }
-
-.Glyph.DownloadAlt {
-  background-image: url("../img/181_download_alt.png"); }
-
-.Glyph.Bin {
-  background-image: url("../img/016_bin.png"); }
-
-.Glyph.InboxPlus {
-  background-image: url("../img/131_inbox_plus.png"); }
-
-.Glyph.Ok {
-  background-image: url("../img/198_ok.png"); }
-
-.Glyph.Ban {
-  background-image: url("../img/199_ban.png"); }
-
-.Glyph.Plus {
-  background-position: 3px 3px;
-  background-image: url("../img/432_plus.png"); }
-
-.Glyph.Commit {
-  background-image: url("../img/141_database_plus.png");
-  width: 27px;
-  height: 27px; }
-
-.Glyph.Edit {
-  background-image: url("../img/151_edit.png"); }
-
-.Glyph.Source {
-  background-image: url("../img/036_file.png"); }
-
-.Glyph.Image {
-  background-image: url("../img/159_picture.png"); }
-
-.Glyph.Outline {
-  background-image: url("../img/156_show_lines.png"); }
-
-.Glyph.Upload {
-  background-image: url("../img/201_upload.png"); }
-
-.Glyph.Cogwheel {
-  background-image: url("../img/019_cogwheel.png"); }
-
-.Glyph.Logbook {
-  background-image: url("../img/087_log_book.png"); }
-
-.Glyph.Book {
-  background-image: url("../img/071_book.png"); }
-
-.Glyph.File {
-  background-image: url("../img/036_file.png"); }
-
-.Glyph.CircleRemove {
-  background-image: url("../img/192_circle_remove.png"); }
-
-.Glyph.Eject {
-  background-position: 3px 3px;
-  background-image: url("../img/179_eject.png"); }
-
-.Glyph.DeletePoint {
-  height: 18px;
-  background-image: url("../img/256_delete_point.png"); }
-
-.Glyph.ShowThumbnailsWithLines {
-  background-image: url("../img/156_show_thumbnails_with_lines.png"); }
-
-a.Glyph {
-  display: inline-block;
-  float: left; }
-  a.Glyph:after, a.Glyph:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  a.Glyph:after {
-    clear: both; }
-
-a.Glyph, input[type=submit].Glyph {
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  height: 26px;
-  padding-left: 28px; }
-  a.Glyph:hover, input[type=submit].Glyph:hover {
-    background-color: transparent; }
 
 a.Button {
   display: inline-block;
@@ -203,7 +114,8 @@ a.Btn {
   .AppHeader .Row:after {
     clear: both; }
   .AppHeader .Title {
-    font-size: 48pt; }
+    font-size: 48pt;
+    font-family: 'Playfair Display', serif; }
     .AppHeader .Title a,
     .AppHeader .Title a:hover,
     .AppHeader .Title a:visited,
@@ -449,7 +361,8 @@ section.Top .Main {
     margin-bottom: 20px; }
     section.Top .Main .Subject .Title {
       font-weight: bold;
-      font-size: 2.0em; }
+      font-size: 21pt;
+      font-family: 'Playfair Display', serif; }
     section.Top .Main .Subject.Disable {
       color: #888; }
     section.Top .Main .Subject + .Caution {
@@ -457,7 +370,8 @@ section.Top .Main {
       margin-left: 10px;
       color: #f00; }
     section.Top .Main .Subject .Menu {
-      float: right; }
+      float: right;
+      font-family: 'Playfair Display', serif; }
   section.Top .Main ul.DocFilter {
     list-style: none;
     font-size: 8pt; }
@@ -465,7 +379,8 @@ section.Top .Main {
       float: left;
       padding: 2px 5px; }
   section.Top .Main table.DocList {
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    background-color: #fff; }
     section.Top .Main table.DocList tr.Nonactive {
       background-color: #ddd; }
       section.Top .Main table.DocList tr.Nonactive.Deleted {
@@ -474,10 +389,10 @@ section.Top .Main {
       float: left;
       padding: 5px; }
       section.Top .Main table.DocList tr td > .DocSubject > div.Name a {
-        color: #0129a0;
+        color: #000;
         font-weight: bold; }
         section.Top .Main table.DocList tr td > .DocSubject > div.Name a:hover {
-          color: #ff6437; }
+          color: #ff7f50; }
       section.Top .Main table.DocList tr td > .DocSubject > div:after, section.Top .Main table.DocList tr td > .DocSubject > div:before {
         display: table;
         content: "";
@@ -600,10 +515,22 @@ section.Top .Main {
     section.Top .Main table.DocList tr td > .DocCtrl {
       float: right;
       padding: 5px; }
-      section.Top .Main table.DocList tr td > .DocCtrl input.Glyph {
-        margin-left: 5px; }
+      section.Top .Main table.DocList tr td > .DocCtrl a {
+        font-size: 18pt;
+        color: #000; }
+      section.Top .Main table.DocList tr td > .DocCtrl a:hover {
+        color: #ff7f50; }
       section.Top .Main table.DocList tr td > .DocCtrl form {
         display: inline; }
+        section.Top .Main table.DocList tr td > .DocCtrl form button {
+          font-size: 18pt;
+          border: none;
+          background: transparent;
+          padding: 0;
+          color: #000; }
+          section.Top .Main table.DocList tr td > .DocCtrl form button:hover {
+            background: transparent;
+            color: #ff7f50; }
     section.Top .Main table.DocList tr td .DocDetail {
       clear: both;
       font-size: 8pt;
@@ -638,7 +565,12 @@ section.Docinfo h1, section.Docinfo h2 {
   margin-top: 0; }
 section.Docinfo h1 {
   font-size: 2.0em;
-  margin-bottom: 5px; }
+  padding: 5px;
+  margin-bottom: 0;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.1);
+  border-style: solid solid none solid; }
   section.Docinfo h1 .Title {
     font-weight: normal;
     margin-right: 10px; }
@@ -648,6 +580,127 @@ section.Docinfo h2 .Supplement {
   color: #000;
   font-size: 12px;
   margin-left: 10px; }
+section.Docinfo ul.Tags {
+  clear: both;
+  list-style: none;
+  font-size: 7px;
+  margin-left: 30px;
+  padding: 0 0 3px;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.1);
+  border-style: none solid none solid;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+  section.Docinfo ul.Tags li {
+    float: left;
+    margin-left: 12px; }
+    section.Docinfo ul.Tags li.Public {
+      position: relative; }
+      section.Docinfo ul.Tags li.Public div {
+        padding: 0 5px 0 7px;
+        height: 14px;
+        color: #fff;
+        background-color: #ff7f50;
+        border-top-right-radius: 3px;
+        -webkit-border-top-right-radius: 3px;
+        -moz-border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        -webkit-border-bottom-right-radius: 3px;
+        -moz-border-bottom-right-radius: 3px; }
+        section.Docinfo ul.Tags li.Public div:before {
+          content: "";
+          width: 0;
+          height: 0;
+          position: absolute;
+          border: 7px solid transparent;
+          border-right: 7px solid #ff7f50;
+          left: -14px; }
+        section.Docinfo ul.Tags li.Public div:after {
+          content: "";
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background-color: #fff;
+          float: left;
+          top: 6px;
+          left: 0;
+          border-radius: 1px;
+          -webkit-border-radius: 1px;
+          -moz-border-radius: 1px; }
+    section.Docinfo ul.Tags li.Approver {
+      position: relative; }
+      section.Docinfo ul.Tags li.Approver div {
+        padding: 0 5px 0 7px;
+        height: 14px;
+        color: #fff;
+        background-color: #0000cd;
+        border-top-right-radius: 3px;
+        -webkit-border-top-right-radius: 3px;
+        -moz-border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        -webkit-border-bottom-right-radius: 3px;
+        -moz-border-bottom-right-radius: 3px; }
+        section.Docinfo ul.Tags li.Approver div:before {
+          content: "";
+          width: 0;
+          height: 0;
+          position: absolute;
+          border: 7px solid transparent;
+          border-right: 7px solid #0000cd;
+          left: -14px; }
+        section.Docinfo ul.Tags li.Approver div:after {
+          content: "";
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background-color: #fff;
+          float: left;
+          top: 6px;
+          left: 0;
+          border-radius: 1px;
+          -webkit-border-radius: 1px;
+          -moz-border-radius: 1px; }
+    section.Docinfo ul.Tags li.Editable {
+      position: relative; }
+      section.Docinfo ul.Tags li.Editable div {
+        padding: 0 5px 0 7px;
+        height: 14px;
+        color: #fff;
+        background-color: #006400;
+        border-top-right-radius: 3px;
+        -webkit-border-top-right-radius: 3px;
+        -moz-border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+        -webkit-border-bottom-right-radius: 3px;
+        -moz-border-bottom-right-radius: 3px; }
+        section.Docinfo ul.Tags li.Editable div:before {
+          content: "";
+          width: 0;
+          height: 0;
+          position: absolute;
+          border: 7px solid transparent;
+          border-right: 7px solid #006400;
+          left: -14px; }
+        section.Docinfo ul.Tags li.Editable div:after {
+          content: "";
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background-color: #fff;
+          float: left;
+          top: 6px;
+          left: 0;
+          border-radius: 1px;
+          -webkit-border-radius: 1px;
+          -moz-border-radius: 1px; }
+  section.Docinfo ul.Tags:after, section.Docinfo ul.Tags:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+  section.Docinfo ul.Tags:after {
+    clear: both; }
 section.Docinfo:after, section.Docinfo:before {
   display: table;
   content: "";
@@ -656,8 +709,13 @@ section.Docinfo:after {
   clear: both; }
 section.Docinfo > .Description {
   font-size: 11px;
+  padding: 0 5px;
   margin-bottom: 5px;
-  color: #555; }
+  color: #555;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: rgba(0, 0, 0, 0.1);
+  border-style: dashed solid solid solid; }
   section.Docinfo > .Description > div {
     float: left;
     margin-right: 10px; }
@@ -954,28 +1012,48 @@ section.OutlineEditor ul.BufferEditMenu {
   list-style: none;
   margin-top: 10px;
   margin-right: 0;
-  width: 140px; }
-  section.OutlineEditor ul.BufferEditMenu > li a {
-    cursor: pointer;
-    font-size: 7pt;
-    font-weight: bold;
-    color: #000;
-    padding-right: 30px;
-    padding-top: 5px;
-    margin-bottom: 3px;
-    width: 80px; }
-    section.OutlineEditor ul.BufferEditMenu > li a:hover {
+  width: 140px;
+  font-family: 'Playfair Display', serif; }
+  section.OutlineEditor ul.BufferEditMenu > li {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px; }
+    section.OutlineEditor ul.BufferEditMenu > li a {
+      position: relative;
+      top: -4px;
+      cursor: pointer;
+      font-size: 9pt;
+      font-weight: bold;
       color: #000;
-      background-color: #f5deb3; }
-  section.OutlineEditor ul.BufferEditMenu > li.Selected {
-    padding-left: 15px; }
-    section.OutlineEditor ul.BufferEditMenu > li.Selected a:hover, section.OutlineEditor ul.BufferEditMenu > li.Selected a:link, section.OutlineEditor ul.BufferEditMenu > li.Selected a:visited {
-      cursor: default;
-      background-color: transparent; }
-    section.OutlineEditor ul.BufferEditMenu > li.Selected a:before {
-      float: left;
-      border: 8px solid transparent;
-      border-left: 10px solid #000; }
+      width: 100%;
+      display: table;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box; }
+      section.OutlineEditor ul.BufferEditMenu > li a:hover {
+        color: #ff7f50; }
+      section.OutlineEditor ul.BufferEditMenu > li a .typcn {
+        font-size: 18pt;
+        margin-right: 5px;
+        padding-top: 3px; }
+    section.OutlineEditor ul.BufferEditMenu > li.Selected {
+      padding-left: 20px;
+      background-color: #fff; }
+      section.OutlineEditor ul.BufferEditMenu > li.Selected a:hover, section.OutlineEditor ul.BufferEditMenu > li.Selected a:link, section.OutlineEditor ul.BufferEditMenu > li.Selected a:visited {
+        cursor: default;
+        background-color: transparent; }
+      section.OutlineEditor ul.BufferEditMenu > li.Selected a:after {
+        width: 6px;
+        height: 6px;
+        content: "";
+        position: absolute;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        background-color: #e4e4e4;
+        float: left;
+        left: -10px;
+        top: 18px; }
 section.OutlineEditor .BufferEdit {
   margin-left: 180px; }
 section.OutlineEditor .Document {
@@ -1066,28 +1144,48 @@ section.MdBuffer ul.BufferEditMenu {
   list-style: none;
   margin-top: 10px;
   margin-right: 0;
-  width: 140px; }
-  section.MdBuffer ul.BufferEditMenu > li a {
-    cursor: pointer;
-    font-size: 7pt;
-    font-weight: bold;
-    color: #000;
-    padding-right: 30px;
-    padding-top: 5px;
-    margin-bottom: 3px;
-    width: 80px; }
-    section.MdBuffer ul.BufferEditMenu > li a:hover {
+  width: 140px;
+  font-family: 'Playfair Display', serif; }
+  section.MdBuffer ul.BufferEditMenu > li {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px; }
+    section.MdBuffer ul.BufferEditMenu > li a {
+      position: relative;
+      top: -4px;
+      cursor: pointer;
+      font-size: 9pt;
+      font-weight: bold;
       color: #000;
-      background-color: #f5deb3; }
-  section.MdBuffer ul.BufferEditMenu > li.Selected {
-    padding-left: 15px; }
-    section.MdBuffer ul.BufferEditMenu > li.Selected a:hover, section.MdBuffer ul.BufferEditMenu > li.Selected a:link, section.MdBuffer ul.BufferEditMenu > li.Selected a:visited {
-      cursor: default;
-      background-color: transparent; }
-    section.MdBuffer ul.BufferEditMenu > li.Selected a:before {
-      float: left;
-      border: 8px solid transparent;
-      border-left: 10px solid #000; }
+      width: 100%;
+      display: table;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box; }
+      section.MdBuffer ul.BufferEditMenu > li a:hover {
+        color: #ff7f50; }
+      section.MdBuffer ul.BufferEditMenu > li a .typcn {
+        font-size: 18pt;
+        margin-right: 5px;
+        padding-top: 3px; }
+    section.MdBuffer ul.BufferEditMenu > li.Selected {
+      padding-left: 20px;
+      background-color: #fff; }
+      section.MdBuffer ul.BufferEditMenu > li.Selected a:hover, section.MdBuffer ul.BufferEditMenu > li.Selected a:link, section.MdBuffer ul.BufferEditMenu > li.Selected a:visited {
+        cursor: default;
+        background-color: transparent; }
+      section.MdBuffer ul.BufferEditMenu > li.Selected a:after {
+        width: 6px;
+        height: 6px;
+        content: "";
+        position: absolute;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        background-color: #e4e4e4;
+        float: left;
+        left: -10px;
+        top: 18px; }
 section.MdBuffer .BufferEdit {
   margin-left: 180px; }
   section.MdBuffer .BufferEdit form .Canvas {
@@ -1307,28 +1405,48 @@ section.BufferLog ul.BufferEditMenu {
   list-style: none;
   margin-top: 10px;
   margin-right: 0;
-  width: 140px; }
-  section.BufferLog ul.BufferEditMenu > li a {
-    cursor: pointer;
-    font-size: 7pt;
-    font-weight: bold;
-    color: #000;
-    padding-right: 30px;
-    padding-top: 5px;
-    margin-bottom: 3px;
-    width: 80px; }
-    section.BufferLog ul.BufferEditMenu > li a:hover {
+  width: 140px;
+  font-family: 'Playfair Display', serif; }
+  section.BufferLog ul.BufferEditMenu > li {
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px; }
+    section.BufferLog ul.BufferEditMenu > li a {
+      position: relative;
+      top: -4px;
+      cursor: pointer;
+      font-size: 9pt;
+      font-weight: bold;
       color: #000;
-      background-color: #f5deb3; }
-  section.BufferLog ul.BufferEditMenu > li.Selected {
-    padding-left: 15px; }
-    section.BufferLog ul.BufferEditMenu > li.Selected a:hover, section.BufferLog ul.BufferEditMenu > li.Selected a:link, section.BufferLog ul.BufferEditMenu > li.Selected a:visited {
-      cursor: default;
-      background-color: transparent; }
-    section.BufferLog ul.BufferEditMenu > li.Selected a:before {
-      float: left;
-      border: 8px solid transparent;
-      border-left: 10px solid #000; }
+      width: 100%;
+      display: table;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box; }
+      section.BufferLog ul.BufferEditMenu > li a:hover {
+        color: #ff7f50; }
+      section.BufferLog ul.BufferEditMenu > li a .typcn {
+        font-size: 18pt;
+        margin-right: 5px;
+        padding-top: 3px; }
+    section.BufferLog ul.BufferEditMenu > li.Selected {
+      padding-left: 20px;
+      background-color: #fff; }
+      section.BufferLog ul.BufferEditMenu > li.Selected a:hover, section.BufferLog ul.BufferEditMenu > li.Selected a:link, section.BufferLog ul.BufferEditMenu > li.Selected a:visited {
+        cursor: default;
+        background-color: transparent; }
+      section.BufferLog ul.BufferEditMenu > li.Selected a:after {
+        width: 6px;
+        height: 6px;
+        content: "";
+        position: absolute;
+        border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        background-color: #e4e4e4;
+        float: left;
+        left: -10px;
+        top: 18px; }
 section.BufferLog .GitLog {
   margin-left: 180px; }
   section.BufferLog .GitLog .Description {

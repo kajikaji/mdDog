@@ -7,20 +7,22 @@
 
 <div class="Main">
   <div class="Subject">
-    <span class="Title">ドキュメント一覧</span>
+    <span class="Title">registed documents</span>
   [% IF login %]
     <div class="Menu">
-      <a href="doc_create.cgi" class="Button"><i class="Glyph Plus"></i>新規追加</a>
+      <a href="doc_create.cgi" class="Button"><span class="typcn typcn-document-add"></span>new document</a>
     </div>
   [% END %]
   </div>
 
-  [% IF infos %]
-  <ul class="DocFilter">
-    <li>[%UNLESS style %]一覧[%ELSE %]<a href="?style=">一覧</a>[%END %]</li>
-    <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?style=approver">承認権限</a>[%END %]</li>
-    <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?style=dustbox">ゴミ箱</a>[%END %]</li>
-  </ul>
+  [%IF infos %]
+    [%IF login %]
+    <ul class="DocFilter">
+      <li>[%UNLESS style %]一覧[%ELSE %]<a href="?style=">一覧</a>[%END %]</li>
+      <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?style=approver">承認権限</a>[%END %]</li>
+      <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?style=dustbox">ゴミ箱</a>[%END %]</li>
+    </ul>
+    [%END %]
 
   <table class="DocList">
     <tbody>
@@ -31,18 +33,18 @@
           [% UNLESS info.deleted_at %]
           <div class="DocCtrl">
             [%IF info.is_used %]
-              <a href="doc_outline.cgi?fid=[% info.id %]" class="Glyph File"></a>
+              <a href="doc_outline.cgi?fid=[% info.id %]"><span class="typcn typcn-document"></span></a>
               [%IF info.is_owned || is_admin %]
-                <a href="doc_setting.cgi?fid=[% info.id %]" class="Glyph Cogwheel"></a>
+                <a href="doc_setting.cgi?fid=[% info.id %]"><span class="typcn typcn-cog-outline"></span></a>
               [%END %]
             [%END %]
             <form action="" method="post">
             [%IF info.is_owned || is_admin || is_delete %]
               [%IF info.is_used %]
-                <input type="submit" name="unuse" value=" " class="Glyph Ban">
+                <button type="submit" name="unuse" value="1"><span class="typcn typcn-trash"></span></button>
               [% ELSE %]
-                <input type="submit" name="use" value=" " class="Glyph Ok">
-                <input type="submit" name="delete" value=" " class="Glyph Bin">
+                <button type="submit" name="use" value="1"><span class="typcn typcn-power-outline"></span></button>
+                <button type="submit" name="delete" value="1"><span class="typcn typcn-times"></span></button>
               [% END %]
               <input type="hidden" name="style" value="[% style %]">
               <input type="hidden" name="page" value="[% page %]">

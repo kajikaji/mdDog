@@ -1,5 +1,11 @@
-<h1>
-<span class="">[% doc_name %]</span></h1>
+<h1><span class="">[% doc_name %]</span></h1>
+              
+<ul class="Tags">
+  [%IF is_public %]<li class="Public"><div>public</div></li>[%END %]
+  [%IF is_approve %]<li class="Approver"><div>approver</div></li>[%END %]
+  [%IF is_edit %]<li class="Editable"><div>editable</div></li>[%END %]
+</ul>
+
 <div class="Description">
   <div class="">[<a href="download.cgi?fid=[% fid %]">最新版DL</a>]</div>
   <div class="CreatedAt">作成日時:[% created_at %]</div>

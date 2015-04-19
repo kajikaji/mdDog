@@ -1,9 +1,11 @@
-$corner_b: 5px;
-$orange: #ff7f50;
-$blue: #0000cd;
-$green: #006400;
-$black: #000;
-$minimum-font: 8pt;
+$corner_b     :5px;
+$orange       :#ff7f50;
+$blue         :#0000cd;
+$green        :#006400;
+$black        :#000;
+$bg_color     :#f5f5f5;
+$minimum_font :8pt;
+$subject_size :21pt;
 
 @mixin round-corner ($radius) {
   border-radius: $radius;
@@ -183,32 +185,52 @@ $minimum-font: 8pt;
         margin-top: 10px;
         margin-right: 0;
         width: 140px;
+        font-family: 'Playfair Display', serif;
         >li{
+            @include round-corner(20px);
+
             a{
+                position :relative;
+                top: -4px;
                 cursor:pointer;
-                font-size: 7pt;
+                font-size: 9pt;
                 font-weight: bold;
                 color: #000;
-                padding-right: 30px;
-                padding-top: 5px;
-                margin-bottom: 3px;
-                width: 80px;
+
+                width: 100%;
+                display: table;
+                box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+
                 &:hover{
-                    color: #000;
-                    background-color: #f5deb3;
+                    color: $orange;
+                }
+                .typcn{
+                  font-size: 18pt;
+                  margin-right: 5px;
+                  padding-top: 3px;
                 }
             }
             &.Selected{
-                padding-left: 15px;
+                padding-left: 20px;
+                background-color: #fff;
+
                 a{
                     &:hover, &:link, &:visited{
                         cursor: default;
                         background-color: transparent;
                     }
-                    &:before{
+                    &:after{
+                        width: 6px;
+                        height: 6px;
+                        content: "";
+                        position: absolute;
+                        @include round-corner(3px);
+                        background-color: $bg_color - #111;
                         float: left;
-                        border : 8px solid transparent;
-                        border-left : 10px solid #000;
+                        left: -10px;
+                        top: 18px;
                     }
                 }
             }
@@ -226,6 +248,13 @@ $minimum-font: 8pt;
   font-weight: bold;
   color: #000;
   background-color: #fff;
+}
+
+/*
+ * GENERAL SETTING
+ */
+body{
+  background-color: $bg_color;
 }
 
 /*
@@ -259,99 +288,6 @@ i.Mark{
     }
 }
 
-/*
- * GLYPH-ICON
- */
-
-i.Glyph{
-    width: 26px;
-    height: 26px;
-    display:inline-block;
-    background-color: transparent;
-    background-repeat: no-repeat;
-}
-.Glyph.DownloadAlt{
-    background-image: url("../img/181_download_alt.png");
-}
-.Glyph.Bin{
-    background-image: url("../img/016_bin.png");
-}
-.Glyph.InboxPlus{
-    background-image: url("../img/131_inbox_plus.png");
-}
-.Glyph.Ok{
-    background-image: url("../img/198_ok.png");
-}
-.Glyph.Ban{
-    background-image: url("../img/199_ban.png");
-}
-.Glyph.Plus{
-    background-position: 3px 3px;
-    background-image: url("../img/432_plus.png");
-}
-.Glyph.Commit{
-    background-image: url("../img/141_database_plus.png");
-    width: 27px;
-    height: 27px;
-}
-.Glyph.Edit{
-    background-image: url("../img/151_edit.png");
-}
-.Glyph.Source{
-    background-image: url("../img/036_file.png");
-}
-.Glyph.Image{
-    background-image: url("../img/159_picture.png");
-}
-.Glyph.Outline{
-    background-image: url("../img/156_show_lines.png");
-}
-.Glyph.Upload{
-    background-image: url("../img/201_upload.png");
-}
-.Glyph.Cogwheel{
-    background-image: url("../img/019_cogwheel.png");
-}
-.Glyph.Logbook{
-    background-image: url("../img/087_log_book.png");
-}
-.Glyph.Book{
-    background-image: url("../img/071_book.png");
-}
-.Glyph.File{
-    background-image: url("../img/036_file.png");
-}
-.Glyph.CircleRemove{
-    background-image: url("../img/192_circle_remove.png");
-}
-.Glyph.Eject{
-    background-position: 3px 3px;
-    background-image: url("../img/179_eject.png");
-}
-.Glyph.DeletePoint{
-    height: 18px;
-    background-image: url("../img/256_delete_point.png");
-}
-.Glyph.ShowThumbnailsWithLines{
-    background-image: url("../img/156_show_thumbnails_with_lines.png");
-}
-a.Glyph {
-  display: inline-block;
-  float: left;
-  @include clearfix();
-}
-a.Glyph, input[type=submit].Glyph{
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  height: 26px;
-  padding-left: 28px;
-
-  &:hover{
-    background-color: transparent;
-  }
-}
 
 a.Button{
   display: inline-block;
@@ -427,6 +363,7 @@ a.Btn{
 
   .Title{
     font-size: 48pt;
+    font-family: 'Playfair Display', serif;
     a,
     a:hover,
     a:visited,
@@ -703,11 +640,12 @@ section.Top{
     margin-top: 20px;
     margin-bottom: 20px;;
 
-    .Subject {
-      margin-bottom: 20px;
+    .Subject { 
+     margin-bottom: 20px;
       .Title{
         font-weight: bold;
-        font-size: 2.0em;
+        font-size: $subject_size;//2.0em;
+        font-family: 'Playfair Display', serif;
       }
       &.Disable{
         color: #888;
@@ -720,13 +658,14 @@ section.Top{
 
       .Menu{
         float: right;
+        font-family: 'Playfair Display', serif;
       }
 
     }
 
     ul.DocFilter{
       list-style: none;
-      font-size: $minimum-font;
+      font-size: $minimum_font;
       
       li{
           float: left;
@@ -736,6 +675,7 @@ section.Top{
 
     table.DocList{
         box-sizing: border-box;
+        background-color: #fff;
 
         tr{
             &.Nonactive {
@@ -751,53 +691,69 @@ section.Top{
                   > div {
                       &.Name {
                           a {
-                              color: #4169e0 - #404040;
+                              color: #000;//#4169e0 - #404040;
                               font-weight: bold;
                               &:hover{
-                                  color: #ff6437;
+                                  color: $orange;//#ff6437;
                               }
                           }
                       }
                       @include clearfix();
                   }
-ul.Tags{
-  clear : both;
-  list-style: none;
-  font-size: 7px;
-  margin: 3px 0;
+                  ul.Tags{
+                      clear : both;
+                      list-style: none;
+                      font-size: 7px;
+                      margin: 3px 0;
 
-  li{
-    float: left;
-    margin-left: 12px;
+                      li{
+                          float: left;
+                          margin-left: 12px;
 
-    &.Public{
-      @include nametag($orange);
-    }
-    &.Approver{
-      @include nametag($blue);
-    }
-    &.Editable{
-      @include nametag($green);
-    }
-  }
+                          &.Public{
+                              @include nametag($orange);
+                          }
+                          &.Approver{
+                              @include nametag($blue);
+                          }
+                          &.Editable{
+                              @include nametag($green);
+                          }
+                      }
 
-  @include clearfix();
-}
+                      @include clearfix();
+                  }
 
                 }
                 >.DocCtrl{
                     float: right;
                     padding: 5px;
-                    input.Glyph{
-                        margin-left: 5px;
+                    a{
+                        font-size: 18pt;
+                        color: #000;
                     }
+                    a:hover{
+                        color: $orange;
+                    }
+
                     form{
                         display: inline;
+                        button{
+                            font-size: 18pt;
+                            border: none;
+                            background: transparent;
+                            padding: 0;
+                            color: #000;
+                          &:hover{
+                            background: transparent;
+                            color: $orange;
+                          }
+                        }
                     }
                 }
                 .DocDetail{
                     clear: both;
-                    font-size: $minimum-font;
+                    font-size: $minimum_font;
                     border-top: 1px dashed rgba(0,0,0,0.1);
                     div{
                         float: left;
@@ -833,11 +789,16 @@ section.Docinfo{
   }
   h1{
     font-size: 2.0em;
-    margin-bottom: 5px;
+    padding: 5px;
+    margin-bottom: 0;
     .Title{
       font-weight: normal;
       margin-right: 10px;
     }
+    background-color: #fff;
+    border-width: 1px;
+    border-color: rgba(0,0,0,0.1);
+    border-style: solid solid none solid;
   }
   h2{
     .DownloadAlt{
@@ -849,12 +810,50 @@ section.Docinfo{
         margin-left: 10px;
     }
   }
+  ul.Tags{
+    clear : both;
+    list-style: none;
+    font-size: 7px;
+    margin-left: 30px;
+    padding: 0 0 3px;
+    background-color: #fff;
+    border-width: 1px;
+    border-color: rgba(0,0,0,0.1);
+    border-style: none solid none solid;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+
+    li{
+        float: left;
+        margin-left: 12px;
+
+        &.Public{
+            @include nametag($orange);
+        }
+        &.Approver{
+            @include nametag($blue);
+        }
+        &.Editable{
+            @include nametag($green);
+        }
+    }
+
+    @include clearfix();
+  }
+
   @include clearfix();
 
   >.Description{
     font-size: 11px;
+    padding: 0 5px;
     margin-bottom: 5px;
     color: #555;
+    background-color: #fff;
+
+    border-width: 1px;
+    border-color: rgba(0,0,0,0.1);
+    border-style: dashed solid solid solid;
     >div{
       float: left;
       margin-right: 10px;
@@ -1500,7 +1499,7 @@ section.BufferLog{
           text-align: right;
           background-color: #aaa;
           color: #eee;
-          font-size: $minimum-font;
+          font-size: $minimum_font;
         }
         .Content{
           padding: 1px;
