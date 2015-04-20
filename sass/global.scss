@@ -6,6 +6,7 @@ $black        :#000;
 $bg_color     :#f5f5f5;
 $minimum_font :8pt;
 $subject_size :21pt;
+$left_menu_width: 180px;
 
 @mixin round-corner ($radius) {
   border-radius: $radius;
@@ -179,7 +180,6 @@ $subject_size :21pt;
 }
 
 @mixin bufferEditMenu {
-    ul.BufferEditMenu{
         position: absolute;
         list-style:none;
         margin-top: 10px;
@@ -249,7 +249,6 @@ $subject_size :21pt;
                 height: 20px;
             }
         }
-    }
 }
 
 @mixin button_face {
@@ -943,25 +942,6 @@ section.Docinfo{
         @include clearfix();
     }
   }
-  .OutputMenu{
-     margin-bottom: 20px;
-      button{
-          padding: 4px 6px;
-          text-align: center;
-          line-height: 1.0em;
-          font-size: 85%;
-          font-weight: bold;
-          background-color: #fff;
-          border: 1px solid #aaa;
-          color: #555;
-
-          @include round-corner(5px);
-      }
-      button:hover{
-          background-color: #f5deb3;
-          color: #222;
-      }  
-  }
 }
 
 section.DocSetting{
@@ -1053,6 +1033,7 @@ background-color: #fff;
 
 section.Outline.PrintFormat{
     padding: 0;
+    margin-left: 0;
     >div.Page{
 	margin: 0;
         margin-bottom: -1px;
@@ -1064,10 +1045,15 @@ section.Outline.PrintFormat{
     }
 }
 
-section.Outline{
-    background-color: #fff;
-    padding: 30px 0;
 
+ul.OutlineMenu{
+  margin-left: 30px;
+  @include bufferEditMenu();
+}
+
+section.Outline{
+    padding: 30px 0;
+    margin-left: $left_menu_width;
     font-size: 12pt;
     line-height: 1.2em;
 
@@ -1079,6 +1065,7 @@ section.Outline{
     }
 
     >div.Page{
+      background-color: #fff;
       height: 297mm;
       width: 210mm;
       margin-bottom: 10mm;
@@ -1160,13 +1147,19 @@ section.Outline{
             }
         }
     }  
+
+    + section.Template .Headline{
+        margin: 0;
+    }
 }
 
 section.OutlineEditor{
-    @include bufferEditMenu();
+    ul.BufferEditMenu{
+        @include bufferEditMenu();
+    }
 
     .BufferEdit {
-      margin-left: 180px;
+      margin-left: $left_menu_width;
     }
 
     .Document{
@@ -1256,10 +1249,12 @@ table.Gitlog {
 
 
 section.MdBuffer{
-    @include bufferEditMenu();
+    ul.BufferEditMenu{
+        @include bufferEditMenu();
+    }
 
     .BufferEdit{
-        margin-left: 180px;
+        margin-left: $left_menu_width;;
 
         form .Canvas {
             margin-bottom: 10px;
@@ -1401,7 +1396,7 @@ section.MdBuffer{
     }
 
     .UploadForm {
-        margin-left: 180px;
+        margin-left: $left_menu_width;
         h3{
             margin-top: 0;
             margin-left: 0;
@@ -1437,10 +1432,12 @@ section.MdBuffer{
 }
 
 section.BufferLog{
-    @include bufferEditMenu();
+    ul.BufferEditMenu{
+        @include bufferEditMenu();
+    }
 
     .GitLog{
-        margin-left: 180px;
+        margin-left: $left_menu_width;;
 
         .Description{
             font-size: 80%;

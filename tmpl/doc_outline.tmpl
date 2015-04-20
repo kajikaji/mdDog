@@ -9,11 +9,13 @@
 <section class="Docinfo">
 [%SET SUBMENU = "アウトプット" %]
 [%INCLUDE docinfo_header.tmpl %]
-
-  <div class="OutputMenu">
-    <button id="printOutline">印刷アウトライン</button>
-  </div> <!-- output_menu -->
 </section <!-- docinfo -->
+
+<ul class="OutlineMenu">
+  <li><a id="printOutline"><span class="typcn typcn-printer"></span>print format</a></li>
+  <li><a id="headlineBtn"><span class="typcn typcn-th-menu"></span>headline</a></li>
+  <li><a id="jumpTopBtn"><span class="typcn typcn-arrow-up"></span>jump top</a></li>
+</ul>
 
 <section class="Outline">
   <div class="Cover Page">
@@ -58,6 +60,14 @@
     <div class="Document Page">[% doc %]</div>
   [% END %]
 
+</section>
+
+<section class="Template">
+<div class="Headline" id="headline">
+    <div class="Subject">headline<button class="CloseBtn"><span class="typcn typcn-delete-outline"></span></button></div>
+    <ul class="headlist">
+    </ul>
+</div>
 </section>
 
 [%INCLUDE footer.tmpl %]

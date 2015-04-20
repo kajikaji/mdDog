@@ -22,7 +22,8 @@ requirejs.config({
         mdBufferHeadline    :'mdBuffer/headline',
         mdBufferEditor      :'mdBuffer/editor',
         mdBufferFormCtrl    :'mdBuffer/formCtrl',
-        mdBufferDivideCtrl  :'mdBuffer/divideCtrl'
+        mdBufferDivideCtrl  :'mdBuffer/divideCtrl',
+        outlineViewer   :'outlineViewer'
     },
     shim: {
         'mddog': {
@@ -76,6 +77,11 @@ requirejs.config({
                 'mdBufferFormCtrl',
                 'mdBufferDivideCtrl'
             ]
+        },
+        'outlineViewer' : {
+	        deps: [
+                'jquery'
+            ]
         }
     }
 });
@@ -87,6 +93,9 @@ requirejs(['jquery'], function($){
     if($('body > section.Outline').length){
         require(['mdOutline'], function(Outline){
             new Outline().init();
+        });
+        require(['outlineViewer'], function(OutlineViewer){
+            new OutlineViewer().init();
         });
     }
 
