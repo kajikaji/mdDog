@@ -23,6 +23,7 @@ requirejs.config({
         mdBufferEditor      :'mdBuffer/editor',
         mdBufferFormCtrl    :'mdBuffer/formCtrl',
         mdBufferDivideCtrl  :'mdBuffer/divideCtrl',
+        leftMenu        :'leftMenu',
         outlineViewer   :'outlineViewer'
     },
     shim: {
@@ -73,6 +74,7 @@ requirejs.config({
 	        deps: [
                 'jquery',
                 'UTIL',
+                'leftMenu',
                 'mdBufferEditor',
                 'mdBufferFormCtrl',
                 'mdBufferDivideCtrl'
@@ -80,7 +82,8 @@ requirejs.config({
         },
         'outlineViewer' : {
 	        deps: [
-                'jquery'
+                'jquery',
+                'leftMenu'
             ]
         }
     }
@@ -130,13 +133,6 @@ requirejs(['jquery'], function($){
     if( $('#diffBtn').length ){
         $('#diffBtn').on('click', function(){
             alert('SORRY! THIS FUNCTION IS UNDERCONSTRUCTION.');
-        });
-    }
-
-    //トップにスクロール
-    if( $('#jumpTopBtn').length ){
-        $('#jumpTopBtn').on('click', function(){
-            $('html, body').animate({scrollTop: 0}, 'fast');
         });
     }
 
