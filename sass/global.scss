@@ -1590,12 +1590,12 @@ section.BufferLog{
     width: 170px;
     position: fixed;
     top: 0;
-    left: -170px;
+    left: -173px;
     height: 100%;
     background-color: #fff;
 
     border-right: 3px double #000;
-    overflow: scroll;
+    overflow: auto;
 
     div.Subject{
         margin: 0;
@@ -1612,7 +1612,7 @@ section.BufferLog{
     }
 
     ul.headlist{
-        margin: 10px 5px 30px;
+        margin: 10px 0 30px;
         list-style: none;
         line-height: 1.2em;
         li{

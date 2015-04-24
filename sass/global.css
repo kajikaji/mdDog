@@ -1,4 +1,10 @@
 /*
+ * GENERAL SETTING
+ */
+body {
+  background-color: whitesmoke; }
+
+/*
  * MARK
  */
 i.Mark {
@@ -11,16 +17,16 @@ i.Mark {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px; }
   i.Mark.Orange {
-    background-color: #ff7f50;
+    background-color: coral;
     color: #fff; }
   i.Mark.Green {
-    background-color: #006400;
+    background-color: darkgreen;
     color: #fff; }
   i.Mark.Blue {
-    background-color: #0000cd;
+    background-color: mediumblue;
     color: #fff; }
   i.Mark.Black {
-    background-color: #000;
+    background-color: black;
     color: #fff; }
 
 a.Button {
@@ -36,7 +42,7 @@ a.Button {
     margin-right: 3px; }
   a.Button.Orange {
     background-color: #ff4500;
-    border: 1px solid #ff7f50; }
+    border: 1px solid coral; }
 
 form input[type=submit], form input[type=button], form button {
   padding: 4px 6px;
@@ -386,7 +392,7 @@ section.Top .Main {
         color: #000;
         font-weight: bold; }
         section.Top .Main table.DocList tr td > .DocSubject > div.Name a:hover {
-          color: #ff7f50; }
+          color: coral; }
       section.Top .Main table.DocList tr td > .DocSubject > div:after, section.Top .Main table.DocList tr td > .DocSubject > div:before {
         display: table;
         content: "";
@@ -407,7 +413,7 @@ section.Top .Main {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
-              background-color: #ff7f50;
+              background-color: coral;
               border-top-right-radius: 3px;
               -webkit-border-top-right-radius: 3px;
               -moz-border-top-right-radius: 3px;
@@ -420,7 +426,7 @@ section.Top .Main {
                 height: 0;
                 position: absolute;
                 border: 7px solid transparent;
-                border-right: 7px solid #ff7f50;
+                border-right: 7px solid coral;
                 left: -14px; }
               section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div:after {
                 content: "";
@@ -440,7 +446,7 @@ section.Top .Main {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
-              background-color: #0000cd;
+              background-color: mediumblue;
               border-top-right-radius: 3px;
               -webkit-border-top-right-radius: 3px;
               -moz-border-top-right-radius: 3px;
@@ -453,7 +459,7 @@ section.Top .Main {
                 height: 0;
                 position: absolute;
                 border: 7px solid transparent;
-                border-right: 7px solid #0000cd;
+                border-right: 7px solid mediumblue;
                 left: -14px; }
               section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div:after {
                 content: "";
@@ -473,7 +479,7 @@ section.Top .Main {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
-              background-color: #006400;
+              background-color: darkgreen;
               border-top-right-radius: 3px;
               -webkit-border-top-right-radius: 3px;
               -moz-border-top-right-radius: 3px;
@@ -486,7 +492,7 @@ section.Top .Main {
                 height: 0;
                 position: absolute;
                 border: 7px solid transparent;
-                border-right: 7px solid #006400;
+                border-right: 7px solid darkgreen;
                 left: -14px; }
               section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div:after {
                 content: "";
@@ -513,7 +519,7 @@ section.Top .Main {
         font-size: 18pt;
         color: #000; }
       section.Top .Main table.DocList tr td > .DocCtrl a:hover {
-        color: #ff7f50; }
+        color: coral; }
       section.Top .Main table.DocList tr td > .DocCtrl form {
         display: inline; }
         section.Top .Main table.DocList tr td > .DocCtrl form button {
@@ -524,7 +530,7 @@ section.Top .Main {
           color: #000; }
           section.Top .Main table.DocList tr td > .DocCtrl form button:hover {
             background: transparent;
-            color: #ff7f50; }
+            color: coral; }
     section.Top .Main table.DocList tr td .DocDetail {
       clear: both;
       font-size: 8pt;
@@ -596,7 +602,7 @@ section.Docinfo ul.Tags {
         padding: 0 5px 0 7px;
         height: 14px;
         color: #fff;
-        background-color: #ff7f50;
+        background-color: coral;
         border-top-right-radius: 3px;
         -webkit-border-top-right-radius: 3px;
         -moz-border-top-right-radius: 3px;
@@ -609,7 +615,7 @@ section.Docinfo ul.Tags {
           height: 0;
           position: absolute;
           border: 7px solid transparent;
-          border-right: 7px solid #ff7f50;
+          border-right: 7px solid coral;
           left: -14px; }
         section.Docinfo ul.Tags li.Public div:after {
           content: "";
@@ -629,7 +635,7 @@ section.Docinfo ul.Tags {
         padding: 0 5px 0 7px;
         height: 14px;
         color: #fff;
-        background-color: #0000cd;
+        background-color: mediumblue;
         border-top-right-radius: 3px;
         -webkit-border-top-right-radius: 3px;
         -moz-border-top-right-radius: 3px;
@@ -642,7 +648,7 @@ section.Docinfo ul.Tags {
           height: 0;
           position: absolute;
           border: 7px solid transparent;
-          border-right: 7px solid #0000cd;
+          border-right: 7px solid mediumblue;
           left: -14px; }
         section.Docinfo ul.Tags li.Approver div:after {
           content: "";
@@ -662,7 +668,7 @@ section.Docinfo ul.Tags {
         padding: 0 5px 0 7px;
         height: 14px;
         color: #fff;
-        background-color: #006400;
+        background-color: darkgreen;
         border-top-right-radius: 3px;
         -webkit-border-top-right-radius: 3px;
         -moz-border-top-right-radius: 3px;
@@ -675,7 +681,7 @@ section.Docinfo ul.Tags {
           height: 0;
           position: absolute;
           border: 7px solid transparent;
-          border-right: 7px solid #006400;
+          border-right: 7px solid darkgreen;
           left: -14px; }
         section.Docinfo ul.Tags li.Editable div:after {
           content: "";
@@ -879,7 +885,7 @@ ul.OutlineMenu {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box; }
       ul.OutlineMenu > li a:hover {
-        color: #ff7f50; }
+        color: coral; }
       ul.OutlineMenu > li a .typcn {
         font-size: 18pt;
         margin-right: 5px;
@@ -1074,7 +1080,7 @@ section.OutlineEditor ul.BufferEditMenu {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box; }
       section.OutlineEditor ul.BufferEditMenu > li a:hover {
-        color: #ff7f50; }
+        color: coral; }
       section.OutlineEditor ul.BufferEditMenu > li a .typcn {
         font-size: 18pt;
         margin-right: 5px;
@@ -1216,7 +1222,7 @@ section.MdBuffer ul.BufferEditMenu {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box; }
       section.MdBuffer ul.BufferEditMenu > li a:hover {
-        color: #ff7f50; }
+        color: coral; }
       section.MdBuffer ul.BufferEditMenu > li a .typcn {
         font-size: 18pt;
         margin-right: 5px;
@@ -1487,7 +1493,7 @@ section.BufferLog ul.BufferEditMenu {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box; }
       section.BufferLog ul.BufferEditMenu > li a:hover {
-        color: #ff7f50; }
+        color: coral; }
       section.BufferLog ul.BufferEditMenu > li a .typcn {
         font-size: 18pt;
         margin-right: 5px;
@@ -1719,11 +1725,11 @@ section.BufferLog .GitLog {
   width: 170px;
   position: fixed;
   top: 0;
-  left: -170px;
+  left: -173px;
   height: 100%;
   background-color: #fff;
   border-right: 3px double #000;
-  overflow: scroll; }
+  overflow: auto; }
   .Headline div.Subject {
     margin: 0;
     padding: 10px 5px 5px;
@@ -1736,7 +1742,7 @@ section.BufferLog .GitLog {
       padding: 0;
       border: 0; }
   .Headline ul.headlist {
-    margin: 10px 5px 30px;
+    margin: 10px 0 30px;
     list-style: none;
     line-height: 1.2em; }
     .Headline ul.headlist li.h1 {
