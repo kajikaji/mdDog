@@ -30,7 +30,7 @@ define(function(){
 		            var num     = Number($(this).attr('id').substr(7));
 		            var pageObj = $('#document' + num).parent('.Document.Page');
 		            var page    = Number(pageObj.attr('class').split(' ')[2].substr(1)) + 1;
-		            $(this).find('span').addClass('PageNum').text(page);
+		            $(this).find('span.PageNum').text(page);
 	            });
 	        }, this));
 

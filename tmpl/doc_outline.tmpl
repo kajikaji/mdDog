@@ -51,7 +51,7 @@
     <div class="Subject">目次</div>
     <ul class="List">
       [% FOR content IN contents %]
-      <li class="Caption Level[% content.level %]" id="content[% content.num %]">[% content.line %]<span></span></li>
+      <li class="Caption Level[% content.level %]" id="content[% content.num %]"><span class="Text">[% content.line %]</span><span class="PageNum"></span></li>
       [% END %]
     </ul>
   </div>

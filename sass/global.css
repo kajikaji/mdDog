@@ -1742,7 +1742,7 @@ section.BufferLog .GitLog {
       padding: 0;
       border: 0; }
   .Headline ul.headlist {
-    margin: 10px 0 30px;
+    margin: 10px 5px 30px;
     list-style: none;
     line-height: 1.2em; }
     .Headline ul.headlist li.h1 {
