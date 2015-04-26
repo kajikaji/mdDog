@@ -4,7 +4,7 @@
  */
 
 define(function(){
-    var mdEditForm = function(obj, fid){
+    var paragraphCtrl = function(obj, fid){
         this.src      = obj;
         this.fid      = fid;
         this.formtmpl = 'editform';
@@ -16,7 +16,7 @@ define(function(){
         this.formId;
         this.tt;
     };
-    mdEditForm.prototype = {
+    paragraphCtrl.prototype = {
         init: function() {
             this.src.hover(
                 function(){ $(this).addClass('Focus'); },
@@ -149,7 +149,7 @@ define(function(){
         },
 
         updateSuccess: function(res){
-            require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+            require(['editBufferDivideCtrl'], $.proxy(function(DivideCtrl){
                 $('#' + this.formId).remove();
                 $('#' + this.mdId).attr('id', this.mdId + 'org');
                 var $ptr = $('#' + this.mdId + 'org');
@@ -158,9 +158,9 @@ define(function(){
                 if( this.id < 0 ){  this.id = 0;  }
 
                 $(res).each($.proxy(function(i, elm){
-                    var formCtrl = new mdEditForm($(elm.md), this.fid);
-                    formCtrl.init();
-                    var $mdPrgh = formCtrl.getMdParagraph();
+                    var paragraph = new paragraphCtrl($(elm.md), this.fid);
+                    paragraph.init();
+                    var $mdPrgh = paragraph.getMdParagraph();
                     $mdPrgh.find('.Raw').text(elm.raw);
                     $tmp.after($mdPrgh);
                     if( $tmp.attr('id') === this.mdId + 'org' ){
@@ -210,7 +210,7 @@ define(function(){
                 //改ページコントロール部の制御
                 if( this.id === 0 ){
                     $nextMd.find('.DivideCtrl').find('.DivideBtn').remove();
-                    require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                    require(['editBufferDivideCtrl'], $.proxy(function(DivideCtrl){
                         if( $nextMd.find('.DivideCtrl .PageNum').length ){
                             $nextMd.find('.DivideCtrl .PageNum').text('P 1');
                         }else{
@@ -270,13 +270,13 @@ define(function(){
         },
         checkBlankDocument: function(){
             if( $('.BufferEdit.Markdown .Document').children().length == 0 ){
-                var formCtrl = new mdEditForm($('<div>').addClass('Blank'), this.fid);
-                formCtrl.init();
-                var mdObj = formCtrl.getMdParagraph();
+                var paragraph = new paragraphCtrl($('<div>').addClass('Blank'), this.fid);
+                paragraph.init();
+                var mdObj = paragraph.getMdParagraph();
                 $(mdObj).attr('id', 'md-1');
-                require(['mdBufferDivideCtrl'], $.proxy(function(DivideCtrl){
+                require(['editBufferDivideCtrl'], $.proxy(function(DivideCtrl){
                     $(mdObj).find('.DivideCtrl').append(
-                        new DivideCtrl().getPageNum(0)
+                        DivideCtrl().getPageNum(0)
                     );
                 }, this));
                 $('.BufferEdit.Markdown .Document').append(mdObj);
@@ -292,5 +292,5 @@ define(function(){
         }
     };
 
-    return mdEditForm;
+    return paragraphCtrl;
 });
