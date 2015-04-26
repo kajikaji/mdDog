@@ -1,19 +1,19 @@
 'use strict'
 requirejs.config({
-    baseUrl: 'js/modules',
+//    baseUrl: 'js/module',
     urlArgs: 'rev=20150425',
-    packages : ["tableLog", "../edit_buffer"],
+    packages : ["modules/tableLog", "edit_buffer", "doc_setting"],
     paths: {
-        jquery          :'jquery-1.11.1.min',
-        UTIL            :'UTIL',
-        mdOutline       :'mdOutline',
-        mdEditForm      :'mdEditForm',
-        mdOutlineDivide :'mdOutlineDivide',
-        logTableChanger :'logTableChanger',
-        addAccountForm  :'addAccountForm',
-        userManager     :'userManager',
-        leftMenu        :'leftMenu',
-        outlineViewer   :'outlineViewer'
+        jquery          :'modules/jquery-1.11.1.min',
+        UTIL            :'modules/UTIL',
+        mdOutline       :'modules/mdOutline',
+        mdEditForm      :'modules/mdEditForm',
+        mdOutlineDivide :'modules/mdOutlineDivide',
+        logTableChanger :'modules/logTableChanger',
+        addAccountForm  :'modules/addAccountForm',
+        userManager     :'modules/userManager',
+        leftMenu        :'modules/leftMenu',
+        outlineViewer   :'modules/outlineViewer'
     },
     shim: {
         'mdOutline': {
@@ -42,7 +42,7 @@ requirejs(['jquery'], function($){
 
     //編集バッファ
     if( $('section.MdBuffer .BufferEdit.Markdown').length ){
-        require(['../edit_buffer'], function(Buffer){});
+        require(['edit_buffer'], function(Buffer){});
     }
 
     //アウトライン出力
@@ -72,7 +72,9 @@ requirejs(['jquery'], function($){
 
     //ドキュメント設定ページ　ユーザー管理
     if($('.DocSetting').length){
-        require(['userManager'], function(UserManager){});
+//        require(['userManager'], function(UserManager){});
+        require(['doc_setting'], function(docSetting){});
     }
+
 });
 

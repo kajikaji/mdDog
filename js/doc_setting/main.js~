@@ -1,0 +1,28 @@
+'use strict'
+
+require.config({
+    paths : {
+        docSettingUserManager   : 'doc_setting/userManager'
+    },
+    shim: {
+        docSettingUserManager : {
+            deps: ['UTIL']
+        }
+    }
+});
+
+//require(function(){
+    require(['docSettingUserManager'], function(UserManager){
+        var fid_ = getParam('fid');
+        $('.UsersTable tbody').find('tr.User').each(function(){
+            var uid_ = $(this).find('.Select input[type=checkbox]').data('id');
+            $(this).find('.Approve input[type=checkbox]').on('click', function(){
+                var userManager = new UserManager(fid_);
+                userManager.toggleApprove(uid_, $(this));
+            });
+        });
+    });
+//});
+
+
+

@@ -2,13 +2,14 @@
 
 require.config({
     paths: {
-        editBufferHeadline    :'../edit_buffer/headline',
-        editBufferCommitForm  :'../edit_buffer/commitForm',
-        editBufferEditor      :'../edit_buffer/editor',
-        editBufferDivideCtrl  :'../edit_buffer/divideCtrl',
-        editBufferParagraphCtrl    :'../edit_buffer/paragraphCtrl',
-        editBufferMessage     :'../edit_buffer/bufferMessage'
+        editBufferHeadline      :'edit_buffer/headline',
+        editBufferCommitForm    :'edit_buffer/commitForm',
+        editBufferEditor        :'edit_buffer/editor',
+        editBufferDivideCtrl    :'edit_buffer/divideCtrl',
+        editBufferParagraphCtrl :'edit_buffer/paragraphCtrl',
+        editBufferMessage       :'edit_buffer/bufferMessage'
     },
+
     shim:{
         'editBufferEditor' : {
 	        deps: [
