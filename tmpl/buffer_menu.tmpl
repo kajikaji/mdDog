@@ -1,12 +1,13 @@
 <ul class="BufferEditMenu">
-  <li [% IF SUBMENU=="編集バッファ" %]class="Selected"[% END %]><a href="edit_buffer.cgi?fid=[% fid %]"><span class="typcn typcn-edit"></span>edit</a></li>
-  <li [% IF SUBMENU=="画像" %]class="Selected"[% END %]><a href="edit_image.cgi?fid=[% fid %]"><span class="typcn typcn-image"></span>image</a></li>
-  <li [% IF SUBMENU=="ソース" %]class="Selected"[% END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
-  <li [% IF SUBMENU=="アップロード" %]class="Selected"[% END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
-  <li [% IF SUBMENU=="編集履歴" %]class="Selected"[% END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
+  <li [%IF SUBMENU=="edit_buffer" %]class="Selected"[%END %]><a href="edit_buffer.cgi?fid=[% fid %]"><span class="typcn typcn-edit"></span>edit</a></li>
+  <li [%IF SUBMENU=="edit_image" %]class="Selected"[%END %]><a href="edit_image.cgi?fid=[% fid %]"><span class="typcn typcn-image"></span>image</a></li>
+  <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
+  <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
+  <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
+  [%UNLESS is_live %]<li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="edit_merge.cgi?fid=[% fid %]"><span class="typcn typcn-flow-merge"></span>merge</a></li>[%END %]
   <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %]"><span class="typcn typcn-database"></span>commit</a></li>
 
-  [%IF SUBMENU=="編集バッファ" %]
+  [%IF SUBMENU=="edit_buffer" %]
     <li class="DivideMenu"></li>
     <li><a id="headlineBtn"><span class="typcn typcn-th-menu"></span>headline</a></li>
     <li><a id="previewBtn"><span class="typcn typcn-printer"></span>preview</a></li>

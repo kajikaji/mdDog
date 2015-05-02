@@ -16,16 +16,16 @@
 
 <ul class="DocCtrl">
   <li [%UNLESS SUBMENU %]class="Selected"[%END %]><a href="doc_history.cgi?fid=[% fid %]" class="Btn">更新履歴</a></li>
-  <li [%IF SUBMENU == "アウトプット" %]class="Selected"[%END %]><a href="doc_outline.cgi?fid=[% fid %]" class="Btn">最新版アウトライン</a></li>
+  <li [%IF SUBMENU == "doc_outline" %]class="Selected"[%END %]><a href="doc_outline.cgi?fid=[% fid %]" class="Btn">最新版アウトライン</a></li>
   [%IF login %]
     [%IF is_edit || is_admin %]
-      <li [%SWITCH SUBMENU %][% CASE ["編集バッファ" "画像" "アウトライン" "ソース" "アップロード" "編集履歴"] %]class="Selected"[% END %]><a href="edit_buffer.cgi?fid=[% fid %]" class="Btn">編集バッファ</a></li>
+      <li [%SWITCH SUBMENU %][%CASE ["edit_buffer" "edit_image" "edit_source" "edit_upload" "edit_log"] %]class="Selected"[% END %]><a href="edit_buffer.cgi?fid=[% fid %]" class="Btn">編集バッファ</a></li>
     [%END %]
     [%IF is_approve || is_admin %]
-      <li [%IF SUBMENU == "承認" %]class="Selected"[%END %]><a href="doc_approve.cgi?fid=[% fid %]" class="Btn">承認</a></li>
+      <li [%IF SUBMENU == "doc_approve" %]class="Selected"[%END %]><a href="doc_approve.cgi?fid=[% fid %]" class="Btn">承認</a></li>
     [%END %]
     [%IF is_owned || is_admin %]
-      <li [%IF SUBMENU == "設定" %]class="Selected"[%END %]><a href="doc_setting.cgi?fid=[% fid %]" class="Btn">設定</a></li>
+      <li [%IF SUBMENU == "doc_setting" %]class="Selected"[%END %]><a href="doc_setting.cgi?fid=[% fid %]" class="Btn">設定</a></li>
     [%END %]
   [%END %]
 </ul>
