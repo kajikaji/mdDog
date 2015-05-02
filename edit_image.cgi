@@ -54,6 +54,7 @@ $dog->is_exist_buffer();
 
 $dog->set_md_image();
 $dog->set_document_info();
+$dog->set_buffer_info();
 
 $dog->print_page();
 exit();

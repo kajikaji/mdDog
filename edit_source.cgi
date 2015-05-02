@@ -50,6 +50,7 @@ $dog->is_exist_buffer();
 
 $dog->set_buffer_raw();
 $dog->set_document_info();
+$dog->set_buffer_info();
 
 $dog->print_page();
 exit();

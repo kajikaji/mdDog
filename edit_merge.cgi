@@ -24,28 +24,12 @@ use strict; no strict "refs";
 use lib './lib/';
 use mdDog;
 
-my $dog =mdDog->new();
+my $dog = mdDog->new();
 $dog->setup_config();
 $dog->login_user_document();
 $dog->check_auths("is_edit", "is_admin");
 
-#アップロード処理
-if ($dog->qParam('uploadfile')) {
-    $dog->upload_file();
-}
 
-#コミット処理
-if ($dog->qParam('commit')) {
-    #変更を反映 変更履歴は必須
-    $dog->fix_md_buffer();
-}
-
-#バッファリセット
-if( $dog->qParam('resetBuffer') ){
-    $dog->reset_buffer();
-}
-
-$dog->is_exist_buffer();
 
 $dog->set_document_info();
 $dog->set_buffer_info();

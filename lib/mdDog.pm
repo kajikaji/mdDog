@@ -380,6 +380,31 @@ SQL
     $self->{t}->{revision} = $ver if($ver);
 }
 
+############################################################
+# ユーザーのバッファの状態を取得してテンプレートにセット
+#
+sub set_buffer_info {
+    my $self    = shift;
+    my $fid     = $self->qParam('fid');
+    my $uid     = $self->{s}->param("login");
+    my $gitctrl = $self->{git};
+
+    return 0 unless( $fid && $uid );
+
+    #共有リポジトリ(master)
+    my $shared_logs = $gitctrl->get_shared_logs();
+    my $latest_rev;
+    if( $shared_logs ){
+        $latest_rev = $shared_logs->[0]->{id};
+    }
+
+    if($gitctrl->is_exist_user_branch($uid)){
+        my $user_root = $gitctrl->get_branch_root($uid);
+        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
+    }else{
+        $self->{t}->{is_live} = 1;
+    }
+}
 
 ############################################################
 #
@@ -455,16 +480,16 @@ sub set_my_log {
 
     #共有リポジトリ(master)
     $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
-    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
+#    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
     if($gitctrl->is_exist_user_branch($uid)){
         $self->{t}->{loglist} = $gitctrl->get_user_logs($uid);
-        my $user_root = $gitctrl->get_branch_root($uid);
-        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
+#        my $user_root = $gitctrl->get_branch_root($uid);
+#        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }
-    else{
-        $self->{t}->{is_live} = 1;
-    }
+#    else{
+#        $self->{t}->{is_live} = 1;
+#    }
 }
 
 ###################################################

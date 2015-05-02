@@ -44,6 +44,7 @@ $dog->is_exist_buffer();
 
 $dog->set_buffer_md();
 $dog->set_document_info();
+$dog->set_buffer_info();
 $dog->set_outline_buffer();
 
 $dog->print_page();

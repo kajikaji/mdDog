@@ -1432,6 +1432,12 @@ section.MdBuffer{
     }
 }
 
+section.BufferMerge{
+    ul.BufferEditMenu{
+        @include bufferEditMenu();
+    }
+}
+
 section.BufferLog{
     ul.BufferEditMenu{
         @include bufferEditMenu();
