@@ -2,10 +2,10 @@
 
 require.config({
     paths: {
-        'diffViewer'      :'tableLog/diffViewer',
-        'revisionViewer'  :'tableLog/revisionViewer',
-        'rollbackBuffer'  :'tableLog/rollbackBuffer',
-        'editLogComment'  :'tableLog/editLogComment',
+        'diffViewer'      :'modules/tableLog/diffViewer',
+        'revisionViewer'  :'modules/tableLog/revisionViewer',
+        'rollbackBuffer'  :'modules/tableLog/rollbackBuffer',
+        'editLogComment'  :'modules/tableLog/editLogComment',
     }
 });
 

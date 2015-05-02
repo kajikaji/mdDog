@@ -62,7 +62,7 @@ requirejs(['jquery'], function($){
     //履歴テーブルにビューアーの埋め込み
     if( !$('body > section.Outline').length
          && $('table.Gitlog').length ){
-        require(['tableLog'], function(tableLog){});
+        require(['modules/tableLog'], function(tableLog){});
     }
 
     //管理ページ　アカウント管理
