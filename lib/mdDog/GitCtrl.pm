@@ -244,43 +244,42 @@ sub approve {
 
 ############################################################
 #リヴィジョン間のdiffを取って結果をリストで返す
-# @param1 "バージョン"
-# @param2 "比較対象のバージョン":無指定だと前バージョン
+# @param1 ドキュメント名
+# @param2 "バージョン"
+# @param3 "比較対象のバージョン":無指定だと前バージョン
 #
 sub get_diff {
-  my $self = shift;
-  my $ver = shift;
-  my $dist = shift;
+    my ($self, $filename, $ver, $dist) = @_;
 
-  my $gitctrl = $self->{git};
-  my @difflist;
-  my $flg = 0;
-  my $cnt = 1;
+    my $gitctrl = $self->{git};
+    my @difflist;
+    my $flg = 0;
+    my $cnt = 1;
 
-  $dist = "${ver}^" unless($dist);
+    $dist = "${ver}^" unless($dist);
 
-  for ($gitctrl->diff("$dist..$ver"))
-  {
-    my $line = eval {$_};
-    next if(length($line) == 0);
-    next if($line =~ m/^diff --git.*/);
-    if($line =~ m/^index /){
-      $flg = 0;
-      next;
+    for ($gitctrl->diff("$dist..$ver", $filename))
+    {
+        my $line = eval {$_};
+        next if(length($line) == 0);
+        next if($line =~ m/^diff --git.*/);
+        if ($line =~ m/^index /) {
+          $flg = 0;
+          next;
+        }
+        if ($flg == 0 && $line =~ m/--- .*/) {
+          next;
+        } elsif ($flg == 0 && $line =~ m/\+\+\+ .*/) {
+          $flg = 1;
+          next;
+        }
+        if ($flg == 1) {
+          push @difflist, {no => $cnt, content => "$line"};
+          #    push @difflist, MYUTIL::adjust_diff_line($obj);
+          $cnt++;
+        }
     }
-    if($flg == 0 && $line =~ m/--- .*/){
-      next;
-    }elsif($flg == 0 && $line =~ m/\+\+\+ .*/){
-      $flg = 1;
-      next;
-    }
-    if($flg == 1){
-      push @difflist, {no => $cnt, content => "$line<br>"};
-#    push @difflist, MYUTIL::adjust_diff_line($obj);
-      $cnt++;
-    }
-  }
-  return \@difflist;
+    return \@difflist;
 }
 
 ############################################################

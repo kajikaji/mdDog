@@ -267,7 +267,7 @@ sub get_diff {
   my $filename = $ary[0];
   my $revision = $self->qParam('revision');
   my $dist     = $self->qParam('dist');
-  my $diff     = $self->{git}->get_diff($revision, $dist);
+  my $diff     = $self->{git}->get_diff($filename, $revision, $dist);
 
   my $json = JSON->new();
   return $json->encode({

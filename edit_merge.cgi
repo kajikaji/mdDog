@@ -29,10 +29,10 @@ $dog->setup_config();
 $dog->login_user_document();
 $dog->check_auths("is_edit", "is_admin");
 
-
-
 $dog->set_document_info();
 $dog->set_buffer_info();
+
+$dog->set_merge_view();
 
 $dog->print_page();
 exit();

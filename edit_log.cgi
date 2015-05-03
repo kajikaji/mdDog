@@ -40,8 +40,6 @@ if( $dog->qParam('resetBuffer') ){
     $dog->reset_buffer();
 }
 
-$dog->is_exist_buffer();
-
 $dog->set_my_log();
 $dog->set_document_info();
 $dog->set_buffer_info();

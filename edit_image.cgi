@@ -50,8 +50,6 @@ if( $dog->qParam('resetBuffer') ){
     $dog->reset_buffer();
 }
 
-$dog->is_exist_buffer();
-
 $dog->set_md_image();
 $dog->set_document_info();
 $dog->set_buffer_info();

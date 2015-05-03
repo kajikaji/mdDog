@@ -4,7 +4,7 @@
   <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
   <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
   <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
-  [%UNLESS is_live %]<li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="edit_merge.cgi?fid=[% fid %]"><span class="typcn typcn-flow-merge"></span>merge</a></li>[%END %]
+  <li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="edit_merge.cgi?fid=[% fid %]" class="[%IF is_live %]Disabled[%END %]"><span class="typcn typcn-flow-merge"></span>merge</a></li>
   <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %]"><span class="typcn typcn-database"></span>commit</a></li>
 
   [%IF SUBMENU=="edit_buffer" %]

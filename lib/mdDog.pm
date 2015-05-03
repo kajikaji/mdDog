@@ -391,33 +391,26 @@ sub set_buffer_info {
 
     return 0 unless( $fid && $uid );
 
-    #共有リポジトリ(master)
+    # check whether current repository has been older than master
     my $shared_logs = $gitctrl->get_shared_logs();
     my $latest_rev;
     if( $shared_logs ){
         $latest_rev = $shared_logs->[0]->{id};
     }
-
     if($gitctrl->is_exist_user_branch($uid)){
         my $user_root = $gitctrl->get_branch_root($uid);
         $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }else{
         $self->{t}->{is_live} = 1;
     }
-}
 
-############################################################
-#
-sub is_exist_buffer {
-    my $self = shift;
-    my $fid  = $self->qParam('fid');
-    my $uid  = $self->{s}->param("login");
-
+    # check exist of temporary buffer
     if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
       && $self->{git}->is_updated_buffer($uid)){
         push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
 }
+
 
 ############################################################
 #ドキュメントのログを取得
@@ -521,6 +514,51 @@ sub set_approve_list {
   $self->{t}->{loglist}     = \@logs;
   $self->{t}->{approve_pre} = 1;
 }
+
+###################################################
+#
+sub set_merge_view {
+    my $self     = shift;
+
+    my $uid      = $self->{s}->param("login");
+    my $fid      = $self->qParam("fid");
+    my $gitctrl  = $self->{git};
+
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+    $gitctrl->attach_local(undef);
+    my $doc_master;
+    open my $hF, '<', $filepath || die "failed to read ${filepath}";
+    my $pos = 0;
+    while (my $length = sysread $hF, $doc_master, 1024, $pos) {
+        $pos += $length;
+    }
+    close $hF;
+    $gitctrl->detach_local();
+
+    $gitctrl->attach_local($uid);
+    my $diff = $gitctrl->get_diff($filename, 'HEAD', 'master');
+    my $doc_user;
+    open my $hF, '<', $filepath || die "failed to read ${filepath}";
+    my $pos = 0;
+    while (my $length = sysread $hF, $doc_user, 1024, $pos) {
+        $pos += $length;
+    }
+    close $hF;
+    $gitctrl->detach_local();
+
+    $doc_user   =~ s/\n/\<br\>/g;
+    $doc_master =~ s/\n/\<br\>/g;
+
+    $self->{t}->{diff}       = $diff;
+    $self->{t}->{doc_mine}   = $doc_user;
+    $self->{t}->{doc_master} = $doc_master;
+}
+
 
 ###################################################
 # 指定のユーザーの指定のリヴィジョンを承認して共有化
