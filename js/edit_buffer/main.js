@@ -7,7 +7,8 @@ require.config({
         editBufferEditor        :'edit_buffer/editor',
         editBufferDivideCtrl    :'edit_buffer/divideCtrl',
         editBufferParagraphCtrl :'edit_buffer/paragraphCtrl',
-        editBufferMessage       :'edit_buffer/bufferMessage'
+        editBufferMessage       :'edit_buffer/bufferMessage',
+        editBufferDiff          :'edit_buffer/diff'
     },
 
     shim:{
@@ -63,6 +64,13 @@ require(['leftMenu'], function(LeftMenu){
           require(['editBufferEditor'], function(EditBufferEditor){
                new EditBufferEditor().init();
           });
+    }
+
+    //diffビュー
+    if( $('section.BufferMerge').length ){
+        require(['editBufferDiff'], function(Diff){
+            new Diff().init();
+        });
     }
 
     //バッファメッセージの管理

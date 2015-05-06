@@ -41,7 +41,8 @@ requirejs.config({
 requirejs(['jquery'], function($){
 
     //編集バッファ
-    if( $('section.MdBuffer .BufferEdit.Markdown').length ){
+    if( $('section.MdBuffer .BufferEdit.Markdown').length 
+        || $('section.BufferMerge').length ){
         require(['edit_buffer'], function(Buffer){});
     }
 

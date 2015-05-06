@@ -530,6 +530,7 @@ sub set_merge_view {
     my $filename = $ary[0];
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
+    # taking a info from MASTER
     $gitctrl->attach_local(undef);
     my $doc_master;
     open my $hF, '<', $filepath || die "failed to read ${filepath}";
@@ -538,10 +539,14 @@ sub set_merge_view {
         $pos += $length;
     }
     close $hF;
+    my $list_master;
+    foreach(split(/\n/, $doc_master)){
+        push @$list_master, $_;
+    }
     $gitctrl->detach_local();
 
+    # takeing a info from MINE including 'diff'
     $gitctrl->attach_local($uid);
-    my $diff = $gitctrl->get_diff($filename, 'HEAD', 'master');
     my $doc_user;
     open my $hF, '<', $filepath || die "failed to read ${filepath}";
     my $pos = 0;
@@ -549,14 +554,16 @@ sub set_merge_view {
         $pos += $length;
     }
     close $hF;
+    my $list_user;
+    foreach(split(/\n/, $doc_user)){
+        push @$list_user, $_;
+    }
+    my $diff = $gitctrl->get_diff($filename, 'master', 'HEAD');
     $gitctrl->detach_local();
 
-    $doc_user   =~ s/\n/\<br\>/g;
-    $doc_master =~ s/\n/\<br\>/g;
-
+    $self->{t}->{doc_master} = $list_master;
+    $self->{t}->{doc_mine}   = $list_user;
     $self->{t}->{diff}       = $diff;
-    $self->{t}->{doc_mine}   = $doc_user;
-    $self->{t}->{doc_master} = $doc_master;
 }
 
 

@@ -211,13 +211,13 @@ $left_menu_width: 180px;
                   margin-right: 5px;
                   padding-top: 3px;
                 }
-                .typcn.typcn-database{
+                .typcn.typcn-database, .typcn.typcn-flow-merge{
                     color: #f00;
                 }
                 &.Disabled{
                     pointer-events: none;
                     color: #aaa;
-                    .typcn.typcn-database{
+                    .typcn.typcn-database, .typcn.typcn-flow-merge{
                         color: #aaa;
                     }
                 }
@@ -1435,6 +1435,44 @@ section.MdBuffer{
 section.BufferMerge{
     ul.BufferEditMenu{
         @include bufferEditMenu();
+    }
+
+    .MergeView{
+        margin-left: $left_menu_width;
+
+        .Mine, .Master{
+            float: left;
+            width: 50%;
+            ul.Document{
+                list-style: none;
+                padding: 10px;
+                margin: 0 5px;
+                background-color: #fff;
+                li{
+                    &.Local{
+                        background-color: #fffacd;
+                    }
+                    &.Master{
+                        background-color: #e6e6fa;
+                    }
+                    >div{
+                        float: left;
+                        &.Num{
+                            width: 40px;
+                            text-align: right;
+                            margin-right: 10px;
+                        }
+                        &.Line{
+                        }
+                    }
+                    @include clearfix();
+                }
+            }
+        }
+        .DiffInfo{
+            clear: both;
+        }
+        @include clearfix();
     }
 }
 

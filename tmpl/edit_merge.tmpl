@@ -16,6 +16,35 @@
 <section class="BufferMerge">
   [%INCLUDE buffer_menu.tmpl %]
 
+  <div class="MergeView">
+    <div class="Mine">
+      <ul class="Document">
+        [%FOREACH line IN doc_mine %]
+          <li id="Mine[% loop.index + 1 %]">
+            <div class="Num">[% loop.index + 1 %]</div>
+            <div class="Line">[% line %]</div>
+          </li>
+        [%END %]
+      </ul>
+    </div>
+    <div class="Master">
+      <ul class="Document">
+        [%FOREACH line IN doc_master %]
+          <li id="Master[% loop.index + 1 %]">
+            <div class="Num">[% loop.index + 1 %]</div>
+            <div class="Line">[% line %]</div>
+          </li>
+        [%END %]
+      </ul>
+    </div>
+
+  <div class="DiffInfo">
+  [%FOREACH d IN diff %]
+    <div>[% d.content %]</div>
+  [%END %]
+  </div>
+
+  </div>
 </section>
 
 [%INCLUDE footer.tmpl %]
