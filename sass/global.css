@@ -1528,33 +1528,40 @@ section.BufferMerge ul.BufferEditMenu {
       content: "";
       height: 20px; }
 section.BufferMerge .MergeView {
-  margin-left: 180px; }
-  section.BufferMerge .MergeView .Mine, section.BufferMerge .MergeView .Master {
+  margin-left: 180px;
+  margin-bottom: 50px; }
+  section.BufferMerge .MergeView > .Mine, section.BufferMerge .MergeView > .Master {
     float: left;
     width: 50%; }
-    section.BufferMerge .MergeView .Mine ul.Document, section.BufferMerge .MergeView .Master ul.Document {
+    section.BufferMerge .MergeView > .Mine ul.Document, section.BufferMerge .MergeView > .Master ul.Document {
       list-style: none;
       padding: 10px;
       margin: 0 5px;
       background-color: #fff; }
-      section.BufferMerge .MergeView .Mine ul.Document li.Local, section.BufferMerge .MergeView .Master ul.Document li.Local {
+      section.BufferMerge .MergeView > .Mine ul.Document li.Local, section.BufferMerge .MergeView > .Master ul.Document li.Local {
         background-color: #fffacd; }
-      section.BufferMerge .MergeView .Mine ul.Document li.Master, section.BufferMerge .MergeView .Master ul.Document li.Master {
+      section.BufferMerge .MergeView > .Mine ul.Document li.Master, section.BufferMerge .MergeView > .Master ul.Document li.Master {
         background-color: #e6e6fa; }
-      section.BufferMerge .MergeView .Mine ul.Document li > div, section.BufferMerge .MergeView .Master ul.Document li > div {
+      section.BufferMerge .MergeView > .Mine ul.Document li.Omit .Num, section.BufferMerge .MergeView > .Mine ul.Document li.Omit .Line, section.BufferMerge .MergeView > .Master ul.Document li.Omit .Num, section.BufferMerge .MergeView > .Master ul.Document li.Omit .Line {
+        color: #aaa;
+        text-decoration: line-through; }
+      section.BufferMerge .MergeView > .Mine ul.Document li > div, section.BufferMerge .MergeView > .Master ul.Document li > div {
         float: left; }
-        section.BufferMerge .MergeView .Mine ul.Document li > div.Num, section.BufferMerge .MergeView .Master ul.Document li > div.Num {
+        section.BufferMerge .MergeView > .Mine ul.Document li > div.Num, section.BufferMerge .MergeView > .Master ul.Document li > div.Num {
           width: 40px;
           text-align: right;
           margin-right: 10px; }
-      section.BufferMerge .MergeView .Mine ul.Document li:after, section.BufferMerge .MergeView .Mine ul.Document li:before, section.BufferMerge .MergeView .Master ul.Document li:after, section.BufferMerge .MergeView .Master ul.Document li:before {
+        section.BufferMerge .MergeView > .Mine ul.Document li > div.Ctrl, section.BufferMerge .MergeView > .Master ul.Document li > div.Ctrl {
+          float: right; }
+      section.BufferMerge .MergeView > .Mine ul.Document li:after, section.BufferMerge .MergeView > .Mine ul.Document li:before, section.BufferMerge .MergeView > .Master ul.Document li:after, section.BufferMerge .MergeView > .Master ul.Document li:before {
         display: table;
         content: "";
         line-height: 0; }
-      section.BufferMerge .MergeView .Mine ul.Document li:after, section.BufferMerge .MergeView .Master ul.Document li:after {
+      section.BufferMerge .MergeView > .Mine ul.Document li:after, section.BufferMerge .MergeView > .Master ul.Document li:after {
         clear: both; }
   section.BufferMerge .MergeView .DiffInfo {
-    clear: both; }
+    clear: both;
+    display: none; }
   section.BufferMerge .MergeView:after, section.BufferMerge .MergeView:before {
     display: table;
     content: "";

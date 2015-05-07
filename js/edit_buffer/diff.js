@@ -6,6 +6,11 @@ define(function(){
         init: function(){
             var myNum, myLine, masterNum, masterLine;
             var atmark = /^@@ -([0-9]+),([0-9]+) \+([0-9]+),([0-9]+) @@/;
+            var $delBtn = $('<div>').addClass('Ctrl').append(
+                $('<a>').append(
+                $('<span>').addClass('typcn typcn-delete')
+                )
+            );
             $('.DiffInfo div').each(function(){
                 var line   = $(this).text();
                 var atinfo = line.match(atmark);
@@ -18,12 +23,20 @@ define(function(){
                 }
 
                 if( line.match(/^-/) ){
-                    $('#Mine' + myNum).addClass('Local');
+                    var $btn = $delBtn.clone()
+                    $btn.find('a').on('click', function(){
+                        $(this).parents('li').toggleClass('Omit');
+                    });
+                    $('#Mine' + myNum).addClass('Local').append($btn);
                     myNum++;
                 }else if( line.match(/^\+/) ){
                     var $target = $('#Mine' + myNum);
-                    var $org = $('#Master' + masterNum);
-                    $target.before($org.clone().addClass('Master'));
+                    var $org = $('#Master' + masterNum).clone();
+                    var $btn = $delBtn.clone()
+                    $btn.find('a').on('click', function(){
+                        $(this).parents('li').toggleClass('Omit');
+                    });
+                    $target.before($org.addClass('Master').append($btn));
                     masterNum++;
                 }else{
                     myNum++;

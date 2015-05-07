@@ -1439,8 +1439,9 @@ section.BufferMerge{
 
     .MergeView{
         margin-left: $left_menu_width;
+        margin-bottom: 50px;
 
-        .Mine, .Master{
+        >.Mine, >.Master{
             float: left;
             width: 50%;
             ul.Document{
@@ -1455,6 +1456,12 @@ section.BufferMerge{
                     &.Master{
                         background-color: #e6e6fa;
                     }
+                    &.Omit{
+                        .Num, .Line{
+                            color: #aaa;
+                            text-decoration: line-through;
+                        }
+                    }
                     >div{
                         float: left;
                         &.Num{
@@ -1464,6 +1471,9 @@ section.BufferMerge{
                         }
                         &.Line{
                         }
+                        &.Ctrl{
+                            float: right;
+                        }
                     }
                     @include clearfix();
                 }
@@ -1471,6 +1481,7 @@ section.BufferMerge{
         }
         .DiffInfo{
             clear: both;
+            display : none;
         }
         @include clearfix();
     }
