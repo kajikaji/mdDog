@@ -8,7 +8,7 @@ define(function(){
     merge.prototype = {
         init: function(){
             var myNum, myLine, masterNum, masterLine;
-            var atmark = /^@@ -([0-9]+),([0-9]+) \+([0-9]+),([0-9]+) @@/;
+            var atmark = /^@@ -([0-9]+),*([0-9]*) \+([0-9]+),*([0-9]*) @@/;
 
             $('.DiffInfo div').each(function(){
                 var line   = $(this).text();
