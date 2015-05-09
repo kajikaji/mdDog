@@ -304,6 +304,16 @@ sub commit {
 }
 
 ############################################################
+#
+sub edit_commit_message{
+    my ($self, $author, $msg) = @_;
+    return unless($msg);
+
+    my $gitctrl = $self->{git};
+    $gitctrl->commit({"message" => $msg, "amend" => 1, "author" => $author});
+}
+
+############################################################
 #画像ファイルのアップロード
 # @param1 画像ファイルの保存ディレクトリ
 # @param2 author

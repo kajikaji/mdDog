@@ -670,6 +670,16 @@ sub edit_log {
     my $comment  = $self->qParam('comment');
     my $uid      = $self->{s}->param('login');
 
+    return unless( $fid && $uid && $comment );
+    my $author   = $self->_get_author($uid);
+    my $gitctrl = $self->{git};
+
+    $gitctrl->attach_local($uid);
+    $gitctrl->edit_commit_message($author, $comment);
+    $gitctrl->detach_local();
+
+    my $json = JSON->new();
+    return $json->encode({fid => $fid, comment => $comment});
 }
 
 1;

@@ -20,8 +20,8 @@ if(     $ENV{'REQUEST_METHOD'} eq 'GET'  ){
     if( $dog->qParam('action') eq 'rollback' ){
         print $dog->rollback_buffer();
     }
-    if( $dog->qParam('action') eq 'editLog' ){
-	print $dog->edit_log();
+    elsif( $dog->qParam('action') eq 'editLog' ){
+        print $dog->edit_log();
     }
 }
 

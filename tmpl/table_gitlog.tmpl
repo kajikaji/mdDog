@@ -16,10 +16,10 @@
            <div class="Ctrl" data-revision="[% log.id %]">
            [%IF loop.first %]
              <textarea>[% log.raw %]</textarea>
-             <a class="Btn Edit">変更</a>
+             <a class="Btn Edit">保存</a>
            [%ELSE %]
              <textarea class="CtrlTemp">[% log.raw %]</textarea>
-             <a class="CtrlTemp Btn Edit">変更</a>
+             <a class="CtrlTemp Btn Edit">保存</a>
              <div class="Body">[% log.message %]</div>
            [%END %]
            </div>
@@ -39,13 +39,9 @@
              <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]" data-dist="master">masterDIFF</a></spa></li>
            [%END %]
            [%IF EDIT_LOG %]
-             [%IF loop.first %]
-               <li><span class="RevisionCtrl"><a class="Rollback" data-fid="[% fid %]" data-revision="[% log.id %]">ROLLBACK</a></span></li>
-               <li>マージ</li>
-             [%ELSE %]
-               <li class="CtrlTemp"><span class="RevisionCtrl"><a class="Rollback">ROLLBACK</a></span></li>
-               <li class="CtrlTemp">マージ</li>
-             [%END %]
+             <li [%UNLESS loop.first %]class="CtrlTemp"[%END %]>
+               <span class="RevisionCtrl"><a class="Rollback" data-fid="[% fid %]" data-revision="[% log.id %]">ROLLBACK</a></span>
+             </li>
            [%ELSE %]
              [%IF is_approve && is_live && log.user %]
                <li>

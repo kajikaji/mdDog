@@ -1,20 +1,25 @@
 'use strict'
 
 define(function(){
-    var rollbackBuffer = function(){
+    var rollbackBuffer = function(fid, revision, callback){
+        this.fid      = fid;
+        this.revision = revision;
+        this.callback = callback;
+        this.api = 'api/bufferLogEdit.cgi';
     };
     rollbackBuffer.prototype = {
         init: function() {
-            $('a.Rollback').on('click', $.proxy(function(ev){
-                this.show(ev.target);
+            var headLog = $('#Log' + this.revision);
+            headLog.find('a.Rollback').on('click', $.proxy(function(ev){
+                this.submit(ev.target);
             }, this));
         },
-        show: function(target){
+        submit: function(target){
             var fid      = $(target).data('fid');
             var revision = $(target).data('revision');
 
             $.ajax({
-                url  : 'api/bufferLogEdit.cgi',
+                url  : this.api,
                 type : 'POST',
                 data : {
                     'action'  : 'rollback',
@@ -22,28 +27,9 @@ define(function(){
                     'revision': revision,
                 }
             }).done($.proxy(function(res){
-                var logId   = '#Log' + res.revision;
-                var nextLog = $(logId).next('tr.Log');
-                var nextId = nextLog.attr('id').substr(3);
-                
-                var temp = $(nextLog).find('td.Ctrl ul li.CtrlTemp').each(function(){
-                    var anch = $(this).find('a.Rollback');
-                    anch.data('fid', fid);
-                    anch.data('revision', nextId);
-                    $(this).removeClass('CtrlTemp');
-                });
-
-                $(logId).slideUp();
-		this.updateMessage();
+                this.callback();
             }, this));
-        },
-        updateMessage: function(){
-            if( $('section.Message ul.Buffered').hasClass('Disable') ){
-                $('section.Message ul.Buffered').slideDown(300, function(){
-                    $('section.Message ul.Buffered').removeClass('Disable');
-                });
-            }
-        },
+        }
     };
 
     return rollbackBuffer;
