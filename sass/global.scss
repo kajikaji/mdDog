@@ -4,6 +4,8 @@ $blue         :#0000cd;
 $green        :#006400;
 $black        :#000;
 $bg_color     :#f5f5f5;
+$master_bg    :#e6e6fa;
+$local_bg     :#fffacd;
 $minimum_font :8pt;
 $subject_size :21pt;
 $left_menu_width: 180px;
@@ -1437,24 +1439,76 @@ section.BufferMerge{
         @include bufferEditMenu();
     }
 
+    .Summary{
+        margin-left: $left_menu_width;
+        margin-bottom: 20px;
+        padding: 10px;
+        color: #eee;
+        background-color: #333;
+        @include round-corner(5px);
+
+        .Ctrl{
+            float: right;
+            button.Commit{
+            }
+        }
+
+        ul.Mark{
+            list-style: none;
+            margin-left: 5px;
+            li{
+                float: left;
+                margin-right: 20px;
+                &:before{
+                    content: "";
+                    display: inline-block;
+                    width: 30px;
+                    height: 20px;
+                    margin-right: 5px;
+                    margin-bottom: -7px;
+                    border :1px solid #aaa;
+                    @include round-corner(5px);
+                }
+                &.Master:before{
+                    background-color: $master_bg;
+                }
+                &.Local:before{
+                    background-color: $local_bg;
+                }
+            }
+            @include clearfix();
+        }
+    }
+
     .MergeView{
         margin-left: $left_menu_width;
         margin-bottom: 50px;
+        border: 1px solid #555;
+        @include round-corner(5px);
 
-        >.Mine, >.Master{
-            float: left;
-            width: 50%;
+        >div{
+          &.Master{
+            display: none;
+          }
+          &.DiffInfo{
+            display : none;
+          }
+          &.Mine{
             ul.Document{
                 list-style: none;
                 padding: 10px;
-                margin: 0 5px;
+                margin: 0;
                 background-color: #fff;
+                @include round-corner(5px);
                 li{
                     &.Local{
-                        background-color: #fffacd;
+                        background-color: $local_bg;
                     }
                     &.Master{
-                        background-color: #e6e6fa;
+                        background-color: $master_bg;
+                        >div.Num{
+                            text-align: right;
+                        }
                     }
                     &.Omit{
                         .Num, .Line{
@@ -1465,9 +1519,16 @@ section.BufferMerge{
                     >div{
                         float: left;
                         &.Num{
-                            width: 40px;
-                            text-align: right;
+                            width: 80px;
+                            margin-left: 3px;
                             margin-right: 10px;
+                            .Mark{
+                                font-size: 8px;
+                                @include round-corner(10px);
+                                background-color: #000;
+                                color: #fff;
+                                padding: 3px 5px;
+                            }
                         }
                         &.Line{
                         }
@@ -1478,12 +1539,8 @@ section.BufferMerge{
                     @include clearfix();
                 }
             }
+          }
         }
-        .DiffInfo{
-            clear: both;
-            display : none;
-        }
-        @include clearfix();
     }
 }
 

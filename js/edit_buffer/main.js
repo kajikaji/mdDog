@@ -8,7 +8,7 @@ require.config({
         editBufferDivideCtrl    :'edit_buffer/divideCtrl',
         editBufferParagraphCtrl :'edit_buffer/paragraphCtrl',
         editBufferMessage       :'edit_buffer/bufferMessage',
-        editBufferDiff          :'edit_buffer/diff'
+        editBufferMerge          :'edit_buffer/merge'
     },
 
     shim:{
@@ -66,10 +66,10 @@ require(['leftMenu'], function(LeftMenu){
           });
     }
 
-    //diffビュー
+    //mergeビュー
     if( $('section.BufferMerge').length ){
-        require(['editBufferDiff'], function(Diff){
-            new Diff().init();
+        require(['editBufferMerge'], function(Merge){
+            new Merge(getParam('fid')).init();
         });
     }
 

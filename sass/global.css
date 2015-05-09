@@ -1527,47 +1527,94 @@ section.BufferMerge ul.BufferEditMenu {
     section.BufferMerge ul.BufferEditMenu > li.DivideMenu {
       content: "";
       height: 20px; }
+section.BufferMerge .Summary {
+  margin-left: 180px;
+  margin-bottom: 20px;
+  padding: 10px;
+  color: #eee;
+  background-color: #333;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px; }
+  section.BufferMerge .Summary .Ctrl {
+    float: right; }
+  section.BufferMerge .Summary ul.Mark {
+    list-style: none;
+    margin-left: 5px; }
+    section.BufferMerge .Summary ul.Mark li {
+      float: left;
+      margin-right: 20px; }
+      section.BufferMerge .Summary ul.Mark li:before {
+        content: "";
+        display: inline-block;
+        width: 30px;
+        height: 20px;
+        margin-right: 5px;
+        margin-bottom: -7px;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px; }
+      section.BufferMerge .Summary ul.Mark li.Master:before {
+        background-color: #e6e6fa; }
+      section.BufferMerge .Summary ul.Mark li.Local:before {
+        background-color: #fffacd; }
+    section.BufferMerge .Summary ul.Mark:after, section.BufferMerge .Summary ul.Mark:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.BufferMerge .Summary ul.Mark:after {
+      clear: both; }
 section.BufferMerge .MergeView {
   margin-left: 180px;
-  margin-bottom: 50px; }
-  section.BufferMerge .MergeView > .Mine, section.BufferMerge .MergeView > .Master {
-    float: left;
-    width: 50%; }
-    section.BufferMerge .MergeView > .Mine ul.Document, section.BufferMerge .MergeView > .Master ul.Document {
-      list-style: none;
-      padding: 10px;
-      margin: 0 5px;
-      background-color: #fff; }
-      section.BufferMerge .MergeView > .Mine ul.Document li.Local, section.BufferMerge .MergeView > .Master ul.Document li.Local {
-        background-color: #fffacd; }
-      section.BufferMerge .MergeView > .Mine ul.Document li.Master, section.BufferMerge .MergeView > .Master ul.Document li.Master {
-        background-color: #e6e6fa; }
-      section.BufferMerge .MergeView > .Mine ul.Document li.Omit .Num, section.BufferMerge .MergeView > .Mine ul.Document li.Omit .Line, section.BufferMerge .MergeView > .Master ul.Document li.Omit .Num, section.BufferMerge .MergeView > .Master ul.Document li.Omit .Line {
-        color: #aaa;
-        text-decoration: line-through; }
-      section.BufferMerge .MergeView > .Mine ul.Document li > div, section.BufferMerge .MergeView > .Master ul.Document li > div {
-        float: left; }
-        section.BufferMerge .MergeView > .Mine ul.Document li > div.Num, section.BufferMerge .MergeView > .Master ul.Document li > div.Num {
-          width: 40px;
-          text-align: right;
-          margin-right: 10px; }
-        section.BufferMerge .MergeView > .Mine ul.Document li > div.Ctrl, section.BufferMerge .MergeView > .Master ul.Document li > div.Ctrl {
-          float: right; }
-      section.BufferMerge .MergeView > .Mine ul.Document li:after, section.BufferMerge .MergeView > .Mine ul.Document li:before, section.BufferMerge .MergeView > .Master ul.Document li:after, section.BufferMerge .MergeView > .Master ul.Document li:before {
-        display: table;
-        content: "";
-        line-height: 0; }
-      section.BufferMerge .MergeView > .Mine ul.Document li:after, section.BufferMerge .MergeView > .Master ul.Document li:after {
-        clear: both; }
-  section.BufferMerge .MergeView .DiffInfo {
-    clear: both;
+  margin-bottom: 50px;
+  border: 1px solid #555;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px; }
+  section.BufferMerge .MergeView > div.Master {
     display: none; }
-  section.BufferMerge .MergeView:after, section.BufferMerge .MergeView:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  section.BufferMerge .MergeView:after {
-    clear: both; }
+  section.BufferMerge .MergeView > div.DiffInfo {
+    display: none; }
+  section.BufferMerge .MergeView > div.Mine ul.Document {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    background-color: #fff;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li.Local {
+      background-color: #fffacd; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li.Master {
+      background-color: #e6e6fa; }
+      section.BufferMerge .MergeView > div.Mine ul.Document li.Master > div.Num {
+        text-align: right; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li.Omit .Num, section.BufferMerge .MergeView > div.Mine ul.Document li.Omit .Line {
+      color: #aaa;
+      text-decoration: line-through; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li > div {
+      float: left; }
+      section.BufferMerge .MergeView > div.Mine ul.Document li > div.Num {
+        width: 80px;
+        margin-left: 3px;
+        margin-right: 10px; }
+        section.BufferMerge .MergeView > div.Mine ul.Document li > div.Num .Mark {
+          font-size: 8px;
+          border-radius: 10px;
+          -webkit-border-radius: 10px;
+          -moz-border-radius: 10px;
+          background-color: #000;
+          color: #fff;
+          padding: 3px 5px; }
+      section.BufferMerge .MergeView > div.Mine ul.Document li > div.Ctrl {
+        float: right; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li:after, section.BufferMerge .MergeView > div.Mine ul.Document li:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.BufferMerge .MergeView > div.Mine ul.Document li:after {
+      clear: both; }
 
 section.BufferLog ul.BufferEditMenu {
   position: absolute;

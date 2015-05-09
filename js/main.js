@@ -38,7 +38,7 @@ requirejs.config({
 });
 
 //jQuery読込みと実行
-requirejs(['jquery'], function($){
+requirejs(['jquery', 'UTIL'], function($){
 
     //編集バッファ
     if( $('section.MdBuffer .BufferEdit.Markdown').length 

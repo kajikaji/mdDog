@@ -16,12 +16,21 @@
 <section class="BufferMerge">
   [%INCLUDE buffer_menu.tmpl %]
 
+  <div class="Summary">
+    <div class="Ctrl"><button id="commit" class="Commit"><span class="typcn typcn-chevron-right"></span>commit</button></div>
+    Fix below and commit. To commit will restruct your log over the latest revision.
+<br><br>
+    <ul class="Mark">
+      <li class="Master">master</li>
+      <li class="Local">local</li>
+    </ul>
+  </div>
   <div class="MergeView">
     <div class="Mine">
       <ul class="Document">
         [%FOREACH line IN doc_mine %]
           <li id="Mine[% loop.index + 1 %]">
-            <div class="Num">[% loop.index + 1 %]</div>
+            <div class="Num"><span class="Mark">L[% loop.index + 1 %]</span></div>
             <div class="Line">[% line %]</div>
           </li>
         [%END %]
@@ -31,18 +40,18 @@
       <ul class="Document">
         [%FOREACH line IN doc_master %]
           <li id="Master[% loop.index + 1 %]">
-            <div class="Num">[% loop.index + 1 %]</div>
+            <div class="Num"><span class="Mark">M[% loop.index + 1 %]</span></div>
             <div class="Line">[% line %]</div>
           </li>
         [%END %]
       </ul>
     </div>
 
-  <div class="DiffInfo">
-  [%FOREACH d IN diff %]
-    <div>[% d.content %]</div>
-  [%END %]
-  </div>
+    <div class="DiffInfo">
+    [%FOREACH d IN diff %]
+      <div>[% d.content %]</div>
+    [%END %]
+    </div>
 
   </div>
 </section>

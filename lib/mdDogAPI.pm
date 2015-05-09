@@ -276,7 +276,44 @@ sub get_diff {
       dist     => $dist?$dist:'ひとつ前',
       diff    => $diff,
   });
+}
 
+############################################################
+#[API]
+sub restruct_document {
+    my $self = shift;
+    my $fid = $self->qParam('fid');
+    my $doc = $self->qParam('doc');
+    my $uid = $self->{s}->param("login");
+    return unless( $fid && $uid );
+
+    my $gitctrl = $self->{git};
+    my $oldlogs = $gitctrl->get_user_logs($uid);
+    my $log;
+    foreach(@$oldlogs){
+      $log .= $_->{attr}->{date} . ": " . $_->{raw};
+      $log .= "====\n";
+    }
+
+    $gitctrl->attach_local($uid, 1);
+
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+
+    open my $hF, '>', $filepath || return undef;
+    syswrite $hF, $doc, length($doc);
+    close $hF;
+
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->commit($filename, $author, $log);
+
+    $gitctrl->detach_local();
+
+    my $json = JSON->new();
+    return $json->encode({fid => $fid, uid => $uid, log => $log});
 }
 
 ############################################################
