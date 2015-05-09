@@ -33,18 +33,25 @@
           [% UNLESS info.deleted_at %]
           <div class="DocCtrl">
             [%IF info.is_used %]
-              <a href="doc_outline.cgi?fid=[% info.id %]"><span class="typcn typcn-document"></span></a>
+              <a href="doc_history.cgi?fid=[% info.id %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a>
+              <a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a>
+              [%IF info.is_edit || is_admin %]
+                <a href="edit_buffer.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
+              [%END %]
+              [%IF info.is_approve || is_admin %]
+                <a href="doc_approve.cgi?fid=[% info.id %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a>
+              [%END %]
               [%IF info.is_owned || is_admin %]
-                <a href="doc_setting.cgi?fid=[% info.id %]"><span class="typcn typcn-cog-outline"></span></a>
+                <a href="doc_setting.cgi?fid=[% info.id %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a>
               [%END %]
             [%END %]
-            <form action="" method="post">
+            <form action="" method="post" class="Warn">
             [%IF info.is_owned || is_admin || is_delete %]
               [%IF info.is_used %]
-                <button type="submit" name="unuse" value="1"><span class="typcn typcn-trash"></span></button>
+                <button type="submit" name="unuse" value="1" class="PopupHelper" data-info="削除"><span class="typcn typcn-trash"></span></button>
               [% ELSE %]
-                <button type="submit" name="use" value="1"><span class="typcn typcn-power-outline"></span></button>
-                <button type="submit" name="delete" value="1"><span class="typcn typcn-times"></span></button>
+                <button type="submit" name="use" value="1" class="PopupHelper" data-info="復旧"><span class="typcn typcn-power-outline"></span></button>
+                <button type="submit" name="delete" value="1" class="PopupHelper" data-info="完全に削除"><span class="typcn typcn-times"></span></button>
               [% END %]
               <input type="hidden" name="style" value="[% style %]">
               <input type="hidden" name="page" value="[% page %]">
@@ -102,7 +109,6 @@
 
 </section>
 
-</body>
-</html>
+[%INCLUDE footer.tmpl %]
 
 

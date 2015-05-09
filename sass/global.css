@@ -520,18 +520,19 @@ section.Top .Main {
       padding: 5px; }
       section.Top .Main table.DocList tr td > .DocCtrl a {
         font-size: 18pt;
-        color: #000; }
+        color: #aaa; }
       section.Top .Main table.DocList tr td > .DocCtrl a:hover {
         color: #ff7f50; }
-      section.Top .Main table.DocList tr td > .DocCtrl form {
+      section.Top .Main table.DocList tr td > .DocCtrl form.Warn {
+        margin-left: 10px;
         display: inline; }
-        section.Top .Main table.DocList tr td > .DocCtrl form button {
+        section.Top .Main table.DocList tr td > .DocCtrl form.Warn button {
           font-size: 18pt;
           border: none;
           background: transparent;
           padding: 0;
-          color: #000; }
-          section.Top .Main table.DocList tr td > .DocCtrl form button:hover {
+          color: #aaa; }
+          section.Top .Main table.DocList tr td > .DocCtrl form.Warn button:hover {
             background: transparent;
             color: #ff7f50; }
     section.Top .Main table.DocList tr td .DocDetail {
@@ -564,232 +565,233 @@ section.Top .Main {
       border: 1px solid #ccc;
       float: left; }
 
-section.Docinfo h1, section.Docinfo h2 {
-  margin-top: 0; }
-section.Docinfo h1 {
-  font-size: 2.0em;
-  padding: 5px;
-  margin-bottom: 0;
-  background-color: #fff;
-  border-width: 1px;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-style: solid solid none solid; }
-  section.Docinfo h1 .Title {
-    font-weight: normal;
-    margin-right: 10px; }
-section.Docinfo h2 .DownloadAlt {
-  margin-right: 10px; }
-section.Docinfo h2 .Supplement {
-  color: #000;
-  font-size: 12px;
-  margin-left: 10px; }
-section.Docinfo ul.Tags {
-  clear: both;
-  list-style: none;
-  font-size: 7px;
-  margin-left: 30px;
-  padding: 0 0 3px;
-  background-color: #fff;
-  border-width: 1px;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-style: none solid none solid;
-  box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box; }
-  section.Docinfo ul.Tags li {
-    float: left;
-    margin-left: 12px; }
-    section.Docinfo ul.Tags li.Public {
-      position: relative; }
-      section.Docinfo ul.Tags li.Public div {
-        padding: 0 5px 0 7px;
-        height: 14px;
-        color: #fff;
-        background-color: #ff7f50;
-        border-top-right-radius: 3px;
-        -webkit-border-top-right-radius: 3px;
-        -moz-border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        -webkit-border-bottom-right-radius: 3px;
-        -moz-border-bottom-right-radius: 3px; }
-        section.Docinfo ul.Tags li.Public div:before {
-          content: "";
-          width: 0;
-          height: 0;
-          position: absolute;
-          border: 7px solid transparent;
-          border-right: 7px solid #ff7f50;
-          left: -14px; }
-        section.Docinfo ul.Tags li.Public div:after {
-          content: "";
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background-color: #fff;
-          float: left;
-          top: 6px;
-          left: 0;
-          border-radius: 1px;
-          -webkit-border-radius: 1px;
-          -moz-border-radius: 1px; }
-    section.Docinfo ul.Tags li.Approver {
-      position: relative; }
-      section.Docinfo ul.Tags li.Approver div {
-        padding: 0 5px 0 7px;
-        height: 14px;
-        color: #fff;
-        background-color: #0000cd;
-        border-top-right-radius: 3px;
-        -webkit-border-top-right-radius: 3px;
-        -moz-border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        -webkit-border-bottom-right-radius: 3px;
-        -moz-border-bottom-right-radius: 3px; }
-        section.Docinfo ul.Tags li.Approver div:before {
-          content: "";
-          width: 0;
-          height: 0;
-          position: absolute;
-          border: 7px solid transparent;
-          border-right: 7px solid #0000cd;
-          left: -14px; }
-        section.Docinfo ul.Tags li.Approver div:after {
-          content: "";
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background-color: #fff;
-          float: left;
-          top: 6px;
-          left: 0;
-          border-radius: 1px;
-          -webkit-border-radius: 1px;
-          -moz-border-radius: 1px; }
-    section.Docinfo ul.Tags li.Editable {
-      position: relative; }
-      section.Docinfo ul.Tags li.Editable div {
-        padding: 0 5px 0 7px;
-        height: 14px;
-        color: #fff;
-        background-color: #006400;
-        border-top-right-radius: 3px;
-        -webkit-border-top-right-radius: 3px;
-        -moz-border-top-right-radius: 3px;
-        border-bottom-right-radius: 3px;
-        -webkit-border-bottom-right-radius: 3px;
-        -moz-border-bottom-right-radius: 3px; }
-        section.Docinfo ul.Tags li.Editable div:before {
-          content: "";
-          width: 0;
-          height: 0;
-          position: absolute;
-          border: 7px solid transparent;
-          border-right: 7px solid #006400;
-          left: -14px; }
-        section.Docinfo ul.Tags li.Editable div:after {
-          content: "";
-          position: absolute;
-          width: 2px;
-          height: 2px;
-          background-color: #fff;
-          float: left;
-          top: 6px;
-          left: 0;
-          border-radius: 1px;
-          -webkit-border-radius: 1px;
-          -moz-border-radius: 1px; }
-  section.Docinfo ul.Tags:after, section.Docinfo ul.Tags:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  section.Docinfo ul.Tags:after {
-    clear: both; }
-section.Docinfo:after, section.Docinfo:before {
-  display: table;
-  content: "";
-  line-height: 0; }
-section.Docinfo:after {
-  clear: both; }
-section.Docinfo > .Description {
-  font-size: 11px;
-  padding: 0 5px;
-  margin-bottom: 5px;
-  color: #555;
-  background-color: #fff;
-  border-width: 1px;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-style: dashed solid solid solid; }
-  section.Docinfo > .Description > div {
-    float: left;
-    margin-right: 10px; }
-    section.Docinfo > .Description > div a.Active, section.Docinfo > .Description > div a.Active:hover {
-      font-weight: bold;
-      text-decoration: underline;
-      color: #000;
-      cursor: default; }
-  section.Docinfo > .Description:after, section.Docinfo > .Description:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  section.Docinfo > .Description:after {
-    clear: both; }
-section.Docinfo > ul.DocCtrl {
-  list-style: none;
-  margin-bottom: 20px; }
-  section.Docinfo > ul.DocCtrl li {
-    float: left;
-    margin-right: 5px; }
-    section.Docinfo > ul.DocCtrl li:fist-child {
-      margin-right: 0; }
-    section.Docinfo > ul.DocCtrl li.Selected a.Btn {
-      background-color: #6d562b;
-      color: #fff;
-      cursor: default;
-      font-weight: normal; }
-  section.Docinfo > ul.DocCtrl:after, section.Docinfo > ul.DocCtrl:before {
-    display: table;
-    content: "";
-    line-height: 0; }
-  section.Docinfo > ul.DocCtrl:after {
-    clear: both; }
-section.Docinfo .UserAction {
-  margin-bottom: 20px; }
-  section.Docinfo .UserAction h3 {
-    font-size: 15px;
-    margin: 0 0 3px;
-    padding: 6px 3px 3px;
+section.Docinfo {
+  margin-bottom: 10px; }
+  section.Docinfo .Title {
     background-color: #fff;
-    border-bottom: 3px solid #888; }
-  section.Docinfo .UserAction h3 + .Description {
-    font-size: 10px; }
-  section.Docinfo .UserAction ul.Menu {
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-style: solid solid none solid; }
+    section.Docinfo .Title .Name {
+      font-size: 34px;
+      font-weight: bold;
+      padding: 5px;
+      margin-bottom: 0; }
+    section.Docinfo .Title ul.MenuIcons {
+      float: right;
+      list-style: none;
+      margin-right: 10px; }
+      section.Docinfo .Title ul.MenuIcons li {
+        float: left;
+        font-size: 28px;
+        margin-left: 5px; }
+        section.Docinfo .Title ul.MenuIcons li a {
+          color: #aaa; }
+          section.Docinfo .Title ul.MenuIcons li a:hover {
+            color: #ff7f50; }
+        section.Docinfo .Title ul.MenuIcons li.Selected {
+          font-size: 34px;
+          color: #000;
+          margin-left: 10px;
+          margin-right: 5px; }
+          section.Docinfo .Title ul.MenuIcons li.Selected a {
+            color: #000; }
+            section.Docinfo .Title ul.MenuIcons li.Selected a:hover {
+              cursor: default; }
+      section.Docinfo .Title ul.MenuIcons:after, section.Docinfo .Title ul.MenuIcons:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Docinfo .Title ul.MenuIcons:after {
+        clear: both; }
+  section.Docinfo ul.Tags {
+    clear: both;
     list-style: none;
-    margin-bottom: 20px; }
-    section.Docinfo .UserAction ul.Menu li {
+    font-size: 7px;
+    margin-left: 30px;
+    padding: 0 0 3px;
+    background-color: #fff;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-style: none solid none solid;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; }
+    section.Docinfo ul.Tags li {
       float: left;
-      margin-right: 20px; }
-      section.Docinfo .UserAction ul.Menu li form.DocUploadForm {
-        margin: 0;
-        padding: 0;
-        font-size: 14px;
-        border: 1px solid #000;
-        padding: 4px 6px;
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        background-color: #fff; }
-        section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div {
-          margin-bottom: 4px; }
-          section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div.Subject {
-            font-weight: bold; }
-          section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div label {
-            font-size: 9px; }
-    section.Docinfo .UserAction ul.Menu:after, section.Docinfo .UserAction ul.Menu:before {
+      margin-left: 12px; }
+      section.Docinfo ul.Tags li.Public {
+        position: relative; }
+        section.Docinfo ul.Tags li.Public div {
+          padding: 0 5px 0 7px;
+          height: 14px;
+          color: #fff;
+          background-color: #ff7f50;
+          border-top-right-radius: 3px;
+          -webkit-border-top-right-radius: 3px;
+          -moz-border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          -webkit-border-bottom-right-radius: 3px;
+          -moz-border-bottom-right-radius: 3px; }
+          section.Docinfo ul.Tags li.Public div:before {
+            content: "";
+            width: 0;
+            height: 0;
+            position: absolute;
+            border: 7px solid transparent;
+            border-right: 7px solid #ff7f50;
+            left: -14px; }
+          section.Docinfo ul.Tags li.Public div:after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #fff;
+            float: left;
+            top: 6px;
+            left: 0;
+            border-radius: 1px;
+            -webkit-border-radius: 1px;
+            -moz-border-radius: 1px; }
+      section.Docinfo ul.Tags li.Approver {
+        position: relative; }
+        section.Docinfo ul.Tags li.Approver div {
+          padding: 0 5px 0 7px;
+          height: 14px;
+          color: #fff;
+          background-color: #0000cd;
+          border-top-right-radius: 3px;
+          -webkit-border-top-right-radius: 3px;
+          -moz-border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          -webkit-border-bottom-right-radius: 3px;
+          -moz-border-bottom-right-radius: 3px; }
+          section.Docinfo ul.Tags li.Approver div:before {
+            content: "";
+            width: 0;
+            height: 0;
+            position: absolute;
+            border: 7px solid transparent;
+            border-right: 7px solid #0000cd;
+            left: -14px; }
+          section.Docinfo ul.Tags li.Approver div:after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #fff;
+            float: left;
+            top: 6px;
+            left: 0;
+            border-radius: 1px;
+            -webkit-border-radius: 1px;
+            -moz-border-radius: 1px; }
+      section.Docinfo ul.Tags li.Editable {
+        position: relative; }
+        section.Docinfo ul.Tags li.Editable div {
+          padding: 0 5px 0 7px;
+          height: 14px;
+          color: #fff;
+          background-color: #006400;
+          border-top-right-radius: 3px;
+          -webkit-border-top-right-radius: 3px;
+          -moz-border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          -webkit-border-bottom-right-radius: 3px;
+          -moz-border-bottom-right-radius: 3px; }
+          section.Docinfo ul.Tags li.Editable div:before {
+            content: "";
+            width: 0;
+            height: 0;
+            position: absolute;
+            border: 7px solid transparent;
+            border-right: 7px solid #006400;
+            left: -14px; }
+          section.Docinfo ul.Tags li.Editable div:after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #fff;
+            float: left;
+            top: 6px;
+            left: 0;
+            border-radius: 1px;
+            -webkit-border-radius: 1px;
+            -moz-border-radius: 1px; }
+    section.Docinfo ul.Tags:after, section.Docinfo ul.Tags:before {
       display: table;
       content: "";
       line-height: 0; }
-    section.Docinfo .UserAction ul.Menu:after {
+    section.Docinfo ul.Tags:after {
       clear: both; }
+  section.Docinfo:after, section.Docinfo:before {
+    display: table;
+    content: "";
+    line-height: 0; }
+  section.Docinfo:after {
+    clear: both; }
+  section.Docinfo > .Description {
+    font-size: 11px;
+    padding: 0 5px;
+    margin-bottom: 5px;
+    color: #555;
+    background-color: #fff;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-style: dashed solid solid solid; }
+    section.Docinfo > .Description > div {
+      float: left;
+      margin-right: 10px; }
+      section.Docinfo > .Description > div a.Active, section.Docinfo > .Description > div a.Active:hover {
+        font-weight: bold;
+        text-decoration: underline;
+        color: #000;
+        cursor: default; }
+    section.Docinfo > .Description:after, section.Docinfo > .Description:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.Docinfo > .Description:after {
+      clear: both; }
+  section.Docinfo .UserAction {
+    margin-bottom: 20px; }
+    section.Docinfo .UserAction h3 {
+      font-size: 15px;
+      margin: 0 0 3px;
+      padding: 6px 3px 3px;
+      background-color: #fff;
+      border-bottom: 3px solid #888; }
+    section.Docinfo .UserAction h3 + .Description {
+      font-size: 10px; }
+    section.Docinfo .UserAction ul.Menu {
+      list-style: none;
+      margin-bottom: 20px; }
+      section.Docinfo .UserAction ul.Menu li {
+        float: left;
+        margin-right: 20px; }
+        section.Docinfo .UserAction ul.Menu li form.DocUploadForm {
+          margin: 0;
+          padding: 0;
+          font-size: 14px;
+          border: 1px solid #000;
+          padding: 4px 6px;
+          border-radius: 5px;
+          -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+          background-color: #fff; }
+          section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div {
+            margin-bottom: 4px; }
+            section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div.Subject {
+              font-weight: bold; }
+            section.Docinfo .UserAction ul.Menu li form.DocUploadForm > div label {
+              font-size: 9px; }
+      section.Docinfo .UserAction ul.Menu:after, section.Docinfo .UserAction ul.Menu:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Docinfo .UserAction ul.Menu:after {
+        clear: both; }
 
 section.DocSetting {
   margin-bottom: 50px; }

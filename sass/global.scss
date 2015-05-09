@@ -747,20 +747,21 @@ section.Top{
                     padding: 5px;
                     a{
                         font-size: 18pt;
-                        color: #000;
+                        color: #aaa;
                     }
                     a:hover{
                         color: $orange;
                     }
 
-                    form{
+                    form.Warn{
+                        margin-left: 10px;
                         display: inline;
                         button{
                             font-size: 18pt;
                             border: none;
                             background: transparent;
                             padding: 0;
-                            color: #000;
+                            color: #aaa;
                           &:hover{
                             background: transparent;
                             color: $orange;
@@ -801,30 +802,46 @@ section.Top{
 }
 
 section.Docinfo{
-  h1, h2{
-    margin-top: 0;
-  }
-  h1{
-    font-size: 2.0em;
-    padding: 5px;
-    margin-bottom: 0;
-    .Title{
-      font-weight: normal;
-      margin-right: 10px;
-    }
+  margin-bottom: 10px;
+  .Title{
     background-color: #fff;
     border-width: 1px;
     border-color: rgba(0,0,0,0.1);
     border-style: solid solid none solid;
-  }
-  h2{
-    .DownloadAlt{
-      margin-right: 10px;
+    .Name{
+      font-size: 34px;
+      font-weight: bold;
+      padding: 5px;
+      margin-bottom: 0;
     }
-    .Supplement{
-        color: #000;
-        font-size: 12px;
-        margin-left: 10px;
+    ul.MenuIcons{
+        float: right;
+        list-style: none;
+        margin-right: 10px;
+        li{
+            float: left;
+            font-size: 28px;
+            margin-left: 5px;
+            a{
+                color :#aaa;
+                &:hover{
+                    color: $orange;
+                }
+            }
+            &.Selected{
+                font-size: 34px;
+                color: #000;
+margin-left: 10px;
+margin-right: 5px;
+                a{
+                    color: #000;
+                    &:hover{
+                    cursor: default;
+                    }
+                }
+            }
+        }
+        @include clearfix();
     }
   }
   ul.Tags{
@@ -879,27 +896,6 @@ section.Docinfo{
           text-decoration: underline;
           color: #000;
           cursor: default;
-      }
-    }
-    @include clearfix();
-  }
-
-  >ul.DocCtrl{
-    list-style: none;
-    margin-bottom: 20px;
-    li{
-      float : left;
-      margin-right: 5px;
-      &:fist-child{
-       margin-right: 0;
-      }
-      &.Selected{
-        a.Btn{
-            background-color: #f5deb3 - #888;
-            color: #fff;
-            cursor: default;
-            font-weight: normal;
-        }
       }
     }
     @include clearfix();

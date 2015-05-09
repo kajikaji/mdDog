@@ -13,7 +13,8 @@ requirejs.config({
         addAccountForm  :'modules/addAccountForm',
         userManager     :'modules/userManager',
         leftMenu        :'modules/leftMenu',
-        outlineViewer   :'modules/outlineViewer'
+        outlineViewer   :'modules/outlineViewer',
+        popupHelper     :'modules/popupHelper'
     },
     shim: {
         'mdOutline': {
@@ -33,12 +34,17 @@ requirejs.config({
                 'jquery',
                 'leftMenu'
             ]
+        },
+        'popupHelper' : {
+            deps: [
+                'jquery'
+            ]
         }
     }
 });
 
 //jQuery読込みと実行
-requirejs(['jquery', 'UTIL'], function($){
+requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
 
     //編集バッファ
     if( $('section.MdBuffer .BufferEdit.Markdown').length 
@@ -77,5 +83,9 @@ requirejs(['jquery', 'UTIL'], function($){
         require(['doc_setting'], function(docSetting){});
     }
 
+    //ポップアップ
+    if( $('.PopupHelper').length ){
+        new Popup($(this)).init();
+    };
 });
 
