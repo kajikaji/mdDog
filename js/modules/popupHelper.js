@@ -21,13 +21,14 @@ define(function(){
                 return;
             }
             var baloon = popupHelper.baloon().attr('id', this.baloon)
-            var info   = $(ev.currentTarget).data('info');
-            baloon.text(info);
+            var info   = $(ev.currentTarget).data('info').replace(/\\n/, '<br>');
+            baloon.html(info);
             $('body').append(baloon);
             var margin = 2;
             var rect = ev.currentTarget.getBoundingClientRect();
+            var scrlY = $(window).scrollTop();
             baloon.css({
-                "top" : (rect.bottom + 10 + margin) + "px",
+                "top" : (rect.bottom + scrlY + 10 + margin) + "px",
                 "left": (rect.left - 10) + "px"
             });
             this.flg = true;
