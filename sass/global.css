@@ -517,10 +517,9 @@ section.Top .Main {
           clear: both; }
     section.Top .Main table.DocList tr td > .DocCtrl {
       float: right;
-      padding: 5px; }
-      section.Top .Main table.DocList tr td > .DocCtrl a {
-        font-size: 18pt;
-        color: #aaa; }
+      padding: 5px;
+      font-size: 18pt;
+      color: #ccc; }
       section.Top .Main table.DocList tr td > .DocCtrl a:hover {
         color: #ff7f50; }
       section.Top .Main table.DocList tr td > .DocCtrl form.Warn {
@@ -531,7 +530,7 @@ section.Top .Main {
           border: none;
           background: transparent;
           padding: 0;
-          color: #aaa; }
+          color: #f33; }
           section.Top .Main table.DocList tr td > .DocCtrl form.Warn button:hover {
             background: transparent;
             color: #ff7f50; }
@@ -584,19 +583,18 @@ section.Docinfo {
       section.Docinfo .Title ul.MenuIcons li {
         float: left;
         font-size: 28px;
-        margin-left: 5px; }
-        section.Docinfo .Title ul.MenuIcons li a {
-          color: #aaa; }
-          section.Docinfo .Title ul.MenuIcons li a:hover {
-            color: #ff7f50; }
+        margin-left: 5px;
+        color: #ccc; }
+        section.Docinfo .Title ul.MenuIcons li a:hover {
+          color: #ff7f50; }
         section.Docinfo .Title ul.MenuIcons li.Selected {
           font-size: 34px;
-          color: #000;
           margin-left: 10px;
           margin-right: 5px; }
           section.Docinfo .Title ul.MenuIcons li.Selected a {
             color: #000; }
             section.Docinfo .Title ul.MenuIcons li.Selected a:hover {
+              color: #000;
               cursor: default; }
       section.Docinfo .Title ul.MenuIcons:after, section.Docinfo .Title ul.MenuIcons:before {
         display: table;

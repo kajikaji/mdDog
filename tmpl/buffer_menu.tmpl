@@ -1,18 +1,19 @@
 <ul class="BufferEditMenu">
-  <li [%IF SUBMENU=="edit_buffer" %]class="Selected"[%END %]><a href="edit_buffer.cgi?fid=[% fid %]"><span class="typcn typcn-edit"></span>edit</a></li>
-  <li [%IF SUBMENU=="edit_image" %]class="Selected"[%END %]><a href="edit_image.cgi?fid=[% fid %]"><span class="typcn typcn-image"></span>image</a></li>
-  <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="edit_source.cgi?fid=[% fid %]"><span class="typcn typcn-document-text"></span>source</a></li>
-  <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="edit_upload.cgi?fid=[% fid %]"><span class="typcn typcn-upload-outline"></span>upload</a></li>
-  <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="edit_log.cgi?fid=[% fid %]"><span class="typcn typcn-book"></span>log</a></li>
-  <li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="edit_merge.cgi?fid=[% fid %]" class="[%IF is_live %]Disabled[%END %]"><span class="typcn typcn-flow-merge"></span>merge</a></li>
-  <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %]"><span class="typcn typcn-database"></span>commit</a></li>
+  <li [%IF SUBMENU=="edit_buffer" %]class="Selected"[%END %]><a href="edit_buffer.cgi?fid=[% fid %]" class="PopupHelper" data-info="ドキュメントを編集します"><span class="typcn typcn-edit"></span>edit</a></li>
+  <li [%IF SUBMENU=="edit_image" %]class="Selected"[%END %]><a href="edit_image.cgi?fid=[% fid %]" class="PopupHelper" data-info="画像ファイルを管理します"><span class="typcn typcn-image"></span>image</a></li>
+  <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="edit_source.cgi?fid=[% fid %]" class="PopupHelper" data-info="ドキュメントのソースを直接編集できます"><span class="typcn typcn-document-text"></span>source</a></li>
+  <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="edit_upload.cgi?fid=[% fid %]" class="PopupHelper" data-info="ファイルをアップロードしてドキュメントを更新できます"><span class="typcn typcn-upload-outline"></span>upload</a></li>
+  <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="edit_log.cgi?fid=[% fid %]" class="PopupHelper" data-info="コミット履歴を表示します"><span class="typcn typcn-book"></span>log</a></li>
+  <li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="edit_merge.cgi?fid=[% fid %]" class="[%IF is_live %]Disabled[%END %] PopupHelper" data-info="バッファが古くなっています"><span class="typcn typcn-flow-merge"></span>merge</a></li>
+  <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %] PopupHelper" data-info="コミットされていないバッファがあります"><span class="typcn typcn-database"></span>commit</a></li>
 
   [%IF SUBMENU=="edit_buffer" %]
     <li class="DivideMenu"></li>
-    <li><a id="headlineBtn"><span class="typcn typcn-th-menu"></span>headline</a></li>
-    <li><a id="previewBtn"><span class="typcn typcn-printer"></span>preview</a></li>
-    <li><a id="diffBtn"><span class="typcn typcn-directions"></span>diff view</a></li>
-    <li><a id="jumpTopBtn"><span class="typcn typcn-arrow-up"></span>jump top</a></li>
+    <li><a id="headlineBtn" class="PopupHelper" data-info="見出しを表示します"><span class="typcn typcn-th-menu"></span>headline</a></li>
+    <li><a id="previewBtn" class="PopupHelper" data-info="プレビュー表示します\nUNDERCONSTRUCTION"><span class="typcn typcn-printer"></span>preview</a></li>
+    <li><a id="diffBtn" class="PopupHelper" data-info="編集差異を表示します\nUNDERCONSTRUCTION"><span class="typcn typcn-directions"></span>diff view</a></li>
+    <li><a id="clearBtn" class="PopupHelper" data-info="編集中のバッファをクリアします"><span class="typcn typcn-document-delete"></span>clear</a></li>
+    <li><a id="jumpTopBtn" class="PopupHelper" data-info="ページの先頭にジャンプします"><span class="typcn typcn-arrow-up"></span>jump top</a></li>
   [%END %]
 </ul>
 

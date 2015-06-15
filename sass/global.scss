@@ -745,9 +745,9 @@ section.Top{
                 >.DocCtrl{
                     float: right;
                     padding: 5px;
+                    font-size: 18pt;
+                    color: #ccc;
                     a{
-                        font-size: 18pt;
-                        color: #aaa;
                     }
                     a:hover{
                         color: $orange;
@@ -761,7 +761,7 @@ section.Top{
                             border: none;
                             background: transparent;
                             padding: 0;
-                            color: #aaa;
+                            color: #f33;
                           &:hover{
                             background: transparent;
                             color: $orange;
@@ -822,20 +822,20 @@ section.Docinfo{
             float: left;
             font-size: 28px;
             margin-left: 5px;
+            color: #ccc;
             a{
-                color :#aaa;
                 &:hover{
                     color: $orange;
                 }
             }
             &.Selected{
                 font-size: 34px;
-                color: #000;
-margin-left: 10px;
-margin-right: 5px;
+                margin-left: 10px;
+                margin-right: 5px;
                 a{
                     color: #000;
                     &:hover{
+                        color: #000;
                     cursor: default;
                     }
                 }

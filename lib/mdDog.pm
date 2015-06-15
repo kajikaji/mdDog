@@ -372,7 +372,7 @@ SQL
 
     if( $uid ){
         $self->{t}->{is_approve} = $self->{user}->{is_approve};
-        $self->{t}->{is_edit}    = $self->{user}->{is_edit};
+        $self->{t}->{is_editable}    = $self->{user}->{is_edit};
     }
 
     $self->{t}->{fid}      = $fid;

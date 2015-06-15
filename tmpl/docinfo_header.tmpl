@@ -8,29 +8,33 @@
       <a href="doc_outline.cgi?fid=[% fid %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a>
     </li>
     [%IF login %]
-      [%IF is_edit || is_admin %]
-    <li [%SWITCH SUBMENU %][%CASE ["edit_buffer" "edit_image" "edit_source" "edit_upload" "edit_log" "edit_merge"] %]class="Selected"[% END %]>
-      <a href="edit_buffer.cgi?fid=[% fid %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
-    </li>
+      <li [%SWITCH SUBMENU %][%CASE ["edit_buffer" "edit_image" "edit_source" "edit_upload" "edit_log" "edit_merge"] %]class="Selected"[% END %]>
+      [%IF is_editable || is_admin %]
+        <a href="edit_buffer.cgi?fid=[% fid %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
+      [%ELSE %]
+        <span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span>
       [%END %]
+      </li>
+      <li [%IF SUBMENU == "doc_approve" %]class="Selected"[%END %]>
       [%IF is_approve || is_admin %]
-    <li [%IF SUBMENU == "doc_approve" %]class="Selected"[%END %]>
-      <a href="doc_approve.cgi?fid=[% fid %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a>
-    </li>
+        <a href="doc_approve.cgi?fid=[% fid %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a>
+      [%ELSE %]
+        <span class="PopupHelper" data-info="承認(権限がありません)"><span class="typcn typcn-input-checked"></span></span>
       [%END %]
+      </li>
+      <li [%IF SUBMENU == "doc_setting" %]class="Selected"[%END %]>
       [%IF is_owned || is_admin %]
-    <li [%IF SUBMENU == "doc_setting" %]class="Selected"[%END %]>
-      <a href="doc_setting.cgi?fid=[% fid %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a>
-    </li>
+        <a href="doc_setting.cgi?fid=[% fid %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a>
+      [%ELSE %]
+        <span class="PopupHelper" data-info="設定(権限がありません)"><span class="typcn typcn-cog-outline"></span></span>
       [%END %]
+      </li>
     [%END %]
   </ul>
 </div>
               
 <ul class="Tags">
   [%IF is_public %]<li class="Public"><div>public</div></li>[%END %]
-  [%IF is_approve %]<li class="Approver"><div>approver</div></li>[%END %]
-  [%IF is_edit %]<li class="Editable"><div>editable</div></li>[%END %]
 </ul>
 
 <div class="Description">

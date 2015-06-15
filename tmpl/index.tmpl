@@ -35,28 +35,44 @@
             [%IF info.is_used %]
               <a href="doc_history.cgi?fid=[% info.id %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a>
               <a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a>
-              [%IF info.is_edit || is_admin %]
+
+              [%IF info.is_editable || is_admin %]
                 <a href="edit_buffer.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
+              [%ELSE %]
+                <span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span>
               [%END %]
+
               [%IF info.is_approve || is_admin %]
                 <a href="doc_approve.cgi?fid=[% info.id %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a>
+              [%ELSE %]
+                <span class="PopupHelper" data-info="承認(権限がありません)"><span class="typcn typcn-input-checked"></span></span>
               [%END %]
+
               [%IF info.is_owned || is_admin %]
                 <a href="doc_setting.cgi?fid=[% info.id %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a>
+              [%ELSE %]
+                <span class="PopupHelper" data-info="設定(権限がありません）"><span class="typcn typcn-cog-outline"></span></span>
               [%END %]
             [%END %]
             <form action="" method="post" class="Warn">
-            [%IF info.is_owned || is_admin || is_delete %]
-              [%IF info.is_used %]
+            [%IF info.is_used %]
+              [%IF info.is_owned || is_admin || is_delete %]
                 <button type="submit" name="unuse" value="1" class="PopupHelper" data-info="削除"><span class="typcn typcn-trash"></span></button>
-              [% ELSE %]
+              [%ELSE %]
+                <span  class="PopupHelper" data-info="削除(権限がありません)"><span class="typcn typcn-trash"></span></span>
+              [%END %]
+            [% ELSE %]
+              [%IF info.is_owned || is_admin || is_delete %]
                 <button type="submit" name="use" value="1" class="PopupHelper" data-info="復旧"><span class="typcn typcn-power-outline"></span></button>
                 <button type="submit" name="delete" value="1" class="PopupHelper" data-info="完全に削除"><span class="typcn typcn-times"></span></button>
-              [% END %]
+              [%ELSE %]
+                <span  class="PopupHelper" data-info="復旧(権限がありません)"><span class="typcn typcn-power-outline"></span></span>
+                <span class="PopupHelper" data-info="完全に削除(権限がありません)"><span class="typcn typcn-times"></span></span>
+              [%END %]
+            [% END %]
               <input type="hidden" name="style" value="[% style %]">
               <input type="hidden" name="page" value="[% page %]">
               <input type="hidden" name="fid" value="[% info.id %]">
-            [%END %]
             </form>
           </div>
           [% END %] <!-- UNLESS info.deleted_at -->
@@ -74,8 +90,6 @@
             [%IF info.is_used && (info.is_public || info.is_approve || info.is_editable) %]
               <ul class="Tags">
                 [%IF info.is_public %]<li class="Public"><div>public</div></li>[%END %]
-                [%IF info.is_approve %]<li class="Approver"><div>approver</div></li>[%END %]
-                [%IF info.is_editable %]<li class="Editable"><div>editable</div></li>[%END %]
               </ul>
            [%END %]
           </div> <!-- doc-subject -->
