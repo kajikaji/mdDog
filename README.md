@@ -43,7 +43,7 @@ docker run -p 80:80 gm2bv/mddog_test
 
 ## NEWS
 
-> 2015/2/14 Dockerfileを追加してdockerhubでautobuidlできるようにしました
+> 2015/2/14 Dockerfileを追加してdockerhubでautobuildできるようにしました
 
 > 2015/2/11 GPLv3ライセンスを適用しました
 
