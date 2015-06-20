@@ -21,7 +21,7 @@ package OutlineCtrl;
 # --------------------------------------------------------------------
 
 use strict; no strict "refs"; no strict "subs";
-use base mdDog;
+use parent mdDog;
 use constant A_DIV => "DIVIDE";
 use constant A_INDT => "INDENT";
 

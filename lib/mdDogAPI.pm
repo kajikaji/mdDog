@@ -21,7 +21,7 @@ package mdDogAPI;
 # --------------------------------------------------------------------
 
 use strict; no strict "subs";
-use base mdDog;
+use parent mdDog;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
 
 use constant USER_AUTH_ADMIN   => 1;

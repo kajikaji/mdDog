@@ -21,7 +21,7 @@ package mdDogAdmin;
 # --------------------------------------------------------------------
 
 use strict; no strict "subs";
-use base mdDog;
+use parent mdDog;
 use MYUTIL;
 
 sub login_for_admin{

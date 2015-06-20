@@ -21,7 +21,7 @@ package mdDog;
 # --------------------------------------------------------------------
 
 use strict; no strict "subs";
-use base APPBASE;
+use parent APPBASE;
 use Git::Wrapper;
 use Data::Dumper;
 use File::Copy;
