@@ -40,7 +40,7 @@ sub adjust_diff_line {
     next if($str =~ m/^$/);
 
     if( $str =~ m/\".*\"/){
-      $str =~ s/\"(.*)\"/\1/g;
+      $str =~ s/\"(.*)\"/$1/g;
 #      $str = nkf ('-m', $str);
     }
 
@@ -52,19 +52,19 @@ sub adjust_diff_line {
 
 sub format_date1 {
   my $date = shift;
-  $date =~ s/^(.*) \+0900/\1/;
+  $date =~ s/^(.*) \+0900/$1/;
   return  UnixDate(ParseDate($date), "%Y-%m-%d %H:%M:%S");
 }
 
 sub format_date2 {
   my $date = shift;
-  $date =~ s/^(.*) \+0900/\1/;
+  $date =~ s/^(.*) \+0900/$1/;
   return  UnixDate(ParseDate($date), "%Y年%m月%d日 %H時%M分%S秒");
 }
 
 sub format_date3 {
   my $date = shift;
-  $date =~ s/^(.*) \+0900/\1/;
+  $date =~ s/^(.*) \+0900/$1/;
   return  UnixDate(ParseDate($date), "%Y年%m月%d日");
 }
 
@@ -82,7 +82,7 @@ sub is_include {
   my @ary = @$branches;
   foreach(@ary) {
     my $branch = $_;
-    $branch =~ s/^[\s\*]*(.*)\s*$/\1/;
+    $branch =~ s/^[\s\*]*(.*)\s*$/$1/;
     if($branch =~ m/^${val}$/){
       $ret = 1;
       last;
@@ -103,6 +103,19 @@ sub debug_exit {
     print $obj;
   }
   exit;
+}
+
+sub _fread {
+    my ($path) = @_;
+
+    open my $h, '<', $path || die "Fail to read ${path}";
+    my $pos = 0;
+    my $doc;
+    while( my $leng = sysread $h, $doc, 1024, $pos ){
+      $pos += $leng;
+    }
+    close $h;
+    return ($doc, $pos);
 }
 
 1;

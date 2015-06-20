@@ -37,7 +37,7 @@ sub new {
 
   my $relative = "";
   if($dir){
-    $dir =~ s/^\/(.*)$/\1/;
+    $dir =~ s/^\/(.*)$/$1/;
     foreach(split(/\//, $dir)){
       $relative .= "../";
     }

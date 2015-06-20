@@ -157,10 +157,10 @@ sub get_other_users {
 
     foreach( $self->{git}->branch ){
         my $branch = $_;
-        $branch =~ s/^[\s\*]*(.*)\s*/\1/;
+        $branch =~ s/^[\s\*]*(.*)\s*/$1/;
         next if($branch =~ m/master/);
 
-        $branch =~ s/$self->{branch_prefix}(.*)/\1/;
+        $branch =~ s/$self->{branch_prefix}(.*)/$1/;
         next if($branch =~ m/[0-9]+_tmp/ );
 #        $branch =~ s/([0-9]+)_tmp/\1/;
         push @users, $branch;
@@ -188,7 +188,7 @@ sub get_branch_root {
   my @show_branches = $self->{git}->show_branch({"sha1-name" => 1}, "master", $branch);
   my $last = @show_branches;
   my $ret = ${show_branches}[$last - 1];
-  $ret =~ s/^.*\[([a-z0-9]+)\].*/\1/;
+  $ret =~ s/^.*\[([a-z0-9]+)\].*/$1/;
 
   return $ret;
 }
@@ -325,7 +325,7 @@ sub add_image {
 
   my $gitctrl = $self->{git};
   if ( -f $imagepath ){
-    $imagepath =~ s#$self->{workdir}/(.*)$#\1#;
+    $imagepath =~ s#$self->{workdir}/(.*)$#$1#;
     $gitctrl->add($imagepath);
     $gitctrl->commit({message => "image upload",author => $author});
     return 1;
@@ -575,19 +575,19 @@ sub adjust_log {
   my $obj = shift;
 
   $obj->{sha1_name} = $obj->{id};
-  $obj->{sha1_name} =~ s/^(.{7}).*/\1/;
+  $obj->{sha1_name} =~ s/^(.{7}).*/$1/;
 
   $obj->{raw}     = $obj->{message};
   $obj->{message} =~ s/</&lt;/g;
   $obj->{message} =~ s/>/&gt;/g;
   $obj->{message} =~ s/\n/<br>/g;
-  $obj->{message} =~ s/(.*)git-svn-id:.*/\1/;
+  $obj->{message} =~ s/(.*)git-svn-id:.*/$1/;
 
-  $obj->{attr}->{author} =~ s/(.*) <.*>/\1/;
+  $obj->{attr}->{author} =~ s/(.*) <.*>/$1/;
 #  $obj->{attr}->{author} =~ s/</&lt;/g;
 #  $obj->{attr}->{author} =~ s/>/&gt;/g;
 
-  $obj->{attr}->{date} =~ s/^(.*) \+0900/\1/;
+  $obj->{attr}->{date} =~ s/^(.*) \+0900/$1/;
 #  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
   my $date = $obj->{attr}->{date};
 

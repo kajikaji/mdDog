@@ -312,7 +312,7 @@ sub listup_documents {
                 is_editable     => $_->{may_edit}?1:0,
                 is_approve      => $_->{may_approve}?1:0,
                 is_public       => $_->{is_public},
-                is_owned        => $_->{created_by}==${uid}?1:0,
+                is_owned        => $uid && $_->{created_by}==${uid}?1:0,
             };
             push @infos, $info;
         }
@@ -534,13 +534,7 @@ sub set_merge_view {
 
     # taking a info from MASTER
     $gitctrl->attach_local(undef);
-    my $doc_master;
-    open my $hF, '<', $filepath || die "failed to read ${filepath}";
-    my $pos = 0;
-    while (my $length = sysread $hF, $doc_master, 1024, $pos) {
-        $pos += $length;
-    }
-    close $hF;
+    my ($doc_master, $pos) = MYUTIL::_fread($filepath);
     my $list_master;
     foreach(split(/\n/, $doc_master)){
         push @$list_master, $_;
@@ -549,13 +543,7 @@ sub set_merge_view {
 
     # takeing a info from MINE including 'diff'
     $gitctrl->attach_local($uid);
-    my $doc_user;
-    open my $hF, '<', $filepath || die "failed to read ${filepath}";
-    my $pos = 0;
-    while (my $length = sysread $hF, $doc_user, 1024, $pos) {
-        $pos += $length;
-    }
-    close $hF;
+    my ($doc_user, $pos2) = MYUTIL::_read($filepath);
     my $list_user;
     foreach(split(/\n/, $doc_user)){
         push @$list_user, $_;
@@ -593,14 +581,14 @@ sub create_file {
 
   my $docname = nkf("-w", $self->qParam('doc_name'));
   my $filename = nkf("-w", $self->qParam('file_name'));
-  $docname =~ s/^\s*(.*)\s*$/\1/;
-  $docname =~ s/^(.*)\..*$/\1/;
+  $docname =~ s/^\s*(.*)\s*$/$1/;
+  $docname =~ s/^(.*)\..*$/$1/;
   return unless($docname);
   unless( $filename ){
     $filename = $docname;
   }else{
-    $filename =~ s/^\s*(.*)\s*$/\1/;
-    $filename =~ s/^(.*)\..*$/\1/;
+    $filename =~ s/^\s*(.*)\s*$/$1/;
+    $filename =~ s/^(.*)\..*$/$1/;
   }
   $filename =~ s/　/ /g;
   $filename =~ s/\s/_/g;
@@ -807,7 +795,6 @@ sub set_master_outline{
 
     my $filename = $ary[0];
     my $filepath = "$self->{repodir}/${fid}/${filename}";
-    my $data;
     my $user     = undef;
     my $revision = undef;
     my $gitctrl  = $self->{git};
@@ -818,12 +805,7 @@ sub set_master_outline{
     #ドキュメントの読み込み
     $gitctrl->attach_local($user);
     $gitctrl->checkout_version($revision);
-    open my $hF, '<', $filepath || die "failed to read ${filepath}";
-    my $pos = 0;
-    while (my $length = sysread $hF, $data, 1024, $pos) {
-        $pos += $length;
-    }
-    close $hF;
+    my ($data, $pos) = MYUTIL::_fread($filepath);
     $gitctrl->detach_local();
 
     my @contents;
@@ -848,19 +830,19 @@ sub set_master_outline{
         }
 
         my $line = markdown($_);
-        $line =~ s#^<([a-z1-9]+)>#<\1 id="document${j}">#;
-        $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&\1" #g;
+        $line =~ s#^<([a-z1-9]+)>#<$1 id="document${j}">#;
+        $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&$1" #g;
         $dat .= $line;
 
         #目次の生成
         if ( $line =~ m/<h1.*>/) {
-            $line =~ s#<h1.*>(.*)</h1>#\1#;
+            $line =~ s#<h1.*>(.*)</h1>#$1#;
             push @contents, {level => 1, line => $line, num => $j};
         } elsif ( $line =~ m/<h2.*>/ ) {
-            $line =~ s#<h2.*>(.*)</h2>#\1#;
+            $line =~ s#<h2.*>(.*)</h2>#$1#;
             push @contents, {level => 2, line => $line, num => $j};
         } elsif ( $line =~ m/<h3.*>/ ) {
-            $line =~ s#<h3.*>(.*)</h3>#\1#;
+            $line =~ s#<h3.*>(.*)</h3>#$1#;
             push @contents, {level => 3, line => $line, num => $j};
         }
 #        elsif ( $line =~ m/<h4.*>/ ) {
@@ -905,7 +887,7 @@ sub set_buffer_md{
     my $document = $self->get_user_document($uid, $fid);
 
     my $md = markdown($document);
-    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1" #g;
+    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&$1" #g;
 
     $self->{t}->{markdown} = $md;
     $self->{t}->{raws} = paragraphs($document);
@@ -1013,7 +995,7 @@ sub set_md_image{
   my @imgpaths;
   foreach (@images) {
     my $path = $_;
-    $path =~ s#$self->{repodir}/${fid}/image/(.*)$#\1#g;
+    $path =~ s#$self->{repodir}/${fid}/image/(.*)$#$1#g;
     push @imgpaths, $path;
   }
 
@@ -1041,11 +1023,7 @@ sub upload_image {
     mkdir $imgdir, 0774 || die "can't make image directory.";
   }
   my $tmppath  = $self->{q}->tmpFileName($hF);
-  my $imgdir   = "$self->{repodir}/${fid}/image";
   my $filepath = "${imgdir}/${filename}";
-  unless(-d $imgdir){
-    mkdir $imgdir, 0774 || die "can't make image directory.";
-  }
   move ($tmppath, $filepath) || die "Upload Error!. $filepath";
   close($hF);
 
@@ -1144,7 +1122,7 @@ sub print_image {
 
   if( -f $imgpath ){
     my $type = $imgpath;
-    $type =~ s/.*\.(.*)$/\1/;
+    $type =~ s/.*\.(.*)$/$1/;
     $type =~ tr/A-Z/a-z/;
 
     print "Content-type: image/${type}\n\n";
@@ -1179,14 +1157,7 @@ sub get_user_document {
   my $filepath = "$self->{repodir}/${fid}/${filename}";
 
   $self->{git}->attach_local_tmp($uid);
-
-  my $document;
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
+  my($document, $pos) = MYUTIL::_fread($filepath);
   $self->{git}->detach_local();
 
   return $document;
@@ -1199,7 +1170,7 @@ sub count_paragraph {
     my $cnt = 0;
     my $next = 0;
     while( $tmp =~ m/^.*<[a-z][a-z0-9]*>.*/ ){
-        $tmp =~ s/^.*<[a-z][a-z0-9]*>(.*)/\1/;
+        $tmp =~ s/^.*<[a-z][a-z0-9]*>(.*)/$1/;
     }
 }
 
