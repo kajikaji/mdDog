@@ -9,6 +9,7 @@ $local_bg     :#fffacd;
 $minimum_font :8pt;
 $subject_size :21pt;
 $left_menu_width: 180px;
+$margin-wd    :5px;
 
 @mixin round-corner ($radius) {
   border-radius: $radius;
@@ -561,8 +562,13 @@ ul.BackNav{
 }
 
 .NoFile{
-  margin: 10px;
-  color: #888;
+    clear: both;
+    margin: 0;
+    padding: 10px 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
 }
 
 form#docxCreate{

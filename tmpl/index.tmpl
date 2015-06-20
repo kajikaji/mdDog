@@ -15,7 +15,6 @@
   [% END %]
   </div>
 
-  [%IF infos %]
     [%IF login %]
     <ul class="DocFilter">
       <li>[%UNLESS style %]一覧[%ELSE %]<a href="?style=">一覧</a>[%END %]</li>
@@ -23,6 +22,7 @@
       <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?style=dustbox">ゴミ箱</a>[%END %]</li>
     </ul>
     [%END %]
+  [%IF infos %]
 
   <table class="DocList">
     <tbody>
@@ -116,7 +116,7 @@
   <div class="DocumentCount">[% document_count %]件</div>
   [% ELSE %]
   <div class="NoFile">
-    ファイルは登録されていません
+    表示できるドキュメントはありません
   </div>
   [% END %]
 </div><!-- top-menu -->

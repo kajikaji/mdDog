@@ -275,14 +275,15 @@ SQL
 #登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
-    my $self = shift;
-    my @infos;
-    my $uid   = $self->{s}->param("login");
-    my $page  = $self->qParam("page");
-    my $style = $self->qParam("style");
+    my ($self) = @_;
+
+    my $uid    = $self->{s}->param("login");
+    my $page   = $self->qParam("page");
+    my $style  = $self->qParam("style");
     $page = 0 unless($page);
     my $offset = $page * $self->{paging_top};
     my ($sql, $sql_cnt);
+    my @infos;
 
     if( $uid ){
         $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top});
@@ -295,8 +296,8 @@ sub listup_documents {
 
     my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
        || $self->errorMessage("DB:Error",1);
-    if (@$ary) {
-        foreach (@$ary) {
+    if( @$ary ){
+        foreach( @$ary ) {
             my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
             my $info = {
                 id              => $_->{id},
@@ -324,10 +325,11 @@ sub listup_documents {
     for( my $i = 0; $i < $pages; $i++ ){
         push @$paging, $i;
     }
+
     $self->{t}->{document_count} = @$cnt;
-    $self->{t}->{style} = $style;
-    $self->{t}->{page} = $page;
-    $self->{t}->{paging} = $paging;
+    $self->{t}->{style}          = $style;
+    $self->{t}->{page}           = $page;
+    $self->{t}->{paging}         = $paging;
 }
 
 ############################################################
