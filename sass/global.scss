@@ -265,6 +265,7 @@ $left_menu_width: 180px;
   background-color: #fff;
 }
 
+
 /*
  * GENERAL SETTING
  */
@@ -722,7 +723,7 @@ section.Top{
                       list-style: none;
                       font-size: 7px;
                       margin: 3px 0;
-
+                      height: 14px;
                       li{
                           float: left;
                           margin-left: 12px;
@@ -744,28 +745,35 @@ section.Top{
                 }
                 >.DocCtrl{
                     float: right;
-                    padding: 5px;
+                    padding: 0;
                     font-size: 18pt;
                     color: #ccc;
-                    a{
-                    }
-                    a:hover{
-                        color: $orange;
-                    }
-
-                    form.Warn{
-                        margin-left: 10px;
-                        display: inline;
-                        button{
-                            font-size: 18pt;
-                            border: none;
-                            background: transparent;
-                            padding: 0;
-                            color: #f33;
-                          &:hover{
-                            background: transparent;
+                    list-style: none;
+                    li{
+                        float: left;
+                        a{
+                            .typcn.typcn-edit{
+                                margin-left: 2px;
+                            }
+                        }
+                        a:hover{
                             color: $orange;
-                          }
+                        }
+
+                        form.Warn{
+                            margin-left: 10px;
+                            display: inline;
+                            button{
+                                font-size: 18pt;
+                                border: none;
+                                background: transparent;
+                                padding: 0;
+                                color: #f33;
+                                &:hover{
+                                    background: transparent;
+                                    color: $orange;
+                                }
+                            }
                         }
                     }
                 }
@@ -821,17 +829,16 @@ section.Docinfo{
         li{
             float: left;
             font-size: 28px;
-            margin-left: 5px;
             color: #ccc;
             a{
+                .typcn.typcn-edit{
+                    margin-left: 2px;
+                }
                 &:hover{
                     color: $orange;
                 }
             }
             &.Selected{
-                font-size: 34px;
-                margin-left: 10px;
-                margin-right: 5px;
                 a{
                     color: #000;
                     &:hover{
@@ -855,6 +862,7 @@ section.Docinfo{
     border-color: rgba(0,0,0,0.1);
     border-style: none solid none solid;
     box-sizing: border-box;
+    height: 16px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
 

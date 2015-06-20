@@ -406,7 +406,8 @@ section.Top .Main {
         clear: both;
         list-style: none;
         font-size: 7px;
-        margin: 3px 0; }
+        margin: 3px 0;
+        height: 14px; }
         section.Top .Main table.DocList tr td > .DocSubject ul.Tags li {
           float: left;
           margin-left: 12px; }
@@ -517,23 +518,28 @@ section.Top .Main {
           clear: both; }
     section.Top .Main table.DocList tr td > .DocCtrl {
       float: right;
-      padding: 5px;
+      padding: 0;
       font-size: 18pt;
-      color: #ccc; }
-      section.Top .Main table.DocList tr td > .DocCtrl a:hover {
-        color: #ff7f50; }
-      section.Top .Main table.DocList tr td > .DocCtrl form.Warn {
-        margin-left: 10px;
-        display: inline; }
-        section.Top .Main table.DocList tr td > .DocCtrl form.Warn button {
-          font-size: 18pt;
-          border: none;
-          background: transparent;
-          padding: 0;
-          color: #f33; }
-          section.Top .Main table.DocList tr td > .DocCtrl form.Warn button:hover {
+      color: #ccc;
+      list-style: none; }
+      section.Top .Main table.DocList tr td > .DocCtrl li {
+        float: left; }
+        section.Top .Main table.DocList tr td > .DocCtrl li a .typcn.typcn-edit {
+          margin-left: 2px; }
+        section.Top .Main table.DocList tr td > .DocCtrl li a:hover {
+          color: #ff7f50; }
+        section.Top .Main table.DocList tr td > .DocCtrl li form.Warn {
+          margin-left: 10px;
+          display: inline; }
+          section.Top .Main table.DocList tr td > .DocCtrl li form.Warn button {
+            font-size: 18pt;
+            border: none;
             background: transparent;
-            color: #ff7f50; }
+            padding: 0;
+            color: #f33; }
+            section.Top .Main table.DocList tr td > .DocCtrl li form.Warn button:hover {
+              background: transparent;
+              color: #ff7f50; }
     section.Top .Main table.DocList tr td .DocDetail {
       clear: both;
       font-size: 8pt;
@@ -583,19 +589,16 @@ section.Docinfo {
       section.Docinfo .Title ul.MenuIcons li {
         float: left;
         font-size: 28px;
-        margin-left: 5px;
         color: #ccc; }
+        section.Docinfo .Title ul.MenuIcons li a .typcn.typcn-edit {
+          margin-left: 2px; }
         section.Docinfo .Title ul.MenuIcons li a:hover {
           color: #ff7f50; }
-        section.Docinfo .Title ul.MenuIcons li.Selected {
-          font-size: 34px;
-          margin-left: 10px;
-          margin-right: 5px; }
-          section.Docinfo .Title ul.MenuIcons li.Selected a {
-            color: #000; }
-            section.Docinfo .Title ul.MenuIcons li.Selected a:hover {
-              color: #000;
-              cursor: default; }
+        section.Docinfo .Title ul.MenuIcons li.Selected a {
+          color: #000; }
+          section.Docinfo .Title ul.MenuIcons li.Selected a:hover {
+            color: #000;
+            cursor: default; }
       section.Docinfo .Title ul.MenuIcons:after, section.Docinfo .Title ul.MenuIcons:before {
         display: table;
         content: "";
@@ -613,6 +616,7 @@ section.Docinfo {
     border-color: rgba(0, 0, 0, 0.1);
     border-style: none solid none solid;
     box-sizing: border-box;
+    height: 16px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box; }
     section.Docinfo ul.Tags li {

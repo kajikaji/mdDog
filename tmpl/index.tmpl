@@ -31,30 +31,30 @@
         <td class="Info">
 
           [% UNLESS info.deleted_at %]
-          <div class="DocCtrl">
+          <ul class="DocCtrl">
             [%IF info.is_used %]
-              <a href="doc_history.cgi?fid=[% info.id %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a>
-              <a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a>
+              <li><a href="doc_history.cgi?fid=[% info.id %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a></li>
+              <li><a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a></li>
 
               [%IF info.is_editable || is_admin %]
-                <a href="edit_buffer.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
+                <li><a href="edit_buffer.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a></li>
               [%ELSE %]
-                <span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span>
+                <li><span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span></li>
               [%END %]
 
               [%IF info.is_approve || is_admin %]
-                <a href="doc_approve.cgi?fid=[% info.id %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a>
+                <li><a href="doc_approve.cgi?fid=[% info.id %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a></li>
               [%ELSE %]
-                <span class="PopupHelper" data-info="承認(権限がありません)"><span class="typcn typcn-input-checked"></span></span>
+                <li><span class="PopupHelper" data-info="承認(権限がありません)"><span class="typcn typcn-input-checked"></span></span></li>
               [%END %]
 
               [%IF info.is_owned || is_admin %]
-                <a href="doc_setting.cgi?fid=[% info.id %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a>
+                <li><a href="doc_setting.cgi?fid=[% info.id %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a></li>
               [%ELSE %]
-                <span class="PopupHelper" data-info="設定(権限がありません）"><span class="typcn typcn-cog-outline"></span></span>
+                <li><span class="PopupHelper" data-info="設定(権限がありません）"><span class="typcn typcn-cog-outline"></span></span></li>
               [%END %]
             [%END %]
-            <form action="" method="post" class="Warn">
+            <li><form action="" method="post" class="Warn">
             [%IF info.is_used %]
               [%IF info.is_owned || is_admin || is_delete %]
                 <button type="submit" name="unuse" value="1" class="PopupHelper" data-info="削除"><span class="typcn typcn-trash"></span></button>
@@ -73,8 +73,8 @@
               <input type="hidden" name="style" value="[% style %]">
               <input type="hidden" name="page" value="[% page %]">
               <input type="hidden" name="fid" value="[% info.id %]">
-            </form>
-          </div>
+            </form></li>
+          </ul>
           [% END %] <!-- UNLESS info.deleted_at -->
           
           <div class="DocSubject">
