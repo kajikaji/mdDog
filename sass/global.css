@@ -295,6 +295,12 @@ section.Gitlog, section.DocApprove {
   section.Gitlog h3, section.DocApprove h3 {
     margin-top: 0;
     margin-bottom: 10px; }
+  section.Gitlog .NoList, section.DocApprove .NoList {
+    padding: 5px;
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.1); }
   section.Gitlog .Logtable .Description, section.DocApprove .Logtable .Description {
     font-size: 80%;
     padding: 5px;

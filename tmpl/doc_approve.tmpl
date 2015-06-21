@@ -43,6 +43,7 @@
 [% ELSE %]<!-- approve_pre -->
   <h3 class="Subject">承認</h3>
 
+  [%IF userlist.size > 0 %]
   <ul id="bufferList" class="BufferList">
     [%FOREACH user IN userlist %]
     <li id="buffer[% user.uid %]" [%IF loop.first %]class="Active"[% END %]><a>[% user.name %]さんの編集バッファ</a></li>
@@ -62,6 +63,9 @@
     [% END %]<!-- if user.loglist -->
   </div>
   [% END %]<!-- foreach userlist -->
+  [%ELSE %] <!-- if userlist.size > 0 -->
+    <div class="NoList">承認するコミットはありません</div>
+  [%END %] <!-- if userlist.size > 0 -->
 [% END %]<!-- approve_pre -->
 </section>
 

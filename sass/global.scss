@@ -266,6 +266,12 @@ $margin-wd    :5px;
   background-color: #fff;
 }
 
+@mixin whiteblock {
+    background-color: #fff;
+    color: #333;
+    font-size: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+}
 
 /*
  * GENERAL SETTING
@@ -565,10 +571,7 @@ ul.BackNav{
     clear: both;
     margin: 0;
     padding: 10px 5px;
-    background-color: #fff;
-    color: #333;
-    font-size: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
+    @include whiteblock();
 }
 
 form#docxCreate{
@@ -594,6 +597,11 @@ section.Gitlog, section.DocApprove{
   h3{
       margin-top: 0;
       margin-bottom: 10px;
+  }
+
+  .NoList{
+      padding: $margin-wd;
+      @include whiteblock();
   }
 
   .Logtable .Description{
