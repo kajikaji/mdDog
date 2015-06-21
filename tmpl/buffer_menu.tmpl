@@ -12,7 +12,7 @@
     <li><a id="headlineBtn" class="PopupHelper" data-info="見出しを表示します"><span class="typcn typcn-th-menu"></span>headline</a></li>
     <li><a id="previewBtn" class="PopupHelper" data-info="プレビュー表示します\nUNDERCONSTRUCTION"><span class="typcn typcn-printer"></span>preview</a></li>
     <li><a id="diffBtn" class="PopupHelper" data-info="編集差異を表示します\nUNDERCONSTRUCTION"><span class="typcn typcn-directions"></span>diff view</a></li>
-    <li><a id="clearBtn" class="PopupHelper" data-info="編集中のバッファをクリアします"><span class="typcn typcn-document-delete"></span>clear</a></li>
+    <li><a id="clearBtn"  class="[%UNLESS message.buffered %]Disabled[%END %] PopupHelper" data-info="編集中のバッファをクリアします"><span class="typcn typcn-document-delete"></span>clear</a></li>
     <li><a id="jumpTopBtn" class="PopupHelper" data-info="ページの先頭にジャンプします"><span class="typcn typcn-arrow-up"></span>jump top</a></li>
   [%END %]
 </ul>

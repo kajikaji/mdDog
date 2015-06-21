@@ -1398,6 +1398,21 @@ section.MdBuffer{
 		                >li{
 			                float: left;
 			                margin: 5px;
+
+                            img{
+                                display: block;
+                                clear:both;
+                            }
+                            a.Btn{
+                                display: block;
+                                clear: both;
+                            }
+                            div.NameTag{
+                                font-size: 10px;
+                                clear:both;
+                                margin: 0;
+                                padding: 0;
+                            }
 		                }
 		                @include clearfix();
 		            }

@@ -885,8 +885,7 @@ sub set_buffer_md{
     return unless($uid);
     my $fid      = $self->qParam('fid');
     my $document = $self->get_user_document($uid, $fid);
-
-    my $md = markdown($document);
+    my $md       = markdown($document);
     $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&$1" #g;
 
     $self->{t}->{markdown} = $md;
@@ -1146,21 +1145,19 @@ sub print_image {
 # @param2 fid
 #
 sub get_user_document {
-  my $self = shift;
-  my $uid  = shift;
-  my $fid  = shift;
+    my ($self, $uid, $fid) = @_;
 
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
 
-  $self->{git}->attach_local_tmp($uid);
-  my($document, $pos) = MYUTIL::_fread($filepath);
-  $self->{git}->detach_local();
+    $self->{git}->attach_local_tmp($uid);
+    my($document, $pos) = MYUTIL::_fread($filepath);
+    $self->{git}->detach_local();
 
-  return $document;
+    return $document;
 }
 
 sub count_paragraph {

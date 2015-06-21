@@ -8,7 +8,7 @@ require.config({
         editBufferDivideCtrl    :'edit_buffer/divideCtrl',
         editBufferParagraphCtrl :'edit_buffer/paragraphCtrl',
         editBufferMessage       :'edit_buffer/bufferMessage',
-        editBufferMerge          :'edit_buffer/merge'
+        editBufferMerge         :'edit_buffer/merge'
     },
 
     shim:{
@@ -62,7 +62,11 @@ require(['leftMenu'], function(LeftMenu){
     // 編集フォーム
     if( $('body > section.MdBuffer .BufferEdit').length ){
           require(['editBufferEditor'], function(EditBufferEditor){
-               new EditBufferEditor().init();
+              var editor = new EditBufferEditor();
+              editor.init();
+              if( $('#clearBtn').length ){
+                  editor.setClearBtn($('#clearBtn'));
+              }
           });
     }
 

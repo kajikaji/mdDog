@@ -1393,6 +1393,17 @@ section.MdBuffer .BufferEdit {
         section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList > li {
           float: left;
           margin: 5px; }
+          section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList > li img {
+            display: block;
+            clear: both; }
+          section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList > li a.Btn {
+            display: block;
+            clear: both; }
+          section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList > li div.NameTag {
+            font-size: 10px;
+            clear: both;
+            margin: 0;
+            padding: 0; }
         section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList:after, section.MdBuffer .BufferEdit .Document > .Md .Editform ul.ImageList:before {
           display: table;
           content: "";

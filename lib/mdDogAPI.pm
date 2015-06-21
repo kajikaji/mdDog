@@ -1,3 +1,4 @@
+
 package mdDogAPI;
 
 # --------------------------------------------------------------------
@@ -681,5 +682,28 @@ sub edit_log {
     my $json = JSON->new();
     return $json->encode({fid => $fid, comment => $comment});
 }
+
+############################################################
+#[API]
+#
+sub clear_user_buffer {
+    my $self = shift;
+    my $fid  = $self->qParam('fid');
+    my $uid  = $self->{s}->param('login');
+
+    return unless( $fid && $uid );
+    my $gitctrl = $self->{git};
+
+    return unless( $gitctrl->clear_tmp($uid) );
+
+    my $document = $self->get_user_document($uid, $fid);
+    my $md       = markdown($document);
+    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&$1" #g;
+    my $rows     = paragraphs($document);
+
+    my $json = JSON->new();
+    return $json->encode({md => $md, rows => $rows});
+}
+
 
 1;

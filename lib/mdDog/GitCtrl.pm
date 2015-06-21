@@ -176,21 +176,19 @@ sub get_other_users {
 # @param2 編集バッファフラグ:無指定だと通常のユーザーリポジトリを精査
 #
 sub get_branch_root {
-  my $self = shift;
-  my $uid = shift;
-  my $isTmp = shift;
+    my ($self, $uid, $isTmp) = @_;
 
-  my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
-  $branch .= "_tmp" if($uid && $isTmp);
-  my @branches = $self->{git}->branch;
-  return 0 if(!MYUTIL::is_include(\@branches, $branch));
+    my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
+    $branch .= "_tmp" if( $uid && $isTmp );
+    my @branches = $self->{git}->branch;
+    return 0 if(!MYUTIL::is_include(\@branches, $branch));
 
-  my @show_branches = $self->{git}->show_branch({"sha1-name" => 1}, "master", $branch);
-  my $last = @show_branches;
-  my $ret = ${show_branches}[$last - 1];
-  $ret =~ s/^.*\[([a-z0-9]+)\].*/$1/;
+    my @show_branches = $self->{git}->show_branch({"sha1-name" => 1}, "master", $branch);
+    my $last = @show_branches;
+    my $ret = ${show_branches}[$last - 1];
+    $ret =~ s/^.*\[([a-z0-9]+)\].*/$1/;
 
-  return $ret;
+    return $ret;
 }
 
 ############################################################
@@ -416,41 +414,39 @@ sub attach_local {
 # @param2 isCreate: 1だと編集バッファを強制で作成
 #
 sub attach_local_tmp {
-  my $self = shift;
-  my $uid = shift;
-  my $isCreate = shift;
+    my ($self, $uid, $isCreate) = @_;
 
-  $self->lock_dir();
+    $self->lock_dir();
 
-  my $gitctrl = $self->{git};
-  my @branches = $gitctrl->branch;
-  my $branch     = "$self->{branch_prefix}${uid}";
-  my $branch_tmp = "$self->{branch_prefix}${uid}_tmp";
+    my $gitctrl    = $self->{git};
+    my @branches   = $gitctrl->branch;
+    my $branch     = "$self->{branch_prefix}${uid}";
+    my $branch_tmp = "$self->{branch_prefix}${uid}_tmp";
 
-  my $flg = MYUTIL::is_include(\@branches, $branch);
-  my $flg_tmp = MYUTIL::is_include(\@branches, $branch_tmp);
+    my $flg     = MYUTIL::is_include(\@branches, $branch);
+    my $flg_tmp = MYUTIL::is_include(\@branches, $branch_tmp);
 
-  if($flg && $flg_tmp){
-    if($self->get_branch_root($uid) ne $self->get_branch_root($uid, 1)){
-      $gitctrl->branch("-D", $branch_tmp);
-      $gitctrl->checkout($branch);
-      $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+    if( $flg && $flg_tmp ){
+        if( $self->get_branch_root($uid) ne $self->get_branch_root($uid, "tmp") ){
+            $gitctrl->branch("-D", $branch_tmp);
+            $gitctrl->checkout($branch);
+            $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+        }else{
+            $gitctrl->checkout($branch_tmp);
+        }
+    }elsif( $flg && !$flg_tmp ){
+        $gitctrl->checkout($branch);
+        $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+    }elsif( !$flg && $flg_tmp ){
+        if( $self->get_branch_root() ne $self->get_branch_root($uid, 1) ){
+            $gitctrl->branch("-D", $branch_tmp);
+            $gitctrl->checkout({b => $branch_tmp}) if( $isCreate );
+        }else{
+            $gitctrl->checkout($branch_tmp);
+        }
     }else{
-      $gitctrl->checkout($branch_tmp);
+        $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
     }
-  }elsif($flg && !$flg_tmp){
-    $gitctrl->checkout($branch);
-    $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
-  }elsif(!$flg && $flg_tmp){
-    if($self->get_branch_root() ne $self->get_branch_root($uid, 1)){
-      $gitctrl->branch("-D", $branch_tmp);
-      $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
-    }else{
-      $gitctrl->checkout($branch_tmp);
-    }
-  }else{
-    $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
-  }
 }
 
 ############################################################
@@ -559,12 +555,25 @@ sub one_log {
 ############################################################
 #
 sub rollback_buffer {
-    my $self = shift;
-    my $revision = shift;
+    my ($self, $revision) = @_;
 
     $self->{git}->reset("${revision}^", {hard=>1});
 }
 
+
+############################################################
+#
+sub clear_tmp {
+    my ($self, $uid) = @_;
+
+    my $branch     = "$self->{branch_prefix}${uid}";
+    my $branch_tmp = "${branch}_tmp";
+
+    $self->lock_dir();
+    $self->{git}->branch("-D", $branch_tmp);
+    $self->unlock_dir();
+    return 1;
+}
 
 ############################################################
 #gitのログを適切な文字列に整形

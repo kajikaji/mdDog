@@ -49,22 +49,35 @@ define(function(){
         },
 
         attachButton: function(){
-            $('#' + this.formId).find('button.Update').click($.proxy(function(){
+            $('#' + this.formId).find('button.Update').on('click', $.proxy(function(){
                 this.btnUpdate();
             }, this));
             if( this.id >= 0 ){
-                $('#' + this.formId).find('button.Delete').click($.proxy(function(){
+                $('#' + this.formId).find('button.Delete').on('click', $.proxy(function(){
                     this.btnDelete();
                 }, this));
             }else{
                 $('#' + this.formId).find('button.Delete').hide();
             }
-            $('#' + this.formId).find('button.Cancel').click($.proxy(function(){
+            $('#' + this.formId).find('button.Cancel').on('click', $.proxy(function(){
                 this.btnCancel();
             }, this));
-            $('#' + this.formId).find('button.ImageView').click($.proxy(function(){
+            $('#' + this.formId).find('button.ImageView').on('click', $.proxy(function(){
                 this.btnImageView();
             }, this));
+        },
+
+        detachButton: function(){
+            $('#' + this.formId + ' ul.ImageList').find('li a.Btn').each(function(){
+                $(this).off('click');
+            });
+
+            $('#' + this.formId).find('button.Update').off('click');
+            if( this.id >= 0 ){
+                $('#' + this.formId).find('button.Delete').off('click');
+            }
+            $('#' + this.formId).find('button.Cancel').off('click');
+            $('#' + this.formId).find('button.ImageView').off('click');
         },
 
         btnUpdate: function(){
@@ -100,34 +113,45 @@ define(function(){
             }, this));
         },
         btnCancel: function(){
+            this.detachButton();
             $('#' + this.formId).remove();
             $(this.src).show();
         },
         btnImageView: function(){
-            $.ajax({
-                url  : this.api,
-                type : 'GET',
-                data :{
-                    fid    : this.fid, 
-                    action : 'image_list', 
-                },
-                timeout: 5000
-            }).done($.proxy(function(res){
-                var length = res.length;
-                var list = $('#' + this.formId).find('ul.ImageList');
-                list.show();
-                for(var i=0; i < res.length; i++){
-                    var img = $('<img>').attr('src', 'md_imageView.cgi?image=' + res[i].filename + '&fid=' + this.fid + '&tmp=1&thumbnail=1');
-                    var anch = $('<a>').addClass('Btn').text('挿入');
-                    anch.data("image", res[i].filename);
-                    anch.click($.proxy(function(ev){
-                        this.insertAtCaret($(ev.target).data("image"));
-                    }, this));
+            var imageList = $('#' + this.formId).find('ul.ImageList');
+            var disp = imageList.css('display');
+            if( disp === 'none' || disp === undefined ){
+                $.ajax({
+                    url  : this.api,
+                    type : 'GET',
+                    data :{
+                        fid    : this.fid, 
+                        action : 'image_list', 
+                    },
+                    timeout: 5000
+                }).done($.proxy(function(res){
+                    var length = res.length;
+                    imageList.show();
+                    for(var i=0; i < res.length; i++){
+                        var img = $('<img>').attr('src', 'md_imageView.cgi?image=' + res[i].filename + '&fid=' + this.fid + '&tmp=1&thumbnail=1');
+                        var nametag = $('<div>').addClass('NameTag').text(res[i].filename);
+                        var anch = $('<a>').addClass('Btn').text('挿入');
+                        anch.data("image", res[i].filename);
+                        anch.on('click', $.proxy(function(ev){
+                            this.insertAtCaret($(ev.target).data("image"));
+                        }, this));
 
-                    var imageRec = $('<li>').append(img).append(anch);
-                    list.append(imageRec);
-                }
-            }, this));
+                        var imageRec = $('<li>').append(img).append(nametag).append(anch);
+                        imageList.append(imageRec);
+                    }
+                }, this));
+            }else{
+                imageList.find('li').each(function(){
+                    $(this).find('a.Btn').off('click');
+                    $(this).remove();
+                });
+                imageList.hide();
+            }
         },
 
         insertAtCaret: function(filename){
@@ -184,6 +208,7 @@ define(function(){
                     this.resetTreeId($ptr, this.id>=0?this.id:0, 'md');
                 }
                 this.checkBlankDocument();
+                this.detachButton();
             }, this));
         },
         deleteSuccess: function(res){
@@ -236,10 +261,14 @@ define(function(){
                 $lastDivide.remove();
             }
             this.checkBlankDocument();
+            this.detachButton();
         },
         updateMessage: function(){
             if( $('#bufferCommitBtn').hasClass('Disabled') ){
                 $('#bufferCommitBtn').removeClass('Disabled');
+            }
+            if( $('#clearBtn').hasClass('Disabled') ){
+                $('#clearBtn').removeClass('Disabled');
             }
         },
         resetTreeId: function(obj, inc, prefix){
