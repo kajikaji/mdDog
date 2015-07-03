@@ -305,7 +305,7 @@ define(function(){
                 $(mdObj).attr('id', 'md-1');
                 require(['editBufferDivideCtrl'], $.proxy(function(DivideCtrl){
                     $(mdObj).find('.DivideCtrl').append(
-                        DivideCtrl().getPageNum(0)
+                        new DivideCtrl().getPageNum(0)
                     );
                 }, this));
                 $('.BufferEdit.Markdown .Document').append(mdObj);
