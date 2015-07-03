@@ -59,15 +59,22 @@ sub new {
 ###################################################
 #
 sub setup_config {
-  my $self = shift;
+    my $self = shift;
 
-  if($self->qParam('fid')){
-    my $workdir = "$self->{repodir}/" . $self->qParam('fid');
-    $self->{git} = GitCtrl->new($workdir);
-    $self->{outline} = OutlineCtrl->new($workdir);
-  }
+    if($self->qParam('fid')){
+      my $workdir = "$self->{repodir}/" . $self->qParam('fid');
+      $self->{git} = GitCtrl->new($workdir);
+      $self->{outline} = OutlineCtrl->new($workdir);
+    }
 
-  $self->SUPER::setup_config();
+    if( join(' ', $self->{q}->param()) =~ m/.*page.*/ ){
+        $self->add_cookie('INDEXPAGE', $self->qParam('page'), "+ 2hour");
+    }
+    if( join(' ', $self->{q}->param()) =~ m/.*style.*/ ){
+        $self->add_cookie('INDEXSTYLE', $self->qParam('style'), "+ 2hour");
+    }
+
+    $self->SUPER::setup_config();
 }
 
 ###################################################
@@ -279,11 +286,25 @@ sub listup_documents {
 
     my $uid    = $self->{s}->param("login");
     my $page   = $self->qParam("page");
+    unless( join(' ', $self->{q}->param()) =~ m/.*page.*/ ){
+        if( $self->{q}->cookie('INDEXPAGE') ){
+            $page = $self->{q}->cookie('INDEXPAGE');
+        }else{
+            $page = 0;
+        }
+    }
     my $style  = $self->qParam("style");
-    $page = 0 unless($page);
+    unless( join(' ', $self->{q}->param()) =~ m/.*style.*/ ){
+        if( $self->{q}->cookie('INDEXSTYLE') ){
+            $style = $self->{q}->cookie('INDEXSTYLE');
+        }else{
+            $style = 0;
+        }
+    }
     my $offset = $page * $self->{paging_top};
     my ($sql, $sql_cnt);
     my @infos;
+
 
     if( $uid ){
         $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top});

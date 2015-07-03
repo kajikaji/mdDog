@@ -22,6 +22,7 @@ package APPBASE;
 
 use strict;
 use CGI;
+use CGI::Cookie;
 use CGI::Session;
 use Template;
 use DBI;
@@ -30,6 +31,7 @@ use constant FALSE => 0;
 
 use DEFINE;
 use SCONFIG;
+use MYUTIL;
 
 sub new {
   my $pkg = shift;
@@ -86,7 +88,7 @@ sub setup_config {
   #セッションの準備
   $self->{s} = new CGI::Session("driver:File", $self->{q}, {Directory=>$self->{sessiondir}});
   $self->{s}->expire('+1h');
-  $self->{cookie} = $self->{q}->cookie(-name => 'CGISESSID', -value => $self->{s}->id);
+  $self->add_cookie("CGISESSID", $self->{s}->id);
 
   #テンプレートの準備
   $self->setupTmpl($tmplfile);
@@ -216,5 +218,19 @@ sub qParam {
   return $self->{q}->param($param);
 }
 
+
+# =============================================================================#
+# OUTLINE : 
+# RETURN  : 
+# =============================================================================#
+sub add_cookie {
+    my ($self, $key, $value, $expire) = @_;
+
+    if( $expire ){
+      push @{$self->{cookie}}, CGI::Cookie->new(-name=>$key, -value=>$value, -expires=>$expire);
+    }else{
+      push @{$self->{cookie}}, CGI::Cookie->new(-name=>$key, -value=>$value);
+    }
+}
 
 1;

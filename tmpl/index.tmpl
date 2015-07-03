@@ -17,9 +17,9 @@
 
     [%IF login %]
     <ul class="DocFilter">
-      <li>[%UNLESS style %]一覧[%ELSE %]<a href="?style=">一覧</a>[%END %]</li>
-      <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?style=approver">承認権限</a>[%END %]</li>
-      <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?style=dustbox">ゴミ箱</a>[%END %]</li>
+      <li>[%UNLESS style %]一覧[%ELSE %]<a href="?page=0&style=">一覧</a>[%END %]</li>
+      <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?page=0&style=approver">承認権限</a>[%END %]</li>
+      <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?page=0&style=dustbox">ゴミ箱</a>[%END %]</li>
     </ul>
     [%END %]
   [%IF infos %]
