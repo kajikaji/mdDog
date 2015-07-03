@@ -543,7 +543,7 @@ sub set_merge_view {
 
     # takeing a info from MINE including 'diff'
     $gitctrl->attach_local($uid);
-    my ($doc_user, $pos2) = MYUTIL::_read($filepath);
+    my ($doc_user, $pos2) = MYUTIL::_fread($filepath);
     my $list_user;
     foreach(split(/\n/, $doc_user)){
         push @$list_user, $_;
