@@ -1013,13 +1013,14 @@ section.Outline {
       box-sizing: border-box;
       width: 100%;
       white-space: pre;
-      padding: 5px 20px;
-      background-color: #000;
-      color: #fff;
+      padding: 10px;
+      background-color: #fff;
+      color: #000;
       font-weight: normal;
-      font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+      font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
       font-size: 10pt;
-      line-height: 1.2em; }
+      line-height: 1.4em;
+      border: 1px solid #888; }
     section.Outline .Document .PageFooter {
       position: absolute;
       top: 280mm;
@@ -1460,13 +1461,14 @@ section.MdBuffer .BufferEdit {
       box-sizing: border-box;
       width: 100%;
       white-space: pre;
-      padding: 5px 20px;
-      background-color: #000;
-      color: #fff;
+      padding: 10px;
+      background-color: #fff;
+      color: #000;
       font-weight: normal;
-      font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+      font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
       font-size: 10pt;
-      line-height: 1.2em; }
+      line-height: 1.4em;
+      border: 1px solid #888; }
 section.MdBuffer .BufferEdit.Source .Ctrl {
   margin-bottom: 10px; }
   section.MdBuffer .BufferEdit.Source .Ctrl input[type=submit] {
@@ -1807,13 +1809,14 @@ section.BufferLog .GitLog {
         box-sizing: border-box;
         width: 100%;
         white-space: pre;
-        padding: 5px 20px;
-        background-color: #000;
-        color: #fff;
+        padding: 10px;
+        background-color: #fff;
+        color: #000;
         font-weight: normal;
-        font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+        font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
         font-size: 10pt;
-        line-height: 1.2em; }
+        line-height: 1.4em;
+        border: 1px solid #888; }
 
 .DiffViewerDialog .Document .Body {
   padding: 5px;
