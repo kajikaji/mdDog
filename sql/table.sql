@@ -33,3 +33,15 @@ created_at timestamp,
 created_by int,
 updated_at timestamp
 );
+
+create table mddog_docgroups(
+id serial primary key,
+doc_id int not null,
+title text not null,
+rgb text not null,
+created_by int,
+created_at timestamp,
+updated_at timestamp
+);
+
+
