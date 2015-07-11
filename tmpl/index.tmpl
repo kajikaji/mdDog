@@ -27,7 +27,7 @@
   <table class="DocList">
     <tbody>
       [% FOREACH info IN infos %]
-      <tr class="[% IF info.is_used %]Active[% ELSE %]Nonactive[% END %] [% IF info.deleted_at %]Deleted[% END %]">
+      <tr class="[% IF info.is_used %]Active[% ELSE %]Nonactive[% END %] [% IF info.deleted_at %]Deleted[% END %]" id="doc[% info.id %]">
         <td class="Info">
 
           [% UNLESS info.deleted_at %]
@@ -79,6 +79,10 @@
           
           <div class="DocSubject">
 	        <div class="Name">
+            [%IF info.is_public %]
+            <i class="Mark Round Green">P</i>
+            [%END %]
+
               [% IF info.deleted_at %]
                 [% info.doc_name %]
               [% ELSIF info.is_used %]
@@ -87,11 +91,19 @@
                 [% info.doc_name %]
               [% END %]
 	        </div>
-            [%IF info.is_used && (info.is_public || info.is_approve || info.is_editable) %]
+            <div class="DocSubInfo">
+              [%IF info.is_used && (info.is_editable || is_admin) %]
+                <div class="GroupAddCtrl">
+                  <button class="PopupHelper" data-info="グループの設定" data-fid="[% info.id %]"><span class="typcn typcn-tag"></span></button>
+                </div>
+              [%END %]
+
               <ul class="Tags">
-                [%IF info.is_public %]<li class="Public"><div>public</div></li>[%END %]
+                [%FOREACH groupname IN info.groups %]
+                  <li class="GroupTag"><div>[% groupname %]</div></li>
+                [%END %]
               </ul>
-           [%END %]
+            </div>
           </div> <!-- doc-subject -->
 
           <div class="DocDetail">
@@ -99,7 +111,7 @@
             <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
           [%END %]
             <div class="CreateAt">作成日時:[% info.created_at %]</div>
-            <div class="CreatedBy">管理者:[% info.created_by %]</div>
+            <div class="CreatedBy [%IF info.is_owned %]Owned[%END %]">管理者:[% info.created_by %]</div>
             <div class="LastApprovedAt">最終承認日時:[% info.last_updated_at %]</div>
             <div class="Filesize">ファイルサイズ:[% info.file_size %]byte</div>
           </div>
@@ -121,6 +133,29 @@
   [% END %]
 </div><!-- top-menu -->
 
+</section>
+
+<section class="Template">
+    <div class="GroupCtrlWindow">
+      <div class="Modal">
+        <div class="DocName"></div>
+        <div class="GroupInfo">
+          グループ名
+          <span class="InputCandi">
+            <input type="text" class="GroupName">
+            <select class="GroupCandidateList" size=1>
+              <option class="Default" value="0"></option>
+            </select>
+          </span>
+          <button class="GroupAddBtn">追加</button>
+        </div>
+        <div class="SubTitle">設定グループ</div>
+        <ul class="GroupList">
+        </ul>
+        <button class="FixBtn">決定</button>
+        <button class="CancelBtn">キャンセル</button>
+      </div>
+    </div>
 </section>
 
 [%INCLUDE footer.tmpl %]

@@ -49,7 +49,17 @@ ORDER BY
   di.is_used DESC, di.doc_name
 OFFSET ${offset} LIMIT ${limit}
 SQL
-    return $sql;
+
+    my $sql_wrapper = << "SQL";
+SELECT
+  foo.*,
+  g.title AS group_title
+FROM (${sql}) foo
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
+LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
+SQL
+
+    return $sql_wrapper;
 }
 
 sub document_list_without_login{
@@ -57,8 +67,8 @@ sub document_list_without_login{
 SELECT
   di.*,
   du.nic_name AS nic_name,
-  du.account AS account,
-  du.mail AS mail
+  du.account  AS account,
+  du.mail     AS mail
 FROM
   docx_infos di
 JOIN docx_users du ON du.id = di.created_by
@@ -77,7 +87,17 @@ ORDER BY
   di.is_used DESC, di.doc_name
 OFFSET ${offset} LIMIT ${limit}
 SQL
-    return $sql;
+
+    my $sql_wrapper = << "SQL";
+SELECT
+  foo.*,
+  g.title AS group_title
+FROM (${sql}) foo
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
+LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
+SQL
+
+    return $sql_wrapper;
 }
 
 1;

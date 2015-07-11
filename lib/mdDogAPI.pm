@@ -705,5 +705,108 @@ sub clear_user_buffer {
     return $json->encode({md => $md, rows => $rows});
 }
 
+#--------------------------------------------------
+#
+#--------------------------------------------------
+sub get_doc_groups {
+    my $self = shift;
+    my $fid = $self->qParam('fid') + 0;
+
+    return unless( $fid );
+
+    my $sql = << "SQL";
+SELECT
+  g.*
+FROM
+  mddog_groups g
+LEFT OUTER JOIN mddog_doc_group dg ON g.id = dg.group_id
+WHERE
+  dg.doc_id = ${fid}
+SQL
+    my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
+      || die("SQL Error: in 'get_doc_groups'");
+    my $json = JSON->new();
+    return $json->encode($ar);
+}
+
+#--------------------------------------------------
+#
+#--------------------------------------------------
+sub search_groups{
+    my $self = shift;
+    my $search = $self->qParam('search');
+    return unless( $search );
+
+    my $sql = << "SQL";
+SELECT
+  *
+FROM mddog_groups
+WHERE
+  title like '%${search}%'
+SQL
+    my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}});
+    $ary = "[]" unless( $ary );
+    my $json = JSON->new();
+    return $json->encode($ary);
+}
+
+#--------------------------------------------------
+#
+#--------------------------------------------------
+sub add_groups {
+    my $self = shift;
+    my @groups = $self->qParam('groups[]');
+#    return unless( @groups );
+    my $fid    = $self->qParam('fid') + 0;
+    my $uid    = $self->{s}->param('login');
+    my $g_type   = 1;
+
+    #グループの登録
+    for (@groups) {
+      my $groupname = $_;
+      my $sql_check = "SELECT * FROM mddog_groups WHERE title = '${groupname}'";
+      if( $self->{dbh}->selectrow_arrayref($sql_check) ){
+        next;
+      }
+      my $sql_insert = << "SQL";
+INSERT INTO mddog_groups
+(title, type, created_by, created_at, updated_at)
+ VALUES
+('${groupname}', ${g_type}, ${uid}, now(), now() )
+SQL
+      $self->{dbh}->do($sql_insert);
+    }
+
+    #ドキュメントのグループ設定付け（一旦消してから再登録）
+    my $sql_groupdelete = "DELETE FROM mddog_doc_group WHERE doc_id = ${fid}";
+    $self->{dbh}->do($sql_groupdelete);
+
+    if( @groups ){
+      my $values = "";
+      for( @groups ){
+        $values .= ',' if ( $values =~ m/^\(.*\).*/ );
+        $values .= "(${fid}, (select id from mddog_groups where title = '$_'))";
+      }
+      my $sql_groupadd = << "SQL";
+INSERT INTO mddog_doc_group(doc_id, group_id) VALUES ${values}
+SQL
+      $self->{dbh}->do($sql_groupadd);
+    }
+
+    # 不使用のグループは削除
+    my $sql_clean = << "SQL";
+DELETE FROM mddog_groups
+WHERE id not in (
+  SELECT group_id FROM mddog_doc_group GROUP BY group_id
+)
+SQL
+    $self->{dbh}->do($sql_clean);
+
+    $self->{dbh}->commit();
+
+    my $length = @groups;
+    my $json = JSON->new();
+    return $json->encode(\@groups);
+}
 
 1;

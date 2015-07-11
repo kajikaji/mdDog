@@ -2,7 +2,7 @@
 requirejs.config({
 //    baseUrl: 'js/module',
     urlArgs: 'rev=20150425',
-    packages : ["modules/tableLog", "edit_buffer", "doc_setting"],
+    packages : ["modules/tableLog", "edit_buffer", "doc_setting", "doc_group"],
     paths: {
         jquery          :'modules/jquery-1.11.1.min',
         UTIL            :'modules/UTIL',
@@ -87,5 +87,11 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
     if( $('.PopupHelper').length ){
         new Popup($(this)).init();
     };
+
+    //ドキュメントグループ
+    if( $('.GroupAddCtrl').length ){
+        require(['doc_group'], function(docGroup){});
+    }
+
 });
 

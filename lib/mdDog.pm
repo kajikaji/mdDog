@@ -318,8 +318,14 @@ sub listup_documents {
     my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
        || $self->errorMessage("DB:Error",1);
     if( @$ary ){
+      my $prev_info = undef;
         foreach( @$ary ) {
             my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
+            if( $prev_info && $prev_info->{id} eq $_->{id} ){
+                push @{$prev_info->{groups}}, $_->{group_title};
+                next;
+            }
+
             my $info = {
                 id              => $_->{id},
                 doc_name        => $_->{doc_name},
@@ -335,7 +341,11 @@ sub listup_documents {
                 is_public       => $_->{is_public},
                 is_owned        => $uid && $_->{created_by}==${uid}?1:0,
             };
+            if( $_->{group_title} ){
+                push @{$info->{groups}}, $_->{group_title};
+            }
             push @infos, $info;
+            $prev_info = $info;
         }
         $self->{t}->{infos} = \@infos;
     }
@@ -369,28 +379,43 @@ SELECT
   di.*,
   du.nic_name AS nic_name,
   du.account  AS account,
-  du.mail     AS mail
+  du.mail     AS mail,
+  g.title     AS group_name
 FROM
   docx_infos di
 JOIN docx_users du
   ON di.created_by = du.id AND du.is_used = 't'
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
+LEFT OUTER JOIN mddog_groups g  ON g.id = dg.group_id
 WHERE
   di.id = $fid;
 SQL
 
-    my $ary = $self->{dbh}->selectrow_hashref($sql);
+    my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}});
 
-    if( $ary ){
-        $self->{t}->{doc_name}        = $ary->{doc_name};
-        $self->{t}->{file_name}       = $ary->{file_name};
-        $self->{t}->{created_at}      = MYUTIL::format_date2($ary->{created_at});
-        $self->{t}->{created_by}      = $ary->{nic_name};
-        $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$ary->{file_name}");
-        $self->{t}->{is_public}       = $ary->{is_public};
-        $self->{t}->{is_owned}        = $ary->{created_by} == $self->{s}->param('login')?1:0;
+    my $flg = undef;
+    foreach( @$ary ){
+        if( $flg ){
+          push @{$self->{t}->{groups}}, $_->{group_name}
+            if( $_->{group_name} );
+            next;
+        }
+
+        $self->{t}->{doc_name}        = $_->{doc_name};
+        $self->{t}->{file_name}       = $_->{file_name};
+        $self->{t}->{created_at}      = MYUTIL::format_date2($_->{created_at});
+        $self->{t}->{created_by}      = $_->{nic_name};
+        $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$_->{file_name}");
+        $self->{t}->{is_public}       = $_->{is_public};
+        $self->{t}->{is_owned}        = $_->{created_by} == $self->{s}->param('login')?1:0;
 
         my @logs = $self->{git}->get_shared_logs();
         $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
+
+        push @{$self->{t}->{groups}}, $_->{group_name}
+          if( $_->{group_name} );
+
+        $flg = $_;
     }
 
     if( $uid ){

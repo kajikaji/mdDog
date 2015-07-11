@@ -1,5 +1,8 @@
 <div class="Title">
-  <span class="Name">[% doc_name %]</span>
+  <span class="Name">
+    [%IF is_public %]<i class="Mark Round Green">P</i>[%END %]
+    [% doc_name %]
+  </span>
   <ul class="MenuIcons">
     <li [%UNLESS SUBMENU %]class="Selected"[%END %]>
       <a href="doc_history.cgi?fid=[% fid %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a>
@@ -34,7 +37,9 @@
 </div>
               
 <ul class="Tags">
-  [%IF is_public %]<li class="Public"><div>public</div></li>[%END %]
+[%FOREACH group IN groups %]
+  <li class="GroupTag"><div>[% group %]</div></li>
+[%END %]
 </ul>
 
 <div class="Description">

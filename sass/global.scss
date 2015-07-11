@@ -3,15 +3,21 @@ $orange       :#ff7f50;
 $blue         :#0000cd;
 $green        :#006400;
 $black        :#000;
+$border_color :#888;
+$link_color   :#4169e0;
 $bg_color     :#f5f5f5;
 $master_bg    :#e6e6fa;
 $local_bg     :#fffacd;
 $minimum_font :8pt;
 $subject_size :21pt;
 $left_menu_width: 180px;
-$margin-wd    :5px;
+$margin_wd    :5px;
+$doc_title_b  : 36px;
+$font_b       :36px;
+$font_m       :20px;
+$font_s       :10px;
 
-@mixin round-corner ($radius) {
+@mixin round_corner ($radius) {
   border-radius: $radius;
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
@@ -61,7 +67,7 @@ $margin-wd    :5px;
       float: left;
       top: 6px;
       left: 0;
-      @include round-corner(1px);
+      @include round_corner(1px);
     }
   }
 }
@@ -112,7 +118,7 @@ $margin-wd    :5px;
 
 @mixin markdown-set{
     padding: 10px;
-    border: 2px solid #888;
+    border: 2px solid $border_color;
     background-color: #fff;
     font-size: 14px;
     line-height: 1.2em;
@@ -146,19 +152,19 @@ $margin-wd    :5px;
         tr{
             td,th{
                 padding: 3px;
-                border-color: #555;
+                border-color: $border_color;
                 border-style: solid;
                 border-width: 1px 0 0 1px;
             }
         }
         th:last-child,td:last-child{
-            border-color: #555;
+            border-color: $border_color;
             border-style: solid;
             border-width: 1px 1px 0 1px;
         }
 
         tr:last-child td{
-            border-color: #555;
+            border-color: $border_color;
             border-style: solid;
             border-width: 1px 1px 1px 1px;
         }
@@ -180,7 +186,7 @@ $margin-wd    :5px;
         font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
         font-size: 10pt;
         line-height: 1.4em;
-        border: 1px solid #888;
+        border: 1px solid $border_color;
     }
 }
 
@@ -192,7 +198,7 @@ $margin-wd    :5px;
         width: 140px;
         font-family: 'Playfair Display', serif;
         >li{
-            @include round-corner(20px);
+            @include round_corner(20px);
 
             a{
                 position :relative;
@@ -241,7 +247,7 @@ $margin-wd    :5px;
                         height: 6px;
                         content: "";
                         position: absolute;
-                        @include round-corner(3px);
+                        @include round_corner(3px);
                         background-color: $bg_color - #111;
                         float: left;
                         left: -10px;
@@ -257,7 +263,7 @@ $margin-wd    :5px;
 }
 
 @mixin button_face {
-  @include round-corner(4px);
+  @include round_corner(4px);
   border: 1px solid #555;
   padding: 4px 6px;
   text-align: center;
@@ -272,6 +278,47 @@ $margin-wd    :5px;
     color: #333;
     font-size: 12px;
     border: 1px solid rgba(0,0,0,0.1);
+}
+
+@mixin modal_window{
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(188,188,188,0.4);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+@mixin show_center($wi, $hi){
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $wi;
+    height : $hi;
+    margin-left: 0 - ($wi / 2);
+    margin-top: 0 - ($hi / 2);
+    margin-bottom: 0;
+    margin-right: 0;
+}
+
+@mixin group_add_ctrl(){
+    padding: 0;
+    margin: 0;
+    line-height: 1.0em;
+    font-size: 14px;
+    button{
+        margin: 0;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+        color: $link_color;
+        outline: none;
+        &:hover{
+            color: $orange;
+        }
+    }
 }
 
 /*
@@ -291,7 +338,7 @@ i.Mark{
     padding: 2px 3px;
 
     &.Round{
-      @include round-corner(8px);
+      @include round_corner(8px);
     }
 
     &.Orange{
@@ -318,7 +365,7 @@ a.Button{
   border: 1px solid #000;
   padding: 5px 8px;
   vertical-align: middle;
-  @include round-corner($corner_b);
+  @include round_corner($corner_b);
   
   i{
     margin-bottom: -5px;
@@ -341,7 +388,7 @@ form{
     border: 1px solid #aaa;
     color: #555;
 
-    @include round-corner(5px);
+    @include round_corner(5px);
   }
   input[type=submit]:hover, input[type=button]:hover,button:hover{
     background-color: #f5deb3;
@@ -349,7 +396,7 @@ form{
   }
   input[type=text], input[type=password], textarea {
     font-size: 85%;
-    @include round-corner(5px);
+    @include round_corner(5px);
   }
 }
 
@@ -430,6 +477,10 @@ body > section{
     -moz-box-sizing: border-box;
     -ms-box-sizing: border-box;
   }
+
+  +section.Template{
+    display: none;
+  }
 }
 
 section.Message{
@@ -446,7 +497,7 @@ section.Message{
     margin-bottom: 5px;
     background-color: #fff;
     font-weight: bold;
-    @include round-corner(5px);
+    @include round_corner(5px);
 
     &.Info{
         color: #333;
@@ -496,7 +547,7 @@ section.Error{
     border: 3px solid #b22222;
     background-color: #ffd0db;
     padding: 10px;
-    @include round-corner($corner_b);
+    @include round_corner($corner_b);
   }
 }
 
@@ -581,7 +632,7 @@ form#docxCreate{
   padding: 10px;
   border: 3px solid #778899;
   background-color: #e6e6fa;
-  @include round-corner($corner_b);
+  @include round_corner($corner_b);
 
   > div{
     margin-bottom: 10px;
@@ -601,7 +652,7 @@ section.Gitlog, section.DocApprove{
   }
 
   .NoList{
-      padding: $margin-wd;
+      padding: $margin_wd;
       @include whiteblock();
   }
 
@@ -622,9 +673,9 @@ section.Gitlog, section.DocApprove{
 	  float: left;
 	  border-style: solid;
 	  border-width: 1px 1px 0 0;
-	  border-color: #555;
+	  border-color: $border_color;
 	  &:first-child{
-	      border-left: 1px solid #555;
+	      border-left: 1px solid $border_color;
 	  }
 	  &.Active{
 	      font-weight: bold;
@@ -719,22 +770,23 @@ section.Top{
             }
             td{
                 >.DocSubject {
-                  float:left;
                   padding: 5px;
-                  > div {
-                      &.Name {
-                          a {
-                              color: #000;//#4169e0 - #404040;
-                              font-weight: bold;
-                              &:hover{
-                                  color: $orange;//#ff6437;
-                              }
+                  @include clearfix();
+                  > div.Name {
+                      a {
+                          color: #000;//#4169e0 - #404040;
+                          font-weight: bold;
+                          &:hover{
+                              color: $orange;//#ff6437;
                           }
                       }
-                      @include clearfix();
                   }
-                  ul.Tags{
-                      clear : both;
+                  >div.DocSubInfo{
+                    .GroupAddCtrl{
+                      float: left;
+                      @include group_add_ctrl();
+                    }
+                    ul.Tags{
                       list-style: none;
                       font-size: 7px;
                       margin: 3px 0;
@@ -744,7 +796,7 @@ section.Top{
                           margin-left: 12px;
 
                           &.Public{
-                              @include nametag($orange);
+                              @include nametag($black);
                           }
                           &.Approver{
                               @include nametag($blue);
@@ -752,12 +804,13 @@ section.Top{
                           &.Editable{
                               @include nametag($green);
                           }
+                          &.GroupTag{
+                              @include nametag($orange);
+                          }
                       }
-
-                      @include clearfix();
+                    }
                   }
-
-                }
+                } // .DocSubject
                 >.DocCtrl{
                     float: right;
                     padding: 0;
@@ -784,6 +837,7 @@ section.Top{
                                 background: transparent;
                                 padding: 0;
                                 color: #f33;
+                                outline: none;
                                 &:hover{
                                     background: transparent;
                                     color: $orange;
@@ -801,6 +855,9 @@ section.Top{
                         margin-left: 20px;
                         &:first-child{
                             margin-left: 5px;
+                        }
+                        &.CreatedBy.Owned{
+                            font-weight: bold;
                         }
                     }
                     @include clearfix();
@@ -821,8 +878,12 @@ section.Top{
     }
     .DocumentCount{
     }
-  } // .top-menu
-}
+  } // .Main
+
+  +.Template{
+
+  }
+} // section.Top
 
 section.Docinfo{
   margin-bottom: 10px;
@@ -885,14 +946,24 @@ section.Docinfo{
         float: left;
         margin-left: 12px;
 
+        &.GroupAddCtrl{
+            font-size: 12px;
+            a:hover, a:link{
+                cursor: pointer;
+            }
+        }
+
         &.Public{
-            @include nametag($orange);
+            @include nametag($black);
         }
         &.Approver{
             @include nametag($blue);
         }
         &.Editable{
             @include nametag($green);
+        }
+        &.GroupTag{
+            @include nametag($orange);
         }
     }
 
@@ -948,7 +1019,7 @@ section.Docinfo{
 		font-size: 14px;
 		border: 1px solid #000;
 		padding: 4px 6px;
-		@include round-corner(5px);
+		@include round_corner(5px);
 		background-color: #fff;
 
                 >div {
@@ -1208,7 +1279,7 @@ section.OutlineEditor{
             .Tagname {
                 border: 2px solid #ff4500;
                 background-color: #f5deb3;
-                @include round-corner(3px);
+                @include round_corner(3px);
                 font-size: 9pt;
                 font-weight: bold;
                 padding: 2px 5px;
@@ -1228,14 +1299,14 @@ section.OutlineEditor{
             .InsertDivide{
                 font-size: 65%;
                 font-weight: bold;
-                @include round-corner(3px);
+                @include round_corner(3px);
             }
 
             +.Md{
                 padding: 10px;
                 border: 2px dashed #aaa;
                 margin-top:0;                
-                @include round-corner(5px);
+                @include round_corner(5px);
             }
             +ul.Md,+ol.Md{
                 padding-left: 30px;
@@ -1341,7 +1412,7 @@ section.MdBuffer{
                 >.DivideCtrl{
                     float: right;
                     border: 1px solid #aaa;
-                    @include round-corner(5px);
+                    @include round_corner(5px);
                     padding: 2px 5px 5px;
                     text-align: right;
                     .DivideBtn{
@@ -1366,7 +1437,7 @@ section.MdBuffer{
                     background-color: #b0c4de;
                     border: 3px solid #b0c4de-#111;;
                     cursor: pointer;
-                    @include round-corner(3px);
+                    @include round_corner(3px);
                 }
 
                 >.Uneditable{
@@ -1384,14 +1455,14 @@ section.MdBuffer{
                         width: 100%;
                         box-sizing: boder-box;
                         margin-bottom: 5px;
-                        @include round-corner(5px);
+                        @include round_corner(5px);
                     }
                     button{
-                        @include round-corner(3px);
+                        @include round_corner(3px);
                     }
 		            ul.ImageList{
 		                border: 1px dashed #b0c4de;
-		                @include round-corner(10px);
+		                @include round_corner(10px);
 		                margin: 5px 0 20px;
 		                padding: 10px;
 		                background-color: #e6e6fa;
@@ -1428,7 +1499,7 @@ section.MdBuffer{
         .Ctrl{
             margin-bottom: 10px;
             input[type=submit]{
-                @include round-corner(5px);
+                @include round_corner(5px);
                 background-color: #fff;
             }
         }
@@ -1481,7 +1552,7 @@ section.BufferMerge{
         padding: 10px;
         color: #eee;
         background-color: #333;
-        @include round-corner(5px);
+        @include round_corner(5px);
 
         .Ctrl{
             float: right;
@@ -1503,7 +1574,7 @@ section.BufferMerge{
                     margin-right: 5px;
                     margin-bottom: -7px;
                     border :1px solid #aaa;
-                    @include round-corner(5px);
+                    @include round_corner(5px);
                 }
                 &.Master:before{
                     background-color: $master_bg;
@@ -1520,7 +1591,7 @@ section.BufferMerge{
         margin-left: $left_menu_width;
         margin-bottom: 50px;
         border: 1px solid #555;
-        @include round-corner(5px);
+        @include round_corner(5px);
 
         >div{
           &.Master{
@@ -1535,7 +1606,7 @@ section.BufferMerge{
                 padding: 10px;
                 margin: 0;
                 background-color: #fff;
-                @include round-corner(5px);
+                @include round_corner(5px);
                 li{
                     &.Local{
                         background-color: $local_bg;
@@ -1560,7 +1631,7 @@ section.BufferMerge{
                             margin-right: 10px;
                             .Mark{
                                 font-size: 8px;
-                                @include round-corner(10px);
+                                @include round_corner(10px);
                                 background-color: #000;
                                 color: #fff;
                                 padding: 3px 5px;
@@ -1614,7 +1685,7 @@ section.BufferLog{
   .Document{
     background-color: #fff;
     border: 1px solid #888;
-    @include round-corner(10px);
+    @include round_corner(10px);
 
     padding: 15px;
     margin-bottom: 30px;
@@ -1692,7 +1763,7 @@ section.BufferLog{
     padding: 20px;
     border: 1px solid #000;
     width: 50%;
-    @include round-corner(10px);
+    @include round_corner(10px);
   }
 
   form.MdBufferFix, form.ResetBuffer{
@@ -1719,7 +1790,7 @@ section.BufferLog{
             border: 1px solid #aaa;
             color: #555;
 
-            @include round-corner(3px);
+            @include round_corner(3px);
         }
         input[type=submit]:hover, a.Btn:hover{
             background-color: #f5deb3;
@@ -1795,15 +1866,9 @@ section.BufferLog{
 }
 
 .EditDialog{
-  position: fixed;
-  top: 0;
-  left: 0;
   padding: 50px 40px;
   margin: 0;
-  background-color: rgba(188,188,188,0.4);
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
+  @include modal_window();
 
   .EditLogCommentForm{
     color: #000;
@@ -1811,7 +1876,7 @@ section.BufferLog{
     padding: 20px;
     border: 1px solid #000;
     width: 50%;
-    @include round-corner(10px);
+    @include round_corner(10px);
 
     h3{
         margin-top: 0;
@@ -1838,7 +1903,7 @@ section.BufferLog{
             border: 1px solid #aaa;
             color: #555;
 
-            @include round-corner(3px);
+            @include round_corner(3px);
         }
         input[type=submit]:hover, a.Btn:hover{
             background-color: #f5deb3;
@@ -1847,4 +1912,68 @@ section.BufferLog{
         @include clearfix();
     }
   }
+}
+
+.GroupCtrlWindow{
+    @include modal_window();
+    .Modal{
+        background-color: #fff;
+        border: 1px solid $border_color;
+        padding: $margin_wd * 2;
+        @include show_center(600px, 400px);
+        @include round_corner(10px);
+
+        .DocName{
+            font-size: $doc_title_b;
+            font-weight: bold;
+            margin-bottom: $margin_wd * 2;
+            border-bottom: 1px solid $border_color;
+        }
+        .GroupInfo{
+            margin-bottom: $margin_wd * 4;
+
+            .InputCandi{
+                position: relative;
+                input.GroupName{
+                    height: 18px;
+                    padding: 0;
+                    margin: 0;
+                    font-size: 12px;
+                    line-height: 1.0em;
+                }
+                select.GroupCandidateList{
+                    position: absolute;
+                    left: 0;
+                    top: 16px;
+                    border: none;
+                    background-color: transparent;
+
+                    -moz-appearance: none;
+                    -webkit-appearance: none;
+                    appearance: none;
+                    border-radius: 0;
+
+                    option.Default{
+                        display: none;
+                    }
+                    option.Dynamic{
+                        border-width: 0 1px 0 1px;
+                        border-style:  solid;
+                        border-color: $border_color;
+                        background-color: #fff;
+                    }
+                }
+            }
+        }
+        .SubTitle{
+            font-size: $font_m;
+            font-weight: bold;
+        }
+        ul.GroupList{
+            margin-bottom: $margin_wd * 4;
+            li{
+                border-bottom: 1px dashed $border_color;
+            }
+        }
+    }
 }

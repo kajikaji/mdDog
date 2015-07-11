@@ -146,6 +146,8 @@ body > section > h1, body > section > h2, body > section > h3, body > section > 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box; }
+body > section + section.Template {
+  display: none; }
 
 section.Message {
   margin-bottom: 20px;
@@ -315,9 +317,9 @@ section.Gitlog, section.DocApprove {
       float: left;
       border-style: solid;
       border-width: 1px 1px 0 0;
-      border-color: #555; }
+      border-color: #888; }
       section.Gitlog ul.BufferList li:first-child, section.DocApprove ul.BufferList li:first-child {
-        border-left: 1px solid #555; }
+        border-left: 1px solid #888; }
       section.Gitlog ul.BufferList li.Active, section.DocApprove ul.BufferList li.Active {
         font-weight: bold; }
         section.Gitlog ul.BufferList li.Active a, section.DocApprove ul.BufferList li.Active a {
@@ -400,50 +402,63 @@ section.Top .Main {
       section.Top .Main table.DocList tr.Nonactive.Deleted {
         background-color: #aaa; }
     section.Top .Main table.DocList tr td > .DocSubject {
-      float: left;
       padding: 5px; }
+      section.Top .Main table.DocList tr td > .DocSubject:after, section.Top .Main table.DocList tr td > .DocSubject:before {
+        display: table;
+        content: "";
+        line-height: 0; }
+      section.Top .Main table.DocList tr td > .DocSubject:after {
+        clear: both; }
       section.Top .Main table.DocList tr td > .DocSubject > div.Name a {
         color: #000;
         font-weight: bold; }
         section.Top .Main table.DocList tr td > .DocSubject > div.Name a:hover {
           color: #ff7f50; }
-      section.Top .Main table.DocList tr td > .DocSubject > div:after, section.Top .Main table.DocList tr td > .DocSubject > div:before {
-        display: table;
-        content: "";
-        line-height: 0; }
-      section.Top .Main table.DocList tr td > .DocSubject > div:after {
-        clear: both; }
-      section.Top .Main table.DocList tr td > .DocSubject ul.Tags {
-        clear: both;
+      section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo .GroupAddCtrl {
+        float: left;
+        padding: 0;
+        margin: 0;
+        line-height: 1.0em;
+        font-size: 14px; }
+        section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo .GroupAddCtrl button {
+          margin: 0;
+          padding: 0;
+          border: none;
+          cursor: pointer;
+          color: #4169e0;
+          outline: none; }
+          section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo .GroupAddCtrl button:hover {
+            color: #ff7f50; }
+      section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags {
         list-style: none;
         font-size: 7px;
         margin: 3px 0;
         height: 14px; }
-        section.Top .Main table.DocList tr td > .DocSubject ul.Tags li {
+        section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li {
           float: left;
           margin-left: 12px; }
-          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public {
+          section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Public {
             position: relative; }
-            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div {
+            section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Public div {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
-              background-color: #ff7f50;
+              background-color: #000;
               border-top-right-radius: 3px;
               -webkit-border-top-right-radius: 3px;
               -moz-border-top-right-radius: 3px;
               border-bottom-right-radius: 3px;
               -webkit-border-bottom-right-radius: 3px;
               -moz-border-bottom-right-radius: 3px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div:before {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Public div:before {
                 content: "";
                 width: 0;
                 height: 0;
                 position: absolute;
                 border: 7px solid transparent;
-                border-right: 7px solid #ff7f50;
+                border-right: 7px solid #000;
                 left: -14px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Public div:after {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Public div:after {
                 content: "";
                 position: absolute;
                 width: 2px;
@@ -455,9 +470,9 @@ section.Top .Main {
                 border-radius: 1px;
                 -webkit-border-radius: 1px;
                 -moz-border-radius: 1px; }
-          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver {
+          section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Approver {
             position: relative; }
-            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div {
+            section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Approver div {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
@@ -468,7 +483,7 @@ section.Top .Main {
               border-bottom-right-radius: 3px;
               -webkit-border-bottom-right-radius: 3px;
               -moz-border-bottom-right-radius: 3px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div:before {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Approver div:before {
                 content: "";
                 width: 0;
                 height: 0;
@@ -476,7 +491,7 @@ section.Top .Main {
                 border: 7px solid transparent;
                 border-right: 7px solid #0000cd;
                 left: -14px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Approver div:after {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Approver div:after {
                 content: "";
                 position: absolute;
                 width: 2px;
@@ -488,9 +503,9 @@ section.Top .Main {
                 border-radius: 1px;
                 -webkit-border-radius: 1px;
                 -moz-border-radius: 1px; }
-          section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable {
+          section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Editable {
             position: relative; }
-            section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div {
+            section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Editable div {
               padding: 0 5px 0 7px;
               height: 14px;
               color: #fff;
@@ -501,7 +516,7 @@ section.Top .Main {
               border-bottom-right-radius: 3px;
               -webkit-border-bottom-right-radius: 3px;
               -moz-border-bottom-right-radius: 3px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div:before {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Editable div:before {
                 content: "";
                 width: 0;
                 height: 0;
@@ -509,7 +524,7 @@ section.Top .Main {
                 border: 7px solid transparent;
                 border-right: 7px solid #006400;
                 left: -14px; }
-              section.Top .Main table.DocList tr td > .DocSubject ul.Tags li.Editable div:after {
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.Editable div:after {
                 content: "";
                 position: absolute;
                 width: 2px;
@@ -521,12 +536,39 @@ section.Top .Main {
                 border-radius: 1px;
                 -webkit-border-radius: 1px;
                 -moz-border-radius: 1px; }
-        section.Top .Main table.DocList tr td > .DocSubject ul.Tags:after, section.Top .Main table.DocList tr td > .DocSubject ul.Tags:before {
-          display: table;
-          content: "";
-          line-height: 0; }
-        section.Top .Main table.DocList tr td > .DocSubject ul.Tags:after {
-          clear: both; }
+          section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.GroupTag {
+            position: relative; }
+            section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.GroupTag div {
+              padding: 0 5px 0 7px;
+              height: 14px;
+              color: #fff;
+              background-color: #ff7f50;
+              border-top-right-radius: 3px;
+              -webkit-border-top-right-radius: 3px;
+              -moz-border-top-right-radius: 3px;
+              border-bottom-right-radius: 3px;
+              -webkit-border-bottom-right-radius: 3px;
+              -moz-border-bottom-right-radius: 3px; }
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.GroupTag div:before {
+                content: "";
+                width: 0;
+                height: 0;
+                position: absolute;
+                border: 7px solid transparent;
+                border-right: 7px solid #ff7f50;
+                left: -14px; }
+              section.Top .Main table.DocList tr td > .DocSubject > div.DocSubInfo ul.Tags li.GroupTag div:after {
+                content: "";
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background-color: #fff;
+                float: left;
+                top: 6px;
+                left: 0;
+                border-radius: 1px;
+                -webkit-border-radius: 1px;
+                -moz-border-radius: 1px; }
     section.Top .Main table.DocList tr td > .DocCtrl {
       float: right;
       padding: 0;
@@ -547,7 +589,8 @@ section.Top .Main {
             border: none;
             background: transparent;
             padding: 0;
-            color: #f33; }
+            color: #f33;
+            outline: none; }
             section.Top .Main table.DocList tr td > .DocCtrl li form.Warn button:hover {
               background: transparent;
               color: #ff7f50; }
@@ -560,6 +603,8 @@ section.Top .Main {
         margin-left: 20px; }
         section.Top .Main table.DocList tr td .DocDetail div:first-child {
           margin-left: 5px; }
+        section.Top .Main table.DocList tr td .DocDetail div.CreatedBy.Owned {
+          font-weight: bold; }
       section.Top .Main table.DocList tr td .DocDetail:after, section.Top .Main table.DocList tr td .DocDetail:before {
         display: table;
         content: "";
@@ -633,13 +678,17 @@ section.Docinfo {
     section.Docinfo ul.Tags li {
       float: left;
       margin-left: 12px; }
+      section.Docinfo ul.Tags li.GroupAddCtrl {
+        font-size: 12px; }
+        section.Docinfo ul.Tags li.GroupAddCtrl a:hover, section.Docinfo ul.Tags li.GroupAddCtrl a:link {
+          cursor: pointer; }
       section.Docinfo ul.Tags li.Public {
         position: relative; }
         section.Docinfo ul.Tags li.Public div {
           padding: 0 5px 0 7px;
           height: 14px;
           color: #fff;
-          background-color: #ff7f50;
+          background-color: #000;
           border-top-right-radius: 3px;
           -webkit-border-top-right-radius: 3px;
           -moz-border-top-right-radius: 3px;
@@ -652,7 +701,7 @@ section.Docinfo {
             height: 0;
             position: absolute;
             border: 7px solid transparent;
-            border-right: 7px solid #ff7f50;
+            border-right: 7px solid #000;
             left: -14px; }
           section.Docinfo ul.Tags li.Public div:after {
             content: "";
@@ -721,6 +770,39 @@ section.Docinfo {
             border-right: 7px solid #006400;
             left: -14px; }
           section.Docinfo ul.Tags li.Editable div:after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background-color: #fff;
+            float: left;
+            top: 6px;
+            left: 0;
+            border-radius: 1px;
+            -webkit-border-radius: 1px;
+            -moz-border-radius: 1px; }
+      section.Docinfo ul.Tags li.GroupTag {
+        position: relative; }
+        section.Docinfo ul.Tags li.GroupTag div {
+          padding: 0 5px 0 7px;
+          height: 14px;
+          color: #fff;
+          background-color: #ff7f50;
+          border-top-right-radius: 3px;
+          -webkit-border-top-right-radius: 3px;
+          -moz-border-top-right-radius: 3px;
+          border-bottom-right-radius: 3px;
+          -webkit-border-bottom-right-radius: 3px;
+          -moz-border-bottom-right-radius: 3px; }
+          section.Docinfo ul.Tags li.GroupTag div:before {
+            content: "";
+            width: 0;
+            height: 0;
+            position: absolute;
+            border: 7px solid transparent;
+            border-right: 7px solid #ff7f50;
+            left: -14px; }
+          section.Docinfo ul.Tags li.GroupTag div:after {
             content: "";
             position: absolute;
             width: 2px;
@@ -993,15 +1075,15 @@ section.Outline {
       font-size: 85%; }
     section.Outline .Document table tr td, section.Outline .Document table tr th {
       padding: 3px;
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 0 0 1px; }
     section.Outline .Document table th:last-child, section.Outline .Document table td:last-child {
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 1px 0 1px; }
     section.Outline .Document table tr:last-child td {
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 1px 1px 1px; }
     section.Outline .Document blockquote {
@@ -1441,15 +1523,15 @@ section.MdBuffer .BufferEdit {
       font-size: 85%; }
     section.MdBuffer .BufferEdit .Document table tr td, section.MdBuffer .BufferEdit .Document table tr th {
       padding: 3px;
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 0 0 1px; }
     section.MdBuffer .BufferEdit .Document table th:last-child, section.MdBuffer .BufferEdit .Document table td:last-child {
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 1px 0 1px; }
     section.MdBuffer .BufferEdit .Document table tr:last-child td {
-      border-color: #555;
+      border-color: #888;
       border-style: solid;
       border-width: 1px 1px 1px 1px; }
     section.MdBuffer .BufferEdit .Document blockquote {
@@ -1789,15 +1871,15 @@ section.BufferLog .GitLog {
         font-size: 85%; }
       .RevisionViewerDialog .Document .Body table tr td, .RevisionViewerDialog .Document .Body table tr th, .DiffViewerDialog .Document .Body table tr td, .DiffViewerDialog .Document .Body table tr th {
         padding: 3px;
-        border-color: #555;
+        border-color: #888;
         border-style: solid;
         border-width: 1px 0 0 1px; }
       .RevisionViewerDialog .Document .Body table th:last-child, .RevisionViewerDialog .Document .Body table td:last-child, .DiffViewerDialog .Document .Body table th:last-child, .DiffViewerDialog .Document .Body table td:last-child {
-        border-color: #555;
+        border-color: #888;
         border-style: solid;
         border-width: 1px 1px 0 1px; }
       .RevisionViewerDialog .Document .Body table tr:last-child td, .DiffViewerDialog .Document .Body table tr:last-child td {
-        border-color: #555;
+        border-color: #888;
         border-style: solid;
         border-width: 1px 1px 1px 1px; }
       .RevisionViewerDialog .Document .Body blockquote, .DiffViewerDialog .Document .Body blockquote {
@@ -1946,15 +2028,16 @@ section.BufferLog .GitLog {
       color: #000; }
 
 .EditDialog {
+  padding: 50px 40px;
+  margin: 0;
   position: fixed;
   top: 0;
   left: 0;
-  padding: 50px 40px;
-  margin: 0;
   background-color: rgba(188, 188, 188, 0.4);
   width: 100%;
   height: 100%;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  z-index: 100; }
   .EditDialog .EditLogCommentForm {
     color: #000;
     background-color: #fff;
@@ -1996,5 +2079,70 @@ section.BufferLog .GitLog {
       line-height: 0; }
     .EditDialog .EditLogCommentForm .Ctrl:after {
       clear: both; }
+
+.GroupCtrlWindow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(188, 188, 188, 0.4);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  z-index: 100; }
+  .GroupCtrlWindow .Modal {
+    background-color: #fff;
+    border: 1px solid #888;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 400px;
+    margin-left: -300px;
+    margin-top: -200px;
+    margin-bottom: 0;
+    margin-right: 0;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px; }
+    .GroupCtrlWindow .Modal .DocName {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #888; }
+    .GroupCtrlWindow .Modal .GroupInfo {
+      margin-bottom: 20px; }
+      .GroupCtrlWindow .Modal .GroupInfo .InputCandi {
+        position: relative; }
+        .GroupCtrlWindow .Modal .GroupInfo .InputCandi input.GroupName {
+          height: 18px;
+          padding: 0;
+          margin: 0;
+          font-size: 12px;
+          line-height: 1.0em; }
+        .GroupCtrlWindow .Modal .GroupInfo .InputCandi select.GroupCandidateList {
+          position: absolute;
+          left: 0;
+          top: 16px;
+          border: none;
+          background-color: transparent;
+          -moz-appearance: none;
+          -webkit-appearance: none;
+          appearance: none;
+          border-radius: 0; }
+          .GroupCtrlWindow .Modal .GroupInfo .InputCandi select.GroupCandidateList option.Default {
+            display: none; }
+          .GroupCtrlWindow .Modal .GroupInfo .InputCandi select.GroupCandidateList option.Dynamic {
+            border-width: 0 1px 0 1px;
+            border-style: solid;
+            border-color: #888;
+            background-color: #fff; }
+    .GroupCtrlWindow .Modal .SubTitle {
+      font-size: 20px;
+      font-weight: bold; }
+    .GroupCtrlWindow .Modal ul.GroupList {
+      margin-bottom: 20px; }
+      .GroupCtrlWindow .Modal ul.GroupList li {
+        border-bottom: 1px dashed #888; }
 
 /*# sourceMappingURL=global.css.map */
