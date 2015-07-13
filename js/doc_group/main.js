@@ -2,7 +2,7 @@
 
 require.config({
     paths : {
-        formWindow : 'doc_group/formWindow'
+        formWindow : 'doc_group/formWindow',
     },
     shim  : {
     }

@@ -708,6 +708,26 @@ sub clear_user_buffer {
 #--------------------------------------------------
 #
 #--------------------------------------------------
+sub get_groups {
+    my $self = shift;
+
+    if( $self->qParam('fid') ){
+      return $self->get_doc_groups();
+    }
+
+    my $sql = << "SQL";
+SELECT * FROM mddog_groups ORDER BY title
+SQL
+
+    my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
+      || die("SQL Error: in 'get_groups' $sql");
+    my $json = JSON->new();
+    return $json->encode($ar);
+}
+
+#--------------------------------------------------
+#
+#--------------------------------------------------
 sub get_doc_groups {
     my $self = shift;
     my $fid = $self->qParam('fid') + 0;

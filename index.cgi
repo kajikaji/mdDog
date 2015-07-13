@@ -38,6 +38,7 @@ if($dog->qParam('unuse')){
 }
 
 $dog->listup_documents();
+$dog->listup_groups();
 
 $dog->print_page();
 exit();

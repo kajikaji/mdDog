@@ -388,6 +388,17 @@ section.Top .Main {
     section.Top .Main .Subject .Menu {
       float: right;
       font-family: 'Playfair Display', serif; }
+  section.Top .Main .SearchCtrl {
+    margin-bottom: 10px; }
+    section.Top .Main .SearchCtrl .Label {
+      font-size: 10px;
+      font-weigth: bold; }
+    section.Top .Main .SearchCtrl:after, section.Top .Main .SearchCtrl:before {
+      display: table;
+      content: "";
+      line-height: 0; }
+    section.Top .Main .SearchCtrl:after {
+      clear: both; }
   section.Top .Main ul.DocFilter {
     list-style: none;
     font-size: 8pt; }

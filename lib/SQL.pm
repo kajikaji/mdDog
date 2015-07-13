@@ -41,7 +41,7 @@ SQL
 }
 
 sub list_for_index {
-    my ($uid, $style, $offset, $limit) = @_;
+    my ($uid, $style, $offset, $limit, $group) = @_;
 
     my $sql = document_list($uid, $style);
     $sql .= << "SQL";
@@ -59,6 +59,13 @@ LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
 LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
 SQL
 
+    if( $group ){
+      $sql_wrapper .= << "SQL";
+WHERE
+  g.id = ${group}
+SQL
+    }
+
     return $sql_wrapper;
 }
 
@@ -74,13 +81,14 @@ FROM
 JOIN docx_users du ON du.id = di.created_by
 WHERE
   di.deleted_at is null
+  and di.is_used = true
   and di.is_public = true
 SQL
     return $sql;
 }
 
 sub list_for_index_without_login{
-    my ($offset, $limit) = @_;
+    my ($offset, $limit, $group) = @_;
     my $sql = document_list_without_login();
     $sql .= <<"SQL";
 ORDER BY
@@ -96,6 +104,13 @@ FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
 LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
 SQL
+
+    if( $group ){
+      $sql_wrapper .= << "SQL";
+WHERE
+  g.id = ${group}
+SQL
+    }
 
     return $sql_wrapper;
 }

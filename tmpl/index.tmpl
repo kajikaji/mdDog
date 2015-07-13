@@ -14,7 +14,15 @@
     </div>
   [% END %]
   </div>
-
+  <div class="SearchCtrl">
+    <span class="Label">グループ検索</span>
+    <select class="GroupSelect" id="groupSelect">
+      <option class="Default" value=0>---</option>
+      [%FOREACH group IN groups %]
+      <option class="DocGroup" value="[% group.id %]" [%IF group.selected %]selected[%END %]>[% group.title %]</option>
+      [%END %]
+    </select>
+  </div>
     [%IF login %]
     <ul class="DocFilter">
       <li>[%UNLESS style %]一覧[%ELSE %]<a href="?page=0&style=">一覧</a>[%END %]</li>

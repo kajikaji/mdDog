@@ -14,7 +14,8 @@ requirejs.config({
         userManager     :'modules/userManager',
         leftMenu        :'modules/leftMenu',
         outlineViewer   :'modules/outlineViewer',
-        popupHelper     :'modules/popupHelper'
+        popupHelper     :'modules/popupHelper',
+        searchGroup     :'modules/searchGroup',
     },
     shim: {
         'mdOutline': {
@@ -39,7 +40,10 @@ requirejs.config({
             deps: [
                 'jquery'
             ]
-        }
+        },
+        'searchGroup' : {
+            deps: [ 'jquery', 'UTIL' ]
+        },
     }
 });
 
@@ -93,5 +97,10 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
         require(['doc_group'], function(docGroup){});
     }
 
+    if ( $('#groupSelect').length ){
+        require(['searchGroup'], function(SearchGroup){
+            new SearchGroup($('#groupSelect')).init();
+        });
+    }
 });
 

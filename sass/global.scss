@@ -745,7 +745,16 @@ section.Top{
         font-family: 'Playfair Display', serif;
       }
 
-    }
+    } // .Subject
+
+    .SearchCtrl{
+        margin-bottom: $margin_wd * 2;
+        .Label{
+            font-size: $font_s;
+            font-weigth: bold;
+        }
+        @include clearfix();
+    } // .SearchCtrl
 
     ul.DocFilter{
       list-style: none;

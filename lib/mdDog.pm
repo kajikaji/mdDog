@@ -302,16 +302,18 @@ sub listup_documents {
         }
     }
     my $offset = $page * $self->{paging_top};
+    my $group  = $self->qParam("group");
+
     my ($sql, $sql_cnt);
     my @infos;
 
 
     if( $uid ){
-        $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top});
+        $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list($uid, $style);
     }else{
         #ログインなし
-        $sql = SQL::list_for_index_without_login($offset, $self->{paging_top});
+        $sql = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list_without_login();
     }
 
@@ -1314,6 +1316,28 @@ SQL
 
     $self->dbCommit();
     return 1;
+}
+
+sub listup_groups {
+    my $self = shift;
+
+    my $sql = << "SQL";
+SELECT * FROM mddog_groups ORDER BY title
+SQL
+
+    my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
+      || errorMessage("SQL Error: listup_groups");
+
+    if( $self->qParam('group') ){
+        for(@$ar){
+            if( $_->{id} == $self->qParam('group') ){
+              $_->{selected} = 1;
+              last;
+            }
+        }
+    }
+
+    $self->{t}->{groups} = $ar;
 }
 
 1;
