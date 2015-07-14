@@ -74,6 +74,10 @@ sub setup_config {
         $self->add_cookie('INDEXSTYLE', $self->qParam('style'), "+ 2hour");
     }
 
+    if( join(' ', $self->{q}->param()) =~ m/.*group.*/ ){
+        $self->add_cookie('INDEXGROUP', $self->qParam('group'), "+ 2hour");
+    }
+
     $self->SUPER::setup_config();
 }
 
@@ -285,24 +289,10 @@ sub listup_documents {
     my ($self) = @_;
 
     my $uid    = $self->{s}->param("login");
-    my $page   = $self->qParam("page");
-    unless( join(' ', $self->{q}->param()) =~ m/.*page.*/ ){
-        if( $self->{q}->cookie('INDEXPAGE') ){
-            $page = $self->{q}->cookie('INDEXPAGE');
-        }else{
-            $page = 0;
-        }
-    }
-    my $style  = $self->qParam("style");
-    unless( join(' ', $self->{q}->param()) =~ m/.*style.*/ ){
-        if( $self->{q}->cookie('INDEXSTYLE') ){
-            $style = $self->{q}->cookie('INDEXSTYLE');
-        }else{
-            $style = 0;
-        }
-    }
+    my $page   = $self->param_or_cookie("index", "page");
+    my $style  = $self->param_or_cookie("index", "style");
+    my $group  = $self->param_or_cookie("index", "group");
     my $offset = $page * $self->{paging_top};
-    my $group  = $self->qParam("group");
 
     my ($sql, $sql_cnt);
     my @infos;
@@ -862,11 +852,9 @@ sub set_master_outline{
     my $divides = $self->{outline}->get_divides();
     my $rawdata = paragraphs($data);
 
-    #  my ($rowdata, @partsAry) = $self->split_for_md($data);
     my ($i, $j) = (0, 0);
     my $docs;
     my $dat = undef;
-    #  foreach (@partsAry) {
     for ( @$rawdata ) {
         if ($divides) {
             #改ページ
@@ -893,10 +881,6 @@ sub set_master_outline{
             $line =~ s#<h3.*>(.*)</h3>#$1#;
             push @contents, {level => 3, line => $line, num => $j};
         }
-#        elsif ( $line =~ m/<h4.*>/ ) {
-#            $line =~ s#<h4.*>(.*)</h4>#\1#;
-#            push @contents, {level => 4, line => $line, num => $j};
-#        }
 
         $j++;
     }
@@ -1208,6 +1192,10 @@ sub get_user_document {
     return $document;
 }
 
+#-------------------------------------------------
+#
+#
+#-------------------------------------------------
 sub count_paragraph {
     my ($self, $data) = @_;
 
@@ -1219,87 +1207,10 @@ sub count_paragraph {
     }
 }
 
-############################################################
-#ドキュメントデータを構造解析する
-# @param1 ドキュメントデータ
-# @param2 要素番号
+#-------------------------------------------------
 #
-sub split_for_md {
-  my $self       = shift;
-  my $document   = shift;
-  my $index      = shift;
-
-  my @partsAry;
-  my $parts      = "";
-  my $rowdata    = "";
-  my $block      = 0;
-  my $blockquote = 0;
-  my $quote      = 0;
-  my $cnt        = $index?$index:0;
-
-  foreach (split(/\n/, $document)) {
-    if ( $blockquote && $_ !~ m/^> .*/ ) {
-      $blockquote = 0;
-      push @partsAry, $parts;
-      $rowdata .= "${parts}</div>";
-      $parts    = "";
-      $cnt++;
-    }
-
-    if ( !$block && !$blockquote ) {
-      if ( $_ =~ m/^.+$/ ) {
-          unless( $_ =~ m/^> .+/ ){
-            $block      = 1;
-          }else{
-            $blockquote = 1;
-          }
-          $rowdata .= "<div id=\"elm${cnt}\" class=\"Elm\">";
-      }
-    } else {
-      if ( $_ =~ m/^\s*$/ ) {
-        $blockquote = 0;
-        $block      = 0;
-        push @partsAry, $parts;
-        $rowdata   .= "${parts}</div>";
-        $parts      = "";
-        $cnt++;
-      } elsif ( !$blockquote && $_ =~ m/^> .*/) {
-        $blockquote = 1;
-        $block      = 0;
-        push @partsAry, $parts;
-        $rowdata   .= "${parts}</div>";
-        $parts      = "";
-        $cnt++;
-        $rowdata   .= "<div id=\"elm${cnt}\" class=\"Elm\">";
-      } elsif ( $block && $_ =~ m/^(====|----|#+).*/ ) {
-        push @partsAry, $parts;
-        $rowdata   .= "${parts}</div>";
-        $parts      = "";
-        $cnt++;
-        $rowdata   .= "<div id=\"elm${cnt}\" class=\"Elm\">";
-      }
-    }
-
-    if ($block || $blockquote || $quote) {
-      $parts       .= $_ . "\n";
-    }
-
-    if ( $block && $_ =~ m/^(====|----|#+).*/ ) {
-      $block = 0;
-      push @partsAry, $parts;
-      $rowdata     .= "${parts}</div>";
-      $parts        = "";
-      $cnt++;
-    }
-  }
-  if ($block || $blockquote || $quote) {
-    push @partsAry, $parts;
-    $rowdata       .= "${parts}</div>";
-  }
-
-  return ($rowdata, @partsAry);
-}
-
+#
+#-------------------------------------------------
 sub change_doc_name {
     my $self     = shift;
     my $fid      = $self->qParam('fid');
@@ -1318,19 +1229,23 @@ SQL
     return 1;
 }
 
+#-------------------------------------------------
+#
+#
+#-------------------------------------------------
 sub listup_groups {
     my $self = shift;
 
     my $sql = << "SQL";
 SELECT * FROM mddog_groups ORDER BY title
 SQL
-
     my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
       || errorMessage("SQL Error: listup_groups");
 
-    if( $self->qParam('group') ){
+    my $group = $self->param_or_cookie("index", "group");
+    if( $group ){
         for(@$ar){
-            if( $_->{id} == $self->qParam('group') ){
+            if( $_->{id} == $group ){
               $_->{selected} = 1;
               last;
             }
@@ -1338,6 +1253,25 @@ SQL
     }
 
     $self->{t}->{groups} = $ar;
+}
+
+#-------------------------------------------------
+#
+#
+#-------------------------------------------------
+sub param_or_cookie{
+    my ($self, $prefix, $key) = @_;
+
+    my $val = $self->qParam($key);
+    unless( join(' ', $self->{q}->param()) =~ m/.*${key}.*/ ){
+        my $ckey = uc "${prefix}${key}";
+        if( $self->{q}->cookie(${ckey}) ){
+            $val = $self->{q}->cookie(${ckey});
+        }else{
+            $val = undef;
+        }
+    }
+    return $val;
 }
 
 1;
