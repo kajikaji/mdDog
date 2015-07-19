@@ -3,7 +3,8 @@
  * マークダウンエディタの制御クラス
  */
 
-define(function(){
+define(['editBufferParagraphCtrl', 'editBufferDivideCtrl'],
+       function(ParagraphCtrl, DivideCtrl){
     var editor = function(){
         this.mdDoc     = $('.BufferEdit.Markdown .Document');
         this.fid       = getParam('fid');
@@ -12,30 +13,27 @@ define(function(){
 
     editor.prototype = {
         init: function() {
-            require(['editBufferParagraphCtrl', 'editBufferDivideCtrl'], 
-                    $.proxy(function(ParagraphCtrl, DivideCtrl){
-                    var cnt = 0;
-                    this.mdDoc.children().each($.proxy(function(i, elm){
-                        var paragraph = new ParagraphCtrl($(elm), this.fid);
-                        paragraph.init();
-                        var mdObj = paragraph.getMdParagraph();
-                        $(mdObj).attr("id", "md" + i);
-                        $(mdObj).find('.Raw').text($('#raw' + i).text());
-                        $('#raw' + i).remove();
-                        this.mdDoc.append(mdObj);
-                        cnt++;
-                    }, this));
-                    if( cnt == 0 ){
-                        var paragraph = new ParagraphCtrl($('<div>').addClass('Blank'), this.fid);
-                        paragraph.init();
-                        var mdObj = paragraph.getMdParagraph();
-                        $(mdObj).attr("id", "md-1");
-
-                        this.mdDoc.append(mdObj);
-                    }
-
-                    new DivideCtrl().init();
+            var cnt = 0;
+            this.mdDoc.children().each($.proxy(function(i, elm){
+                var paragraph = new ParagraphCtrl($(elm), this.fid);
+                paragraph.init();
+                var mdObj = paragraph.getMdParagraph();
+                $(mdObj).attr("id", "md" + i);
+                $(mdObj).find('.Raw').text($('#raw' + i).text());
+                $('#raw' + i).remove();
+                this.mdDoc.append(mdObj);
+                cnt++;
             }, this));
+            if( cnt == 0 ){
+                var paragraph = new ParagraphCtrl($('<div>').addClass('Blank'), this.fid);
+                paragraph.init();
+                var mdObj = paragraph.getMdParagraph();
+                $(mdObj).attr("id", "md-1");
+
+                this.mdDoc.append(mdObj);
+            }
+
+            new DivideCtrl().init();
         },
         setClearBtn: function(btnObj){
             btnObj.on('click', $.proxy(this.clearAction, this));
