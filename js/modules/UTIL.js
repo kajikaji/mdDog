@@ -17,3 +17,4 @@ function getParam(key) {
     }
     return null;
 }
+

@@ -15,6 +15,7 @@ require.config({
         'editBufferEditor' : {
 	        deps: [
                 'UTIL',
+                'modalLoading',
                 'editBufferDivideCtrl',
                 'editBufferParagraphCtrl'
             ]
@@ -61,13 +62,17 @@ require(['leftMenu'], function(LeftMenu){
 
     // 編集フォーム
     if( $('body > section.MdBuffer .BufferEdit').length ){
-          require(['editBufferEditor'], function(EditBufferEditor){
-              var editor = new EditBufferEditor();
-              editor.init();
-              if( $('#clearBtn').length ){
-                  editor.setClearBtn($('#clearBtn'));
-              }
-          });
+        require(['editBufferEditor', 'modalLoading'], function(EditBufferEditor, ModalLoading){
+            var loading = new ModalLoading();
+            loading.show($.proxy(function(){
+                var editor = new EditBufferEditor();
+                editor.init();
+                if( $('#clearBtn').length ){
+                    editor.setClearBtn($('#clearBtn'));
+                }
+                loading.remove();
+            }, this));
+        });
     }
 
     //mergeビュー

@@ -16,6 +16,7 @@ requirejs.config({
         outlineViewer   :'modules/outlineViewer',
         popupHelper     :'modules/popupHelper',
         searchGroup     :'modules/searchGroup',
+        modalLoading    :'modules/modalLoading',
     },
     shim: {
         'mdOutline': {
@@ -58,11 +59,14 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
 
     //アウトライン出力
     if($('body > section.Outline').length){
-        require(['mdOutline'], function(Outline){
-            new Outline().init();
-        });
-        require(['outlineViewer'], function(OutlineViewer){
-            new OutlineViewer().init();
+        require(['mdOutline', 'outlineViewer', 'modalLoading'],
+                function(Outline, OutlineViewer, ModalLoading){
+            var loading = new ModalLoading();
+            loading.show($.proxy(function(){
+                new Outline().init();
+                new OutlineViewer().init();
+                loading.remove();
+            }, this));
         });
     }
 
