@@ -56,15 +56,17 @@ sub get_data {
     } else {
         my $document = $self->get_user_document($uid, $fid);
         if ( $eid >= 0) {
-            my $ret = paragraph_raw($document, $eid);
-            $ret  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
-            $data = [{eid => ${eid}, data => ${ret}}];
+            my $raw = paragraph_raw($document, $eid);
+            my $html = paragraph_html($document, $eid);
+            $raw  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+            $html =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+            $data = [{eid => ${eid}, raw => ${raw}, html => ${html}}];
         } else {
             my $cnt = 0;
             while ( my $ret = paragraph_raw($document, $cnt) ) {
                 last if( $ret =~ m/^\n/ );
                 $ret  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
-                push @$data, { eid => ${cnt}, data => ${ret} };
+                push @$data, { eid => ${cnt}, raw => ${ret} };
                 $cnt++;
             }
         }
@@ -83,8 +85,8 @@ sub post_data {
     my $fid = $self->qParam('fid') + 0;
     my $eid = $self->qParam('eid') + 0;
     my $data = $self->qParam('data');
-    $data .= "\n" if( $data !~ m/(.*)\n$/);
-    $data .= "\n" if( $data !~ m/(.*)\n\n$/);
+    $data .= "\n" if( $data !~ m/(.*)\n*$/);
+#    $data .= "\n" if( $data !~ m/(.*)\n\n$/);
 
     my $document = $self->get_user_document($uid, $fid);
     $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
@@ -163,8 +165,10 @@ sub delete_data {
 
     $self->{git}->detach_local();
 
+    my $raw = paragraph_raw($self->get_user_document($uid, $fid), $eid);
+
     my $json = JSON->new();
-    return $json->encode({eid => ${eid}});
+    return $json->encode({eid => ${eid}, raw => $raw });
 }
 
 ############################################################

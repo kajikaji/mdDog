@@ -221,6 +221,7 @@ define(function(){
             $('#' + this.mdId).remove();
 
             if( $nextMd.length ){
+                //改ページブロックが重複すれば削る
                 if( $nextMd.hasClass('PageDivide')
                     && (this.id === 0 || divideFlg) ){
                     var pagenum = Number($nextMd.attr('id').substr(4));
@@ -228,6 +229,9 @@ define(function(){
                     $nextMd.remove();
                     $nextMd = $tmp;
                 }
+
+                //次段落とマージしていないかチェック
+                $nextMd = this.checkMergeParagraph(res, $nextMd);
 
                 //MD段落のid制御
                 this.resetTreeId($nextMd, this.id, 'md');
@@ -318,6 +322,48 @@ define(function(){
             var rawdata = $('<div>').addClass('Raw');
             var mdParagraph = $('<div>').addClass('Md').append(this.src).append(divideCtrl).append(rawdata);
             return mdParagraph;
+        },
+
+        checkMergeParagraph: function(res, obj){
+            var flg = false;
+            var nextRaw = obj.find('.Raw').text().replace(/\n+$/g, '');
+            while( obj.hasClass('Md')
+                   && nextRaw !== res.raw ){
+                flg = true;
+                var tmp = obj.next();
+                obj.remove();
+                obj = tmp;
+                if( obj.hasClass('PageDivide') ){
+                    tmp = obj.next();
+                    obj.remove();
+                    obj = tmp;
+                }
+                nextRaw = obj.find('.Raw').text().replace(/\n+$/g, '');
+            }
+            if( flg ){
+                var prevId = Number(res.eid) - 1;
+                if( prevId >= 0 ){
+                    $.ajax({
+                        url: this.api,
+                        type: 'GET',
+                        data: {
+                            fid: this.fid,
+                            eid : prevId
+                        },
+                        timeout: 5000
+                    }).done($.proxy(function(res){
+                        var prev = $('#md' + prevId);
+                        prev.find('.MdBody').remove();
+                        this.src = $(res[0].html).addClass('MdBody');
+                        prev.prepend(this.src);
+                        this.init();
+                        prev.find('.Raw').text(res[0].raw);
+                    }, this));
+
+                }
+            }
+
+            return obj;
         }
     };
 
