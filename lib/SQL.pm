@@ -1,5 +1,24 @@
 package SQL;
 
+sub document_info {
+    return << "SQL";
+SELECT
+  di.*,
+  du.nic_name AS nic_name,
+  du.account  AS account,
+  du.mail     AS mail,
+  g.title     AS group_name
+FROM
+  docx_infos di
+JOIN docx_users du
+  ON di.created_by = du.id AND du.is_used = 't'
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
+LEFT OUTER JOIN mddog_groups g  ON g.id = dg.group_id
+WHERE
+  di.id = ?;
+SQL
+}
+
 sub document_list {
     my ($uid, $style, $group) = @_;
 

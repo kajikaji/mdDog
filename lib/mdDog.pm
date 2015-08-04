@@ -365,59 +365,36 @@ sub set_document_info {
     my $user  = $self->qParam('user');
     my $ver   = $self->qParam('revision');
     return unless($fid);        # NULL CHECK
+    my @logs  = $self->{git}->get_shared_logs();
 
-    my $sql   = << "SQL";
-SELECT
-  di.*,
-  du.nic_name AS nic_name,
-  du.account  AS account,
-  du.mail     AS mail,
-  g.title     AS group_name
-FROM
-  docx_infos di
-JOIN docx_users du
-  ON di.created_by = du.id AND du.is_used = 't'
-LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
-LEFT OUTER JOIN mddog_groups g  ON g.id = dg.group_id
-WHERE
-  di.id = $fid;
-SQL
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
 
-    my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}});
+    my $row = $sth->fetchrow_hashref();
+    my $docinfo = {
+        doc_name        => $row->{doc_name},
+        file_name       => $row->{file_name},
+        created_at      => MYUTIL::format_date2($row->{created_at}),
+        created_by      => $row->{nic_name},
+        file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$row->{file_name}"),
+        is_public       => $row->{is_public},
+        is_owned        => $row->{created_by} == $self->{s}->param('login')?1:0,
+        last_updated_at => ${logs}[0][0]->{attr}->{date},
+    };
 
-    my $flg = undef;
-    foreach( @$ary ){
-        if( $flg ){
-          push @{$self->{t}->{groups}}, $_->{group_name}
-            if( $_->{group_name} );
-            next;
-        }
-
-        $self->{t}->{doc_name}        = $_->{doc_name};
-        $self->{t}->{file_name}       = $_->{file_name};
-        $self->{t}->{created_at}      = MYUTIL::format_date2($_->{created_at});
-        $self->{t}->{created_by}      = $_->{nic_name};
-        $self->{t}->{file_size}       = MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$_->{file_name}");
-        $self->{t}->{is_public}       = $_->{is_public};
-        $self->{t}->{is_owned}        = $_->{created_by} == $self->{s}->param('login')?1:0;
-
-        my @logs = $self->{git}->get_shared_logs();
-        $self->{t}->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
-
-        push @{$self->{t}->{groups}}, $_->{group_name}
-          if( $_->{group_name} );
-
-        $flg = $_;
-    }
+    do{
+        push @{$docinfo->{groups}}, $row->{group_name}  if( $row->{group_name} );
+    }while( $row = $sth->fetchrow_hashref() );
 
     if( $uid ){
-        $self->{t}->{is_approve} = $self->{user}->{is_approve};
-        $self->{t}->{is_editable}    = $self->{user}->{is_edit};
+        $docinfo->{is_approve}  = $self->{user}->{is_approve};
+        $docinfo->{is_editable} = $self->{user}->{is_edit};
     }
+    $docinfo->{fid}      = $fid;
+    $docinfo->{user}     = $user;
+    $docinfo->{revision} = $ver if($ver);
 
-    $self->{t}->{fid}      = $fid;
-    $self->{t}->{user}     = $user;
-    $self->{t}->{revision} = $ver if($ver);
+    $self->{t} = {%{$self->{t}}, %$docinfo};
 }
 
 ############################################################
@@ -481,10 +458,10 @@ sub set_user_log {
 
     foreach ( $gitctrl->get_other_users() ) {
         my $userlog = {
-                       uid       => $_,
-                       name      => $self->_get_nic_name($_),
-                       loglist   => $gitctrl->get_user_logs($_),
-                      };
+            uid       => $_,
+            name      => $self->_get_nic_name($_),
+            loglist   => $gitctrl->get_user_logs($_),
+        };
 
         my $userRoot = $gitctrl->get_branch_root($_);
         if ( $latest_rev =~ m/${userRoot}[0-9a-z]+/
@@ -513,47 +490,40 @@ sub set_my_log {
 
     #共有リポジトリ(master)
     $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
-#    $latest_rev = $self->{t}->{sharedlist}->[0]->{id} if($self->{t}->{sharedlist});
 
     if($gitctrl->is_exist_user_branch($uid)){
         $self->{t}->{loglist} = $gitctrl->get_user_logs($uid);
-#        my $user_root = $gitctrl->get_branch_root($uid);
-#        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }
-#    else{
-#        $self->{t}->{is_live} = 1;
-#    }
 }
 
 ###################################################
 # 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
 sub set_approve_list {
-  my $self = shift;
+    my $self = shift;
 
-  my $uid      = $self->{s}->param("login");
-  my $fid      = $self->qParam("fid");
-  my $revision = $self->qParam("revision");
-  my $user     = $self->qParam("user");
-  return unless($uid && $fid && $revision && $user);  # NULL CHECK
+    my $uid      = $self->{s}->param("login");
+    my $fid      = $self->qParam("fid");
+    my $revision = $self->qParam("revision");
+    my $user     = $self->qParam("user");
+    return unless($uid && $fid && $revision && $user); # NULL CHECK
 
-  my $branch   = "$self->{repo_prefix}${user}";
+    my $branch   = "$self->{repo_prefix}${user}";
 
-  my @logs;
-  my $flg = undef;
-  my $branches = $self->{git}->get_user_logs($user);
-  for (@$branches){
-    my $obj = eval {($_)};
-    my $rev = $obj->{id};
-    if($flg
-       || (!$flg && $obj->{id} eq ${revision}) ){
-      push @logs, $obj;
-      $flg = 1 unless($flg);
+    my @logs;
+    my $flg = undef;
+    my $branches = $self->{git}->get_user_logs($user);
+    for( @$branches ) {
+        my $obj = eval {($_)};
+        my $rev = $obj->{id};
+        if( $flg || (!$flg && $obj->{id} eq ${revision}) ) {
+            push @logs, $obj;
+            $flg = 1 unless($flg);
+        }
     }
+    $self->{t}->{loglist}     = \@logs;
+    $self->{t}->{approve_pre} = 1;
   }
-  $self->{t}->{loglist}     = \@logs;
-  $self->{t}->{approve_pre} = 1;
-}
 
 ###################################################
 #
@@ -599,15 +569,15 @@ sub set_merge_view {
 # 指定のユーザーの指定のリヴィジョンを承認して共有化
 #
 sub doc_approve {
-  my $self = shift;
+    my $self = shift;
 
-  my $uid      = $self->{s}->param("login");
-  my $fid      = $self->qParam("fid");
-  my $revision = $self->qParam("revision");
-  my $user     = $self->qParam("user");
-  return unless($uid && $fid && $revision && $user); # NULL CHECK
+    my $uid      = $self->{s}->param("login");
+    my $fid      = $self->qParam("fid");
+    my $revision = $self->qParam("revision");
+    my $user     = $self->qParam("user");
+    return unless($uid && $fid && $revision && $user); # NULL CHECK
 
-  $self->{git}->approve($user, $revision);
+    $self->{git}->approve($user, $revision);
 }
 
 
