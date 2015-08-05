@@ -1,7 +1,7 @@
 package SQL;
 
 sub document_list {
-    my ($uid, $style) = @_;
+    my ($uid, $style, $group) = @_;
 
     my $sql = << "SQL";
 SELECT
@@ -17,6 +17,13 @@ FROM
 INNER JOIN docx_users du ON du.id = di.created_by
 LEFT OUTER JOIN docx_auths da on da.info_id = di.id and da.user_id = ${uid}
 SQL
+
+    if( $group ){
+        $sql .= << "SQL";
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
+LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
+SQL
+    }
 
     if( $style eq 'approver' ){
       $sql .= << "SQL";
@@ -37,7 +44,13 @@ WHERE
 SQL
     }
 
-  return $sql;
+    if( $group ){
+        $sql .= << "SQL"
+  and g.id = ${group}
+SQL
+    }
+
+    return $sql;
 }
 
 sub list_for_index {
@@ -70,6 +83,8 @@ SQL
 }
 
 sub document_list_without_login{
+    my ($group) = @_;
+
     my $sql = << "SQL";
 SELECT
   di.*,
@@ -79,11 +94,27 @@ SELECT
 FROM
   docx_infos di
 JOIN docx_users du ON du.id = di.created_by
+SQL
+    if( $group ){
+        $sql .= << "SQL";
+LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
+LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
+SQL
+    }
+
+    $sql .= << "SQL";
 WHERE
   di.deleted_at is null
   and di.is_used = true
   and di.is_public = true
 SQL
+
+    if( $group ){
+        $sql .= << "SQL"
+  and g.id = ${group}
+SQL
+    }
+
     return $sql;
 }
 

@@ -300,11 +300,11 @@ sub listup_documents {
 
     if( $uid ){
         $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top}, $group);
-        $sql_cnt = SQL::document_list($uid, $style);
+        $sql_cnt = SQL::document_list($uid, $style, $group);
     }else{
         #ログインなし
         $sql = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
-        $sql_cnt = SQL::document_list_without_login();
+        $sql_cnt = SQL::document_list_without_login($group);
     }
 
     my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
