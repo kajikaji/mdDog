@@ -56,10 +56,10 @@ SQL
 sub list_for_index {
     my ($uid, $style, $offset, $limit, $group) = @_;
 
-    my $sql = document_list($uid, $style);
+    my $sql = document_list($uid, $style, $group);
     $sql .= << "SQL";
 ORDER BY
-  di.is_used DESC, di.doc_name
+  di.doc_name
 OFFSET ${offset} LIMIT ${limit}
 SQL
 
@@ -71,13 +71,6 @@ FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
 LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
 SQL
-
-    if( $group ){
-      $sql_wrapper .= << "SQL";
-WHERE
-  g.id = ${group}
-SQL
-    }
 
     return $sql_wrapper;
 }
@@ -120,7 +113,7 @@ SQL
 
 sub list_for_index_without_login{
     my ($offset, $limit, $group) = @_;
-    my $sql = document_list_without_login();
+    my $sql = document_list_without_login($group);
     $sql .= <<"SQL";
 ORDER BY
   di.is_used DESC, di.doc_name
@@ -135,13 +128,6 @@ FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
 LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
 SQL
-
-    if( $group ){
-      $sql_wrapper .= << "SQL";
-WHERE
-  g.id = ${group}
-SQL
-    }
 
     return $sql_wrapper;
 }
