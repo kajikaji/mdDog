@@ -6,7 +6,9 @@
 <ul class="BackNav">
 <li><a href="index.cgi">BACK</a></li>
 </ul>
-
+[%IF message %]
+  [%INCLUDE info.tmpl %]
+[%END %]
 <section class="Profile">
   <h1>アカウント編集</h1>
 

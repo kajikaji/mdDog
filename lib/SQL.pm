@@ -1,5 +1,43 @@
 package SQL;
 
+sub user_login {
+    return << "SQL";
+SELECT
+  id
+FROM
+  docx_users
+WHERE
+  account = ?
+  AND password = md5(?)
+  AND is_used = true;
+SQL
+}
+
+sub user_info {
+    return << "SQL";
+SELECT
+  account, mail, nic_name, may_admin, may_approve, may_delete
+FROM
+  docx_users
+WHERE
+  id = ?
+  AND is_used = true;
+SQL
+}
+
+sub user_info_update {
+    return << "SQL";
+UPDATE docx_users
+SET
+  account = ?,
+  nic_name = ?,
+  mail = ?,
+  password = md5(?)
+WHERE
+  id = ?
+SQL
+}
+
 sub document_info {
     return << "SQL";
 SELECT
@@ -92,6 +130,19 @@ LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
 SQL
 
     return $sql_wrapper;
+}
+
+sub auth_info {
+    return << "SQL";
+SELECT
+  da.*,
+  di.created_by
+FROM docx_auths da
+INNER JOIN docx_infos di ON da.info_id = di.id
+WHERE
+  da.info_id = ?
+  AND da.user_id = ?
+SQL
 }
 
 sub document_list_without_login{

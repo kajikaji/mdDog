@@ -43,17 +43,17 @@ use constant THUMBNAIL_SIZE => 150;
 ###################################################
 #
 sub new {
-  my $pkg   = shift;
-  my $base  = $pkg->SUPER::new(@_);
+    my $pkg   = shift;
+    my $base  = $pkg->SUPER::new(@_);
 
-  my $hash  = {
-    repo_prefix => "user_",
-    git         => undef,
-    outline     => undef,
-  };
-  @{$base}{keys %{$hash}} = values %{$hash};
+    my $hash  = {
+        repo_prefix => "user_",
+        git         => undef,
+        outline     => undef,
+    };
+    @{$base}{keys %{$hash}} = values %{$hash};
 
-  return bless $base, $pkg;
+    return bless $base, $pkg;
 }
 
 ###################################################
@@ -62,9 +62,9 @@ sub setup_config {
     my $self = shift;
 
     if($self->qParam('fid')){
-      my $workdir = "$self->{repodir}/" . $self->qParam('fid');
-      $self->{git} = GitCtrl->new($workdir);
-      $self->{outline} = OutlineCtrl->new($workdir);
+        my $workdir = "$self->{repodir}/" . $self->qParam('fid');
+        $self->{git}     = GitCtrl->new($workdir);
+        $self->{outline} = OutlineCtrl->new($workdir);
     }
 
     if( join(' ', $self->{q}->param()) =~ m/.*page.*/ ){
@@ -107,19 +107,10 @@ sub login {
         my $account  = $self->qParam('account');
         my $password = $self->qParam('password');
 
-        my $sql = << "SQL";
-SELECT
-  id
-FROM
-  docx_users
-WHERE
-  account = '$account'
-  AND password = md5('$password')
-  AND is_used = true;
-SQL
-        my @ary = $self->{dbh}->selectrow_array($sql);
-        if( @ary ){
-            $self->{s}->param("login", $ary[0]);
+        my $sth = $self->{dbh}->prepare(SQL::user_login);
+        $sth->execute($account, $password);
+        if( my $row = $sth->fetchrow_hashref() ){
+            $self->{s}->param("login", $row->{id});
         }
     }
 
@@ -132,16 +123,9 @@ SQL
 
     my $id = $self->{s}->param("login");
     if( $id ){
-        my $sql = << "SQL";
-SELECT
-  account, mail, nic_name, may_admin, may_approve, may_delete
-FROM
-  docx_users
-WHERE
-  id = ${id}
-  AND is_used = true;
-SQL
-        my $ha = $self->{dbh}->selectrow_hashref($sql);
+        my $sth = $self->{dbh}->prepare(SQL::user_info);
+        $sth->execute($id);
+        my $ha = $sth->fetchrow_hashref();
         $self->{user} = {
           account     => $ha->{account},
           mail        => $ha->{mail},
@@ -158,19 +142,19 @@ SQL
 #出力処理
 #
 sub print_page {
-  my $self = shift;
+    my $self = shift;
 
-  if($self->{s}->param("login")){
-    $self->{t}->{login}      = $self->{s}->param("login");
-  }
-  if($self->{user}){ #ユーザー情報をセット
-    $self->{t}->{account}    = $self->{user}->{account};
-    $self->{t}->{nic_name}   = $self->{user}->{nic_name};
-    $self->{t}->{mail}       = $self->{user}->{mail};
-    $self->{t}->{is_admin}   = $self->{user}->{is_admin};
-  }
+    if($self->{s}->param("login")){
+        $self->{t}->{login}      = $self->{s}->param("login");
+    }
+    if($self->{user}){ #ユーザー情報をセット
+        $self->{t}->{account}    = $self->{user}->{account};
+        $self->{t}->{nic_name}   = $self->{user}->{nic_name};
+        $self->{t}->{mail}       = $self->{user}->{mail};
+        $self->{t}->{is_admin}   = $self->{user}->{is_admin};
+    }
 
-  $self->SUPER::print_page();
+    $self->SUPER::print_page();
 }
 
 ############################################################
@@ -186,26 +170,22 @@ sub change_profile{
     my $password    = $self->qParam('password');
     my $re_password = $self->qParam('re_password');
 
-    if( $password != $re_password ){
-      push @{$self->{t}->{message}->{error}}, "再入力されたパスワードが一致しません";
-      return 0;
-    }
-    unless( $account && $nic_name && $mail ){
-      push @{$self->{t}->{message}->{error}}, "入力が不足しています";
-      return 0;
+    if( length $password == 0 ){
+        push @{$self->{t}->{message}->{error}}, "パスワードが入力されていません";
+        return 0;
     }
 
-    my $sql_update = << "SQL";
-UPDATE docx_users
-SET
-  account = '${account}',
-  nic_name = '${nic_name}',
-  mail = '${mail}',
-  password = md5('${password}')
-WHERE
-  id = ${uid}
-SQL
-    $self->{dbh}->do($sql_update);
+    if( $password ne $re_password ){
+        push @{$self->{t}->{message}->{error}}, "再入力されたパスワードが一致しません";
+        return 0;
+    }
+    unless( $account && $nic_name && $mail ){
+        push @{$self->{t}->{message}->{error}}, "入力が不足しています";
+        return 0;
+    }
+
+    my $sth = $self->{dbh}->prepare(SQL::user_info_update);
+    $sth->execute($account, $nic_name, $mail, $password, $uid);
     $self->dbCommit();
     return 1;
 }
@@ -239,21 +219,12 @@ sub check_auths {
     my $uid   = $self->{s}->param('login');
 
     if( $uid ){
-        my $sql_auth = << "SQL";
-SELECT
-  da.*,
-  di.created_by
-FROM docx_auths da
-INNER JOIN docx_infos di ON da.info_id = di.id
-WHERE
-  da.info_id = ${fid}
-  AND da.user_id = ${uid}
-SQL
-        my $ary = $self->{dbh}->selectrow_hashref($sql_auth);
-        if($ary) {
-            $self->{user}->{is_approve} = $ary->{may_approve};
-            $self->{user}->{is_edit}    = $ary->{may_edit};
-            $self->{user}->{is_owned}   = $ary->{created_by} == $uid?1:0;
+      my $sth = $self->{dbh}->prepare(SQL::auth_info);
+      $sth->execute($fid, $uid);
+      if( my $row = $sth->fetchrow_hashref() ){
+            $self->{user}->{is_approve} = $row->{may_approve};
+            $self->{user}->{is_edit}    = $row->{may_edit};
+            $self->{user}->{is_owned}   = $row->{created_by} == $uid?1:0;
         }
     }
 

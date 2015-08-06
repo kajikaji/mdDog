@@ -24,7 +24,7 @@ use strict; no strict "refs";
 use lib './lib/';
 use mdDog;
 
-my $dog =mdDog->new();
+my $dog = mdDog->new();
 $dog->setup_config();
 unless($dog->login()){
     print "Location: index.cgi\n\n";
