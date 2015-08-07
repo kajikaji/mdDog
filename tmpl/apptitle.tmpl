@@ -4,11 +4,19 @@
     <div class="LoginForm">
       <form method="post">
         [% IF login %]
-        <input type="submit" name="logout" value="LOGOUT">
+        <ul class="AccountInfo">
+          <li class="User Account"><span class="Subject">ACCOUNT</span><a href="profile.cgi">[% nic_name %]</a></li>
+          [% IF is_admin %]
+          <li class="User Admin"><a href="admin.cgi">(管理者 <span class="typcn typcn-spanner"></span>)</a></li>
+          [% END %]
+          <li class="Ctrl"><input type="submit" name="logout" value="LOGOUT"></li>
+        </ul>
         [% ELSE %]
-        <span class="Account">account&ensp;<input type="text" name="account" size="12" maxlength="20"></span>
-        <span class="Password">password&ensp;<input type="password" name="password" size="12" maxlength="20"></span>
-        <input type="submit" name="login" value="LOGIN">
+        <ul class="AccountInfo">
+          <li class="User Account"><span class="Subject">ACCOUNT&ensp;<input type="text" name="account" size="12" maxlength="20"></span></li>
+          <li class="User Password"><span class="Subject">PASSWORD&ensp;<input type="password" name="password" size="12" maxlength="20"></span></li>
+          <li><input type="submit" name="login" value="LOGIN"></li>
+        </ul>
         [% END %]
         [% INCLUDE posted_data.tmpl %]
       </form>
