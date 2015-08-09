@@ -413,21 +413,14 @@ section.Gitlog, section.DocApprove {
 section.Top .Main {
   margin-top: 20px;
   margin-bottom: 20px; }
-  section.Top .Main .Subject {
-    margin-bottom: 20px; }
-    section.Top .Main .Subject .Title {
-      font-weight: bold;
-      font-size: 21pt;
-      font-family: 'Playfair Display', serif; }
-    section.Top .Main .Subject.Disable {
-      color: #888; }
-    section.Top .Main .Subject + .Caution {
+  section.Top .Main .NewDocument {
+    float: right; }
+    section.Top .Main .NewDocument span.typcn {
+      margin-right: 5px; }
+    section.Top .Main .NewDocument + .Caution {
       font-size: 60%;
       margin-left: 10px;
       color: #f00; }
-    section.Top .Main .Subject .Menu {
-      float: right;
-      font-family: 'Playfair Display', serif; }
   section.Top .Main .SearchCtrl {
     margin-bottom: 10px; }
     section.Top .Main .SearchCtrl .Label {
@@ -444,7 +437,14 @@ section.Top .Main {
     font-size: 8pt; }
     section.Top .Main ul.DocFilter li {
       float: left;
-      padding: 2px 5px; }
+      padding: 2px 5px;
+      border-color: rgba(0, 0, 0, 0.1);
+      border-style: solid;
+      border-width: 1px 0 0 1px; }
+      section.Top .Main ul.DocFilter li:last-child {
+        border-right: 1px solid rgba(0, 0, 0, 0.1); }
+      section.Top .Main ul.DocFilter li.Selected {
+        background-color: #fff; }
   section.Top .Main table.DocList {
     box-sizing: border-box;
     background-color: #fff; }
@@ -676,6 +676,17 @@ section.Top .Main {
       padding: 3px;
       border: 1px solid #ccc;
       float: left; }
+
+section.CreateDoc {
+  padding-top: 20px; }
+  section.CreateDoc h1 {
+    margin-top: 0;
+    margin-bottom: 20px; }
+  section.CreateDoc .Info {
+    margin-bottom: 5px; }
+    section.CreateDoc .Info label {
+      width: 150px;
+      display: inline-block; }
 
 section.Docinfo {
   margin-bottom: 10px; }

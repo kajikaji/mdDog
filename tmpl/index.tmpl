@@ -6,14 +6,11 @@
 <section class="Top">
 
 <div class="Main">
-  <div class="Subject">
-    <span class="Title">registed documents</span>
   [% IF login %]
-    <div class="Menu">
-      <a href="doc_create.cgi" class="Button"><span class="typcn typcn-document-add"></span>new document</a>
-    </div>
-  [% END %]
+  <div class="NewDocument">
+    <a href="doc_create.cgi" class="Button"><span class="typcn typcn-plus"></span>新しいドキュメント</a>
   </div>
+  [% END %]
   <div class="SearchCtrl">
     <span class="Label">グループ検索</span>
     <select class="GroupSelect" id="groupSelect">
@@ -25,9 +22,9 @@
   </div>
     [%IF login %]
     <ul class="DocFilter">
-      <li>[%UNLESS style %]一覧[%ELSE %]<a href="?page=0&style=">一覧</a>[%END %]</li>
-      <li>[%IF style == 'approver' %]承認権限[%ELSE %]<a href="?page=0&style=approver">承認権限</a>[%END %]</li>
-      <li>[%IF style == 'dustbox' %]ゴミ箱[%ELSE %]<a href="?page=0&style=dustbox">ゴミ箱</a>[%END %]</li>
+      [%UNLESS style %]<li class="Selected">一覧</li>[%ELSE %]<li><a href="?page=0&style=">一覧</a></li>[%END %]
+      [%IF style == 'approver' %]<li class="Selected">承認権限</li>[%ELSE %]<li><a href="?page=0&style=approver">承認権限</a></li>[%END %]
+      [%IF style == 'dustbox' %]<li class="Selected">ゴミ箱</li>[%ELSE %]<li><a href="?page=0&style=dustbox">ゴミ箱</a></li>[%END %]
     </ul>
     [%END %]
   [%IF infos %]

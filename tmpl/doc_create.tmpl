@@ -2,12 +2,27 @@
 [% INCLUDE apptitle.tmpl %]
 <div>[% debug %]</div>
 
+<ul class="BackNav">
+<li><a href="index.cgi">BACK</a></li>
+</ul>
+[%IF message %]
+  [%INCLUDE info.tmpl %]
+[%END %]
+
 <section class="CreateDoc">
+  <h1>新しいドキュメント</h1>
   <form action="" method="post" id="docx-create" class="">
-    <h2>new document</h2>
-    <div>ドキュメント名：<input type="text" size="20" name="doc_name"></div>
-    <div>ファイル名：<input type="text" size="20" name="file_name"></div>
-    <div><input type="submit" name="create" value="新規作成"></div>
+    <div class="Info">
+      <label for="docName">ドキュメント名</label>
+      <input type="text" size="20" id="docName" name="doc_name">
+    </div>
+    <div class="Info">
+      <label for="docFile">ファイル名</label>
+      <input type="text" size="20" id="docFile" name="file_name">
+    </div>
+    <div class="Info">
+      <input type="submit" name="create" value="新規作成">
+    </div>
   </form>
 </section>
 

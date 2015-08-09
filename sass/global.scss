@@ -781,27 +781,16 @@ section.Top{
     margin-top: 20px;
     margin-bottom: 20px;;
 
-    .Subject { 
-     margin-bottom: 20px;
-      .Title{
-        font-weight: bold;
-        font-size: $subject_size;//2.0em;
-        font-family: 'Playfair Display', serif;
-      }
-      &.Disable{
-        color: #888;
+    .NewDocument { 
+      float: right;
+      span.typcn{
+          margin-right: $margin_wd;
       }
       +.Caution {
         font-size: 60%;
         margin-left: 10px;
         color: #f00;
       }
-
-      .Menu{
-        float: right;
-        font-family: 'Playfair Display', serif;
-      }
-
     } // .Subject
 
     .SearchCtrl{
@@ -820,6 +809,16 @@ section.Top{
       li{
           float: left;
           padding: 2px 5px;
+          border-color: rgba(0,0,0,0.1);
+          border-style: solid;
+          border-width: 1px 0 0 1px;
+
+          &:last-child{
+              border-right: 1px solid rgba(0,0,0,0.1);
+          }
+          &.Selected{
+              background-color: #fff;
+          }
       }
     }
 
@@ -950,6 +949,21 @@ section.Top{
 
   }
 } // section.Top
+
+section.CreateDoc{
+    padding-top: $margin_wd * 4;
+    h1{
+        margin-top: 0;
+        margin-bottom: $margin_wd * 4;
+    }
+    .Info{
+        margin-bottom: $margin_wd;
+        label{
+            width: 150px;
+            display: inline-block;
+        }
+    }
+}
 
 section.Docinfo{
   margin-bottom: 10px;
