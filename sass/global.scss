@@ -568,15 +568,46 @@ section.Message{
 }
 
 section.Admin{
+  padding-top: $margin_wd * 4;
   h1{
-      margin-bottom: 20px;
-      font-weight: bold;
-      font-size: 2.0em;
+      margin-top: 0;
+      margin-bottom: $margin_wd * 4;
   }
 
-  ul.UserManage{
-    list-style:none;
-    
+  .AddAccountForm{
+      margin-bottom: $margin_wd * 4;
+      padding: $margin_wd * 2;
+      background-color: #fff;
+      border: 2px solid $orange;
+      @include round_corner(10px);
+      .Subject{
+          font-weight: bold;
+      }
+      .Info{
+          margin-bottom: $margin_wd;
+          label{
+              width: 150px;
+              display: inline-block;
+          }
+          input[type=text], input[type=password], textarea {
+              font-size: 85%;
+              @include round_corner(5px);
+          }
+      }
+  }
+  table.AccountTable{
+      box-sizing: border-box;
+      thead{
+          background-color: #333;
+          tr th{
+              font-weight: normal;
+              font-size: $font_s;
+              color: #ccc;
+          }
+      }
+      tbody{
+          background-color: #fff;
+      }
   }
 }
 
@@ -648,14 +679,24 @@ form#docxCreate{
 }
 
 section.Profile{
-    form.AccountForm{
-
-    label{
-
-        input[type=text]{
-            margin-left: 100px;
-        }
+    padding-top: $margin_wd * 4;
+    h1{
+        margin-top: 0;
+        margin-bottom: $margin_wd * 4;
     }
+    form.AccountForm{
+        .Item{
+            margin-bottom: $margin_wd;
+          label{
+              width: 150px;
+              display: inline-block;
+          }
+          input[type=text],
+          input[type=password]{
+              width: 200px;
+
+          }
+        }
     }
 }
 

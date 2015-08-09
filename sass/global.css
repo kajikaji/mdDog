@@ -223,12 +223,41 @@ section.Message {
       section.Message > ul li:after {
         clear: both; }
 
-section.Admin h1 {
-  margin-bottom: 20px;
-  font-weight: bold;
-  font-size: 2.0em; }
-section.Admin ul.UserManage {
-  list-style: none; }
+section.Admin {
+  padding-top: 20px; }
+  section.Admin h1 {
+    margin-top: 0;
+    margin-bottom: 20px; }
+  section.Admin .AddAccountForm {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border: 2px solid #ff7f50;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px; }
+    section.Admin .AddAccountForm .Subject {
+      font-weight: bold; }
+    section.Admin .AddAccountForm .Info {
+      margin-bottom: 5px; }
+      section.Admin .AddAccountForm .Info label {
+        width: 150px;
+        display: inline-block; }
+      section.Admin .AddAccountForm .Info input[type=text], section.Admin .AddAccountForm .Info input[type=password], section.Admin .AddAccountForm .Info textarea {
+        font-size: 85%;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px; }
+  section.Admin table.AccountTable {
+    box-sizing: border-box; }
+    section.Admin table.AccountTable thead {
+      background-color: #333; }
+      section.Admin table.AccountTable thead tr th {
+        font-weight: normal;
+        font-size: 10px;
+        color: #ccc; }
+    section.Admin table.AccountTable tbody {
+      background-color: #fff; }
 
 section.Error div.Error {
   border: 3px solid #b22222;
@@ -289,8 +318,19 @@ form#docxCreate {
     font-weight: bold;
     font-size: 115%; }
 
-section.Profile form.AccountForm label input[type=text] {
-  margin-left: 100px; }
+section.Profile {
+  padding-top: 20px; }
+  section.Profile h1 {
+    margin-top: 0;
+    margin-bottom: 20px; }
+  section.Profile form.AccountForm .Item {
+    margin-bottom: 5px; }
+    section.Profile form.AccountForm .Item label {
+      width: 150px;
+      display: inline-block; }
+    section.Profile form.AccountForm .Item input[type=text],
+    section.Profile form.AccountForm .Item input[type=password] {
+      width: 200px; }
 
 section.Gitlog, section.DocApprove {
   margin-bottom: 30px; }

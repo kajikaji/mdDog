@@ -7,20 +7,32 @@
 </ul>
 
 <section class="Admin">
-  <h1>管理画面</h1>
+  <h1>管理者ページ</h1>
 
-<h2>ユーザー管理</h2>
+  <div class="AddAccountForm">
+    <div class="Subject">アカウントの追加</div>
+    <div class="Info">
+      <label for="newAccount">アカウント</label>
+      <input type="text" id="newAccount" class="Account">
+    </div>
+    <div class="Info">
+      <label for="newNicName">表示名</label>
+      <input type="text" id="newNicName" class="NicName">
+    </div>
+    <div class="Info">
+      <label for="newMail">メール</label>
+      <input type="text" id="newMail" class="Mail">
+    </div>
+    <div class="Info">
+      <label for="newPassword">パスワード</label>
+      <input type="password" id="newPassword" class="Password">
+    </div>
+    <div class="Info">
+      <button class="Add">追加</button>
+    </div>
+  </div>
 
-<h3>ユーザー一覧</h3>
-<div class="AddAccountForm">
-  <label>アカウント<input type="text" class="Account"></label>
-  <label>表示名<input type="text" class="NicName"></label>
-  <label>メール<input type="text" class="Mail"></label>
-  <label>パスワード<input type="password" class="Password"></label>
-  <button class="Add">追加</button>
-</div>
-
-<table id="accountTable">
+<table id="accountTable" class="AccountTable">
 <thead>
 <tr>
   <th>使用</th>
