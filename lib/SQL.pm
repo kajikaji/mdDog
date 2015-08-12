@@ -21,7 +21,6 @@ FROM
   docx_users
 WHERE
   id = ?
-  AND is_used = true;
 SQL
 }
 
@@ -38,6 +37,12 @@ WHERE
 SQL
 }
 
+sub group_list {
+    return << "SQL";
+SELECT * FROM mddog_groups ORDER BY title
+SQL
+}
+
 sub document_info {
     return << "SQL";
 SELECT
@@ -48,12 +53,19 @@ SELECT
   g.title     AS group_name
 FROM
   docx_infos di
-JOIN docx_users du
-  ON di.created_by = du.id AND du.is_used = 't'
+INNER JOIN docx_users du ON di.created_by = du.id
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = di.id
 LEFT OUTER JOIN mddog_groups g  ON g.id = dg.group_id
 WHERE
-  di.id = ?;
+  di.id = ?
+SQL
+}
+
+sub document_name_update {
+    return << "SQL";
+UPDATE docx_infos
+SET doc_name = ?
+WHERE id = ?
 SQL
 }
 

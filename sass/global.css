@@ -1667,13 +1667,8 @@ section.BufferMerge ul.BufferEditMenu {
       height: 20px; }
 section.BufferMerge .Summary {
   margin-left: 180px;
-  margin-bottom: 20px;
-  padding: 10px;
-  color: #eee;
-  background-color: #333;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px; }
+  margin-bottom: 5px;
+  padding: 10px; }
   section.BufferMerge .Summary .Ctrl {
     float: right; }
   section.BufferMerge .Summary ul.Mark {
@@ -1682,21 +1677,15 @@ section.BufferMerge .Summary {
     section.BufferMerge .Summary ul.Mark li {
       float: left;
       margin-right: 20px; }
-      section.BufferMerge .Summary ul.Mark li:before {
-        content: "";
-        display: inline-block;
-        width: 30px;
-        height: 20px;
-        margin-right: 5px;
-        margin-bottom: -7px;
-        border: 1px solid #aaa;
-        border-radius: 5px;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px; }
-      section.BufferMerge .Summary ul.Mark li.Master:before {
-        background-color: #e6e6fa; }
-      section.BufferMerge .Summary ul.Mark li.Local:before {
-        background-color: #fffacd; }
+      section.BufferMerge .Summary ul.Mark li .Mark {
+        font-size: 8px;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        background-color: #000;
+        color: #fff;
+        padding: 3px 5px;
+        margin-right: 5px; }
     section.BufferMerge .Summary ul.Mark:after, section.BufferMerge .Summary ul.Mark:before {
       display: table;
       content: "";
@@ -1706,10 +1695,7 @@ section.BufferMerge .Summary {
 section.BufferMerge .MergeView {
   margin-left: 180px;
   margin-bottom: 50px;
-  border: 1px solid #555;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px; }
+  border: 1px solid #555; }
   section.BufferMerge .MergeView > div.Master {
     display: none; }
   section.BufferMerge .MergeView > div.DiffInfo {
@@ -1723,7 +1709,7 @@ section.BufferMerge .MergeView {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px; }
     section.BufferMerge .MergeView > div.Mine ul.Document li.Local {
-      background-color: #fffacd; }
+      background-color: #fff; }
     section.BufferMerge .MergeView > div.Mine ul.Document li.Master {
       background-color: #e6e6fa; }
       section.BufferMerge .MergeView > div.Mine ul.Document li.Master > div.Num {

@@ -17,12 +17,12 @@
   [%INCLUDE buffer_menu.tmpl %]
 
   <div class="Summary">
-    <div class="Ctrl"><button id="commit" class="Commit"><span class="typcn typcn-chevron-right"></span>commit</button></div>
-    Fix below and commit. To commit will restruct your log over the latest revision.
+    <div class="Ctrl"><button id="commit" class="Commit">commit</button></div>
+    下にローカルとマスターの差異を示しています。<br>不必要な行を<span class="typcn typcn-delete">ボタンで削除してからcommitボタンを押してください<br>最新の状態で文書が再構築されます
 <br><br>
     <ul class="Mark">
-      <li class="Master">master</li>
-      <li class="Local">local</li>
+      <li class="Local"><span class="Mark">L&emsp;</span>local</li>
+      <li class="Master"><span class="Mark">M&emsp;</span>master</li>
     </ul>
   </div>
   <div class="MergeView">

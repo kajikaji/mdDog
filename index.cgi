@@ -37,8 +37,8 @@ if($dog->qParam('unuse')){
   $dog->change_file_info('delete');
 }
 
-$dog->listup_documents();
 $dog->listup_groups();
+$dog->listup_documents();
 
 $dog->print_page();
 exit();

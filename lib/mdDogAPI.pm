@@ -24,6 +24,7 @@ package mdDogAPI;
 use strict; no strict "subs";
 use parent mdDog;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
+use SQL;
 
 use constant USER_AUTH_ADMIN   => 1;
 use constant USER_AUTH_APPROVE => 2;
@@ -106,6 +107,7 @@ sub post_data {
 
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->detach_local();
 
     my $mds;
     my $cnt = 0;
@@ -119,10 +121,9 @@ sub post_data {
         $cnt++;
     }
 
-    my $comment = "SLIDE_DOWN DIVIDE";
+    $self->{git}->attach_info($uid);
     $self->{outline}->slide_down_divide($eid, $cnt - 1);
-    $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
-
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
 
     my $json = JSON->new();
@@ -158,11 +159,11 @@ sub delete_data {
 
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->detach_local();
 
-    my $comment = "SLIDE_UP DIVIDE";
+    $self->{git}->attach_info($uid);
     $self->{outline}->slide_up_divide($eid);
-    $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
-
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
 
     my $raw = paragraph_raw($self->get_user_document($uid, $fid), $eid);
@@ -184,9 +185,11 @@ sub outline_add_divide {
   my $num = $self->qParam('num');
   my $author = $self->_get_author($self->{s}->param('login'));
   my $comment = "INSERT DIVIDE";
-  $self->{git}->attach_local_tmp($uid, 1);
+#  $self->{git}->attach_local_tmp($uid, 1);
+  $self->{git}->attach_info($uid);
   $self->{outline}->insert_divide($num, $comment);
-  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+#  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->commit_info($self->{outline}->{filename}, $author);
   $self->{git}->detach_local();
   my $json = JSON->new();
   return $json->encode({action => 'divide',num => ${num}});
@@ -205,9 +208,10 @@ sub outline_remove_divide {
   my $num = $self->qParam('num');
   my $author = $self->_get_author($self->{s}->param('login'));
   my $comment = "REMOVE DIVIDE";
-  $self->{git}->attach_local_tmp($uid, 1);
+#  $self->{git}->attach_local_tmp($uid, 1);
+  $self->{git}->attach_info($uid);
   $self->{outline}->remove_divide($num);
-  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+  $self->{git}->commit_info($self->{outline}->{filename}, $author);
   $self->{git}->detach_local();
   my $json = JSON->new();
   return $json->encode({action => 'undivide',num => ${num}});
@@ -302,10 +306,21 @@ sub restruct_document {
 
     $gitctrl->attach_local($uid, 1);
 
+=pod
     my $sql = "select file_name from docx_infos where id = ${fid};";
     my @ary = $self->{dbh}->selectrow_array($sql);
     return unless(@ary);
     my $filename = $ary[0];
+=cut
+    my $sql = SQL::document_info;
+    $sql .= " limit 1";
+    my $sth = $self->{dbh}->prepare($sql);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
+    my $filename = $row->{file_name};
+    $sth->finish();
+
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     open my $hF, '>', $filepath || return undef;
@@ -315,6 +330,16 @@ sub restruct_document {
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->commit($filename, $author, $log);
 
+    $gitctrl->detach_local();
+
+    $gitctrl->attach_info($uid);
+    $self->{outline}->init();
+    $gitctrl->detach_local();
+    $gitctrl->remove_info($uid);
+    $gitctrl->attach_info($uid);
+    $self->{outline}->save();
+    $gitctrl->commit_info($self->{outline}->{filename},
+                          $self->_get_author($self->{s}->param('login')));
     $gitctrl->detach_local();
 
     my $json = JSON->new();

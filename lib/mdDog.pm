@@ -37,10 +37,11 @@ use MYUTIL;
 use mdDog::GitCtrl;
 use mdDog::OutlineCtrl;
 use SQL;
+use Data::Dumper;
 
 use constant THUMBNAIL_SIZE => 150;
 
-###################################################
+# constructor
 #
 sub new {
     my $pkg   = shift;
@@ -56,7 +57,7 @@ sub new {
     return bless $base, $pkg;
 }
 
-###################################################
+# @summary call at first
 #
 sub setup_config {
     my $self = shift;
@@ -81,7 +82,7 @@ sub setup_config {
     $self->SUPER::setup_config();
 }
 
-###################################################
+# @summary
 #
 sub set_outline_buffer{
     my $self = shift;
@@ -89,7 +90,7 @@ sub set_outline_buffer{
     my $uid = $self->{s}->param("login");
     return unless($uid);
 
-    $self->{git}->attach_local_tmp($uid);
+    $self->{git}->attach_info($uid);
     $self->{outline}->init();
     $self->{git}->detach_local();
 
@@ -97,8 +98,7 @@ sub set_outline_buffer{
     $self->{t}->{divides} = $divides;
 }
 
-############################################################
-#ログイン処理
+# @summary ログイン処理
 #
 sub login {
     my $self = shift;
@@ -112,6 +112,7 @@ sub login {
         if( my $row = $sth->fetchrow_hashref() ){
             $self->{s}->param("login", $row->{id});
         }
+        $sth->finish();
     }
 
     #ログアウト処理
@@ -132,14 +133,14 @@ sub login {
           nic_name    => $ha->{nic_name},
           is_admin    => $ha->{may_admin},
         };
+        $sth->finish();
         return 1;
     }
     return 0;
 }
 
 
-############################################################
-#出力処理
+# @summary 出力処理
 #
 sub print_page {
     my $self = shift;
@@ -157,8 +158,7 @@ sub print_page {
     $self->SUPER::print_page();
 }
 
-############################################################
-#
+# @summary 
 #
 sub change_profile{
     my $self = shift;
@@ -190,9 +190,9 @@ sub change_profile{
     return 1;
 }
 
-############################################################
-#ユーザーが編集・承認を行なうページへのログインを行なう
-#条件を満たさないと適宜ページにリダイレクトする
+# @summary
+#  - ユーザーが編集・承認を行なうページへのログインを行なう
+#  - 条件を満たさないと適宜ページにリダイレクトする
 #
 sub login_user_document {
   my $self = shift;
@@ -210,8 +210,7 @@ sub login_user_document {
   return 1;
 }
 
-############################################################
-# 権限チェック
+# @summary 権限チェック
 #
 sub check_auths {
     my $self  = shift;
@@ -225,7 +224,8 @@ sub check_auths {
             $self->{user}->{is_approve} = $row->{may_approve};
             $self->{user}->{is_edit}    = $row->{may_edit};
             $self->{user}->{is_owned}   = $row->{created_by} == $uid?1:0;
-        }
+      }
+      $sth->finish();
     }
 
     foreach (@_) {
@@ -253,8 +253,7 @@ sub check_auths {
     exit();
 }
 
-############################################################
-#登録されたドキュメント一覧の取得してテンプレートにセット
+# @summary 登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
     my ($self) = @_;
@@ -313,7 +312,7 @@ sub listup_documents {
         $self->{t}->{infos} = \@infos;
     }
     my $cnt = $self->{dbh}->selectall_arrayref($sql_cnt)
-      || $self->viewAccident("DB:Error", 1);
+        || $self->viewAccident("DB:Error", 1);
     my $pages = @$cnt / $self->{paging_top};
     my $paging;
     for( my $i = 0; $i < $pages; $i++ ){
@@ -326,8 +325,8 @@ sub listup_documents {
     $self->{t}->{paging}         = $paging;
 }
 
-############################################################
-# ドキュメント情報を取得してテンプレートにセット
+# @summary ドキュメント情報を取得してテンプレートにセット
+#
 sub set_document_info {
     my $self = shift;
 
@@ -340,7 +339,6 @@ sub set_document_info {
 
     my $sth = $self->{dbh}->prepare(SQL::document_info);
     $sth->execute($fid);
-
     my $row = $sth->fetchrow_hashref();
     my $docinfo = {
         doc_name        => $row->{doc_name},
@@ -356,6 +354,7 @@ sub set_document_info {
     do{
         push @{$docinfo->{groups}}, $row->{group_name}  if( $row->{group_name} );
     }while( $row = $sth->fetchrow_hashref() );
+    $sth->finish();
 
     if( $uid ){
         $docinfo->{is_approve}  = $self->{user}->{is_approve};
@@ -368,8 +367,7 @@ sub set_document_info {
     $self->{t} = {%{$self->{t}}, %$docinfo};
 }
 
-############################################################
-# ユーザーのバッファの状態を取得してテンプレートにセット
+# @summary ユーザーのバッファの状態を取得してテンプレートにセット
 #
 sub set_buffer_info {
     my $self    = shift;
@@ -393,15 +391,13 @@ sub set_buffer_info {
     }
 
     # check exist of temporary buffer
-    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
+    if($self->{git}->is_exist_user_branch($uid, "tmp")
       && $self->{git}->is_updated_buffer($uid)){
         push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
 }
 
-
-############################################################
-#ドキュメントのログを取得
+# @summary ドキュメントのログを取得
 #
 sub set_document_log(){
     my $self    = shift;
@@ -412,8 +408,7 @@ sub set_document_log(){
     $tmpl->{sharedlist} = $gitctrl->get_shared_logs();
 }
 
-############################################################
-#ドキュメントのログを取得(承認者用)
+# @summary ドキュメントのログを取得(承認者用)
 #
 sub set_user_log {
     my $self = shift;
@@ -445,8 +440,7 @@ sub set_user_log {
     $self->{t}->{userlist} = \@userary;
 }
 
-############################################################
-#ログインユーザー自身の編集バッファのログの取得
+# @summary ログインユーザー自身の編集バッファのログの取得
 #
 sub set_my_log {
     my $self = shift;
@@ -467,8 +461,7 @@ sub set_my_log {
     }
 }
 
-###################################################
-# 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
+# @summary 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
 sub set_approve_list {
     my $self = shift;
@@ -496,7 +489,7 @@ sub set_approve_list {
     $self->{t}->{approve_pre} = 1;
   }
 
-###################################################
+# @summary
 #
 sub set_merge_view {
     my $self     = shift;
@@ -536,8 +529,7 @@ sub set_merge_view {
 }
 
 
-###################################################
-# 指定のユーザーの指定のリヴィジョンを承認して共有化
+# @summary 指定のユーザーの指定のリヴィジョンを承認して共有化
 #
 sub doc_approve {
     my $self = shift;
@@ -552,8 +544,8 @@ sub doc_approve {
 }
 
 
-###################################################
-# MDファイルを作る
+# @summary MDファイルを作る
+#
 sub create_file {
   my $self = shift;
   my $uid  = $self->{s}->param("login");
@@ -581,13 +573,12 @@ sub create_file {
 
   $self->{git}     = GitCtrl->new($workdir);
   $self->{outline} = OutlineCtrl->new($workdir);
-  $self->{git}->init($fid, [$fname, $self->{outline}->{filename}], $self->_get_author($uid));
+  $self->{git}->init($fid, [$fname], $self->_get_author($uid));
 
   $self->dbCommit();
 }
 
-###################################################
-# ドキュメントの新規作成
+# @summary ドキュメントの新規作成
 # @param1 filename
 # @param2 uid
 #
@@ -622,8 +613,7 @@ SQL
   return $fid;
 }
 
-###################################################
-# ユーザーのブランチにアップロードしたファイルをコミットする
+# @summary ユーザーのブランチにアップロードしたファイルをコミットする
 # query1: fid
 # query2: login
 # query3: uploadfile
@@ -666,7 +656,7 @@ sub upload_file {
   return 1;
 }
 
-############################################################
+# @summary
 #
 sub change_file_info {
   my $self = shift;
@@ -689,8 +679,7 @@ sub change_file_info {
   $self->dbCommit();
 }
 
-############################################################
-#指定のバージョンのドキュメントをダウンロード出力する
+# @summary 指定のバージョンのドキュメントをダウンロード出力する
 # @param1 fid
 # @param2 rev
 #
@@ -723,7 +712,7 @@ sub download_file {
   $self->{git}->detach_local() if($rev);
 }
 
-############################################################
+# @summary
 # @param1 uid
 #
 sub _get_account {
@@ -734,33 +723,39 @@ sub _get_account {
   my @ary  = $self->{dbh}->selectrow_array($sql);
   return $ary[0];
 }
-############################################################
+
+# @summary 
 # @param1 uid
 #
 sub _get_nic_name {
-  my $self = shift;
-  my $uid  = shift;
+    my ($self, $uid) = @_;
 
-  my $sql  = "select nic_name from docx_users where id = $uid;";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  return $ary[0];
+    my $sth  = $self->{dbh}->prepare(SQL::user_info);
+    $sth->execute($uid);
+    my $ary = $sth->fetchrow_hashref();
+    my $nic_name = $ary->{nic_name};
+    $sth->finish();
+
+    return $nic_name;
 }
 
-############################################################
+# @summary
 # @param1 uid
 #
 sub _get_author {
-  my $self = shift;
-  my $uid  = shift;
+    my ($self, $uid) = @_;
 
-  my $sql  = "select nic_name || ' <' || mail || '>' from docx_users where id = $uid;";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  return $ary[0];
+    my $sth  = $self->{dbh}->prepare(SQL::user_info);
+    $sth->execute($uid);
+    my $ary = $sth->fetchrow_hashref();
+    my $author = "$ary->{nic_name} <$ary->{mail}>";
+    $sth->finish();
+    return $author;
 }
 
-############################################################
-# MDドキュメントをアウトライン用整形してテンプレートにセットする
-# またドキュメントの情報もテンプレートにセットする
+# @summary
+#  - MDドキュメントをアウトライン用整形してテンプレートにセットする
+#  - またドキュメントの情報もテンプレートにセットする
 #
 sub set_master_outline{
     my $self = shift;
@@ -768,11 +763,12 @@ sub set_master_outline{
     my $fid  = $self->qParam('fid');
     return unless($fid);  # NULL CHECK
 
-    my $sql  = "select file_name from docx_infos where id = ${fid};";
-    my @ary  = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
 
-    my $filename = $ary[0];
+    my $filename = $row->{file_name};
     my $filepath = "$self->{repodir}/${fid}/${filename}";
     my $user     = undef;
     my $revision = undef;
@@ -789,8 +785,10 @@ sub set_master_outline{
 
     my @contents;
 
+    $gitctrl->attach_info();
     $self->{outline}->init();
     my $divides = $self->{outline}->get_divides();
+    $gitctrl->detach_local();
     my $rawdata = paragraphs($data);
 
     my ($i, $j) = (0, 0);
@@ -822,21 +820,17 @@ sub set_master_outline{
             $line =~ s#<h3.*>(.*)</h3>#$1#;
             push @contents, {level => 3, line => $line, num => $j};
         }
-
         $j++;
     }
 
-    if ($dat ne "") {
-        push @$docs, $dat;
-    }
+    push @$docs, $dat  if( $dat ne "" );
 
     $self->{t}->{revision} = $revision;
     $self->{t}->{contents} = \@contents;
     $self->{t}->{docs}     = $docs;
 }
 
-############################################################
-# MDドキュメントをテンプレートにセットする
+# @summary MDドキュメントをテンプレートにセットする
 #
 sub set_buffer_raw{
     my $self     = shift;
@@ -848,8 +842,7 @@ sub set_buffer_raw{
     $self->{t}->{document} = $document;
 }
 
-############################################################
-# MDドキュメントの編集バッファをテンプレートにセットする
+# @summary  MDドキュメントの編集バッファをテンプレートにセットする
 #
 sub set_buffer_md{
     my $self     = shift;
@@ -865,88 +858,92 @@ sub set_buffer_md{
     $self->{t}->{raws} = paragraphs($document);
 }
 
-############################################################
-# MDドキュメントの編集バッファを更新する
+# @summary MDドキュメントの編集バッファを更新する
 #
 sub update_md_buffer {
-  my $self = shift;
+    my $self = shift;
 
-  my $uid  = $self->{s}->param("login");
-  my $fid  = $self->qParam('fid');
-  return 0 unless($uid && $fid);
+    my $uid  = $self->{s}->param("login");
+    my $fid  = $self->qParam('fid');
+    return 0 unless($uid && $fid);
 
-  my $sql  = "select file_name from docx_infos where id = ${fid};";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  unless(@ary){
-    push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    unless($row){
+        push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
     return 0;
-  }
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $document = $self->qParam('document');
-  $document    =~ s#<div>\n##g;
-  $document    =~ s#</div>\n##g;
-  $document    =~ s/\r\n/\n/g;
+    }
 
-  $self->{git}->attach_local_tmp($uid, 1);
+    my $filename = $row->{file_name};
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    my $document = $self->qParam('document');
+    $document    =~ s#<div>\n##g;
+    $document    =~ s#</div>\n##g;
+    $document    =~ s/\r\n/\n/g;
 
-  #ファイル書き込み
-  open my $hF, '>', $filepath || die "failed to read ${filepath}";
-  syswrite $hF, $document;
-  close $hF;
+    $self->{git}->attach_local_tmp($uid, 1);
 
-  my $author = $self->_get_author($self->{s}->param('login'));
-  $self->{git}->commit($filename, $author, "temp saved");
-  $self->{git}->detach_local();
-  push @{$self->{t}->{message}->{info}}, "編集内容を保存しました";
-  return 1;
+    #ファイル書き込み
+    open my $hF, '>', $filepath || die "failed to read ${filepath}";
+    syswrite $hF, $document;
+    close $hF;
+
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->detach_local();
+    push @{$self->{t}->{message}->{info}}, "編集内容を保存しました";
+    return 1;
 }
 
-############################################################
-# MDドキュメントの編集バッファをフィックスする
+# @summary MDドキュメントの編集バッファをフィックスする
 # query1: login
 # query2: fid
 # query3: comment
 #
 sub fix_md_buffer {
-  my $self    = shift;
+    my $self    = shift;
 
-  my $gitctrl = $self->{git};
-  my $uid     = $self->{s}->param("login");
-  my $fid     = $self->qParam('fid');
-  my $comment = $self->qParam('comment');
-  unless($uid && $fid && $comment){
-    push @{$self->{t}->{message}->{error}}, "コメントがないためコミット失敗しました";
-    return 0;
-  }
+    my $gitctrl = $self->{git};
+    my $uid     = $self->{s}->param("login");
+    my $fid     = $self->qParam('fid');
+    my $comment = $self->qParam('comment');
+    unless($uid && $fid && $comment){
+        push @{$self->{t}->{message}->{error}},
+            "コメントがないためコミット失敗しました";
+        return 0;
+    }
 
-  my $ret = $gitctrl->fix_tmp($uid, $self->_get_author($uid), $comment);
-  unless($ret){
-    push @{$self->{t}->{message}->{error}}, "編集バッファのコミットに失敗しました";
-    return 0;
-  }
-  push @{$self->{t}->{message}->{info}}, "コミットしました";
-  push(@{$self->{t}->{message}->{info}}, $gitctrl->{info}) if($gitctrl->{info});
-  return 1;
+    my $ret = $gitctrl->fix_tmp($uid,
+                                $self->_get_author($uid),
+                                $comment);
+    unless($ret){
+        push @{$self->{t}->{message}->{error}},
+            "編集バッファのコミットに失敗しました";
+        return 0;
+    }
+    push @{$self->{t}->{message}->{info}}, "コミットしました";
+    push(@{$self->{t}->{message}->{info}}, $gitctrl->{info})
+        if($gitctrl->{info});
+    return 1;
 }
 
-############################################################
+# @summary
 #
 sub reset_buffer {
-  my $self    = shift;
+    my $self    = shift;
 
-  my $gitctrl = $self->{git};
-  my $uid     = $self->{s}->param("login");
-  my $fid     = $self->qParam('fid');
-  unless( $uid && $fid ){
-    push @{$self->{t}->{message}->{error}}, "不正なアクセスです";
-    return 0;
-  }
-  return $gitctrl->reset_buffer($uid);
+    my $gitctrl = $self->{git};
+    my $uid     = $self->{s}->param("login");
+    my $fid     = $self->qParam('fid');
+    unless( $uid && $fid ){
+        push @{$self->{t}->{message}->{error}}, "不正なアクセスです";
+        return 0;
+    }
+    return $gitctrl->reset_buffer($uid);
 }
 
-############################################################
-# MDドキュメントで管理している画像一覧を取得
+# @summary MDドキュメントで管理している画像一覧を取得
 #
 sub set_md_image{
   my $self   = shift;
@@ -975,43 +972,39 @@ sub set_md_image{
   $self->{t}->{uid}    = $self->{s}->param("login");
 }
 
-############################################################
-# 画像をアップロードしてユーザーの編集バッファにコミット
+# @summary 画像をアップロードしてユーザーの編集バッファにコミット
 #
 sub upload_image {
-  my $self     = shift;
+    my $self     = shift;
+    my $fid      = $self->qParam('fid');
+    my $uid      = $self->{s}->param("login");
+    return 0 unless($fid && $uid);
 
-  my $fid      = $self->qParam('fid');
-  my $uid      = $self->{s}->param("login");
-  return 0 unless($fid && $uid);
+    my $hF       = $self->{q}->upload('imagefile');
+    my $filename = basename($hF);
 
-  my $hF       = $self->{q}->upload('imagefile');
-  my $filename = basename($hF);
+    $self->{git}->attach_local_tmp($uid, 1);
+    my $imgdir    = "$self->{repodir}/${fid}/image";
+    unless(-d $imgdir){
+        mkdir $imgdir, 0774 || die "can't make image directory.";
+    }
+    my $tmppath   = $self->{q}->tmpFileName($hF);
+    my $filepath  = "${imgdir}/${filename}";
+    move ($tmppath, $filepath) || die "Upload Error!. $filepath";
+    close($hF);
+    my $thumbnail = $self->add_thumbnail($fid, $filename);
 
-  $self->{git}->attach_local_tmp($uid, 1);
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->add_image($filepath, $author);
+    $self->{git}->add_image($thumbnail, $author);
 
-  my $imgdir   = "$self->{repodir}/${fid}/image";
-  unless(-d $imgdir){
-    mkdir $imgdir, 0774 || die "can't make image directory.";
-  }
-  my $tmppath  = $self->{q}->tmpFileName($hF);
-  my $filepath = "${imgdir}/${filename}";
-  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
-  close($hF);
-
-  my $thumbnail = $self->add_thumbnail($fid, $filename);
-
-  my $author = $self->_get_author($self->{s}->param('login'));
-  $self->{git}->add_image($filepath, $author);
-  $self->{git}->add_image($thumbnail, $author);
-
-  $self->{git}->detach_local();
-  push @{$self->{t}->{message}->{info}},  "画像をアップロードしました";
-  return 1;
+    $self->{git}->detach_local();
+    push @{$self->{t}->{message}->{info}},
+      "画像をアップロードしました";
+    return 1;
 }
 
-############################################################
-# 画像のサムネイルを作成
+# @summary 画像のサムネイルを作成
 # @param1 fid
 # @param2 ファイル名
 #
@@ -1044,7 +1037,7 @@ sub add_thumbnail {
   return "${thumbdir}/${filename}";
 }
 
-############################################################
+#
 #
 sub delete_image {
   my $self = shift;
@@ -1063,8 +1056,7 @@ sub delete_image {
   return 1;
 }
 
-############################################################
-#指定の画像ファイルを出力
+# @summary 指定の画像ファイルを出力
 #
 sub print_image {
   my $self = shift;
@@ -1113,17 +1105,19 @@ sub print_image {
   $self->{git}->detach_local();
 }
 
-############################################################
+#
 # @param1 uid
 # @param2 fid
 #
 sub get_user_document {
     my ($self, $uid, $fid) = @_;
 
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-    my $filename = $ary[0];
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
+
+    my $filename = $row->{file_name};
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     $self->{git}->attach_local_tmp($uid);
@@ -1133,10 +1127,8 @@ sub get_user_document {
     return $document;
 }
 
-#-------------------------------------------------
 #
 #
-#-------------------------------------------------
 sub count_paragraph {
     my ($self, $data) = @_;
 
@@ -1148,58 +1140,41 @@ sub count_paragraph {
     }
 }
 
-#-------------------------------------------------
 #
 #
-#-------------------------------------------------
 sub change_doc_name {
     my $self     = shift;
     my $fid      = $self->qParam('fid');
     my $doc_name = $self->qParam('doc_name');
     return 0 unless($fid && $doc_name);
 
-    my $sql_update = << "SQL";
-UPDATE docx_infos
-SET doc_name = '${doc_name}'
-WHERE id = ${fid}
-SQL
-    $self->{dbh}->do($sql_update)
-      || errorMessage("Error Update:change_doc_name");
-
+    my $sth = $self->{dbh}->prepare(SQL::document_name_update);
+    $sth->execute($doc_name, $fid);
     $self->dbCommit();
     return 1;
 }
 
-#-------------------------------------------------
 #
 #
-#-------------------------------------------------
 sub listup_groups {
     my $self = shift;
-
-    my $sql = << "SQL";
-SELECT * FROM mddog_groups ORDER BY title
-SQL
-    my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
-      || errorMessage("SQL Error: listup_groups");
-
+    my $ar;
     my $group = $self->param_or_cookie("index", "group");
-    if( $group ){
-        for(@$ar){
-            if( $_->{id} == $group ){
-              $_->{selected} = 1;
-              last;
-            }
+    my $sth = $self->{dbh}->prepare(SQL::group_list);
+    $sth->execute;
+    while( my $row = $sth->fetchrow_hashref() ){
+        if( $group &&  $row->{id} == $group ){
+            $row->{selected} = 1;
         }
+        push @$ar, $row;
     }
 
+    $sth->finish();
     $self->{t}->{groups} = $ar;
 }
 
-#-------------------------------------------------
 #
 #
-#-------------------------------------------------
 sub param_or_cookie{
     my ($self, $prefix, $key) = @_;
 

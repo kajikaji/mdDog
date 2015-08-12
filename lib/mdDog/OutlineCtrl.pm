@@ -40,13 +40,13 @@ sub new {
     filename => "outline.dat",
     workdir  => $workdir,
   };
-
+=pod
   my $filepath = "$hash->{workdir}/$hash->{filename}";
   unless( -f $filepath ){
     open my $hF, ">", $filepath || die "Create Error!. $filepath";
     close($hF);
   }
-
+=cut
   return bless $hash, $pkg;
 }
 
@@ -60,7 +60,11 @@ sub init {
   foreach ('DIVIDE','INDENT','SIZEUP','SIZEDOWN','CENTER') {
     $self->{$_} = undef;
   }
-  return unless(-f $datpath);
+
+  unless( -f $datpath ){
+    open my $hF, ">", $datpath || die "Create Error!. $datpath";
+    close($hF);
+  }
 
   my $document;
   my $pos = 0;
@@ -78,6 +82,21 @@ sub init {
 
     $self->{$action}->{$num} = $comment;
   }
+}
+
+# datファイルの上書き保存
+#
+sub save{
+    my $self = shift;
+    my $datpath = "$self->{workdir}/$self->{filename}";
+    open my $hF, '>', $datpath || die "can't open ${datpath}";
+    foreach (keys %{$self->{'DIVIDE'}}) {
+        my $cnum = $_;
+        my $ccomment = $self->{'DIVIDE'}->{$cnum};
+        my $line = "${cnum}:DIVIDE:${ccomment}\n";
+        print $hF $line;
+    }
+    close $hF;
 }
 
 ####################################################################

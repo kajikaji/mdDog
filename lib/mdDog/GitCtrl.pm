@@ -101,8 +101,8 @@ sub is_exist_user_branch {
     my $tmp  = shift;
 
     my @branches = $self->{git}->branch;
-    my $branch   = "$self->{branch_prefix}${uid}";
-    $branch     .= "_tmp" if($tmp);
+    my $branch   = $uid?"$self->{branch_prefix}${uid}":"master";
+    $branch     .= "_${tmp}" if($tmp);
     return MYUTIL::is_include(\@branches, $branch);
 }
 
@@ -161,7 +161,7 @@ sub get_other_users {
         next if($branch =~ m/master/);
 
         $branch =~ s/$self->{branch_prefix}(.*)/$1/;
-        next if($branch =~ m/[0-9]+_tmp/ );
+        next if($branch =~ m/[0-9]+_(tmp|info)/ );
 #        $branch =~ s/([0-9]+)_tmp/\1/;
         push @users, $branch;
     }
@@ -179,7 +179,7 @@ sub get_branch_root {
     my ($self, $uid, $isTmp) = @_;
 
     my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
-    $branch .= "_tmp" if( $uid && $isTmp );
+    $branch .= "_${isTmp}" if( $uid && $isTmp );
     my @branches = $self->{git}->branch;
     return 0 if(!MYUTIL::is_include(\@branches, $branch));
 
@@ -217,27 +217,34 @@ sub get_branch_latest {
 # @param2 revision
 #
 sub approve {
-  my $self = shift;
-  my $uid = shift;
-  my $revision = shift;
+    my ($self, $uid, $revision) = @_;
 
-  my $branch = "$self->{branch_prefix}${uid}";
-  my $gitctrl = $self->{git};
+    my $branch = "$self->{branch_prefix}${uid}";
+    my $branch_info = "${branch}_info";
+    my $gitctrl = $self->{git};
 
-  my $cnt = 0;
-  $gitctrl->checkout("master");
-  for($gitctrl->log("master.." . $branch)){
-    my $obj = eval {$_};
-    my $rev = $obj->{id};
-    if($rev eq $revision){
-      last;
+    my $cnt = 0;
+    $self->attach_local();
+    $gitctrl->checkout("master");
+    for($gitctrl->log("master.." . $branch)){
+        my $obj = eval {$_};
+        my $rev = $obj->{id};
+        if($rev eq $revision){
+            last;
+        }
+        $cnt++;
     }
-    $cnt++;
-  }
-  my $branch_rebase = $branch;
-  $branch_rebase .= "~${cnt}" if($cnt > 0);
+    my $branch_rebase = $branch;
+    $branch_rebase .= "~${cnt}" if($cnt > 0);
 
-  $gitctrl->rebase($branch_rebase);
+    $gitctrl->rebase($branch_rebase);
+    $self->detach_local();
+
+    $self->remove_info();
+    $self->attach_info();
+    $gitctrl->rebase(${branch_info});
+#    $self->rebase_info($uid);
+    $self->detach_local();
 }
 
 ############################################################
@@ -287,18 +294,52 @@ sub get_diff {
 # @param3 "commit message"
 #
 sub commit {
-  my $self = shift;
-  my $filename = shift;
-  my $author = shift;
-  my $message = shift;
+    my $self = shift;
+    my $filename = shift;
+    my $author = shift;
+    my $message = shift;
 
-  my $gitctrl = $self->{git};
-  if($gitctrl->diff()){
-    $gitctrl->add($filename);
-    $gitctrl->commit({message => $message, author => $author});
+    my $gitctrl = $self->{git};
+    if($gitctrl->diff()){
+        $gitctrl->add($filename);
+        $gitctrl->commit({message => $message, author => $author}); 
+        return 1;
+    }
+    return 0;
+}
+
+############################################################
+# infoリポジトリにコミット
+# @param1 filename
+# @param2 "author"
+#
+sub commit_info {
+    my ($self, $filename, $author) = @_;
+    my $message  = "#UPDATE INFO#";
+
+    my $gitctrl = $self->{git};
+    my @logs    = $gitctrl->log("-n1");
+    if( $logs[0]->message =~ m/#UPDATE INFO#/ ){
+        if($gitctrl->diff()){
+            $gitctrl->add($filename);
+            $gitctrl->commit({
+                message => $message,
+                amend   => 1,
+                author  => $author
+            });
+         }
+        else{
+            return 0;
+        }
+    }
+    else{
+      $gitctrl->add($filename);
+        $gitctrl->commit({
+                message => $message,
+                author  => $author
+        });
+    }
     return 1;
-  }
-  return 0;
 }
 
 ############################################################
@@ -309,6 +350,16 @@ sub edit_commit_message{
 
     my $gitctrl = $self->{git};
     $gitctrl->commit({"message" => $msg, "amend" => 1, "author" => $author});
+}
+
+############################################################
+#
+sub rebase_info{
+    my ($self, $target) = @_;
+    my $br = $target?"$self->{branch_prefix}${target}":"master";
+
+    my $gitctrl = $self->{git};
+    $gitctrl->rebase($br);
 }
 
 ############################################################
@@ -438,7 +489,7 @@ sub attach_local_tmp {
         $gitctrl->checkout($branch);
         $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
     }elsif( !$flg && $flg_tmp ){
-        if( $self->get_branch_root() ne $self->get_branch_root($uid, 1) ){
+        if( $self->get_branch_root() ne $self->get_branch_root($uid, "tmp") ){
             $gitctrl->branch("-D", $branch_tmp);
             $gitctrl->checkout({b => $branch_tmp}) if( $isCreate );
         }else{
@@ -446,6 +497,34 @@ sub attach_local_tmp {
         }
     }else{
         $gitctrl->checkout({b => $branch_tmp}) if($isCreate);
+    }
+}
+
+
+############################################################
+# 情報バッファを用意する
+# @param1 uid
+# @param2 isCreate: 1だと編集バッファを強制で作成
+#
+sub attach_info {
+    my ($self, $uid) = @_;
+
+    $self->lock_dir();
+
+    my $gitctrl     = $self->{git};
+    my @branches    = $gitctrl->branch;
+    my $branch      = $uid?"$self->{branch_prefix}${uid}":"master";
+    my $branch_info = "${branch}_info";
+
+    if( MYUTIL::is_include(\@branches, $branch_info) ){
+        $gitctrl->checkout($branch_info);
+    }
+    elsif( MYUTIL::is_include(\@branches, $branch) ){
+        $gitctrl->checkout($branch);
+        $gitctrl->checkout({b => $branch_info}); # userリポジトリから
+    }
+    else{
+        $gitctrl->checkout({b => $branch_info});
     }
 }
 
@@ -478,6 +557,7 @@ sub fix_tmp {
     my $ret;
     my $branch     = "$self->{branch_prefix}${uid}";
     my $branch_tmp = "${branch}_tmp";
+    my $branch_info = "${branch}_info";
     my $gitctrl    = $self->{git};
 
     $self->lock_dir();
@@ -501,7 +581,11 @@ sub fix_tmp {
             $self->{info} .= "データの変更が見つからないのでコミットされませんでした";
         }
         $gitctrl->checkout($branch);
-        $gitctrl->rebase($branch_tmp);
+        $gitctrl->rebase($branch_tmp);    #ユーザーリポジトリに反映
+
+        $gitctrl->checkout($branch_info);
+        $gitctrl->rebase($branch);        #infoリポジトリに反映
+
         $gitctrl->checkout("master");
     }
     $gitctrl->branch("-D", $branch_tmp);
@@ -523,6 +607,20 @@ sub reset_buffer {
     }
     return 1;
 }
+
+#
+#
+sub remove_info {
+    my ($self, $uid) = @_;
+    my $br = $uid?"$self->{branch_prefix}${uid}_info":"master_info";
+
+    if( $self->is_exist_user_branch($uid, "info") ){
+        $self->lock_dir();
+        $self->{git}->branch("-D", $br);
+        $self->unlock_dir();
+      }
+}
+
 
 ############################################################
 #指定のリヴィジョンにリポジトリを変更する

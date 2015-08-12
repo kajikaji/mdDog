@@ -1571,11 +1571,8 @@ section.BufferMerge{
 
     .Summary{
         margin-left: $left_menu_width;
-        margin-bottom: 20px;
-        padding: 10px;
-        color: #eee;
-        background-color: #333;
-        @include round_corner(5px);
+        margin-bottom: $margin_wd;
+        padding: $margin_wd * 2;
 
         .Ctrl{
             float: right;
@@ -1589,21 +1586,13 @@ section.BufferMerge{
             li{
                 float: left;
                 margin-right: 20px;
-                &:before{
-                    content: "";
-                    display: inline-block;
-                    width: 30px;
-                    height: 20px;
-                    margin-right: 5px;
-                    margin-bottom: -7px;
-                    border :1px solid #aaa;
-                    @include round_corner(5px);
-                }
-                &.Master:before{
-                    background-color: $master_bg;
-                }
-                &.Local:before{
-                    background-color: $local_bg;
+                .Mark{
+                    font-size: 8px;
+                    @include round_corner(10px);
+                    background-color: #000;
+                    color: #fff;
+                    padding: 3px 5px;
+                    margin-right: $margin_wd;
                 }
             }
             @include clearfix();
@@ -1614,7 +1603,6 @@ section.BufferMerge{
         margin-left: $left_menu_width;
         margin-bottom: 50px;
         border: 1px solid #555;
-        @include round_corner(5px);
 
         >div{
           &.Master{
@@ -1632,7 +1620,7 @@ section.BufferMerge{
                 @include round_corner(5px);
                 li{
                     &.Local{
-                        background-color: $local_bg;
+                        background-color: #fff;
                     }
                     &.Master{
                         background-color: $master_bg;
