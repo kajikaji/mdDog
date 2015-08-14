@@ -6,10 +6,10 @@
 
 use strict;no strict "refs";
 use lib '../lib/';
-use mdDogAPI;
+use mdDog::API;
 use MYUTIL;
 
-my $dog = mdDogAPI->new('api');
+my $dog = mdDog::API->new('api');
 $dog->setup_config();
 $dog->login();
 $dog->check_auths("is_edit", "is_admin");

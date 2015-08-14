@@ -6,9 +6,9 @@
 
 use strict;no strict "refs";
 use lib '../lib/';
-use mdDogAPI;
+use mdDog::API;
 
-my $dog = mdDogAPI->new('api');
+my $dog = mdDog::API->new('api');
 $dog->setup_config();
 $dog->login();
 $dog->check_auths("is_owned", "is_admin");

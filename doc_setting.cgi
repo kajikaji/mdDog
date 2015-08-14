@@ -22,10 +22,10 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use mdDogAdmin;
+use mdDog::Admin;
 use Data::Dumper;
 
-my $dog = mdDogAdmin->new();
+my $dog = mdDog::Admin->new();
 $dog->setup_config();
 $dog->login_user_document();
 $dog->check_auths("is_owned", "is_admin");

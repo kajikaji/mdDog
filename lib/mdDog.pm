@@ -34,8 +34,8 @@ use Cwd;
 use Image::Magick;
 use JSON;
 use MYUTIL;
-use mdDog::GitCtrl;
-use mdDog::OutlineCtrl;
+use GitCtrl;
+use OutlineCtrl;
 use SQL;
 use Digest::MD5 qw/md5 md5_hex/;
 

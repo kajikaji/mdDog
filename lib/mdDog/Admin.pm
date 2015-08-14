@@ -1,4 +1,4 @@
-package mdDogAdmin;
+package mdDog::Admin;
 
 # --------------------------------------------------------------------
 # @Author Yoshiaki Hori

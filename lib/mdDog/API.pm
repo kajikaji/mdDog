@@ -1,5 +1,5 @@
 
-package mdDogAPI;
+package mdDog::API;
 
 # --------------------------------------------------------------------
 # @Author Yoshiaki Hori
