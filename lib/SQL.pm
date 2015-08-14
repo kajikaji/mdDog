@@ -42,12 +42,6 @@ WHERE
 SQL
 }
 
-sub group_list {
-    return << "SQL";
-SELECT * FROM mddog_groups ORDER BY title
-SQL
-}
-
 sub document_info {
     return << "SQL";
 SELECT
