@@ -113,7 +113,7 @@
 
           <div class="DocDetail">
           [%IF !info.deleted_at and info.is_used %]
-            <div class="">[<a href="download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
+            <div class="">[<a href="plugin/download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
           [%END %]
             <div class="CreateAt">作成日時:[% info.created_at %]</div>
             <div class="CreatedBy [%IF info.is_owned %]Owned[%END %]">管理者:[% info.created_by %]</div>

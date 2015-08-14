@@ -59,14 +59,14 @@ sub get_data {
         if ( $eid >= 0) {
             my $raw = paragraph_raw($document, $eid);
             my $html = paragraph_html($document, $eid);
-            $raw  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
-            $html =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+            $raw  =~ s#\(plugin/image_viewer\.cgi\?(.*)\)#(plugin/image_viewer.cgi?tmp=1&\1)#g;
+            $html =~ s#\(plugin/image_viewer\.cgi\?(.*)\)#(plugin/image_viewer.cgi?tmp=1&\1)#g;
             $data = [{eid => ${eid}, raw => ${raw}, html => ${html}}];
         } else {
             my $cnt = 0;
             while ( my $ret = paragraph_raw($document, $cnt) ) {
                 last if( $ret =~ m/^\n/ );
-                $ret  =~ s#\(md_imageView\.cgi\?(.*)\)#(md_imageView.cgi?tmp=1&\1)#g;
+                $ret  =~ s#\(plugin/image_viewer\.cgi\?(.*)\)#(plugin/image_viewer.cgi?tmp=1&\1)#g;
                 push @$data, { eid => ${cnt}, raw => ${ret} };
                 $cnt++;
             }
@@ -116,7 +116,7 @@ sub post_data {
     foreach ( @$raws ) {
         my $raw = $_;
         my $md = markdown($raw);
-        $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&\1"#g;
+        $md =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?tmp=1&\1"#g;
         push @$mds, {md => $md, raw => $raw};
         $cnt++;
     }
@@ -690,7 +690,7 @@ sub clear_user_buffer {
 
     my $document = $self->get_user_document($uid, $fid);
     my $md       = markdown($document);
-    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&$1" #g;
+    $md =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?tmp=1&$1" #g;
     my $rows     = paragraphs($document);
 
     my $json = JSON->new();

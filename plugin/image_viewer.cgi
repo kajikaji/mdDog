@@ -19,19 +19,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
+#
+# 画像をバイナリ出力する
 
 use strict; no strict "refs";
-use lib './lib/';
+use lib '../lib/';
 use mdDog;
-use Data::Dumper;
+use MYUTIL;
 
-my $dog =mdDog->new();
+my $dog = mdDog->new('/plugin');
 $dog->setup_config();
+$dog->login();
 
-my $fid = $dog->qParam('fid');
-my $rev = $dog->qParam('revision');
+return if(!$dog->qParam('fid'));
 
-exit() unless($fid);
+$dog->print_image();
 
-$dog->download_file($fid, $rev);
 exit();

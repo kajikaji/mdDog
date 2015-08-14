@@ -832,7 +832,7 @@ sub set_master_outline{
 
         my $line = markdown($_);
         $line =~ s#^<([a-z1-9]+)>#<$1 id="document${j}">#;
-        $line =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?master=1&$1" #g;
+        $line =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?master=1&$1" #g;
         $dat .= $line;
 
         #目次の生成
@@ -882,7 +882,7 @@ sub set_buffer_md{
     my $fid      = $self->qParam('fid');
     my $document = $self->get_user_document($uid, $fid);
     my $md       = markdown($document);
-    $md =~ s#"md_imageView\.cgi\?(.*)"#"md_imageView.cgi?tmp=1&$1" #g;
+    $md =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?tmp=1&$1" #g;
 
     $self->{t}->{markdown} = $md;
     $self->{t}->{raws} = paragraphs($document);
