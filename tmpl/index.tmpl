@@ -42,7 +42,7 @@
               <li><a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a></li>
 
               [%IF info.is_editable || is_admin %]
-                <li><a href="edit_buffer.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a></li>
+                <li><a href="doc_editor.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a></li>
               [%ELSE %]
                 <li><span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span></li>
               [%END %]

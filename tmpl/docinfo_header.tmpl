@@ -13,7 +13,7 @@
     [%IF login %]
       <li [%SWITCH SUBMENU %][%CASE ["edit_buffer" "edit_image" "edit_source" "edit_upload" "edit_log" "edit_merge"] %]class="Selected"[% END %]>
       [%IF is_editable || is_admin %]
-        <a href="edit_buffer.cgi?fid=[% fid %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
+        <a href="doc_editor.cgi?fid=[% fid %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a>
       [%ELSE %]
         <span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span>
       [%END %]
