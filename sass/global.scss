@@ -783,13 +783,17 @@ section.Top{
 
     .NewDocument { 
       float: right;
-      span.typcn{
-          margin-right: $margin_wd;
-      }
-      +.Caution {
-        font-size: 60%;
-        margin-left: 10px;
-        color: #f00;
+      a.Button{
+          background-color: #fff;
+          border-color: $border_color;
+          span.typcn{
+              margin-right: $margin_wd;
+          }
+          +.Caution {
+              font-size: 60%;
+              margin-left: 10px;
+              color: #f00;
+          }
       }
     } // .Subject
 

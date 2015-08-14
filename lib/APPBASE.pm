@@ -26,6 +26,7 @@ use CGI::Cookie;
 use CGI::Session;
 use Template;
 use DBI;
+use Teng::Schema::Loader;
 use constant TRUE => 1;
 use constant FALSE => 0;
 
@@ -61,6 +62,7 @@ sub new {
     dsn         => undef,       # you must edit into 'SCONFIG';
     duser       => undef,       # you must edit into 'SCONFIG';
     dpass       => undef,       # you must edit into 'SCONFIG';
+    teng        => undef,
   };
 
   $hash = DEFINE::param($hash, $relative);
@@ -157,12 +159,17 @@ sub print_page {
 # RETURN  : NONE
 # =============================================================================#
 sub connectDb {
-  my $self = shift;
+    my $self = shift;
 
-  $self->{dbh} = DBI->connect_cached(
+    $self->{dbh} = DBI->connect_cached(
                     $self->{dsn}, $self->{duser}, $self->{dpass},
                     {AutoCommit => 0, RaiseError => 0, RowCacheSize => 1000}
                  ) || $self->errorMessage("ERROR: cannot connect to database (" . $self->{cginame} . " )", TRUE);
+
+    $self->{teng} = Teng::Schema::Loader->load(
+        dbh       => $self->{dbh},
+        namespace => 'mdDog::DB'
+    );
 }
 
 # =============================================================================#

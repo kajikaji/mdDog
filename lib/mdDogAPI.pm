@@ -24,7 +24,7 @@ package mdDogAPI;
 use strict; no strict "subs";
 use parent mdDog;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
-use SQL;
+use Digest::MD5 qw/md5 md5_hex/;
 
 use constant USER_AUTH_ADMIN   => 1;
 use constant USER_AUTH_APPROVE => 2;
@@ -147,10 +147,12 @@ sub delete_data {
 
     #ファイル書き込み
     # TODO: ファイル名取得ルーチンが重複！
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-    my $filename = $ary[0];
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
+    my $filename = $row->{file_name};
+    $sth->finish();
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     open my $hF, '>', $filepath || return undef;
@@ -176,115 +178,117 @@ sub delete_data {
 #[API] アウトラインで改ページを加える
 #
 sub outline_add_divide {
-  my $self = shift;
+    my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
+    my $fid = $self->qParam('fid') + 0;
 
-  my $num = $self->qParam('num');
-  my $author = $self->_get_author($self->{s}->param('login'));
-  my $comment = "INSERT DIVIDE";
-#  $self->{git}->attach_local_tmp($uid, 1);
-  $self->{git}->attach_info($uid);
-  $self->{outline}->insert_divide($num, $comment);
-#  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
-  $self->{git}->commit_info($self->{outline}->{filename}, $author);
-  $self->{git}->detach_local();
-  my $json = JSON->new();
-  return $json->encode({action => 'divide',num => ${num}});
+    my $num = $self->qParam('num');
+    my $author = $self->_get_author($self->{s}->param('login'));
+    my $comment = "INSERT DIVIDE";
+    #  $self->{git}->attach_local_tmp($uid, 1);
+    $self->{git}->attach_info($uid);
+    $self->{outline}->insert_divide($num, $comment);
+    #  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
+    $self->{git}->detach_local();
+    my $json = JSON->new();
+    return $json->encode({action => 'divide',num => ${num}});
 }
 
 ############################################################
 #[API] アウトラインに設定された改ページを削除する
 #
 sub outline_remove_divide {
-  my $self = shift;
+    my $self = shift;
 
-  my $uid = $self->{s}->param("login");
-  return unless($uid);
-  my $fid = $self->qParam('fid') + 0;
+    my $uid = $self->{s}->param("login");
+    return unless($uid);
+    my $fid = $self->qParam('fid') + 0;
 
-  my $num = $self->qParam('num');
-  my $author = $self->_get_author($self->{s}->param('login'));
-  my $comment = "REMOVE DIVIDE";
-#  $self->{git}->attach_local_tmp($uid, 1);
-  $self->{git}->attach_info($uid);
-  $self->{outline}->remove_divide($num);
-  $self->{git}->commit_info($self->{outline}->{filename}, $author);
-  $self->{git}->detach_local();
-  my $json = JSON->new();
-  return $json->encode({action => 'undivide',num => ${num}});
+    my $num = $self->qParam('num');
+    my $author = $self->_get_author($self->{s}->param('login'));
+    my $comment = "REMOVE DIVIDE";
+    #  $self->{git}->attach_local_tmp($uid, 1);
+    $self->{git}->attach_info($uid);
+    $self->{outline}->remove_divide($num);
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
+    $self->{git}->detach_local();
+    my $json = JSON->new();
+    return $json->encode({action => 'undivide',num => ${num}});
 }
 
 ############################################################
 #[API] 指定のrevisionのJSONデータを返す
 #
 sub get_revisiondata {
-  my $self = shift;
+    my $self = shift;
 
-  my $fid = $self->qParam('fid');
-  my $sql = "select file_name from docx_infos where id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
+    my $fid = $self->qParam('fid');
+    my $sql = "select file_name from docx_infos where id = ${fid};";
+    my @ary = $self->{dbh}->selectrow_array($sql);
+    return unless(@ary);
 
-  my $filename = $ary[0];
-  my $filepath = "$self->{repodir}/${fid}/${filename}";
-  my $document;
-  my $revision = $self->qParam('revision');
-  my $user = $self->qParam('user');
-  $user = undef if($user == 0);
+    my $filename = $ary[0];
+    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    my $document;
+    my $revision = $self->qParam('revision');
+    my $user = $self->qParam('user');
+    $user = undef if($user == 0);
 
-  my $gitctrl = $self->{git};
+    my $gitctrl = $self->{git};
 
-  my $user_root = $gitctrl->get_branch_latest($user);
-  $revision = $user_root unless($revision);
-  my $oneLog = $gitctrl->one_log($revision);
+    my $user_root = $gitctrl->get_branch_latest($user);
+    $revision = $user_root unless($revision);
+    my $oneLog = $gitctrl->one_log($revision);
 
-  $gitctrl->attach_local($user);
-  $gitctrl->checkout_version($revision);
+    $gitctrl->attach_local($user);
+    $gitctrl->checkout_version($revision);
 
-  open my $hF, '<', $filepath || die "failed to read ${filepath}";
-  my $pos = 0;
-  while (my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
-  }
-  close $hF;
+    open my $hF, '<', $filepath || die "failed to read ${filepath}";
+    my $pos = 0;
+    while (my $length = sysread $hF, $document, 1024, $pos) {
+        $pos += $length;
+    }
+    close $hF;
 
-  $gitctrl->detach_local();
-  my $json = JSON->new();
-  return $json->encode({
-      name => $filename,
-      document => markdown($document),
-      revision => $revision,
-      commitDate => MYUTIL::format_date1($oneLog->{attr}->{date}),
-      commitMessage => $oneLog->{message},
-  });
+    $gitctrl->detach_local();
+    my $json = JSON->new();
+    return $json->encode({
+        name => $filename,
+        document => markdown($document),
+        revision => $revision,
+        commitDate => MYUTIL::format_date1($oneLog->{attr}->{date}),
+        commitMessage => $oneLog->{message},
+    });
 }
 
 ############################################################
 #[API] 指定のrevisionの差分を返す
 #
 sub get_diff {
-  my $self = shift;
+    my $self = shift;
+    my $fid = $self->qParam('fid');
 
-  my $fid = $self->qParam('fid');
-  my $sql = "SELECT file_name FROM docx_infos WHERE id = ${fid};";
-  my @ary = $self->{dbh}->selectrow_array($sql);
-  return unless(@ary);
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
+    my $filename = $row->{file_name};
+    $sth->finish();
 
-  my $filename = $ary[0];
-  my $revision = $self->qParam('revision');
-  my $dist     = $self->qParam('dist');
-  my $diff     = $self->{git}->get_diff($filename, $revision, $dist);
+    my $revision = $self->qParam('revision');
+    my $dist     = $self->qParam('dist');
+    my $diff     = $self->{git}->get_diff($filename, $revision, $dist);
 
-  my $json = JSON->new();
-  return $json->encode({
-      name     => $filename,
-      revision => $revision,
-      dist     => $dist?$dist:'ひとつ前',
-      diff    => $diff,
-  });
+    my $json = JSON->new();
+    return $json->encode({
+        name     => $filename,
+        revision => $revision,
+        dist     => $dist?$dist:'ひとつ前',
+        diff    => $diff,
+    });
 }
 
 ############################################################
@@ -306,21 +310,11 @@ sub restruct_document {
 
     $gitctrl->attach_local($uid, 1);
 
-=pod
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-    my $filename = $ary[0];
-=cut
-    my $sql = SQL::document_info;
-    $sql .= " limit 1";
-    my $sth = $self->{dbh}->prepare($sql);
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
     $sth->execute($fid);
     my $row = $sth->fetchrow_hashref();
     return unless($row);
     my $filename = $row->{file_name};
-    $sth->finish();
-
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     open my $hF, '>', $filepath || return undef;
@@ -330,16 +324,6 @@ sub restruct_document {
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->commit($filename, $author, $log);
 
-    $gitctrl->detach_local();
-
-    $gitctrl->attach_info($uid);
-    $self->{outline}->init();
-    $gitctrl->detach_local();
-    $gitctrl->remove_info($uid);
-    $gitctrl->attach_info($uid);
-    $self->{outline}->save();
-    $gitctrl->commit_info($self->{outline}->{filename},
-                          $self->_get_author($self->{s}->param('login')));
     $gitctrl->detach_local();
 
     my $json = JSON->new();
@@ -358,36 +342,26 @@ sub add_account {
     my $password = $self->qParam('password');
     return unless( $account && $nicname && $mail && $password);
 
-    my $sql_insert = << "SQL";
-INSERT INTO docx_users
-  (account, nic_name, mail, password, created_at)
-VALUES
-  ('${account}', '${nicname}', '${mail}', md5('${password}'), now())
-SQL
-
-    $self->{dbh}->do($sql_insert)
-      || die("DB Error: add account");
+    my $row = $self->{teng}->insert('docx_users' => {
+        'account'    => $account,
+        'nic_name'   => $nicname,
+        'mail'       => $mail,
+        'password'   => md5_hex(${password}),
+        'created_at' => 'now()',
+     });
     $self->dbCommit();
-
-    my $sql = << "SQL";
-SELECT * FROM docx_users
-WHERE id = currval('docx_users_id_seq')
-SQL
-    my $infos = $self->{dbh}->selectrow_hashref($sql)
-      || die("DB Error: get new account", 1);
-
     my $json = JSON->new();
     return $json->encode({
-        id          => $infos->{id},
-        account     => $infos->{account},
-        nic_name    => $infos->{nic_name},
-        mail        => $infos->{mail},
-        may_approve => $infos->{may_approve},
-        may_admin   => $infos->{may_admin},
-        may_delete  => $infos->{may_delete},
-        is_used     => $infos->{is_used},
-        created_at  => MYUTIL::format_date3($infos->{created_at})
-   });
+        id          => $row->id,
+        account     => $row->account,
+        nic_name    => $row->nic_name,
+        mail        => $row->mail,
+        may_approve => $row->may_approve,
+        may_admin   => $row->may_admin,
+        may_delete  => $row->may_delete,
+        is_used     => $row->is_used,
+        created_at  => MYUTIL::format_date3($row->created_at)
+    });
 }
 
 ############################################################
@@ -397,22 +371,20 @@ sub user_used {
     my $self    = shift;
 
     my $uid     = $self->qParam('uid');
-    my $checked = $self->qParam('is_used') eq '1'?'t':'f';
+    my $checked = $self->qParam('is_used') eq '1'?'true':'false';
 
-    my $sql_update = << "SQL";
-UPDATE docx_users
-SET is_used = '${checked}'
-WHERE id = ${uid};
-SQL
-
-    $self->{dbh}->do($sql_update)
-      || die("DB Error: user_used changed");
+    $self->{teng}->update('docx_users' => {
+        is_used => ${checked}
+    }, {
+        id     => $uid
+    });
     $self->dbCommit();
 
-    my $sql = << "SQL";
-SELECT * FROM docx_users WHERE id = ${uid}
-SQL
-    my $infos = $self->{dbh}->selectrow_hashref($sql);
+    my $sth  = $self->{dbh}->prepare(SQL::user_info);
+    $sth->execute($uid);
+    my $infos = $sth->fetchrow_hashref();
+    $sth->finish();
+
     my $json = JSON->new();
     return $json->encode({
         id          => $infos->{id},
@@ -459,7 +431,7 @@ sub _user_auth {
     my $type    = shift;
 
     my $uid     = $self->qParam('uid');
-    my $checked = $self->qParam('checked') eq '1'?'t':'f';
+    my $checked = $self->qParam('checked') eq '1'?'true':'false';
     my $col;
     if(     $type == USER_AUTH_ADMIN ){
         $col = 'may_admin';
@@ -469,20 +441,18 @@ sub _user_auth {
         $col = 'may_delete';
     }
 
-    my $sql_update = << "SQL";
-UPDATE docx_users
-SET ${col} = '${checked}'
-WHERE id = ${uid};
-SQL
-
-    $self->{dbh}->do($sql_update)
-      || die("DB Error: user_used changed");
+    $self->{teng}->update('docx_users' => {
+        ${col} => $checked
+    }, {
+        id => $uid
+    });
     $self->dbCommit();
 
-    my $sql = << "SQL";
-SELECT * FROM docx_users WHERE id = ${uid}
-SQL
-    my $infos = $self->{dbh}->selectrow_hashref($sql);
+    my $sth  = $self->{dbh}->prepare(SQL::user_info);
+    $sth->execute($uid);
+    my $infos = $sth->fetchrow_hashref();
+    $sth->finish();
+
     my $json = JSON->new();
     return $json->encode({
         id          => $infos->{id},
@@ -507,17 +477,19 @@ sub document_user_add {
     my @users = $self->qParam('users[]');
     my $uid   = $self->{s}->param('login');
 
-    my $sql_insert = << "SQL";
-INSERT INTO
-  docx_auths(info_id, user_id, created_at, created_by, updated_at)
-VALUES
-SQL
-    my $sql = "SELECT id,account,nic_name FROM docx_users WHERE id IN (";
+    my $ar_insert;
+    my $sql = SQL::user_info;
+    $sql =~ s/ id = \?/ id IN (/;
 
     my $i = 0;
     foreach(@users) {
-      $sql_insert .= "," if( $i > 0 );
-      $sql_insert .= "(${fid}, $_, now(), ${uid}, now())";
+      push @$ar_insert, {
+          info_id    => $fid,
+          user_id    => $_,
+          created_at => 'now()',
+          created_by => $uid,
+          updated_at => 'now()'
+      };
 
       $sql .= "," if($i > 0);
       $sql .= $_;
@@ -525,13 +497,11 @@ SQL
     }
     $sql .= ')';
 
-    $self->{dbh}->do($sql_insert)
-      || die("DB Error: document_user_add");
+    $self->{teng}->bulk_insert('docx_auths', $ar_insert);
+    $self->dbCommit();
 
     my $data = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
       || die("DB Error+ document_user_add select");
-
-    $self->dbCommit();
 
     my $json = JSON->new();
     return $json->encode($data);
@@ -555,7 +525,9 @@ WHERE
   info_id = ${fid}
   AND user_id in (
 SQL
-    my $sql = "SELECT id,account,nic_name FROM docx_users WHERE id IN (";
+
+    my $sql = SQL::user_info;
+    $sql =~ s/ id = \?/ id IN (/;
 
     my $i = 0;
     foreach(@users) {
@@ -571,11 +543,11 @@ SQL
 
     $self->{dbh}->do($sql_delete)
       || die("DB Error: document_user_delete");
+    $self->dbCommit();
 
     my $data = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
       || die("DB Error+ document_user_add select");
 
-    $self->dbCommit();
 
     my $json = JSON->new();
     return $json->encode($data);
@@ -589,22 +561,20 @@ sub document_user_may_approve {
 
     my $fid   = $self->qParam('fid');
     my $uid   = $self->qParam('uid');
-    my $checked = $self->qParam('checked')?'t':'f';
+    my $checked = $self->qParam('checked')?'true':'false';
 
-    my $sql_update = << "SQL";
-UPDATE docx_auths
-SET may_approve = '${checked}'
-WHERE
-  info_id = ${fid}
-  AND user_id = ${uid};
-SQL
-    $self->{dbh}->do($sql_update)
-      || die("DB Error: document_user_may_approve");
+    $self->{teng}->update('docx_auths' => {
+        may_approve => $checked
+    }, {
+        info_id => $fid,
+        user_id => $uid
+    });
 
-    my $sql = "SELECT * FROM docx_auths WHERE info_id = ${fid} AND user_id = ${uid}";
-    my $info = $self->{dbh}->selectrow_hashref($sql)
-      || die("DB Error: document_user_may_approve select ${sql}");
     $self->dbCommit();
+
+    my $sth = $self->{dbh}->prepare(SQL::auth_info);
+    $sth->execute($fid, $uid);
+    my $info = $sth->fetchrow_hashref();
 
     my $json = JSON->new();
     return $json->encode($info);
@@ -618,22 +588,19 @@ sub document_user_may_edit {
 
     my $fid     = $self->qParam('fid');
     my $uid     = $self->qParam('uid');
-    my $checked = $self->qParam('checked')?'t':'f';
+    my $checked = $self->qParam('checked')?'true':'false';
 
-    my $sql_update = << "SQL";
-UPDATE docx_auths
-SET may_edit = '${checked}'
-WHERE
-  info_id = ${fid}
-  AND user_id = ${uid};
-SQL
-    $self->{dbh}->do($sql_update)
-      || die("DB Error: document_user_may_edit");
-
-    my $sql = "SELECT * FROM docx_auths WHERE info_id = ${fid} AND user_id = ${uid}";
-    my $info = $self->{dbh}->selectrow_hashref($sql)
-      || die("DB Error: document_user_may_edit select ${sql}");
+    $self->{teng}->update('docx_auths' => {
+        may_edit => $checked
+    }, {
+        info_id => $fid,
+        user_id => $uid
+    });
     $self->dbCommit();
+
+    my $sth = $self->{dbh}->prepare(SQL::auth_info);
+    $sth->execute($fid, $uid);
+    my $info = $sth->fetchrow_hashref();
 
     my $json = JSON->new();
     return $json->encode($info);
@@ -646,22 +613,18 @@ sub document_change_public {
     my $self = shift;
 
     my $fid       = $self->qParam('fid');
-    my $is_public = $self->qParam('is_public')?'t':'f';
+    my $is_public = $self->qParam('is_public')?'true':'false';
 
-    my $sql_update = << "SQL";
-UPDATE docx_infos
-SET is_public = '${is_public}'
-WHERE
-  id = ${fid};
-SQL
-
-    $self->{dbh}->do($sql_update)
-      || die("DB Error: document_change_public");
-
-    my $sql = "SELECT * FROM docx_infos WHERE id = ${fid}";
-    my $info = $self->{dbh}->selectrow_hashref($sql)
-      || die("DB Error: document_change_public select ${sql}");
+    $self->{teng}->update('docx_infos' => {
+        is_public => $is_public
+    }, {
+        id => $fid
+    });
     $self->dbCommit();
+
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $info = $sth->fetchrow_hashref();
 
     my $json = JSON->new();
     return $json->encode($info);
@@ -734,9 +697,9 @@ sub clear_user_buffer {
     return $json->encode({md => $md, rows => $rows});
 }
 
-#--------------------------------------------------
+
 #
-#--------------------------------------------------
+#
 sub get_groups {
     my $self = shift;
 
@@ -744,9 +707,8 @@ sub get_groups {
       return $self->get_doc_groups();
     }
 
-    my $sql = << "SQL";
-SELECT * FROM mddog_groups ORDER BY title
-SQL
+    my $sql = SQL::group_list;
+    $sql   .= " ORDER BY title ";
 
     my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
       || die("SQL Error: in 'get_groups' $sql");
@@ -763,15 +725,8 @@ sub get_doc_groups {
 
     return unless( $fid );
 
-    my $sql = << "SQL";
-SELECT
-  g.*
-FROM
-  mddog_groups g
-LEFT OUTER JOIN mddog_doc_group dg ON g.id = dg.group_id
-WHERE
-  dg.doc_id = ${fid}
-SQL
+    my $sql = SQL::doc_group_list;
+    $sql   .= s/\?/${fid}/;
     my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
       || die("SQL Error: in 'get_doc_groups'");
     my $json = JSON->new();
@@ -786,13 +741,9 @@ sub search_groups{
     my $search = $self->qParam('search');
     return unless( $search );
 
-    my $sql = << "SQL";
-SELECT
-  *
-FROM mddog_groups
-WHERE
-  title like '%${search}%'
-SQL
+    my $sql = SQL::group_list;
+    $sql   .= "WHERE title like '%${search}%'";
+
     my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}});
     $ary = "[]" unless( $ary );
     my $json = JSON->new();
@@ -812,34 +763,38 @@ sub add_groups {
 
     #グループの登録
     for (@groups) {
-      my $groupname = $_;
-      my $sql_check = "SELECT * FROM mddog_groups WHERE title = '${groupname}'";
-      if( $self->{dbh}->selectrow_arrayref($sql_check) ){
-        next;
-      }
-      my $sql_insert = << "SQL";
-INSERT INTO mddog_groups
-(title, type, created_by, created_at, updated_at)
- VALUES
-('${groupname}', ${g_type}, ${uid}, now(), now() )
-SQL
-      $self->{dbh}->do($sql_insert);
+        my $groupname = $_;
+        my $sql_check = SQL::group_list;
+        $sql_check   .= " WHERE title = '${groupname}'";
+        if( $self->{dbh}->selectrow_arrayref($sql_check) ){
+            next;
+        }
+
+        $self->{teng}->insert('mddog_groups' => {
+            title      => $groupname,
+            type       => $g_type,
+            created_by => $uid,
+            created_at => 'now()',
+            updated_at => 'now()'
+        });
     }
 
     #ドキュメントのグループ設定付け（一旦消してから再登録）
-    my $sql_groupdelete = "DELETE FROM mddog_doc_group WHERE doc_id = ${fid}";
-    $self->{dbh}->do($sql_groupdelete);
+    $self->{teng}->delete('mddog_doc_group', {
+        doc_id => $fid
+    });
 
     if( @groups ){
-      my $values = "";
-      for( @groups ){
-        $values .= ',' if ( $values =~ m/^\(.*\).*/ );
-        $values .= "(${fid}, (select id from mddog_groups where title = '$_'))";
-      }
-      my $sql_groupadd = << "SQL";
+        my $values = "";
+        for( @groups ){
+            $values .= ',' if ( $values =~ m/^\(.*\).*/ );
+            $values .= "(${fid}, (select id from mddog_groups where title = '$_'))";
+        }
+
+        my $sql_groupadd = << "SQL";
 INSERT INTO mddog_doc_group(doc_id, group_id) VALUES ${values}
 SQL
-      $self->{dbh}->do($sql_groupadd);
+        $self->{dbh}->do($sql_groupadd);
     }
 
     # 不使用のグループは削除

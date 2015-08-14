@@ -415,12 +415,15 @@ section.Top .Main {
   margin-bottom: 20px; }
   section.Top .Main .NewDocument {
     float: right; }
-    section.Top .Main .NewDocument span.typcn {
-      margin-right: 5px; }
-    section.Top .Main .NewDocument + .Caution {
-      font-size: 60%;
-      margin-left: 10px;
-      color: #f00; }
+    section.Top .Main .NewDocument a.Button {
+      background-color: #fff;
+      border-color: #888; }
+      section.Top .Main .NewDocument a.Button span.typcn {
+        margin-right: 5px; }
+      section.Top .Main .NewDocument a.Button + .Caution {
+        font-size: 60%;
+        margin-left: 10px;
+        color: #f00; }
   section.Top .Main .SearchCtrl {
     margin-bottom: 10px; }
     section.Top .Main .SearchCtrl .Label {

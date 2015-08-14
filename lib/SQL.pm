@@ -16,7 +16,7 @@ SQL
 sub user_info {
     return << "SQL";
 SELECT
-  account, mail, nic_name, may_admin, may_approve, may_delete
+  id, account, mail, nic_name, may_admin, may_approve, may_delete
 FROM
   docx_users
 WHERE
@@ -24,16 +24,21 @@ WHERE
 SQL
 }
 
-sub user_info_update {
+sub group_list {
     return << "SQL";
-UPDATE docx_users
-SET
-  account = ?,
-  nic_name = ?,
-  mail = ?,
-  password = md5(?)
+SELECT * FROM mddog_groups
+SQL
+}
+
+sub doc_group_list {
+    return << "SQL";
+SELECT
+  g.*
+FROM
+  mddog_groups g
+LEFT OUTER JOIN mddog_doc_group dg ON g.id = dg.group_id
 WHERE
-  id = ?
+  dg.doc_id = ?
 SQL
 }
 

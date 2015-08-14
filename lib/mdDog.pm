@@ -37,11 +37,11 @@ use MYUTIL;
 use mdDog::GitCtrl;
 use mdDog::OutlineCtrl;
 use SQL;
-use Data::Dumper;
+use Digest::MD5 qw/md5 md5_hex/;
 
 use constant THUMBNAIL_SIZE => 150;
 
-# constructor
+# @summary constructor
 #
 sub new {
     my $pkg   = shift;
@@ -57,7 +57,7 @@ sub new {
     return bless $base, $pkg;
 }
 
-# @summary call at first
+# @summary need to call at first
 #
 sub setup_config {
     my $self = shift;
@@ -82,7 +82,7 @@ sub setup_config {
     $self->SUPER::setup_config();
 }
 
-# @summary
+# @summary アウトラインの改ページ情報の取得
 #
 sub set_outline_buffer{
     my $self = shift;
@@ -158,7 +158,7 @@ sub print_page {
     $self->SUPER::print_page();
 }
 
-# @summary 
+# @summary プロフィールの変更
 #
 sub change_profile{
     my $self = shift;
@@ -184,8 +184,15 @@ sub change_profile{
         return 0;
     }
 
-    my $sth = $self->{dbh}->prepare(SQL::user_info_update);
-    $sth->execute($account, $nic_name, $mail, $password, $uid);
+    $self->{teng}->update('docx_users' => {
+        account => $account,
+        nic_name => $nic_name,
+        mail => $mail,
+        password => md5_hex(${password}),
+    }, {
+      id => $uid
+    });
+
     $self->dbCommit();
     return 1;
 }
@@ -253,7 +260,8 @@ sub check_auths {
     exit();
 }
 
-# @summary 登録されたドキュメント一覧の取得してテンプレートにセット
+############################################################
+#登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
     my ($self) = @_;
@@ -312,7 +320,7 @@ sub listup_documents {
         $self->{t}->{infos} = \@infos;
     }
     my $cnt = $self->{dbh}->selectall_arrayref($sql_cnt)
-        || $self->viewAccident("DB:Error", 1);
+      || $self->viewAccident("DB:Error", 1);
     my $pages = @$cnt / $self->{paging_top};
     my $paging;
     for( my $i = 0; $i < $pages; $i++ ){
@@ -391,11 +399,12 @@ sub set_buffer_info {
     }
 
     # check exist of temporary buffer
-    if($self->{git}->is_exist_user_branch($uid, "tmp")
+    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
       && $self->{git}->is_updated_buffer($uid)){
         push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
 }
+
 
 # @summary ドキュメントのログを取得
 #
@@ -498,10 +507,12 @@ sub set_merge_view {
     my $fid      = $self->qParam("fid");
     my $gitctrl  = $self->{git};
 
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-    my $filename = $ary[0];
+    my $sth = $self->{dbh}->prepare(SQL::document_info);
+    $sth->execute($fid);
+    my $row = $sth->fetchrow_hashref();
+    return unless($row);
+    my $filename = $row->{file_name};
+    $sth->finish();
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     # taking a info from MASTER
@@ -547,35 +558,35 @@ sub doc_approve {
 # @summary MDファイルを作る
 #
 sub create_file {
-  my $self = shift;
-  my $uid  = $self->{s}->param("login");
+    my $self = shift;
+    my $uid  = $self->{s}->param("login");
 
-  my $docname = nkf("-w", $self->qParam('doc_name'));
-  my $filename = nkf("-w", $self->qParam('file_name'));
-  $docname =~ s/^\s*(.*)\s*$/$1/;
-  $docname =~ s/^(.*)\..*$/$1/;
-  return unless($docname);
-  unless( $filename ){
-    $filename = $docname;
-  }else{
-    $filename =~ s/^\s*(.*)\s*$/$1/;
-    $filename =~ s/^(.*)\..*$/$1/;
-  }
-  $filename =~ s/　/ /g;
-  $filename =~ s/\s/_/g;
+    my $docname = nkf("-w", $self->qParam('doc_name'));
+    my $filename = nkf("-w", $self->qParam('file_name'));
+    $docname =~ s/^\s*(.*)\s*$/$1/;
+    $docname =~ s/^(.*)\..*$/$1/;
+    return unless($docname);
+    unless( $filename ){
+        $filename = $docname;
+    } else {
+        $filename =~ s/^\s*(.*)\s*$/$1/;
+        $filename =~ s/^(.*)\..*$/$1/;
+    }
+    $filename =~ s/　/ /g;
+    $filename =~ s/\s/_/g;
 
-  my $fname = $filename . "\.md";
-  my $fid      = $self->_setup_new_file($docname, $fname, $uid);
-  my $workdir  = "$self->{repodir}/${fid}";
-  my $filepath = "${workdir}/${fname}";
-  open my $hF, ">", $filepath || die "Create Error!. $filepath";
-  close($hF);
+    my $fname = $filename . "\.md";
+    my $fid      = $self->_setup_new_file($docname, $fname, $uid);
+    my $workdir  = "$self->{repodir}/${fid}";
+    my $filepath = "${workdir}/${fname}";
+    open my $hF, ">", $filepath || die "Create Error!. $filepath";
+    close($hF);
 
-  $self->{git}     = GitCtrl->new($workdir);
-  $self->{outline} = OutlineCtrl->new($workdir);
-  $self->{git}->init($fid, [$fname], $self->_get_author($uid));
+    $self->{git}     = GitCtrl->new($workdir);
+#    $self->{outline} = OutlineCtrl->new($workdir);
+    $self->{git}->init($fid, [$fname], $self->_get_author($uid));
 
-  $self->dbCommit();
+    $self->dbCommit();
 }
 
 # @summary ドキュメントの新規作成
@@ -583,34 +594,32 @@ sub create_file {
 # @param2 uid
 #
 sub _setup_new_file{
-  my $self     = shift;
-  my $docname  = shift;
-  my $filename = shift;
-  my $uid      = shift;
+    my $self     = shift;
+    my $docname  = shift;
+    my $filename = shift;
+    my $uid      = shift;
 
- my $sql_insert = << "SQL";
-INSERT INTO
-  docx_infos(doc_name, file_name, created_at, created_by)
-VALUES
-  ('$docname', '$filename',now(),$uid);
-SQL
-  $self->{dbh}->do($sql_insert) || $self->errorMessage("DB:Error _setup_new_file infos", 1);
+    my $fid = $self->{teng}->fast_insert('docx_infos' => {
+        'doc_name'   => $docname,
+        'file_name'  => $filename,
+        'created_at' => 'now()',
+        'created_by' => $uid,
+    });
 
-  my $sql_newfile = "SELECT currval('docx_infos_id_seq');";
-  my @ary_id = $self->{dbh}->selectrow_array($sql_newfile);
-  my $fid = $ary_id[0];
-  mkdir("./$self->{repodir}/$fid",0776)
-    || die "Error:_setup_new_file can't make a directory($self->{repodir}/$fid)";
+    mkdir("./$self->{repodir}/$fid",0776)
+      || die "Error:_setup_new_file can't make a directory($self->{repodir}/$fid)";
 
-  my $sql_auth = << "SQL";
-INSERT INTO
-  docx_auths(info_id, user_id, may_approve, may_edit, created_at, created_by, updated_at)
-VALUES
-  (${fid}, ${uid}, 't', 't', now(), ${uid}, now());
-SQL
-  $self->{dbh}->do($sql_auth) || $self->errorMessage("DB:Error _setup_new_file auth", 1);
+    $self->{teng}->fast_insert('docx_auths', => {
+        'info_id'     => $fid,
+        'user_id'     => $uid,
+        'may_approve' => 'true',
+        'may_edit'    => 'true',
+        'created_at'  => 'now()',
+        'created_by'  => $uid,
+        'updated_at'  => 'now()'
+    });
 
-  return $fid;
+    return $fid;
 }
 
 # @summary ユーザーのブランチにアップロードしたファイルをコミットする
@@ -619,64 +628,74 @@ SQL
 # query3: uploadfile
 #
 sub upload_file {
-  my $self = shift;
+    my $self = shift;
 
-  my $fid    = $self->qParam('fid');
-  my $uid    = $self->{s}->param("login");
-  return 0 unless($fid && $uid); # NULL CHECK
+    my $fid    = $self->qParam('fid');
+    my $uid    = $self->{s}->param("login");
+    return 0 unless($fid && $uid); # NULL CHECK
 
-  my $author = $self->_get_author($uid);
-  my $hF     = $self->{q}->upload('uploadfile');
-  unless($hF){
-    push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
-    return 0;
-  }
-  my $filename = basename($hF);
+    my $author = $self->_get_author($uid);
+    my $hF     = $self->{q}->upload('uploadfile');
+    unless($hF){
+        push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
+        return 0;
+    }
+    my $filename = basename($hF);
 
-  my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
-  my @ary_check = $self->{dbh}->selectrow_array($sql_check);
-  if(!@ary_check || $ary_check[0] != $fid){
-    push @{$self->{t}->{message}->{error}}, "違うファイルがアップロードされたため更新されませんでした";
+    my $sql_check = "select id from docx_infos where file_name = '$filename' and is_used = true;";
+    my @ary_check = $self->{dbh}->selectrow_array($sql_check);
+    if(!@ary_check || $ary_check[0] != $fid){
+        push @{$self->{t}->{message}->{error}}, "違うファイルがアップロードされたため更新されませんでした";
+        close($hF);
+        return 0;
+    }
+
+    $self->{git}->attach_local_tmp($uid, 1);
+
+    my $tmppath  = $self->{q}->tmpFileName($hF);
+    my $filepath = $self->{repodir}. "/$fid/$filename";
+    move ($tmppath, $filepath) || die "Upload Error!. $filepath";
     close($hF);
-    return 0;
-  }
 
-  $self->{git}->attach_local_tmp($uid, 1);
-
-  my $tmppath  = $self->{q}->tmpFileName($hF);
-  my $filepath = $self->{repodir}. "/$fid/$filename";
-  move ($tmppath, $filepath) || die "Upload Error!. $filepath";
-  close($hF);
-
-  if(!$self->{git}->commit($filename, $author, "rewrite by an uploaded file")){
-    push @{$self->{t}->{message}->{info}}, "ファイルに変更がないため更新されませんでした";
-  }
-  $self->{git}->detach_local();
-  push @{$self->{t}->{message}->{info}}, "アップロードしたファイルで上書きしました";
-  return 1;
+    if(!$self->{git}->commit($filename, $author, "rewrite by an uploaded file")){
+        push @{$self->{t}->{message}->{info}}, "ファイルに変更がないため更新されませんでした";
+    }
+    $self->{git}->detach_local();
+    push @{$self->{t}->{message}->{info}}, "アップロードしたファイルで上書きしました";
+    return 1;
 }
 
-# @summary
+# @summary ファイルの使用状態を更新
+# @param 'use'/'unuse'/'delete'
 #
 sub change_file_info {
-  my $self = shift;
-  my $ope  = shift;
+    my $self = shift;
+    my $ope  = shift;
 
-  my $fid  = $self->qParam('fid');
-  return unless($fid);  # NULL CHECK
-  my $sql;
+    my $fid  = $self->qParam('fid');
+    return unless($fid);        # NULL CHECK
+    my ($is_used, $deleted_at) = (undef, undef);
 
-  if($ope =~ m/^use$/){
-    $sql = "update docx_infos set is_used = true where id = $fid;";
-  }elsif($ope =~ m/^unuse$/){
-    $sql = "update docx_infos set is_used = false where id = $fid;";
-  }elsif($ope =~ m/^delete$/){
-    $sql = "update docx_infos set deleted_at = now() where id = $fid;";
-    File::Path::rmtree(["./$self->{repodir}/$fid"]) || die("can't remove a directory: $fid");
-  }
-  $self->{dbh}->do($sql) || errorMessage("Error:change_file_info = $sql");
+    if($ope =~ m/^use$/){
+        $is_used = 'true';
+    }elsif($ope =~ m/^unuse$/){
+        $is_used = 'false';
+    }elsif($ope =~ m/^delete$/){
+        $deleted_at = 'now()';
+    }
+    $self->{teng}->update('docx_infos' => {
+        is_used    => $is_used,
+        deleted_at => $deleted_at
+    },{
+        id => $fid
+    });
 
-  $self->dbCommit();
+    $self->dbCommit();
+
+    if( $deleted_at ){
+        File::Path::rmtree(["./$self->{repodir}/$fid"])
+              || die("can't remove a directory: $fid");
+    }
 }
 
 # @summary 指定のバージョンのドキュメントをダウンロード出力する
@@ -684,51 +703,56 @@ sub change_file_info {
 # @param2 rev
 #
 sub download_file {
-  my $self = shift;
-  my $fid  = shift;
-  my $rev  = shift;
+    my $self = shift;
+    my $fid  = shift;
+    my $rev  = shift;
 
-  my $sql  = "select file_name from docx_infos where id = $fid;";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  return unless($ary[0]);
-  my $filename = $ary[0];
-  my $filepath = "./$self->{repodir}/$fid/$filename";
+    my $sql  = "select file_name from docx_infos where id = $fid;";
+    my @ary  = $self->{dbh}->selectrow_array($sql);
+    return unless($ary[0]);
+    my $filename = $ary[0];
+    my $filepath = "./$self->{repodir}/$fid/$filename";
 
-  if($rev){
-    $self->{git}->checkout_version($rev);
-  }
+    if($rev){
+        $self->{git}->checkout_version($rev);
+    }
 
-  print "Content-type:application/octet-stream\n";
-  print "Content-Disposition:attachment;filename=$filename\n\n";
+    print "Content-type:application/octet-stream\n";
+    print "Content-Disposition:attachment;filename=$filename\n\n";
 
-  open (DF, $filepath) || die "can't open a file($filename)";
-  binmode DF;
-  binmode STDOUT;
-  while (my $DFdata = <DF>) {
-    print STDOUT $DFdata;
-  }
-  close DF;
+    open (DF, $filepath) || die "can't open a file($filename)";
+    binmode DF;
+    binmode STDOUT;
+    while (my $DFdata = <DF>) {
+        print STDOUT $DFdata;
+    }
+    close DF;
 
-  $self->{git}->detach_local() if($rev);
+    $self->{git}->detach_local() if($rev);
 }
 
-# @summary
+
 # @param1 uid
 #
 sub _get_account {
-  my $self = shift;
-  my $uid  = shift;
+    my $self = shift;
+    my $uid  = shift;
 
-  my $sql  = "select account from docx_users where id = $uid;";
-  my @ary  = $self->{dbh}->selectrow_array($sql);
-  return $ary[0];
+    my $sth  = $self->{dbh}->prepare(SQL::user_info);
+    $sth->execute($uid);
+    my $ary = $sth->fetchrow_hashref();
+    my $account = $ary->{account};
+    $sth->finish();
+
+    return $account;
 }
 
-# @summary 
+
 # @param1 uid
 #
 sub _get_nic_name {
-    my ($self, $uid) = @_;
+    my $self = shift;
+    my $uid  = shift;
 
     my $sth  = $self->{dbh}->prepare(SQL::user_info);
     $sth->execute($uid);
@@ -739,17 +763,19 @@ sub _get_nic_name {
     return $nic_name;
 }
 
-# @summary
+# @summary gitで登録する著者名を返す
 # @param1 uid
 #
 sub _get_author {
-    my ($self, $uid) = @_;
+    my $self = shift;
+    my $uid  = shift;
 
     my $sth  = $self->{dbh}->prepare(SQL::user_info);
     $sth->execute($uid);
     my $ary = $sth->fetchrow_hashref();
     my $author = "$ary->{nic_name} <$ary->{mail}>";
     $sth->finish();
+
     return $author;
 }
 
@@ -767,8 +793,8 @@ sub set_master_outline{
     $sth->execute($fid);
     my $row = $sth->fetchrow_hashref();
     return unless($row);
-
     my $filename = $row->{file_name};
+    $sth->finish();
     my $filepath = "$self->{repodir}/${fid}/${filename}";
     my $user     = undef;
     my $revision = undef;
@@ -820,10 +846,13 @@ sub set_master_outline{
             $line =~ s#<h3.*>(.*)</h3>#$1#;
             push @contents, {level => 3, line => $line, num => $j};
         }
+
         $j++;
     }
 
-    push @$docs, $dat  if( $dat ne "" );
+    if ($dat ne "") {
+        push @$docs, $dat;
+    }
 
     $self->{t}->{revision} = $revision;
     $self->{t}->{contents} = \@contents;
@@ -842,7 +871,8 @@ sub set_buffer_raw{
     $self->{t}->{document} = $document;
 }
 
-# @summary  MDドキュメントの編集バッファをテンプレートにセットする
+
+# @summary MDドキュメントの編集バッファをテンプレートにセットする
 #
 sub set_buffer_md{
     my $self     = shift;
@@ -872,10 +902,11 @@ sub update_md_buffer {
     my $row = $sth->fetchrow_hashref();
     unless($row){
         push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
-    return 0;
+        return 0;
     }
-
     my $filename = $row->{file_name};
+    $sth->finish();
+
     my $filepath = "$self->{repodir}/${fid}/${filename}";
     my $document = $self->qParam('document');
     $document    =~ s#<div>\n##g;
@@ -928,7 +959,7 @@ sub fix_md_buffer {
     return 1;
 }
 
-# @summary
+# @summary 編集バッファを削除
 #
 sub reset_buffer {
     my $self    = shift;
@@ -946,36 +977,37 @@ sub reset_buffer {
 # @summary MDドキュメントで管理している画像一覧を取得
 #
 sub set_md_image{
-  my $self   = shift;
+    my $self   = shift;
 
-  my $uid    = $self->{s}->param("login");
-  return unless($uid);
-  my $fid    = $self->qParam('fid');
-  my $imgdir = "$self->{repodir}/${fid}/image";
+    my $uid    = $self->{s}->param("login");
+    return unless($uid);
+    my $fid    = $self->qParam('fid');
+    my $imgdir = "$self->{repodir}/${fid}/image";
 
-  unless(-d $imgdir){
-    mkdir $imgdir, 0774 || die "can't make image directory.";
-  }
+    unless(-d $imgdir){
+        mkdir $imgdir, 0774 || die "can't make image directory.";
+    }
 
-  $self->{git}->attach_local_tmp($uid);
-  my @images = glob "$imgdir/*";
-  $self->{git}->detach_local();
+    $self->{git}->attach_local_tmp($uid);
+    my @images = glob "$imgdir/*";
+    $self->{git}->detach_local();
 
-  my @imgpaths;
-  foreach (@images) {
-    my $path = $_;
-    $path =~ s#$self->{repodir}/${fid}/image/(.*)$#$1#g;
-    push @imgpaths, $path;
-  }
+    my @imgpaths;
+    foreach (@images) {
+        my $path = $_;
+        $path =~ s#$self->{repodir}/${fid}/image/(.*)$#$1#g;
+        push @imgpaths, $path;
+    }
 
-  $self->{t}->{images} = \@imgpaths;
-  $self->{t}->{uid}    = $self->{s}->param("login");
+    $self->{t}->{images} = \@imgpaths;
+    $self->{t}->{uid}    = $self->{s}->param("login");
 }
 
 # @summary 画像をアップロードしてユーザーの編集バッファにコミット
 #
 sub upload_image {
     my $self     = shift;
+
     my $fid      = $self->qParam('fid');
     my $uid      = $self->{s}->param("login");
     return 0 unless($fid && $uid);
@@ -984,14 +1016,16 @@ sub upload_image {
     my $filename = basename($hF);
 
     $self->{git}->attach_local_tmp($uid, 1);
-    my $imgdir    = "$self->{repodir}/${fid}/image";
+
+    my $imgdir   = "$self->{repodir}/${fid}/image";
     unless(-d $imgdir){
         mkdir $imgdir, 0774 || die "can't make image directory.";
     }
-    my $tmppath   = $self->{q}->tmpFileName($hF);
-    my $filepath  = "${imgdir}/${filename}";
+    my $tmppath  = $self->{q}->tmpFileName($hF);
+    my $filepath = "${imgdir}/${filename}";
     move ($tmppath, $filepath) || die "Upload Error!. $filepath";
     close($hF);
+
     my $thumbnail = $self->add_thumbnail($fid, $filename);
 
     my $author = $self->_get_author($self->{s}->param('login'));
@@ -999,8 +1033,7 @@ sub upload_image {
     $self->{git}->add_image($thumbnail, $author);
 
     $self->{git}->detach_local();
-    push @{$self->{t}->{message}->{info}},
-      "画像をアップロードしました";
+    push @{$self->{t}->{message}->{info}},  "画像をアップロードしました";
     return 1;
 }
 
@@ -1009,106 +1042,106 @@ sub upload_image {
 # @param2 ファイル名
 #
 sub add_thumbnail {
-  my $self     = shift;
-  my $fid      = shift;
-  my $filename = shift;
+    my $self     = shift;
+    my $fid      = shift;
+    my $filename = shift;
 
-  my $imgpath  = "$self->{repodir}/${fid}/image/${filename}";
-  my $thumbdir = "$self->{repodir}/${fid}/thumb";
-  unless(-d $thumbdir){
-    mkdir $thumbdir, 0774 || die "can't make thumbnail directory.";
-  }
+    my $imgpath  = "$self->{repodir}/${fid}/image/${filename}";
+    my $thumbdir = "$self->{repodir}/${fid}/thumb";
+    unless(-d $thumbdir){
+        mkdir $thumbdir, 0774 || die "can't make thumbnail directory.";
+    }
 
-  my $mImg = Image::Magick->new();
-  $mImg->Read($imgpath);
-  my ($w, $h) = $mImg->get('width', 'height');
-  my ($rw, $rh);
-  if ($w > THUMBNAIL_SIZE || $h > THUMBNAIL_SIZE) { #サイズが大きいときだけリサイズ
-      if ($w >= $h) {
-          $rw = THUMBNAIL_SIZE;
-          $rh = THUMBNAIL_SIZE / $w * $h;
-      } else {
-          $rh = THUMBNAIL_SIZE;
-          $rw = THUMBNAIL_SIZE / $h * $w;
-      }
-      $mImg->Resize(width=>$rw, height=> $rh);
-  }
-  $mImg->Write("${thumbdir}/${filename}");
-  return "${thumbdir}/${filename}";
+    my $mImg = Image::Magick->new();
+    $mImg->Read($imgpath);
+    my ($w, $h) = $mImg->get('width', 'height');
+    my ($rw, $rh);
+    if ($w > THUMBNAIL_SIZE || $h > THUMBNAIL_SIZE) { #サイズが大きいときだけリサイズ
+        if ($w >= $h) {
+            $rw = THUMBNAIL_SIZE;
+            $rh = THUMBNAIL_SIZE / $w * $h;
+        } else {
+            $rh = THUMBNAIL_SIZE;
+            $rw = THUMBNAIL_SIZE / $h * $w;
+        }
+        $mImg->Resize(width=>$rw, height=> $rh);
+    }
+    $mImg->Write("${thumbdir}/${filename}");
+    return "${thumbdir}/${filename}";
 }
 
 #
 #
 sub delete_image {
-  my $self = shift;
+    my $self = shift;
 
-  my $fid  = $self->qParam('fid');
-  my $uid  = $self->{s}->param("login");
-  return 0 unless($uid && $fid);
+    my $fid  = $self->qParam('fid');
+    my $uid  = $self->{s}->param("login");
+    return 0 unless($uid && $fid);
 
-  my @selected = ($self->qParam('select_image'));
+    my @selected = ($self->qParam('select_image'));
 
-  $self->{git}->attach_local_tmp($uid);
-  my $author = $self->_get_author($self->{s}->param('login'));
-  $self->{git}->delete_image([@selected], $author);
-  $self->{git}->detach_local();
-  push @{$self->{t}->{message}->{info}}, "画像を削除しました";
-  return 1;
+    $self->{git}->attach_local_tmp($uid);
+    my $author = $self->_get_author($self->{s}->param('login'));
+    $self->{git}->delete_image([@selected], $author);
+    $self->{git}->detach_local();
+    push @{$self->{t}->{message}->{info}}, "画像を削除しました";
+    return 1;
 }
 
 # @summary 指定の画像ファイルを出力
 #
 sub print_image {
-  my $self = shift;
+    my $self = shift;
 
-  my $fid       = $self->qParam('fid');
-  my $image     = $self->qParam('image');
-  my $thumbnail = $self->qParam('thumbnail');
-  my $tmp       = $self->qParam('tmp');
-  my $size      = $self->qParam('size');      # 0 - 100
-  my $uid       = $self->{s}->param("login");
-  return unless($image && $fid);              # NULL CHECK
+    my $fid       = $self->qParam('fid');
+    my $image     = $self->qParam('image');
+    my $thumbnail = $self->qParam('thumbnail');
+    my $tmp       = $self->qParam('tmp');
+    my $size      = $self->qParam('size'); # 0 - 100
+    my $uid       = $self->{s}->param("login");
+    return unless($image && $fid); # NULL CHECK
 
-  $uid = undef if($uid && $self->qParam('master'));
+    $uid = undef if($uid && $self->qParam('master'));
 
-  my $imgpath;
-  unless($thumbnail){
-    $imgpath = "$self->{repodir}/${fid}/image/${image}";
-  } else {
-    $imgpath = "$self->{repodir}/${fid}/thumb/${image}";
-  }
-
-  if($uid && $tmp){
-    $self->{git}->attach_local_tmp($uid);
-  }else{
-    $self->{git}->attach_local($uid);
-  }
-
-  if( -f $imgpath ){
-    my $type = $imgpath;
-    $type =~ s/.*\.(.*)$/$1/;
-    $type =~ tr/A-Z/a-z/;
-
-    print "Content-type: image/${type}\n\n";
-
-    my $mImg = Image::Magick->new();
-    $mImg->Read($imgpath);
-    if( $size > 0 && $size < 100 ){
-        my ($w, $h) = $mImg->get('width', 'height');
-        my $rw = $w * $size / 100;
-        my $rh = $h * $size / 100;
-        $mImg->Resize(width => $rw, height => $rh);
+    my $imgpath;
+    unless($thumbnail){
+        $imgpath = "$self->{repodir}/${fid}/image/${image}";
+    } else {
+        $imgpath = "$self->{repodir}/${fid}/thumb/${image}";
     }
-    binmode STDOUT;
-    $mImg->Write($type . ":-");
-  }
-  $self->{git}->detach_local();
+
+    if($uid && $tmp){
+        $self->{git}->attach_local_tmp($uid);
+    }else{
+        $self->{git}->attach_local($uid);
+    }
+
+    if( -f $imgpath ){
+        my $type = $imgpath;
+        $type =~ s/.*\.(.*)$/$1/;
+        $type =~ tr/A-Z/a-z/;
+
+        print "Content-type: image/${type}\n\n";
+
+        my $mImg = Image::Magick->new();
+        $mImg->Read($imgpath);
+        if( $size > 0 && $size < 100 ){
+            my ($w, $h) = $mImg->get('width', 'height');
+            my $rw = $w * $size / 100;
+            my $rh = $h * $size / 100;
+            $mImg->Resize(width => $rw, height => $rh);
+        }
+        binmode STDOUT;
+        $mImg->Write($type . ":-");
+    }
+    $self->{git}->detach_local();
 }
 
-#
+# @summary 指定のユーザーの編集中のドキュメントの内容を返す
 # @param1 uid
 # @param2 fid
-#
+# @return ドキュメントの内容の文字列
 sub get_user_document {
     my ($self, $uid, $fid) = @_;
 
@@ -1116,8 +1149,8 @@ sub get_user_document {
     $sth->execute($fid);
     my $row = $sth->fetchrow_hashref();
     return unless($row);
-
     my $filename = $row->{file_name};
+    $sth->finish();
     my $filepath = "$self->{repodir}/${fid}/${filename}";
 
     $self->{git}->attach_local_tmp($uid);
@@ -1140,7 +1173,8 @@ sub count_paragraph {
     }
 }
 
-#
+
+# @summary ドキュメントの名称を変更
 #
 sub change_doc_name {
     my $self     = shift;
@@ -1148,33 +1182,44 @@ sub change_doc_name {
     my $doc_name = $self->qParam('doc_name');
     return 0 unless($fid && $doc_name);
 
-    my $sth = $self->{dbh}->prepare(SQL::document_name_update);
-    $sth->execute($doc_name, $fid);
+    $self->{teng}->update('docx_infos' => {
+        doc_name => $doc_name
+    }, {
+        id => $fid
+    });
+
     $self->dbCommit();
     return 1;
 }
+
 
 #
 #
 sub listup_groups {
     my $self = shift;
-    my $ar;
+
+    my $sql = SQL::group_list;
+    $sql   .= " ORDER BY title ";
+    my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
+      || errorMessage("SQL Error: listup_groups");
+
     my $group = $self->param_or_cookie("index", "group");
-    my $sth = $self->{dbh}->prepare(SQL::group_list);
-    $sth->execute;
-    while( my $row = $sth->fetchrow_hashref() ){
-        if( $group &&  $row->{id} == $group ){
-            $row->{selected} = 1;
+    if( $group ){
+        for(@$ar){
+            if( $_->{id} == $group ){
+              $_->{selected} = 1;
+              last;
+            }
         }
-        push @$ar, $row;
     }
 
-    $sth->finish();
     $self->{t}->{groups} = $ar;
 }
 
-#
-#
+# @summary  任意の値をクエリパラメータから取得、クエリパラメータになければクッキーから取得して返す
+# @param    プレフィックス
+# @param    キー
+# @return 　値
 sub param_or_cookie{
     my ($self, $prefix, $key) = @_;
 
