@@ -22,9 +22,9 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use mdDog;
+use mdDog::Doc;
 
-my $dog =mdDog->new();
+my $dog = mdDog::Doc->new();
 $dog->setup_config();
 $dog->login();
 $dog->check_auths("all");

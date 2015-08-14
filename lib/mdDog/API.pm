@@ -55,7 +55,7 @@ sub get_data {
             }
         }
     } else {
-        my $document = $self->get_user_document($uid, $fid);
+        my $document = $self->_get_user_document($uid, $fid);
         if ( $eid >= 0) {
             my $raw = paragraph_raw($document, $eid);
             my $html = paragraph_html($document, $eid);
@@ -89,7 +89,7 @@ sub post_data {
     $data .= "\n" if( $data !~ m/(.*)\n*$/);
 #    $data .= "\n" if( $data !~ m/(.*)\n\n$/);
 
-    my $document = $self->get_user_document($uid, $fid);
+    my $document = $self->_get_user_document($uid, $fid);
     $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
 
     #ファイル書き込み
@@ -139,7 +139,7 @@ sub delete_data {
     return unless($uid);
     my $fid = $self->qParam('fid') + 0;
     my $eid = $self->qParam('eid') + 0;
-    my $document = $self->get_user_document($uid, $fid);
+    my $document = $self->_get_user_document($uid, $fid);
 
     $document = alter_paragraph($document, $eid, "");
 
@@ -168,7 +168,7 @@ sub delete_data {
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
 
-    my $raw = paragraph_raw($self->get_user_document($uid, $fid), $eid);
+    my $raw = paragraph_raw($self->_get_user_document($uid, $fid), $eid);
 
     my $json = JSON->new();
     return $json->encode({eid => ${eid}, raw => $raw });
@@ -688,7 +688,7 @@ sub clear_user_buffer {
 
     return unless( $gitctrl->clear_tmp($uid) );
 
-    my $document = $self->get_user_document($uid, $fid);
+    my $document = $self->_get_user_document($uid, $fid);
     my $md       = markdown($document);
     $md =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?tmp=1&$1" #g;
     my $rows     = paragraphs($document);

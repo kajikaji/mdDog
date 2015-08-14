@@ -22,9 +22,9 @@
 
 use strict;no strict "refs";
 use lib './lib';
-use mdDog;
+use mdDog::Doc::Create;
 
-my $dog = mdDog->new();
+my $dog = mdDog::Doc::Create->new();
 $dog->setup_config();
 unless($dog->login()){
     $dog->{t}->{error} = "この操作はログインする必要があります<br>doc_create.cgi";

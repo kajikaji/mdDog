@@ -22,9 +22,9 @@
 
 use strict; no strict "refs";
 use lib './lib/';
-use mdDog;
+use mdDog::Profile;
 
-my $dog = mdDog->new();
+my $dog = mdDog::Profile->new();
 $dog->setup_config();
 unless($dog->login()){
     print "Location: index.cgi\n\n";
