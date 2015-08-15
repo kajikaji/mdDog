@@ -210,6 +210,7 @@ sub outline_remove_divide {
 #
 sub get_revisiondata {
     my $self = shift;
+    my $fid  = $self->qParam("fid");
 
     $self->_set_filename($fid);
     my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
