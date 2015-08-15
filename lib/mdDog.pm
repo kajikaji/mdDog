@@ -49,6 +49,8 @@ sub new {
         repo_prefix => "user_",
         git         => undef,
         outline     => undef,
+
+        filename    => undef,
     };
     @{$base}{keys %{$hash}} = values %{$hash};
 
@@ -438,6 +440,24 @@ sub print_image {
     $self->{git}->detach_local();
 }
 
+# @summary ファイル名をセットする
+# @param fid
+# @return 正常に終了なら1を返す
+sub _set_filename {
+    my ($self, $fid) = @_;
+    return undef unless($fid);
+
+    unless( $self->{filename} ){
+        my $sth = $self->{dbh}->prepare(SQL::document_info);
+        $sth->execute($fid);
+        my $row = $sth->fetchrow_hashref();
+        return undef unless($row);
+        $self->{filename} = $row->{file_name};
+        $sth->finish();
+    }
+    return 1;
+}
+
 # @summary 指定のユーザーの編集中のドキュメントの内容を返す
 # @param1 uid
 # @param2 fid
@@ -445,14 +465,8 @@ sub print_image {
 sub _get_user_document {
     my ($self, $uid, $fid) = @_;
 
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    $sth->finish();
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
-
+    $self->_set_filename($fid);
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     $self->{git}->attach_local_tmp($uid);
     my($document, $pos) = MYUTIL::_fread($filepath);
     $self->{git}->detach_local();

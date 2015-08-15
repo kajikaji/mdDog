@@ -148,13 +148,8 @@ sub set_master_outline{
     my $fid  = $self->qParam('fid');
     return unless($fid);  # NULL CHECK
 
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    $sth->finish();
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    $self->_set_filename($fid);
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     my $user     = undef;
     my $revision = undef;
     my $gitctrl  = $self->{git};
@@ -262,17 +257,11 @@ sub update_md_buffer {
     my $fid  = $self->qParam('fid');
     return 0 unless($uid && $fid);
 
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    unless($row){
+    unless( $self->_set_filename($fid) ){
         push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
         return 0;
     }
-    my $filename = $row->{file_name};
-    $sth->finish();
-
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     my $document = $self->qParam('document');
     $document    =~ s#<div>\n##g;
     $document    =~ s#</div>\n##g;
@@ -286,7 +275,7 @@ sub update_md_buffer {
     close $hF;
 
     my $author = $self->_get_author($self->{s}->param('login'));
-    $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->commit($self->{filename}, $author, "temp saved");
     $self->{git}->detach_local();
     push @{$self->{t}->{message}->{info}}, "編集内容を保存しました";
     return 1;
@@ -301,13 +290,8 @@ sub set_merge_view {
     my $fid      = $self->qParam("fid");
     my $gitctrl  = $self->{git};
 
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    $sth->finish();
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    $self->_set_filename($fid);
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
 
     # taking a info from MASTER
     $gitctrl->attach_local(undef);
@@ -325,7 +309,7 @@ sub set_merge_view {
     foreach(split(/\n/, $doc_user)){
         push @$list_user, $_;
     }
-    my $diff = $gitctrl->get_diff($filename, 'master', 'HEAD');
+    my $diff = $gitctrl->get_diff($self->{filename}, 'master', 'HEAD');
     $gitctrl->detach_local();
 
     $self->{t}->{doc_master} = $list_master;

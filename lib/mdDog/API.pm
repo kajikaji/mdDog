@@ -79,7 +79,7 @@ sub get_data {
 ############################################################
 #[API]
 #
-sub post_data {
+sub update_paragraph {
     my $self = shift;
     my $uid = $self->{s}->param("login");
     return unless($uid);
@@ -93,20 +93,14 @@ sub post_data {
     $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
 
     #ファイル書き込み
-    # TODO: ファイル名取得ルーチンが重複！
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-    my $filename = $ary[0];
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
-
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     $self->{git}->attach_local_tmp($uid, 1);
     open my $hF, '>', $filepath || return undef;
     syswrite $hF, $document, length($document);
     close $hF;
 
     my $author = $self->_get_author($self->{s}->param('login'));
-    $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->commit($self->{filename}, $author, "temp saved");
     $self->{git}->detach_local();
 
     my $mds;
@@ -133,7 +127,7 @@ sub post_data {
 ############################################################
 #[API]
 #
-sub delete_data {
+sub delete_paragraph {
     my $self = shift;
     my $uid = $self->{s}->param("login");
     return unless($uid);
@@ -146,21 +140,13 @@ sub delete_data {
     $self->{git}->attach_local_tmp($uid, 1);
 
     #ファイル書き込み
-    # TODO: ファイル名取得ルーチンが重複！
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    $sth->finish();
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
-
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     open my $hF, '>', $filepath || return undef;
     syswrite $hF, $document, length($document);
     close $hF;
 
     my $author = $self->_get_author($self->{s}->param('login'));
-    $self->{git}->commit($filename, $author, "temp saved");
+    $self->{git}->commit($self->{filename}, $author, "temp saved");
     $self->{git}->detach_local();
 
     $self->{git}->attach_info($uid);
@@ -225,13 +211,8 @@ sub outline_remove_divide {
 sub get_revisiondata {
     my $self = shift;
 
-    my $fid = $self->qParam('fid');
-    my $sql = "select file_name from docx_infos where id = ${fid};";
-    my @ary = $self->{dbh}->selectrow_array($sql);
-    return unless(@ary);
-
-    my $filename = $ary[0];
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
+    $self->_set_filename($fid);
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     my $document;
     my $revision = $self->qParam('revision');
     my $user = $self->qParam('user');
@@ -256,7 +237,7 @@ sub get_revisiondata {
     $gitctrl->detach_local();
     my $json = JSON->new();
     return $json->encode({
-        name => $filename,
+        name => $self->{filename},
         document => markdown($document),
         revision => $revision,
         commitDate => MYUTIL::format_date1($oneLog->{attr}->{date}),
@@ -270,21 +251,15 @@ sub get_revisiondata {
 sub get_diff {
     my $self = shift;
     my $fid = $self->qParam('fid');
-
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    $sth->finish();
+    $self->_set_filename($fid);
 
     my $revision = $self->qParam('revision');
     my $dist     = $self->qParam('dist');
-    my $diff     = $self->{git}->get_diff($filename, $revision, $dist);
+    my $diff     = $self->{git}->get_diff($self->{filename}, $revision, $dist);
 
     my $json = JSON->new();
     return $json->encode({
-        name     => $filename,
+        name     => $self->{filename},
         revision => $revision,
         dist     => $dist?$dist:'ひとつ前',
         diff    => $diff,
@@ -310,19 +285,14 @@ sub restruct_document {
 
     $gitctrl->attach_local($uid, 1);
 
-    my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
-    my $row = $sth->fetchrow_hashref();
-    return unless($row);
-    my $filename = $row->{file_name};
-    my $filepath = "$self->{repodir}/${fid}/${filename}";
-
+    $self->_set_filename($fid);
+    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     open my $hF, '>', $filepath || return undef;
     syswrite $hF, $doc, length($doc);
     close $hF;
 
     my $author = $self->_get_author($self->{s}->param('login'));
-    $self->{git}->commit($filename, $author, $log);
+    $self->{git}->commit($self->{filename}, $author, $log);
 
     $gitctrl->detach_local();
 

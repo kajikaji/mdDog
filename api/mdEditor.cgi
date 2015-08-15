@@ -27,10 +27,10 @@ if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
                 || $dog->qParam('action'));
 
     if(     $dog->qParam('action') eq 'update' ){
-        my $updateData = $dog->post_data();
+        my $updateData = $dog->update_paragraph();
         print $updateData;
     }elsif( $dog->qParam('action') eq 'delete' ){
-        my $ret = $dog->delete_data();
+        my $ret = $dog->delete_paragraph();
         print $ret;
     }
 }
