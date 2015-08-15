@@ -2,13 +2,12 @@
 
 require.config({
     paths: {
-        editBufferHeadline      :'edit_buffer/headline',
-        editBufferCommitForm    :'edit_buffer/commitForm',
-        editBufferEditor        :'edit_buffer/editor',
-        editBufferDivideCtrl    :'edit_buffer/divideCtrl',
-        editBufferParagraphCtrl :'edit_buffer/paragraphCtrl',
-        editBufferMessage       :'edit_buffer/bufferMessage',
-        editBufferMerge         :'edit_buffer/merge'
+        editBufferHeadline      :'doc_editor/headline',
+        editBufferCommitForm    :'doc_editor/commitForm',
+        editBufferEditor        :'doc_editor/editor',
+        editBufferDivideCtrl    :'doc_editor/divideCtrl',
+        editBufferParagraphCtrl :'doc_editor/paragraphCtrl',
+        editBufferMessage       :'doc_editor/bufferMessage'
     },
 
     shim:{
@@ -72,13 +71,6 @@ require(['leftMenu'], function(LeftMenu){
                 }
                 loading.remove();
             }, this));
-        });
-    }
-
-    //mergeビュー
-    if( $('section.BufferMerge').length ){
-        require(['editBufferMerge'], function(Merge){
-            new Merge(getParam('fid')).init();
         });
     }
 

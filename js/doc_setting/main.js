@@ -17,7 +17,8 @@ require.config({
 });
 
 
-require(['docSettingView', 'docSettingUserCtrl','docSettingDocCtrl'], function(View, UserCtrl,DocCtrl){
+require(['docSettingView', 'docSettingUserCtrl','docSettingDocCtrl'],
+        function(View, UserCtrl,DocCtrl){
     var fid_ = getParam('fid');
 
     //権限トグル
@@ -53,6 +54,3 @@ require(['docSettingView', 'docSettingUserCtrl','docSettingDocCtrl'], function(V
         docCtrl.togglePublic($(this));
     });
 });
-
-
-

@@ -1,73 +1,50 @@
 'use strict'
 requirejs.config({
 //    baseUrl: 'js/module',
-    urlArgs: 'rev=20150425',
-    packages : ["modules/tableLog", "edit_buffer", "doc_setting", "doc_group"],
+    urlArgs: 'rev=20150816',
+    packages : [
+        "modules/tableLog",
+        "index",
+        "doc_editor",
+        "doc_setting",
+        "doc_outline"
+    ],
     paths: {
         jquery          :'modules/jquery-1.11.1.min',
         UTIL            :'modules/UTIL',
-        mdOutline       :'modules/mdOutline',
-        mdEditForm      :'modules/mdEditForm',
-        mdOutlineDivide :'modules/mdOutlineDivide',
-        logTableChanger :'modules/logTableChanger',
-        addAccountForm  :'modules/addAccountForm',
-        userManager     :'modules/userManager',
+        logTableChanger :'doc_approve/logTableChanger',
+        addAccountForm  :'admin/addAccountForm',
         leftMenu        :'modules/leftMenu',
-        outlineViewer   :'modules/outlineViewer',
         popupHelper     :'modules/popupHelper',
-        searchGroup     :'modules/searchGroup',
         modalLoading    :'modules/modalLoading',
+        docMerge        :'doc_merge/merge'
     },
     shim: {
-        'mdOutline': {
-            deps: ['jquery']
-        },
-        'logTableChanger': {
-            deps: ['jquery']
-        },
-	    'addAccountForm': {
-	        deps: ['jquery']
-	    },
-        'userManager' : {
-	        deps: ['jquery', 'UTIL']
-	    },
-        'outlineViewer' : {
-	        deps: [
-                'jquery',
-                'leftMenu'
-            ]
-        },
-        'popupHelper' : {
-            deps: [
-                'jquery'
-            ]
-        },
-        'searchGroup' : {
-            deps: [ 'jquery', 'UTIL' ]
-        },
     }
 });
 
 //jQuery読込みと実行
 requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
+    //ドキュメント一覧(グループ編集UI)
+    if( $('body > section.Top').length ){
+        require(['index'], function(){});
+    }
 
     //編集バッファ
-    if( $('section.MdBuffer .BufferEdit.Markdown').length 
-        || $('section.BufferMerge').length ){
-        require(['edit_buffer'], function(Buffer){});
+    if( $('body > section.MdBuffer .BufferEdit.Markdown').length ){
+        require(['doc_editor'], function(Buffer){});
+    }
+
+    //バッファマージ
+    if( $('body > section.BufferMerge').length ){
+        require(['docMerge'], function(Merge){
+            new Merge(getParam('fid')).init();
+        });
     }
 
     //アウトライン出力
     if($('body > section.Outline').length){
-        require(['mdOutline', 'outlineViewer', 'modalLoading'],
-                function(Outline, OutlineViewer, ModalLoading){
-            var loading = new ModalLoading();
-            loading.show($.proxy(function(){
-                new Outline().init();
-                new OutlineViewer().init();
-                loading.remove();
-            }, this));
-        });
+        require(['doc_outline'], function(Outline){});
     }
 
     //承認ページの履歴テーブル制御
@@ -75,8 +52,9 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
         require(['logTableChanger'], function(changer){});
     }
     //履歴テーブルにビューアーの埋め込み
-    if( !$('body > section.Outline').length
-         && $('table.Gitlog').length ){
+    if( $('body > section.DocApprove table.Gitlog').length
+        || $('body > section.Gitlog table.Gitlog').length
+        || $('body > section.BufferLog table.Gitlog').length ){
         require(['modules/tableLog'], function(tableLog){});
     }
 
@@ -87,7 +65,6 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
 
     //ドキュメント設定ページ　ユーザー管理
     if($('.DocSetting').length){
-//        require(['userManager'], function(UserManager){});
         require(['doc_setting'], function(docSetting){});
     }
 
@@ -95,16 +72,5 @@ requirejs(['jquery', 'popupHelper', 'UTIL'], function($, Popup){
     if( $('.PopupHelper').length ){
         new Popup($(this)).init();
     };
-
-    //ドキュメントグループ
-    if( $('.GroupAddCtrl').length ){
-        require(['doc_group'], function(docGroup){});
-    }
-
-    if ( $('#groupSelect').length ){
-        require(['searchGroup'], function(SearchGroup){
-            new SearchGroup($('#groupSelect')).init();
-        });
-    }
 });
 
