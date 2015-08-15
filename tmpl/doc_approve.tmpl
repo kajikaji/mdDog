@@ -46,7 +46,7 @@
   <ul id="bufferList" class="BufferList">
     [%FOREACH user IN userlist %]
     <li id="buffer[% user.uid %]" [%IF loop.first %]class="Active"[% END %]><a>[% user.name %]さんの編集バッファ</a></li>
-    [% END %]
+    [%END %]
   </ul>
 
   [%FOREACH user IN userlist %]
@@ -54,14 +54,17 @@
     [% IF user.loglist.size == 0 %]
       <div class="Description">編集履歴はありません</div>
     [% ELSE %]
-      [% UNLESS user.is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
+      [% UNLESS user.is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[%END %]
 
       [% SET loglist = user.loglist %]
       [% SET is_live = user.is_live %]
       [% INCLUDE table_gitlog.tmpl %]
     [% END %]<!-- if user.loglist -->
   </div>
-  [% END %]<!-- foreach userlist -->
+  [%END %]<!-- foreach userlist -->
+  [%INCLUDE table_gitlog/review_viewer.tmpl %]
+  [%INCLUDE table_gitlog/diff_viewer.tmpl %]
+
   [%ELSE %] <!-- if userlist.size > 0 -->
     <div class="NoList">承認するコミットはありません</div>
   [%END %] <!-- if userlist.size > 0 -->

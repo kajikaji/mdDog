@@ -22,6 +22,8 @@
       [%UNLESS is_live %]<div class="Description Alert">編集状態が古くなっています。次にバッファを保存した際に以下の編集状態は削除されます</div>[% END %]
       [%SET EDIT_LOG = 1 %]
       [%INCLUDE table_gitlog.tmpl %]
+      [%INCLUDE table_gitlog/review_viewer.tmpl %]
+      [%INCLUDE table_gitlog/diff_viewer.tmpl %]
     [%END %]<!-- loglist.size -->
   </div>
 </section>

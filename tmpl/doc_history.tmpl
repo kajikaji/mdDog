@@ -16,6 +16,8 @@
     [%SET loglist = sharedlist %]
     [%SET is_live = 1 %]
     [%INCLUDE table_gitlog.tmpl %]
+    [%INCLUDE table_gitlog/review_viewer.tmpl %]
+    [%INCLUDE table_gitlog/diff_viewer.tmpl %]
   </div>
 
 </section><!-- Gitlog -->
