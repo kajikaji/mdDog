@@ -79,7 +79,10 @@ sub get_shared_logs {
 
     foreach( $self->{git}->log("master") ){
         my $obj = eval {$_};
-        push @logs, $self->adjust_log($obj);
+        my $log = $self->adjust_log($obj);
+        unless( $log->{message} =~ m/^#.*#<br>$/ ){
+            push @logs, $log;
+        }
     }
 
     if( $desc ){
@@ -142,7 +145,10 @@ sub get_user_logs {
     for( $self->{git}->log("master.." . $branch) ){
         my $obj = eval {$_};
         $obj->{user} = $uid;
-        push @userlogs, $self->adjust_log($obj);
+        my $log = $self->adjust_log($obj);
+        unless( $log->{message} =~ m/^#.*#<br>$/ ){
+            push @userlogs, $log;
+        }
     }
 
     return \@userlogs;
