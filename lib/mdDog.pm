@@ -37,8 +37,6 @@ use GitCtrl;
 use OutlineCtrl;
 use SQL;
 
-use constant THUMBNAIL_SIZE => 150;
-
 # @summary constructor
 #
 sub new {

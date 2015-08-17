@@ -133,7 +133,7 @@ define(function(){
                     var length = res.length;
                     imageList.show();
                     for(var i=0; i < res.length; i++){
-                        var img = $('<img>').attr('src', 'md_imageView.cgi?image=' + res[i].filename + '&fid=' + this.fid + '&tmp=1&thumbnail=1');
+                        var img = $('<img>').attr('src', 'plugin/image_viewer.cgi?image=' + res[i].filename + '&fid=' + this.fid + '&tmp=1&thumbnail=1');
                         var nametag = $('<div>').addClass('NameTag').text(res[i].filename);
                         var anch = $('<a>').addClass('Btn').text('挿入');
                         anch.data("image", res[i].filename);
@@ -156,7 +156,7 @@ define(function(){
 
         insertAtCaret: function(filename){
             var obj = $('#editdata' + this.id);
-            var str = '![mdDog](md_imageView.cgi?fid=' + this.fid + '&image=' + filename + ')';
+            var str = '![mdDog](plugin/image_viewer.cgi?fid=' + this.fid + '&image=' + filename + ')';
 
             obj.focus();
             if( navigator.userAgent.match(/MSIE/) ){

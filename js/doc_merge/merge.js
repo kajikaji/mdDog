@@ -57,7 +57,7 @@ define(function(){
                 },
                 timeout: 5000
             }).done(function(res){
-                document.location = 'edit_log.cgi?fid=' + res.fid;
+                document.location = 'doc_userlog.cgi?fid=' + res.fid;
             });
         }
     };

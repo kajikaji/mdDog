@@ -3,6 +3,11 @@ package mdDog::Doc::Image;
 use strict; no strict "subs";
 use parent mdDog::Doc;
 use Image::Magick;
+use File::Copy;
+use File::Basename;
+use File::Path;
+
+use constant THUMBNAIL_SIZE => 150;
 
 # @summary MDドキュメントで管理している画像一覧を取得
 #
