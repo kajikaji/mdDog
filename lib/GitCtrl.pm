@@ -230,9 +230,9 @@ sub get_branch_latest {
 sub approve {
     my ($self, $uid, $revision) = @_;
 
-    my $branch = "$self->{branch_prefix}${uid}";
+    my $branch      = "$self->{branch_prefix}${uid}";
     my $branch_info = "${branch}_info";
-    my $gitctrl = $self->{git};
+    my $gitctrl     = $self->{git};
 
     my $cnt = 0;
     $self->attach_local();
@@ -320,15 +320,16 @@ sub commit {
 }
 
 ############################################################
-# infoリポジトリにコミット
+# infoリポジトリを作ってコミット
 # @param1 filename
 # @param2 "author"
 #
 sub commit_info {
     my ($self, $filename, $author) = @_;
-    my $message  = "#UPDATE INFO#";
 
-    my $gitctrl = $self->{git};
+    my $message     = "#UPDATE INFO#";
+    my $gitctrl     = $self->{git};
+
     my @logs    = $gitctrl->log("-n1");
     if( $logs[0]->message =~ m/#UPDATE INFO#/ ){
         if($gitctrl->diff()){
@@ -527,8 +528,8 @@ sub attach_info {
     my $branch      = $uid?"$self->{branch_prefix}${uid}":"master";
     my $branch_info = "${branch}_info";
 
-    if( MYUTIL::is_include(\@branches, $branch_info) ){
-        $gitctrl->checkout($branch_info);
+    if( MYUTIL::is_include(\@branches, ${branch_info}) ){
+        $gitctrl->checkout(${branch_info});
     }
     elsif( MYUTIL::is_include(\@branches, $branch) ){
         $gitctrl->checkout($branch);
@@ -552,6 +553,27 @@ sub detach_local {
 
 }
 
+
+#
+#
+sub restruct_info {
+    my ($self, $uid) = @_;
+
+    my $gitctrl     = $self->{git};
+    my $branch      = $uid?"$self->{branch_prefix}${uid}":"master";
+    my $branch_info = "${branch}_info";
+    my @branches    = $gitctrl->branch;
+
+    $gitctrl->checkout("master");
+    if( MYUTIL::is_include(\@branches, ${branch_info}) ){
+        $gitctrl->branch("-D", ${branch_info});
+    }
+    if( MYUTIL::is_include(\@branches, ${branch}) ){
+        $gitctrl->checkout(${branch});
+    }
+    $gitctrl->branch(${branch_info});
+    $gitctrl->checkout(${branch_info});
+}
 
 ############################################################
 #編集バッファをユーザーリポジトリに反映

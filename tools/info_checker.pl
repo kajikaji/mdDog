@@ -26,11 +26,12 @@ foreach( readdir($h) ){
     my $git = Git::Wrapper->new($repo);
     my @branches = $git->branch;
     foreach (@branches){
-        print "    $_\n";
-
         my $br = $_;
         $br =~ s/^[\s\*]*(.*)\s*$/$1/;
 
+        print "    $br\n";
+
+        $git->checkout($br);
         my $flgInfo = 0;
         my $flgDel = 0;
         if( ($br =~ m/^master$/ || $br =~ m/^user_\d$/) 
@@ -43,16 +44,15 @@ foreach( readdir($h) ){
         }
 
         if( $flgInfo ){
-            $git->checkout($br);
+#            $git->checkout($br);
             unless( MYUTIL::is_include(\@branches, "${br}_info") ){
                 print "      + make info-repo !!!\n";
                 $git->checkout({b => "${br}_info"});
             }
-            $git->checkout("master");
         }
         if( $flgDel ){
             print "      + delete outline!!!\n";
-            $git->checkout($br);
+#            $git->checkout($br);
             unlink("${repo}/${outline}");
             my $statuses = $git->status({s=>1});
             my @changes =  $statuses->get('changed');
@@ -60,11 +60,12 @@ foreach( readdir($h) ){
                 if( $_->from =~ m/${outline}/ ){
                     $git->rm("${outline}");
                     $git->commit({message => $msg, author => $author});
-                    $git->checkout("master");
+#                    $git->checkout("master");
                     last;
                 }
             }
         }
+        $git->checkout("master");
     }
 }
 closedir($h);

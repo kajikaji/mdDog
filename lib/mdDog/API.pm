@@ -116,6 +116,7 @@ sub update_paragraph {
     }
 
     $self->{git}->attach_info($uid);
+    $self->{outline}->init();
     $self->{outline}->slide_down_divide($eid, $cnt - 1);
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
@@ -150,6 +151,7 @@ sub delete_paragraph {
     $self->{git}->detach_local();
 
     $self->{git}->attach_info($uid);
+    $self->{outline}->init();
     $self->{outline}->slide_up_divide($eid);
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
@@ -173,12 +175,13 @@ sub outline_add_divide {
     my $num = $self->qParam('num');
     my $author = $self->_get_author($self->{s}->param('login'));
     my $comment = "INSERT DIVIDE";
-    #  $self->{git}->attach_local_tmp($uid, 1);
+
     $self->{git}->attach_info($uid);
+    $self->{outline}->init();
     $self->{outline}->insert_divide($num, $comment);
-    #  $self->{git}->commit($self->{outline}->{filename}, $author, $comment);
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
+
     my $json = JSON->new();
     return $json->encode({action => 'divide',num => ${num}});
 }
@@ -196,11 +199,13 @@ sub outline_remove_divide {
     my $num = $self->qParam('num');
     my $author = $self->_get_author($self->{s}->param('login'));
     my $comment = "REMOVE DIVIDE";
-    #  $self->{git}->attach_local_tmp($uid, 1);
+
     $self->{git}->attach_info($uid);
+    $self->{outline}->init();
     $self->{outline}->remove_divide($num);
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
+
     my $json = JSON->new();
     return $json->encode({action => 'undivide',num => ${num}});
 }

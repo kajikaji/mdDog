@@ -61,18 +61,20 @@ sub init {
     $self->{$_} = undef;
   }
 
-  unless( -f $datpath ){
-    open my $hF, ">", $datpath || die "Create Error!. $datpath";
-    close($hF);
-  }
+#  unless( -f $datpath ){
+#    open my $hF, ">", $datpath || die "Create Error!. $datpath";
+#    close($hF);
+#  }
 
   my $document;
   my $pos = 0;
-  open my $hF, '<', $datpath || die "can't open $datpath";
-  while(my $length = sysread $hF, $document, 1024, $pos) {
-    $pos += $length;
+  if( -e $datpath ){
+      open my $hF, '<', $datpath || die "can't open $datpath";
+      while (my $length = sysread $hF, $document, 1024, $pos) {
+          $pos += $length;
+      }
+      close $hF;
   }
-  close $hF;
 
   foreach(split(/\n/, $document)){
     my @cols = split(/:/, $_);
@@ -108,9 +110,6 @@ sub insert_divide {
   my $num = shift;
   my $comment = shift;
 
-  #読込＆解析
-  $self->init();
-
   unless($self->{'DIVIDE'}->{$num}){
     my $datpath = "$self->{workdir}/$self->{filename}";
     open my $hF, '>>', $datpath || die "can't open ${datpath}";
@@ -127,8 +126,6 @@ sub insert_divide {
 sub remove_divide {
   my $self = shift;
   my $num = shift;
-
-  $self->init();
 
   if($self->{'DIVIDE'}->{$num}){
     my $datpath = "$self->{workdir}/$self->{filename}";
@@ -161,7 +158,6 @@ sub get_divides {
 sub slide_down_divide {
     my ($self, $num, $cnt) = @_;
 
-    $self->init();
     for( sort { $a <=> $b } (keys %{$self->{'DIVIDE'}}) ){
         next if( $_ <= $num );
         my $value = $self->{'DIVIDE'}->{$_};
@@ -187,7 +183,6 @@ sub slide_up_divide {
     my ($self, $num) = @_;
     my $cnt = 1;
 
-    $self->init();
     for( sort { $a <=> $b } (keys %{$self->{'DIVIDE'}}) ){
         next if( $_ <= $num );
         my $value = $self->{'DIVIDE'}->{$_};

@@ -102,6 +102,7 @@ sub fix_md_buffer {
     my $gitctrl = $self->{git};
     my $uid     = $self->{s}->param("login");
     my $fid     = $self->qParam('fid');
+    my $author  = $self->_get_author($uid);
     my $comment = $self->qParam('comment');
     unless($uid && $fid && $comment){
         push @{$self->{t}->{message}->{error}},
@@ -109,9 +110,7 @@ sub fix_md_buffer {
         return 0;
     }
 
-    my $ret = $gitctrl->fix_tmp($uid,
-                                $self->_get_author($uid),
-                                $comment);
+    my $ret = $gitctrl->fix_tmp($uid, $author, $comment);
     unless($ret){
         push @{$self->{t}->{message}->{error}},
             "編集バッファのコミットに失敗しました";
@@ -120,6 +119,14 @@ sub fix_md_buffer {
     push @{$self->{t}->{message}->{info}}, "コミットしました";
     push(@{$self->{t}->{message}->{info}}, $gitctrl->{info})
         if($gitctrl->{info});
+
+    $self->{git}->attach_info($uid);
+    $self->{outline}->init();
+    $self->{git}->restruct_info($uid);
+    $self->{outline}->save();
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
+    $self->{git}->detach_local();
+
     return 1;
 }
 
