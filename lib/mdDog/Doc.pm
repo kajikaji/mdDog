@@ -72,7 +72,7 @@ sub set_buffer_info {
     return 0 unless( $fid && $uid );
 
     # check whether current repository has been older than master
-    my $shared_logs = $gitctrl->get_shared_logs();
+    my $shared_logs = $gitctrl->get_shared_logs('raw');
     my $latest_rev;
     if( $shared_logs ){
         $latest_rev = $shared_logs->[0]->{id};
@@ -155,7 +155,7 @@ sub set_master_outline{
     my $gitctrl  = $self->{git};
 
     #MDファイルの更新履歴の整形
-    $self->{t}->{loglist} = $gitctrl->get_shared_logs("DESC");
+    $self->{t}->{loglist} = $gitctrl->get_shared_logs(undef, "DESC");
 
     #ドキュメントの読み込み
     $gitctrl->attach_local($user);

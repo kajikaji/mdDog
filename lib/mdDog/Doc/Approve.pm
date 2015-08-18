@@ -14,7 +14,7 @@ sub set_user_log {
     my @userary;
     my $gitctrl    = $self->{git};
     my $latest_rev = undef;
-    my $doclogs    = $gitctrl->get_shared_logs();
+    my $doclogs    = $gitctrl->get_shared_logs('raw');
     $latest_rev    = $doclogs->[0]->{id} if( @$doclogs );
 
     foreach ( $gitctrl->get_other_users() ) {

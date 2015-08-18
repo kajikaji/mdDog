@@ -70,17 +70,20 @@ sub init{
 
 ############################################################
 #共有リポジトリの履歴を返す
-# @param1 ソート順(任意)
+# @param1 生データ(default)
+# @param2 ソート順(任意)
 #
 sub get_shared_logs {
-    my $self = shift;
-    my $desc = shift;
+    my ($self, $raw, $desc) = @_;
     my @logs;
 
     foreach( $self->{git}->log("master") ){
         my $obj = eval {$_};
         my $log = $self->adjust_log($obj);
-        unless( $log->{message} =~ m/^#.*#<br>$/ ){
+        if( !$raw && $log->{message} !~ m/^#.*#<br>$/ ){
+            push @logs, $log;
+        }
+        elsif( $raw ){
             push @logs, $log;
         }
     }
@@ -137,8 +140,7 @@ sub is_updated_buffer {
 # @param1 uid
 #
 sub get_user_logs {
-    my $self = shift;
-    my $uid = shift;
+    my ($self, $uid, $raw) = @_;
 
     my @userlogs;
     my $branch = "$self->{branch_prefix}${uid}";
@@ -146,7 +148,10 @@ sub get_user_logs {
         my $obj = eval {$_};
         $obj->{user} = $uid;
         my $log = $self->adjust_log($obj);
-        unless( $log->{message} =~ m/^#.*#<br>$/ ){
+        if( !$raw && $log->{message} !~ m/^#.*#<br>$/ ){
+            push @userlogs, $log;
+        }
+        elsif( $raw ){
             push @userlogs, $log;
         }
     }
