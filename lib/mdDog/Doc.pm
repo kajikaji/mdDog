@@ -85,7 +85,7 @@ sub set_buffer_info {
     }
 
     # check exist of temporary buffer
-    if($self->{git}->is_exist_user_branch($uid, {tmp=>1})
+    if($self->{git}->is_exist_user_branch($uid, 'tmp')
       && $self->{git}->is_updated_buffer($uid)){
         push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
