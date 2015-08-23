@@ -1,10 +1,10 @@
 <ul class="BufferEditMenu">
-  <li [%IF SUBMENU=="edit_buffer" %]class="Selected"[%END %]><a href="doc_editor.cgi?fid=[% fid %]" class="PopupHelper" data-info="ドキュメントを編集します"><span class="typcn typcn-edit"></span>edit</a></li>
-  <li [%IF SUBMENU=="edit_image" %]class="Selected"[%END %]><a href="doc_image.cgi?fid=[% fid %]" class="PopupHelper" data-info="画像ファイルを管理します"><span class="typcn typcn-image"></span>image</a></li>
-  <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="doc_source.cgi?fid=[% fid %]" class="PopupHelper" data-info="ドキュメントのソースを直接編集できます"><span class="typcn typcn-document-text"></span>source</a></li>
-  <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="doc_upload.cgi?fid=[% fid %]" class="PopupHelper" data-info="ファイルをアップロードしてドキュメントを更新できます"><span class="typcn typcn-upload-outline"></span>upload</a></li>
-  <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="doc_userlog.cgi?fid=[% fid %]" class="PopupHelper" data-info="コミット履歴を表示します"><span class="typcn typcn-book"></span>log</a></li>
-  <li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="doc_merge.cgi?fid=[% fid %]" class="[%IF is_live %]Disabled[%END %] PopupHelper" data-info="バッファが古くなっています"><span class="typcn typcn-flow-merge"></span>merge</a></li>
+  <li [%IF SUBMENU=="edit_buffer" %]class="Selected"[%END %]><a href="doc_editor.cgi?fid=[% docinfo.fid %]" class="PopupHelper" data-info="ドキュメントを編集します"><span class="typcn typcn-edit"></span>edit</a></li>
+  <li [%IF SUBMENU=="edit_image" %]class="Selected"[%END %]><a href="doc_image.cgi?fid=[% docinfo.fid %]" class="PopupHelper" data-info="画像ファイルを管理します"><span class="typcn typcn-image"></span>image</a></li>
+  <li [%IF SUBMENU=="edit_source" %]class="Selected"[%END %]><a href="doc_source.cgi?fid=[% docinfo.fid %]" class="PopupHelper" data-info="ドキュメントのソースを直接編集できます"><span class="typcn typcn-document-text"></span>source</a></li>
+  <li [%IF SUBMENU=="edit_upload" %]class="Selected"[%END %]><a href="doc_upload.cgi?fid=[% docinfo.fid %]" class="PopupHelper" data-info="ファイルをアップロードしてドキュメントを更新できます"><span class="typcn typcn-upload-outline"></span>upload</a></li>
+  <li [%IF SUBMENU=="edit_log" %]class="Selected"[%END %]><a href="doc_userlog.cgi?fid=[% docinfo.fid %]" class="PopupHelper" data-info="コミット履歴を表示します"><span class="typcn typcn-book"></span>log</a></li>
+  <li [%IF SUBMENU == "edit_merge" %]class="Selected"[%END %]><a href="doc_merge.cgi?fid=[% docinfo.fid %]" class="[%IF is_live %]Disabled[%END %] PopupHelper" data-info="バッファが古くなっています"><span class="typcn typcn-flow-merge"></span>merge</a></li>
   <li><a id="bufferCommitBtn" class="[%UNLESS message.buffered %]Disabled[%END %] PopupHelper" data-info="コミットされていないバッファがあります"><span class="typcn typcn-database"></span>commit</a></li>
 
   [%IF SUBMENU=="edit_buffer" %]
@@ -20,20 +20,20 @@
 <section class="Template">
 <div class="BufferCommitForm" id="bufferCommitForm" style="display: none;">
   <div class="CommitForm">
-    <form name="commitForm" action="?fid=[% fid %]" method="post" class="MdBufferFix">
+    <form name="commitForm" action="?fid=[% docinfo.fid %]" method="post" class="MdBufferFix">
         <div class="Title">コミットフォーム</div>
         <div class="Subject">更新履歴</div>
         <div><textarea name="comment" class="History" rows="3" cols="70"></textarea></div>
         <div class="Ctrl">
           <input type="submit" name="commit" value="コミット" onClick="commitBuffer();">
         </div>
-        <input type="hidden" name="fid" value="[% fid %]">
+        <input type="hidden" name="fid" value="[% docinfo.fid %]">
     </form>
 
-    <form action="?fid=[% fid %]" method="POST" class="ResetBuffer">
+    <form action="?fid=[% docinfo.fid %]" method="POST" class="ResetBuffer">
      <div class="Title">バッファリセット</div>
      <div class="Ctrl">
-       <input type="hidden" name="fid" value="[% fid %]">
+       <input type="hidden" name="fid" value="[% docinfo.fid %]">
        <input type="submit" value="バッファリセット" name="resetBuffer">
      </div>
     </form>

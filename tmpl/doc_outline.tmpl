@@ -18,7 +18,7 @@
 
 <section class="Outline">
   <div class="Cover Page">
-    <div class="Title">[% doc_name %]</div>
+    <div class="Title">[% docinfo.doc_name %]</div>
     <div class="Revision">[% revision %]</div>
   </div>
 
@@ -36,10 +36,10 @@
       <tbody>
         [% FOREACH log IN loglist %]
         <tr class="Log">
-          <td class="Date">[% log.cdate %]</td>
+          <td class="Date">[% log.format_date %]</td>
           <td class="Rev">[% log.sha1_name %]</td>
-          <td class="Message">[% log.message %]</td>
-          <td class="Author">[% log.attr.author %]</td>
+          <td class="Message">[% log.html_message %]</td>
+          <td class="Author">[% log.author_name %]</td>
         </tr>
         [% END %]
       </tbody>

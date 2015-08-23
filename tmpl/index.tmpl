@@ -6,81 +6,81 @@
 <section class="Top">
 
 <div class="Main">
-  [% IF login %]
+  [%IF login %]
   <div class="NewDocument">
     <a href="doc_create.cgi" class="Button"><span class="typcn typcn-plus"></span>新しいドキュメント</a>
   </div>
-  [% END %]
+  [%END %]
   <div class="SearchCtrl">
     <span class="Label">グループ検索</span>
     <select class="GroupSelect" id="groupSelect">
       <option class="Default" value=0>---</option>
-      [%FOREACH group IN groups %]
-      <option class="DocGroup" value="[% group.id %]" [%IF group.selected %]selected[%END %]>[% group.title %]</option>
+      [%FOREACH group IN grouplist %]
+      <option class="DocGroup" value="[% group.gid %]" [%IF group.selected %]selected[%END %]>[% group.name %]</option>
       [%END %]
     </select>
   </div>
-    [%IF login %]
+  [%IF login %]
     <ul class="DocFilter">
       [%UNLESS style %]<li class="Selected">一覧</li>[%ELSE %]<li><a href="?page=0&style=">一覧</a></li>[%END %]
       [%IF style == 'approver' %]<li class="Selected">承認権限</li>[%ELSE %]<li><a href="?page=0&style=approver">承認権限</a></li>[%END %]
       [%IF style == 'dustbox' %]<li class="Selected">ゴミ箱</li>[%ELSE %]<li><a href="?page=0&style=dustbox">ゴミ箱</a></li>[%END %]
     </ul>
-    [%END %]
-  [%IF infos %]
+  [%END %]
 
+  [%IF infos %]
   <table class="DocList">
     <tbody>
-      [% FOREACH info IN infos %]
-      <tr class="[% IF info.is_used %]Active[% ELSE %]Nonactive[% END %] [% IF info.deleted_at %]Deleted[% END %]" id="doc[% info.id %]">
+      [%FOREACH info IN infos %]
+      <tr class="[%IF info.is_used %]Active[%ELSE %]Nonactive[%END %] [%IF info.deleted_at %]Deleted[%END %]" id="doc[% info.fid %]">
         <td class="Info">
 
-          [% UNLESS info.deleted_at %]
+          [%UNLESS info.deleted_at %]
           <ul class="DocCtrl">
             [%IF info.is_used %]
-              <li><a href="doc_history.cgi?fid=[% info.id %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a></li>
-              <li><a href="doc_outline.cgi?fid=[% info.id %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a></li>
+              <li><a href="doc_history.cgi?fid=[% info.fid %]" class="PopupHelper" data-info="履歴"><span class="typcn typcn-book"></span></a></li>
+              <li><a href="doc_outline.cgi?fid=[% info.fid %]" class="PopupHelper" data-info="プレビュー"><span class="typcn typcn-printer"></span></a></li>
 
-              [%IF info.is_editable || is_admin %]
-                <li><a href="doc_editor.cgi?fid=[% info.id %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a></li>
+              [%IF info.is_editable || userinfo.is_admin %]
+                <li><a href="doc_editor.cgi?fid=[% info.fid %]" class="PopupHelper" data-info="編集"><span class="typcn typcn-edit"></span></a></li>
               [%ELSE %]
                 <li><span class="PopupHelper" data-info="編集(権限がありません)"><span class="typcn typcn-edit"></span></span></li>
               [%END %]
 
-              [%IF info.is_approve || is_admin %]
-                <li><a href="doc_approve.cgi?fid=[% info.id %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a></li>
+              [%IF info.is_approval || userinfo.is_admin %]
+                <li><a href="doc_approve.cgi?fid=[% info.fid %]" class="PopupHelper" data-info="承認"><span class="typcn typcn-input-checked"></span></a></li>
               [%ELSE %]
                 <li><span class="PopupHelper" data-info="承認(権限がありません)"><span class="typcn typcn-input-checked"></span></span></li>
               [%END %]
 
-              [%IF info.is_owned || is_admin %]
-                <li><a href="doc_setting.cgi?fid=[% info.id %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a></li>
+              [%IF info.is_owned || userinfo.is_admin %]
+                <li><a href="doc_setting.cgi?fid=[% info.fid %]" class="PopupHelper" data-info="設定"><span class="typcn typcn-cog-outline"></span></a></li>
               [%ELSE %]
                 <li><span class="PopupHelper" data-info="設定(権限がありません）"><span class="typcn typcn-cog-outline"></span></span></li>
               [%END %]
             [%END %]
             <li><form action="" method="post" class="Warn">
             [%IF info.is_used %]
-              [%IF info.is_owned || is_admin || is_delete %]
+              [%IF info.is_owned || userinfo.is_admin %]
                 <button type="submit" name="unuse" value="1" class="PopupHelper" data-info="削除"><span class="typcn typcn-trash"></span></button>
               [%ELSE %]
                 <span  class="PopupHelper" data-info="削除(権限がありません)"><span class="typcn typcn-trash"></span></span>
               [%END %]
-            [% ELSE %]
-              [%IF info.is_owned || is_admin || is_delete %]
+            [%ELSE %]
+              [%IF info.is_owned || userinfo.is_admin %]
                 <button type="submit" name="use" value="1" class="PopupHelper" data-info="復旧"><span class="typcn typcn-power-outline"></span></button>
                 <button type="submit" name="delete" value="1" class="PopupHelper" data-info="完全に削除"><span class="typcn typcn-times"></span></button>
               [%ELSE %]
                 <span  class="PopupHelper" data-info="復旧(権限がありません)"><span class="typcn typcn-power-outline"></span></span>
                 <span class="PopupHelper" data-info="完全に削除(権限がありません)"><span class="typcn typcn-times"></span></span>
               [%END %]
-            [% END %]
+            [%END %]
               <input type="hidden" name="style" value="[% style %]">
               <input type="hidden" name="page" value="[% page %]">
-              <input type="hidden" name="fid" value="[% info.id %]">
+              <input type="hidden" name="fid" value="[% info.fid %]">
             </form></li>
           </ul>
-          [% END %] <!-- UNLESS info.deleted_at -->
+          [%END %] <!-- UNLESS info.deleted_at -->
           
           <div class="DocSubject">
 	        <div class="Name">
@@ -88,24 +88,24 @@
             <i class="Mark Round Green">P</i>
             [%END %]
 
-              [% IF info.deleted_at %]
+              [%IF info.deleted_at %]
                 [% info.doc_name %]
-              [% ELSIF info.is_used %]
-                <a href="doc_history.cgi?fid=[% info.id %]">[% info.doc_name %]</a>
-              [% ELSE %]
+              [%ELSIF info.is_used %]
+                <a href="doc_history.cgi?fid=[% info.fid %]">[% info.doc_name %]</a>
+              [%ELSE %]
                 [% info.doc_name %]
-              [% END %]
+              [%END %]
 	        </div>
             <div class="DocSubInfo">
-              [%IF info.is_used && (info.is_editable || is_admin) %]
+              [%IF info.is_used && (info.is_editable || userinfo.is_admin) %]
                 <div class="GroupAddCtrl">
-                  <button class="PopupHelper" data-info="グループの設定" data-fid="[% info.id %]"><span class="typcn typcn-tag"></span></button>
+                  <button class="PopupHelper" data-info="グループの設定" data-fid="[% info.fid %]"><span class="typcn typcn-tag"></span></button>
                 </div>
               [%END %]
 
               <ul class="Tags">
-                [%FOREACH groupname IN info.groups %]
-                  <li class="GroupTag"><div>[% groupname %]</div></li>
+                [%FOREACH group IN info.groups %]
+                  <li class="GroupTag"><div>[% group.name %]</div></li>
                 [%END %]
               </ul>
             </div>
@@ -113,12 +113,12 @@
 
           <div class="DocDetail">
           [%IF !info.deleted_at and info.is_used %]
-            <div class="">[<a href="plugin/download.cgi?fid=[% info.id %]">最新版DL</a>]</div>
+            <div class="">[<a href="plugin/download.cgi?fid=[% info.fid %]">最新版DL</a>]</div>
           [%END %]
-            <div class="CreateAt">作成日時:[% info.created_at %]</div>
+            <div class="CreateAt">作成日時:[% info.format_created_at %]</div>
             <div class="CreatedBy [%IF info.is_owned %]Owned[%END %]">管理者:[% info.created_by %]</div>
             <div class="LastApprovedAt">最終承認日時:[% info.last_updated_at %]</div>
-            <div class="Filesize">ファイルサイズ:[% info.file_size %]byte</div>
+            <div class="Filesize">ファイルサイズ:[% info.format_file_size %]byte</div>
           </div>
         </td>
       </tr>

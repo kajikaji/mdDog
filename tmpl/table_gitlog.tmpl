@@ -3,61 +3,61 @@
     <tr>
 	  <th class="Date">更新年月日</th>
 	  <th class="Message">詳細</th>
-	  [%UNLESS EDIT_LOG %]<th class="Author">更新者</th>[%END %]
+	  [% UNLESS EDIT_LOG %]<th class="Author">更新者</th>[%END %]
 	  <th class="Ctrl">操作</th>
     </tr>
   </thead>
   <tbody>
     [% FOREACH log IN loglist %]
-    <tr class="Log [% UNLESS is_live %]Old[% ELSIF log.user %]User[% END %]" id="Log[% log.id %]">
-       <td class="Date">[% log.attr.date %]</td>
+    <tr class="Log [% UNLESS is_live %]Old[% ELSIF log.user %]User[% END %]" id="Log[% log.rev %]">
+       <td class="Date">[% log.format_datetime %]</td>
        <td class="Message">
-         [%IF EDIT_LOG %]
-           <div class="Ctrl" data-revision="[% log.id %]">
-           [%IF loop.first %]
-             <textarea>[% log.raw %]</textarea>
+         [% IF EDIT_LOG %]
+           <div class="Ctrl" data-revision="[% log.rev %]">
+           [% IF loop.first %]
+             <textarea>[% log.message %]</textarea>
              <a class="Btn Edit">保存</a>
-           [%ELSE %]
-             <textarea class="CtrlTemp">[% log.raw %]</textarea>
+           [% ELSE %]
+             <textarea class="CtrlTemp">[% log.message %]</textarea>
              <a class="CtrlTemp Btn Edit">保存</a>
-             <div class="Body">[% log.message %]</div>
-           [%END %]
+             <div class="Body">[% log.html_message %]</div>
+           [% END %]
            </div>
-         [%ELSE %]
-           <div class="Body">[% log.message %]</div>
-         [%END %]
+         [% ELSE %]
+           <div class="Body">[% log.html_message %]</div>
+         [% END %]
        </td>
-       [%UNLESS EDIT_LOG %]<td class="Author">[% log.attr.author %]</td>[%END %]
+       [% UNLESS EDIT_LOG %]<td class="Author">[% log.author_name %]</td>[%END %]
        <td class="Ctrl">
          <ul>
-           <li><span class="RevisionCtrl"><a class="RevisionViewer" data-fid="[% fid %]" [%IF log.user %]data-user="[% log.user %]"[% END %] data-revision="[% log.id %]">VIEW</a></span></li>
-           <li><span class="DownloadLink"><a href="plugin/download.cgi?fid=[% fid %]&revision=[% log.id %]">DOWNLOAD</a></span></li>
-           [%UNLESS loop.last %]
-             <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]">DIFF</a></span></li>
-           [%END %]
-           [%IF log.user %]
-             <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% fid %]" data-revision="[% log.id %]" data-dist="master">masterDIFF</a></spa></li>
-           [%END %]
-           [%IF EDIT_LOG %]
-             <li [%UNLESS loop.first %]class="CtrlTemp"[%END %]>
-               <span class="RevisionCtrl"><a class="Rollback" data-fid="[% fid %]" data-revision="[% log.id %]">ROLLBACK</a></span>
+           <li><span class="RevisionCtrl"><a class="RevisionViewer" data-fid="[% docinfo.fid %]" [% IF log.user %]data-user="[% log.user %]"[% END %] data-revision="[% log.rev %]">VIEW</a></span></li>
+           <li><span class="DownloadLink"><a href="plugin/download.cgi?fid=[% docinfo.fid %]&revision=[% log.rev %]">DOWNLOAD</a></span></li>
+           [% UNLESS loop.last %]
+             <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% docinfo.fid %]" data-revision="[% log.rev %]">DIFF</a></span></li>
+           [% END %]
+           [% IF log.user %]
+             <li><span class="RevisionCtrl"><a class="DiffViewer" data-fid="[% docinfo.fid %]" data-revision="[% log.rev %]" data-dist="master">masterDIFF</a></spa></li>
+           [% END %]
+           [% IF EDIT_LOG %]
+             <li [% UNLESS loop.first %]class="CtrlTemp"[% END %]>
+               <span class="RevisionCtrl"><a class="Rollback" data-fid="[% docinfo.fid %]" data-revision="[% log.rev %]">ROLLBACK</a></span>
              </li>
-           [%ELSE %]
-             [%IF is_approve && is_live && log.user %]
+           [% ELSE %]
+             [% IF userinfo.doc_approval && is_live && log.user %]
                <li>
                  <form class="ApproveForm" method="post">
-                   <input type="hidden" name="fid" value="[% fid %]">
+                   <input type="hidden" name="fid" value="[% docinfo.fid %]">
                    <input type="hidden" name="user" value="[% log.user %]">
-                   <input type="hidden" name="revision" value="[% log.id %]">
+                   <input type="hidden" name="revision" value="[% log.rev %]">
                    <input type="submit" name="approve_pre" value="承認" class="Btn">
                  </form>
                </li>
-             [%END %]
-           [%END %]
+             [% END %]
+           [% END %]
          </ul>
        </td>
     </tr>
-    [% END %]
+    [% END # loglist %]
   </tbody>
 </table>
 

@@ -21,7 +21,7 @@
 # --------------------------------------------------------------------
 
 use strict; no strict "refs";
-use lib './lib/';
+use lib './lib', './src';
 use mdDog::Doc::Image;
 
 my $dog = mdDog::Doc::Image->new();

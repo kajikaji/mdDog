@@ -22,19 +22,20 @@
 #
 
 use strict; no strict "refs";
-use lib './lib/';
+use lib './lib', './src';
 use mdDog;
+use MYUTIL;
 
-my $dog =mdDog->new();
+my $dog = mdDog->new();
 $dog->setup_config();
 $dog->login();
 
-if($dog->qParam('unuse')){
-  $dog->change_file_info('unuse');
-}elsif($dog->qParam('use')){
-  $dog->change_file_info('use');
-}elsif($dog->qParam('delete')){
-  $dog->change_file_info('delete');
+my $ope = $dog->qParam('unuse')?'unuse'
+    :$dog->qParam('use')?'use'
+    :$dog->qParam('delete')?'delete'
+    :undef;
+if( $ope ){
+    $dog->change_file_info($ope);
 }
 
 $dog->listup_groups();

@@ -26,6 +26,7 @@ use Date::Manip;
 use Data::Dumper;
 use MYUTIL;
 use Fcntl ':flock';
+use model::GitLog;
 
 ############################################################
 # @param1: 作業ディレクトリ
@@ -79,8 +80,14 @@ sub get_shared_logs {
 
     foreach( $self->{git}->log("master") ){
         my $obj = eval {$_};
-        my $log = $self->adjust_log($obj);
-        if( !$raw && $log->{message} !~ m/^#.*#<br>$/ ){
+        my $log = mdDog::model::GitLog->new(
+            rev     => $obj->{id},
+            message => $obj->{message},
+            author  => $obj->{attr}->{author},
+            date    => $obj->{attr}->{date},
+        );
+
+        if( !$raw && $log->{message} !~ m/^#.*#\n$/ ){
             push @logs, $log;
         }
         elsif( $raw ){
@@ -89,7 +96,7 @@ sub get_shared_logs {
     }
 
     if( $desc ){
-        @logs = sort{$a->{attr}->{date} cmp $b->{attr}->{date}} @logs;
+        @logs = sort{$a->{date} cmp $b->{date}} @logs;
     }
 
     return \@logs;
@@ -146,9 +153,16 @@ sub get_user_logs {
     my $branch = "$self->{branch_prefix}${uid}";
     for( $self->{git}->log("master.." . $branch) ){
         my $obj = eval {$_};
+
         $obj->{user} = $uid;
-        my $log = $self->adjust_log($obj);
-        if( !$raw && $log->{message} !~ m/^#.*#<br>$/ ){
+        my $log = mdDog::model::GitLog->new(
+            rev     => $obj->{id},
+            message => $obj->{message},
+            author  => $obj->{attr}->{author},
+            date    => $obj->{attr}->{date},
+        );
+
+        if( !$raw && $log->{message} !~ m/^#.*#\n$/ ){
             push @userlogs, $log;
         }
         elsif( $raw ){
@@ -208,17 +222,15 @@ sub get_branch_root {
 # @param2 編集バッファフラグ:無指定だと通常のユーザーリポジトリを精査
 #
 sub get_branch_latest {
-  my $self = shift;
-  my $uid = shift;
-  my $isTmp = shift;
+    my ($self, $uid, $isTmp) = @_;
 
-  my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
-  $branch .= "_tmp" if($uid && $isTmp);
-  my @branches = $self->{git}->branch;
-  return 0 if(!MYUTIL::is_include(\@branches, $branch));
+    my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
+    $branch .= "_tmp" if($uid && $isTmp);
+    my @branches = $self->{git}->branch;
+    return 0 if(!MYUTIL::is_include(\@branches, $branch));
 
-  my @log_branch = $self->{git}->log($branch, "-n1");
-  return $log_branch[0]->id;
+    my @log_branch = $self->{git}->log($branch, "-n1");
+    return $log_branch[0]->id;
 }
 
 
@@ -704,37 +716,6 @@ sub clear_tmp {
     $self->{git}->branch("-D", $branch_tmp);
     $self->unlock_dir();
     return 1;
-}
-
-############################################################
-#gitのログを適切な文字列に整形
-# @param1 ログオブジェクト
-#
-sub adjust_log {
-  my $self = shift;
-  my $obj = shift;
-
-  $obj->{sha1_name} = $obj->{id};
-  $obj->{sha1_name} =~ s/^(.{7}).*/$1/;
-
-  $obj->{raw}     = $obj->{message};
-  $obj->{message} =~ s/</&lt;/g;
-  $obj->{message} =~ s/>/&gt;/g;
-  $obj->{message} =~ s/\n/<br>/g;
-  $obj->{message} =~ s/(.*)git-svn-id:.*/$1/;
-
-  $obj->{attr}->{author} =~ s/(.*) <.*>/$1/;
-#  $obj->{attr}->{author} =~ s/</&lt;/g;
-#  $obj->{attr}->{author} =~ s/>/&gt;/g;
-
-  $obj->{attr}->{date} =~ s/^(.*) \+0900/$1/;
-#  $obj->{attr}->{date} = UnixDate(ParseDate($obj->{attr}->{date}), "%Y-%m-%d %H:%M:%S");
-  my $date = $obj->{attr}->{date};
-
-  $obj->{attr}->{date} = MYUTIL::format_date2(ParseDate($date));
-  $obj->{cdate} = MYUTIL::format_date3(ParseDate($date));
-
-  return $obj;
 }
 
 1;

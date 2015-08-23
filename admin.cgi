@@ -21,7 +21,7 @@
 # --------------------------------------------------------------------
 
 use strict; no strict "refs";
-use lib './lib/';
+use lib './lib', './src';
 use mdDog::Admin;
 use Data::Dumper;
 

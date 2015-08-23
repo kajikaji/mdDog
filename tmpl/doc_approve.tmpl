@@ -6,8 +6,8 @@
 </ul>
 
 <section class="Docinfo">
-[%SET SUBMENU = "doc_approve" %]
-[%INCLUDE docinfo_header.tmpl %]
+[% SET SUBMENU = "doc_approve" %]
+[% INCLUDE docinfo_header.tmpl %]
 </section><!-- docinfo -->
 
 <section class="DocApprove">
@@ -23,19 +23,19 @@
   <tbody>
     [% FOREACH log IN loglist %]
     <tr class="[% IF log.local %]UserBranch[% ELSE %]Master[% END %]">
-      <td class="Date">[% log.attr.date %]</td>
+      <td class="Date">[% log.format_datetime %]</td>
       <td class="Message">[% log.message %]</td>
-      <td class="Author">[% log.attr.author %]</td>
+      <td class="Author">[% log.author_name %]</td>
     </tr>
     [% END %]
   </tbody>
 </table>
 </div>
-<form class="ApproveForm" action="?fid=[% fid %]&user=[% user %]&revision=[% revision %]" method="post">
+<form class="ApproveForm" action="?fid=[% docinfo.fid %]&user=[% user %]&revision=[% revision %]" method="post">
   <div class="">上記のコミットを承認します</div>
   <input type="submit" name="approve" value="OK">
-  <a href="doc_approve.cgi?fid=[% fid %]">キャンセル</a>
-  <input type="hidden" name="fid" value="[% fid %]">
+  <a href="doc_approve.cgi?fid=[% docinfo.fid %]">キャンセル</a>
+  <input type="hidden" name="fid" value="[% docinfo.fid %]">
   <input type="hidden" name="revision" value="[% revision %]">
   <input type="hidden" name="user" value="[% user %]">
 </form>

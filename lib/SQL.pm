@@ -16,7 +16,7 @@ SQL
 sub user_info {
     return << "SQL";
 SELECT
-  id, account, mail, nic_name, may_admin, may_approve, may_delete
+  *
 FROM
   docx_users
 WHERE
@@ -49,6 +49,7 @@ SELECT
   du.nic_name AS nic_name,
   du.account  AS account,
   du.mail     AS mail,
+  g.id        AS gid,
   g.title     AS group_name
 FROM
   docx_infos di
@@ -134,6 +135,7 @@ SQL
     my $sql_wrapper = << "SQL";
 SELECT
   foo.*,
+  g.id AS gid,
   g.title AS group_title
 FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
@@ -204,6 +206,7 @@ SQL
     my $sql_wrapper = << "SQL";
 SELECT
   foo.*,
+  g.id AS gid,
   g.title AS group_title
 FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id

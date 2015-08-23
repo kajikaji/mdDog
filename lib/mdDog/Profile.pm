@@ -31,12 +31,12 @@ sub change_profile{
     }
 
     $self->{teng}->update('docx_users' => {
-        account => $account,
+        account  => $account,
         nic_name => $nic_name,
-        mail => $mail,
+        mail     => $mail,
         password => md5_hex(${password}),
     }, {
-      id => $uid
+        id       => $uid
     });
 
     $self->dbCommit();

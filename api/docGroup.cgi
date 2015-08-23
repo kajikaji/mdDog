@@ -5,7 +5,7 @@
 #
 
 use strict;no strict "refs";
-use lib '../lib/';
+use lib '../lib', '../src';
 use mdDog::API;
 use MYUTIL;
 use Data::Dumper;

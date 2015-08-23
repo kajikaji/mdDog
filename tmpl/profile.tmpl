@@ -15,15 +15,15 @@
   <form class="AccountForm">
     <div class="Item">
       <label for="profileAccount">アカウント</label>
-      <input type="text" id="profileAccount" name="account" value="[% account %]">
+      <input type="text" id="profileAccount" name="account" value="[% userinfo.account %]">
     </div>
     <div class="Item">
       <label for="profileNicName">表示名</label>
-      <input type="text" id="profileNicName" name="nic_name" value="[% nic_name %]">
+      <input type="text" id="profileNicName" name="nic_name" value="[% userinfo.nic_name %]">
     </div>
     <div class="Item">
       <label for="profileMail">メール</label>
-      <input type="text" id="profileMail" name="mail" value="[% mail %]">
+      <input type="text" id="profileMail" name="mail" value="[% userinfo.mail %]">
     </div>
     <div class="Item">
       <label for="profilePassword">パスワード</label>

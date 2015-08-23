@@ -13,13 +13,13 @@
 <section class="DocSetting">
   <h2>ドキュメントの設定</h2>
   <h3>仕様書名</h3>
-  <form action="?fid=[% fid %]" method="post">
-    <input type="text"   name="doc_name" value="[% doc_name %]">
-    <input type="hidden" name="fid"      value="[% fid %]">
+  <form action="?fid=[% docinfo.fid %]" method="post">
+    <input type="text"   name="doc_name" value="[% docinfo.doc_name %]">
+    <input type="hidden" name="fid"      value="[% docinfo.fid %]">
     <input type="submit" name="change_name" value="変更">
   </form>
   <h3>全体公開フラグ</h3>
-  <div class="PublicMark"><label id="PublicMark">全体に公開する場合はチェックをつける<input type="checkbox" [%IF is_public %]checked[%END %]></label></div>
+  <div class="PublicMark"><label id="PublicMark">全体に公開する場合はチェックをつける<input type="checkbox" [%IF docinfo.is_public %]checked[%END %]></label></div>
 
   <h3>ユーザー権限</h3>
   <div class="UsersCtrl">

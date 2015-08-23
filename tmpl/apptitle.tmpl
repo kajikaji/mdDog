@@ -5,8 +5,8 @@
       <form method="post">
         [% IF login %]
         <ul class="AccountInfo">
-          <li class="User Account"><span class="Subject">ACCOUNT</span><a href="profile.cgi">[% nic_name %]</a></li>
-          [% IF is_admin %]
+          <li class="User Account"><span class="Subject">ACCOUNT</span><a href="profile.cgi">[% userinfo.nic_name %]</a></li>
+          [% IF userinfo.is_admin %]
           <li class="User Admin"><a href="admin.cgi">(管理者 <span class="typcn typcn-spanner"></span>)</a></li>
           [% END %]
           <li class="Ctrl"><input type="submit" name="logout" value="LOGOUT"></li>

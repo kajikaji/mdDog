@@ -27,12 +27,13 @@ sub create_file {
     my $fname = $filename . "\.md";
     my $fid      = $self->_setup_new_file($docname, $fname, $uid);
     my $workdir  = "$self->{repodir}/${fid}";
+    mkdir($workdir, 0776)
+      || die "Error:_setup_new_file can't make a directory(${workdir})";
     my $filepath = "${workdir}/${fname}";
     open my $hF, ">", $filepath || die "Create Error!. $filepath";
     close($hF);
 
     $self->{git}     = GitCtrl->new($workdir);
-#    $self->{outline} = OutlineCtrl->new($workdir);
     $self->{git}->init($fid, [$fname], $self->_get_author($uid));
 
     $self->dbCommit();
@@ -54,9 +55,6 @@ sub _setup_new_file{
         'created_at' => 'now()',
         'created_by' => $uid,
     });
-
-    mkdir("./$self->{repodir}/$fid",0776)
-      || die "Error:_setup_new_file can't make a directory($self->{repodir}/$fid)";
 
     $self->{teng}->fast_insert('docx_auths', => {
         'info_id'     => $fid,

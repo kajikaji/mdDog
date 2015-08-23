@@ -37,6 +37,10 @@ use GitCtrl;
 use OutlineCtrl;
 use SQL;
 
+use model::User;
+use model::Docinfo;
+use model::DocGroup;
+
 # @summary constructor
 #
 sub new {
@@ -109,12 +113,10 @@ sub login {
         my $sth = $self->{dbh}->prepare(SQL::user_info);
         $sth->execute($id);
         my $ha = $sth->fetchrow_hashref();
-        $self->{user} = {
-          account     => $ha->{account},
-          mail        => $ha->{mail},
-          nic_name    => $ha->{nic_name},
-          is_admin    => $ha->{may_admin},
-        };
+
+        $self->{userinfo} = mdDog::model::User->new();
+        $self->{userinfo}->set_row($ha);
+
         $sth->finish();
         return 1;
     }
@@ -130,11 +132,8 @@ sub print_page {
     if($self->{s}->param("login")){
         $self->{t}->{login}      = $self->{s}->param("login");
     }
-    if($self->{user}){ #ユーザー情報をセット
-        $self->{t}->{account}    = $self->{user}->{account};
-        $self->{t}->{nic_name}   = $self->{user}->{nic_name};
-        $self->{t}->{mail}       = $self->{user}->{mail};
-        $self->{t}->{is_admin}   = $self->{user}->{is_admin};
+    if($self->{userinfo}){ #ユーザー情報をセット
+        $self->{t}->{userinfo} = $self->{userinfo};
     }
 
     $self->SUPER::print_page();
@@ -169,37 +168,25 @@ sub check_auths {
     my $uid   = $self->{s}->param('login');
 
     if( $uid ){
-      my $sth = $self->{dbh}->prepare(SQL::auth_info);
-      $sth->execute($fid, $uid);
-      if( my $row = $sth->fetchrow_hashref() ){
-            $self->{user}->{is_approve} = $row->{may_approve};
-            $self->{user}->{is_edit}    = $row->{may_edit};
-            $self->{user}->{is_owned}   = $row->{created_by} == $uid?1:0;
-      }
-      $sth->finish();
+        my $sth = $self->{dbh}->prepare(SQL::auth_info);
+        $sth->execute($fid, $uid);
+        if( my $row = $sth->fetchrow_hashref() ){
+            $self->{userinfo}->set_docACL($row, $uid);
+        }
+        $sth->finish();
     }
 
     foreach (@_) {
-      if ( $_ =~ m/all/ ) {
-        return;
-      }
-      if ( $_ =~ m/is_edit/    && $self->{user}->{is_edit}    ) {
-        return;
-      }
-      if ( $_ =~ m/is_owned/   && $self->{user}->{is_owned}   ) {
-        return;
-      }
-      if ( $_ =~ m/is_approve/ && $self->{user}->{is_approve} ) {
-        return;
-      }
-      if ( $_ =~ m/is_admin/   && $self->{user}->{is_admin}   ) {
-        return;
-      }
+        return if( $_ =~ m/all/ );
+        return if( $_ =~ m/is_edit/    && $self->{userinfo}->is_Editable  );
+        return if ( $_ =~ m/is_owned/  && $self->{userinfo}->is_Owned     );
+        return if ( $_ =~ m/is_approve/ && $self->{userinfo}->is_Approval );
+        return if ( $_ =~ m/is_admin/  && $self->{userinfo}->is_Admin     );
     }
     if ( $fid ){
-      print "Location: doc_history.cgi?fid=${fid}\n\n";
+        print "Location: doc_history.cgi?fid=${fid}\n\n";
     } else {
-      print "Location: index.cgi\n\n";
+        print "Location: index.cgi\n\n";
     }
     exit();
 }
@@ -218,47 +205,44 @@ sub listup_documents {
     my ($sql, $sql_cnt);
     my @infos;
 
-
     if( $uid ){
-        $sql = SQL::list_for_index($uid, $style, $offset, $self->{paging_top}, $group);
+        $sql     = SQL::list_for_index($uid, $style,
+                                   $offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list($uid, $style, $group);
-    }else{
-        #ログインなし
-        $sql = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
+    }else{ #ログインなし
+        $sql     = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list_without_login($group);
     }
 
     my $ary = $self->{dbh}->selectall_arrayref($sql, +{Slice => {}})
        || $self->errorMessage("DB:Error",1);
     if( @$ary ){
-      my $prev_info = undef;
+        my $prev_obj = undef;
         foreach( @$ary ) {
             my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
-            if( $prev_info && $prev_info->{id} eq $_->{id} ){
-                push @{$prev_info->{groups}}, $_->{group_title};
+
+            if( $prev_obj && $prev_obj->{fid} eq $_->{id} ){
+                push @{$prev_obj->{groups}}, mdDog::model::DocGroup->new(
+                    gid  => $_->{gid},
+                    name => $_->{group_title}
+                );
                 next;
             }
 
-            my $info = {
-                id              => $_->{id},
-                doc_name        => $_->{doc_name},
-                file_name       => $_->{file_name},
-                is_used         => $_->{is_used},
-                created_at      => MYUTIL::format_date2($_->{created_at}),
-                deleted_at      => !$_->{deleted_at}?undef:MYUTIL::format_date2($_->{deleted_at}),
-                created_by      => $_->{nic_name},
-                file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/$_->{id}/$_->{file_name}"),
-                last_updated_at => ${logs}[0][0]->{attr}->{date},
-                is_editable     => $_->{may_edit}?1:0,
-                is_approve      => $_->{may_approve}?1:0,
-                is_public       => $_->{is_public},
-                is_owned        => $uid && $_->{created_by}==${uid}?1:0,
-            };
+            my $info = mdDog::model::Docinfo->new();
+            $info->set_row($_);
+            $info->{is_owned}        = $uid && $_->{created_by}==${uid}?1:0;
+            $info->{file_size}       = -s $self->{repodir} . "/$_->{id}/$_->{file_name}";
+            $info->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
+
             if( $_->{group_title} ){
-                push @{$info->{groups}}, $_->{group_title};
+                push @{$info->{groups}}, mdDog::model::DocGroup->new(
+                    gid  => $_->{gid},
+                    name => $_->{group_title}
+                );
             }
             push @infos, $info;
-            $prev_info = $info;
+            $prev_obj = $info;
         }
         $self->{t}->{infos} = \@infos;
     }
@@ -280,8 +264,7 @@ sub listup_documents {
 # @param 'use'/'unuse'/'delete'
 #
 sub change_file_info {
-    my $self = shift;
-    my $ope  = shift;
+    my ($self, $ope) = @_;
 
     my $fid  = $self->qParam('fid');
     return unless($fid);        # NULL CHECK
@@ -481,18 +464,21 @@ sub listup_groups {
     $sql   .= " ORDER BY title ";
     my $ar = $self->{dbh}->selectall_arrayref($sql, +{Slice =>{}})
       || errorMessage("SQL Error: listup_groups");
+    my $grouplist;
+    my $selected = $self->param_or_cookie("index", "group");
 
-    my $group = $self->param_or_cookie("index", "group");
-    if( $group ){
-        for(@$ar){
-            if( $_->{id} == $group ){
-              $_->{selected} = 1;
-              last;
-            }
+    foreach(@$ar){
+        my $group = mdDog::model::DocGroup->new(
+            gid  => $_->{id},
+            name => $_->{title}
+        );
+        if( $selected && $selected == $group->{gid} ){
+            $group->{selected} = 1;
         }
+        push @$grouplist, $group;
     }
 
-    $self->{t}->{groups} = $ar;
+    $self->{t}->{grouplist} = $grouplist;
 }
 
 # @summary  任意の値をクエリパラメータから取得、クエリパラメータになければクッキーから取得して返す

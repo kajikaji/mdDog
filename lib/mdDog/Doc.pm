@@ -5,6 +5,8 @@ use parent mdDog;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
 use MYUTIL;
 use SQL;
+use model::Docinfo;
+use model::DocGroup;
 
 # @summary ドキュメント情報を取得してテンプレートにセット
 #
@@ -16,37 +18,36 @@ sub set_document_info {
     my $user  = $self->qParam('user');
     my $ver   = $self->qParam('revision');
     return unless($fid);        # NULL CHECK
-    my @logs  = $self->{git}->get_shared_logs();
+    my $logs  = $self->{git}->get_shared_logs();
 
     my $sth = $self->{dbh}->prepare(SQL::document_info);
     $sth->execute($fid);
     my $row = $sth->fetchrow_hashref();
-    my $docinfo = {
-        doc_name        => $row->{doc_name},
-        file_name       => $row->{file_name},
-        created_at      => MYUTIL::format_date2($row->{created_at}),
-        created_by      => $row->{nic_name},
-        file_size       => MYUTIL::num_unit(-s $self->{repodir} . "/${fid}/$row->{file_name}"),
-        is_public       => $row->{is_public},
-        is_owned        => $row->{created_by} == $self->{s}->param('login')?1:0,
-        last_updated_at => ${logs}[0][0]->{attr}->{date},
-    };
+
+    my $docinfo = mdDog::model::Docinfo->new();
+    $docinfo->set_row($row);
+    $docinfo->{file_size}       = -s $self->{repodir} . "/${fid}/$row->{file_name}";
+    $docinfo->{last_updated_at} = $logs->[0]->format_datetime;
 
     do{
-        push @{$docinfo->{groups}}, $row->{group_name}
-            if( $row->{group_name} );
+        if( $row->{group_name} ){
+            push @{$docinfo->{groups}}, mdDog::model::DocGroup->new(
+                gid  => $row->{gid},
+                name => $row->{group_name}
+            );
+        }
     }while( $row = $sth->fetchrow_hashref() );
     $sth->finish();
 
     if( $uid ){
-        $docinfo->{is_approve}  = $self->{user}->{is_approve};
-        $docinfo->{is_editable} = $self->{user}->{is_edit};
+        $docinfo->{is_owned}    = $self->{userinfo}->is_Owned;
+        $docinfo->{is_approval} = $self->{userinfo}->is_Approval;
+        $docinfo->{is_editable} = $self->{userinfo}->is_Editable;
     }
-    $docinfo->{fid}      = $fid;
-    $docinfo->{user}     = $user;
-    $docinfo->{revision} = $ver if($ver);
 
-    $self->{t} = {%{$self->{t}}, %$docinfo};
+    $self->{t}->{user}     = $user;
+    $self->{t}->{revision} = $ver if($ver);
+    $self->{t}->{docinfo} = $docinfo;
 }
 
 # @summary ドキュメントのログを取得
@@ -75,7 +76,7 @@ sub set_buffer_info {
     my $shared_logs = $gitctrl->get_shared_logs('raw');
     my $latest_rev;
     if( $shared_logs ){
-        $latest_rev = $shared_logs->[0]->{id};
+        $latest_rev = $shared_logs->[0]->{rev};
     }
     if($gitctrl->is_exist_user_branch($uid)){
         my $user_root = $gitctrl->get_branch_root($uid);

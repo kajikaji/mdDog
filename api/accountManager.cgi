@@ -5,7 +5,7 @@
 #
 
 use strict;no strict "refs";
-use lib '../lib/';
+use lib '../lib', '../src';
 use mdDog::API;
 
 my $dog = mdDog::API->new('api');
