@@ -21,7 +21,7 @@ print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
     return unless( $fid );
 
-    print $dog->get_data($uid, $fid, $eid);
+    print $dog->get_data($uid, $fid, $eid, $action);
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
     return unless( $fid && $action );
 
