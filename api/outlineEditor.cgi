@@ -9,22 +9,23 @@ use lib '../lib', '../src';
 use mdDog::API;
 use MYUTIL;
 
-my $dog = mdDog::API->new('api');
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("is_edit", "is_admin");
+my $dog    = mdDog::API->new('api');
+my $fid    = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid    = $dog->login();
+my $action = $dog->qParam('action');
+my $num    = $dog->qParam('num');
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if($ENV{'REQUEST_METHOD'} eq 'GET'){
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
-    ## ?fid=[fid]&action=[action]&....
-    return unless($dog->qParam('fid')
-                  || $dog->qParam('action'));
+    return unless( $fid || $action );
 
-    if($dog->qParam('action') eq 'divide' &&  $dog->qParam('num')){
+    if(   $action eq 'divide' &&  $num){
         print $dog->outline_add_divide();
     }
-    elsif($dog->qParam('action') eq 'undivide' &&  $dog->qParam('num')){
+    elsif($action eq 'undivide' &&  $num ){
         print $dog->outline_remove_divide();
     }
 }

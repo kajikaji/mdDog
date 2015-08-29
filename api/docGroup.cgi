@@ -7,23 +7,23 @@
 use strict;no strict "refs";
 use lib '../lib', '../src';
 use mdDog::API;
-use MYUTIL;
-use Data::Dumper;
 
 my $dog = mdDog::API->new('api');
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("is_edit", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login();
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
-    print $dog->get_doc_groups();
+    print $dog->get_doc_groups($fid);
 }elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
-    if( $dog->qParam('search') ){
-      print $dog->search_groups();
+    if( my $search = $dog->qParam('search') ){
+        print $dog->search_groups($search);
     }
     if( $dog->qParam('action') eq 'editGroup' ){
-        print $dog->add_groups();
+        my @groups = $dog->qParam('groups[]');
+        print $dog->add_groups($uid, $fid, \@groups);
     }
 }
 

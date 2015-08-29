@@ -8,6 +8,7 @@ package mdDog::model::GitLog{
     has 'message'   => (is => 'rw', isa => 'Str');
     has 'author'    => (is => 'rw', isa => 'Str');
     has 'date'      => (is => 'rw', isa => 'Str');
+    has 'user'      => (is => 'rw', isa => 'Maybe[Int]');
 
     sub sha1_name {
         my $self = shift;

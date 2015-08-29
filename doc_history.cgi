@@ -25,16 +25,29 @@ use lib './lib', './src';
 use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("all");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login();
+$dog->check_auths($uid, $fid, "all");
 
-if(!$dog->qParam('fid')) {
-    $dog->{t}->{error} = "ドキュメントが指定されずにアクセスされました<br>doc_history.cgi<br>Err001";
-} else {
-    $dog->set_document_log();
-    $dog->set_document_info();
+unless( $fid ){
+    my $error = "ドキュメントが指定されずにアクセスされました";
+    $dog->print_page({
+        'error'  => $error
+    });
+    exit();
 }
 
-$dog->print_page();
+my $user       = $dog->qParam('user');
+my $ver        = $dog->qParam('revision');
+my $docinfo    = $dog->set_document_info($uid, $fid);
+my $sharedlist = $dog->set_document_log();
+
+$dog->print_page({
+    'fid'        => $fid,
+    'user'       => $user,
+    'revision'   => $ver,
+    'docinfo'    => $docinfo,
+    'sharedlist' => $sharedlist
+});
 exit();

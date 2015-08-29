@@ -25,25 +25,33 @@ use lib './lib/', './src';
 use mdDog::Doc::Editor;
 
 my $dog = mdDog::Doc::Editor->new();
-$dog->setup_config();
-$dog->login_user_document();
-$dog->check_auths("is_edit", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login_user_document($fid);
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
 # コミット処理
 if( $dog->qParam('commit') ){
-    #変更を反映 変更履歴は必須
-    $dog->fix_md_buffer();
+    my $comment = $dog->qParam('comment');
+    $dog->fix_md_buffer($uid, $fid, $comment);
 }
 
 #バッファリセット
 if( $dog->qParam('resetBuffer') ){
-    $dog->reset_buffer();
+    $dog->reset_buffer($uid, $fid);
 }
 
-$dog->set_buffer_md();
-$dog->set_document_info();
-$dog->set_buffer_info();
-$dog->set_outline_buffer();
+my ($markdown, $raws) = $dog->set_buffer_md($uid, $fid);
+my $divides = $dog->set_outline_buffer($uid, $fid);
+my $is_live = $dog->set_buffer_info($uid, $fid);
+my $docinfo = $dog->set_document_info($uid, $fid);
 
-$dog->print_page();
+$dog->print_page({
+    'fid'      => $fid,
+    'markdown' => $markdown,
+    'raws'     => $raws,
+    'divides'  => $divides,
+    'is_live'  => $is_live,
+    'docinfo'  => $docinfo
+});
 exit();

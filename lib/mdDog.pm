@@ -24,8 +24,8 @@ use strict; no strict "subs";
 use parent APPBASE;
 use Git::Wrapper;
 use Data::Dumper;
-use File::Copy;
-use File::Basename;
+#use File::Copy;
+#use File::Basename;
 use File::Path;
 use Date::Manip;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
@@ -62,10 +62,10 @@ sub new {
 # @summary need to call at first
 #
 sub setup_config {
-    my $self = shift;
+    my ($self, $fid) = @_;
 
-    if($self->qParam('fid')){
-        my $workdir = "$self->{repodir}/" . $self->qParam('fid');
+    if( $fid ){
+        my $workdir = "$self->{repodir}/" . $fid;
         $self->{git}     = GitCtrl->new($workdir);
         $self->{outline} = OutlineCtrl->new($workdir);
     }
@@ -118,7 +118,7 @@ sub login {
         $self->{userinfo}->set_row($ha);
 
         $sth->finish();
-        return 1;
+        return $id;
     }
     return 0;
 }
@@ -128,6 +128,13 @@ sub login {
 #
 sub print_page {
     my $self = shift;
+    my $ref = shift;
+
+    if( $ref ){
+        foreach (keys %$ref){
+            $self->{t}->{$_} = $ref->{$_};
+        }
+    }
 
     if($self->{s}->param("login")){
         $self->{t}->{login}      = $self->{s}->param("login");
@@ -145,27 +152,25 @@ sub print_page {
 #  - 条件を満たさないと適宜ページにリダイレクトする
 #
 sub login_user_document {
-  my $self = shift;
+  my ($self, $fid) = @_;
 
-  my $fid = $self->qParam('fid');
   unless($fid) {
       print "Location: index.cgi\n\n";
       exit();
   }
-  unless($self->login()){
-      print "Location: doc_history.cgi?fid=${fid}\n\n";
-      exit();
+  my $uid;
+  if( my $uid = $self->login() ){
+      return $uid;
   }
 
-  return 1;
+  print "Location: doc_history.cgi?fid=${fid}\n\n";
+  exit();
 }
 
 # @summary 権限チェック
 #
 sub check_auths {
-    my $self  = shift;
-    my $fid   = $self->qParam('fid');
-    my $uid   = $self->{s}->param('login');
+    my ($self, $uid, $fid)  = @_;
 
     if( $uid ){
         my $sth = $self->{dbh}->prepare(SQL::auth_info);
@@ -194,16 +199,11 @@ sub check_auths {
 # @summary 登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
-    my ($self) = @_;
+    my ($self, $uid, $page, $style, $group) = @_;
 
-    my $uid    = $self->{s}->param("login");
-    my $page   = $self->param_or_cookie("index", "page");
-    my $style  = $self->param_or_cookie("index", "style");
-    my $group  = $self->param_or_cookie("index", "group");
     my $offset = $page * $self->{paging_top};
-
-    my ($sql, $sql_cnt);
     my @infos;
+    my ($sql, $sql_cnt);
 
     if( $uid ){
         $sql     = SQL::list_for_index($uid, $style,
@@ -219,7 +219,7 @@ sub listup_documents {
     if( @$ary ){
         my $prev_obj = undef;
         foreach( @$ary ) {
-            my @logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
+            my $logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
 
             if( $prev_obj && $prev_obj->{fid} eq $_->{id} ){
                 push @{$prev_obj->{groups}}, mdDog::model::DocGroup->new(
@@ -231,9 +231,9 @@ sub listup_documents {
 
             my $info = mdDog::model::Docinfo->new();
             $info->set_row($_);
-            $info->{is_owned}        = $uid && $_->{created_by}==${uid}?1:0;
-            $info->{file_size}       = -s $self->{repodir} . "/$_->{id}/$_->{file_name}";
-            $info->{last_updated_at} = ${logs}[0][0]->{attr}->{date};
+            $info->{is_owned}  = $uid && $_->{created_by}==${uid}?1:0;
+            $info->{file_size} = -s $self->{repodir} . "/$_->{id}/$_->{file_name}";
+            $info->{last_updated_at} = $logs->[0]->format_datetime;
 
             if( $_->{group_title} ){
                 push @{$info->{groups}}, mdDog::model::DocGroup->new(
@@ -244,20 +244,17 @@ sub listup_documents {
             push @infos, $info;
             $prev_obj = $info;
         }
-        $self->{t}->{infos} = \@infos;
     }
-    my $cnt = $self->{dbh}->selectall_arrayref($sql_cnt)
+    my $rows = $self->{dbh}->selectall_arrayref($sql_cnt)
       || $self->viewAccident("DB:Error", 1);
-    my $pages = @$cnt / $self->{paging_top};
+    my $cnt = @$rows;
+    my $pages = $cnt / $self->{paging_top};
     my $paging;
     for( my $i = 0; $i < $pages; $i++ ){
         push @$paging, $i;
     }
 
-    $self->{t}->{document_count} = @$cnt;
-    $self->{t}->{style}          = $style;
-    $self->{t}->{page}           = $page;
-    $self->{t}->{paging}         = $paging;
+    return (\@infos, $cnt, $paging);
 }
 
 # @summary ファイルの使用状態を更新
@@ -375,17 +372,9 @@ sub _get_author {
 # @summary 指定の画像ファイルを出力
 #
 sub print_image {
-    my $self = shift;
-
-    my $fid       = $self->qParam('fid');
-    my $image     = $self->qParam('image');
-    my $thumbnail = $self->qParam('thumbnail');
-    my $tmp       = $self->qParam('tmp');
-    my $size      = $self->qParam('size'); # 0 - 100
-    my $uid       = $self->{s}->param("login");
+    my ($self, $uid, $fid, $image, $thumbnail, $tmp, $size, $master) = @_;
     return unless($image && $fid); # NULL CHECK
-
-    $uid = undef if($uid && $self->qParam('master'));
+    $uid = undef if($uid && $master);
 
     my $imgpath;
     unless($thumbnail){
@@ -478,7 +467,8 @@ sub listup_groups {
         push @$grouplist, $group;
     }
 
-    $self->{t}->{grouplist} = $grouplist;
+    return $grouplist;
+#    $self->{t}->{grouplist} = $grouplist;
 }
 
 # @summary  任意の値をクエリパラメータから取得、クエリパラメータになければクッキーから取得して返す

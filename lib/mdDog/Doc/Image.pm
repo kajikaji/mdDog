@@ -12,13 +12,10 @@ use constant THUMBNAIL_SIZE => 150;
 # @summary MDドキュメントで管理している画像一覧を取得
 #
 sub set_md_image{
-    my $self   = shift;
-
-    my $uid    = $self->{s}->param("login");
+    my ($self, $uid, $fid) = @_;
     return unless($uid);
-    my $fid    = $self->qParam('fid');
-    my $imgdir = "$self->{repodir}/${fid}/image";
 
+    my $imgdir = "$self->{repodir}/${fid}/image";
     unless(-d $imgdir){
         mkdir $imgdir, 0774 || die "can't make image directory.";
     }
@@ -34,17 +31,16 @@ sub set_md_image{
         push @imgpaths, $path;
     }
 
-    $self->{t}->{images} = \@imgpaths;
-    $self->{t}->{uid}    = $self->{s}->param("login");
+    return \@imgpaths;
+
+#    $self->{t}->{images} = \@imgpaths;
+#    $self->{t}->{uid}    = $self->{s}->param("login");
 }
 
 # @summary 画像をアップロードしてユーザーの編集バッファにコミット
 #
 sub upload_image {
-    my $self     = shift;
-
-    my $fid      = $self->qParam('fid');
-    my $uid      = $self->{s}->param("login");
+    my ($self, $uid, $fid) = @_;
     return 0 unless($fid && $uid);
 
     my $hF       = $self->{q}->upload('imagefile');
@@ -75,10 +71,7 @@ sub upload_image {
 # @summary 画像を削除
 #
 sub delete_image {
-    my $self = shift;
-
-    my $fid  = $self->qParam('fid');
-    my $uid  = $self->{s}->param("login");
+    my ($self, $uid, $fid) = @_;
     return 0 unless($uid && $fid);
 
     my @selected = ($self->qParam('select_image'));

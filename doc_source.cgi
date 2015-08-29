@@ -25,30 +25,35 @@ use lib './lib', './src';
 use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
-$dog->setup_config();
-$dog->login_user_document();
-$dog->check_auths("is_edit", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login_user_document($fid);
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
 #一時保存処理
 if ($dog->qParam('update')) {
-    #一時保存
-    $dog->update_md_buffer();
+    $dog->update_md_buffer($uid, $fid);
 }
 
 #コミット処理
 if ($dog->qParam('commit')) {
-    #変更を反映 変更履歴は必須
-    $dog->fix_md_buffer();
+    my $comment = $dog->qParam('comment');
+    $dog->fix_md_buffer($uid, $fid, $comment);
 }
 
 #バッファリセット
 if( $dog->qParam('resetBuffer') ){
-    $dog->reset_buffer();
+    $dog->reset_buffer($uid, $fid);
 }
 
-$dog->set_buffer_raw();
-$dog->set_document_info();
-$dog->set_buffer_info();
+my $document = $dog->set_buffer_raw($uid, $fid);
+my $docinfo = $dog->set_document_info($uid, $fid);
+my $is_live = $dog->set_buffer_info($uid, $fid);
 
-$dog->print_page();
+$dog->print_page({
+    'fid'     => $fid,
+    'document'=>$document,
+    'is_live' => $is_live,
+    'docinfo' => $docinfo
+});
 exit();

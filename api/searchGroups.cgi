@@ -10,11 +10,12 @@ use mdDog::API;
 use MYUTIL;
 
 my $dog = mdDog::API->new('api');
-$dog->setup_config();
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
-    print $dog->get_groups();
+    print $dog->get_groups($fid);
 }
 
 exit();

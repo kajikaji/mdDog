@@ -23,20 +23,25 @@
 use strict; no strict "refs";
 use lib './lib', './src';
 use mdDog::Doc::Setting;
-use Data::Dumper;
 
 my $dog = mdDog::Doc::Setting->new();
-$dog->setup_config();
-$dog->login_user_document();
-$dog->check_auths("is_owned", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login_user_document($fid);
+$dog->check_auths($uid, $fid, "is_owned", "is_admin");
 
 if( $dog->qParam("change_name") ){
     #ドキュメントの名前変更
-    $dog->change_doc_name();
+    my $doc_name = $dog->qParam('doc_name');
+    $dog->change_doc_name($fid, $doc_name);
 }
 
-$dog->get_document_users();
-$dog->set_document_info();
+my %parts;
+my ($users, $unallows) = $dog->get_document_users($fid);
+$parts{users}          = $users;
+$parts{unallow_users}  = $unallows;
 
-$dog->print_page();
+$parts{docinfo} = $dog->set_document_info($uid, $fid);
+
+$dog->print_page(\%parts);
 exit();

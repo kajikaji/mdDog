@@ -36,19 +36,19 @@
 	</thead>
 	<tbody>
 	  [%FOREACH u IN users %]
-        [%IF u.is_owned %]
-	      <tr class="User Owner" id="User[% u.user_id %]">
+        [%IF u.doc_owned %]
+	      <tr class="User Owner" id="User[% u.uid %]">
 	        <td class="Select"></td>
     	    <td class="Name">[% u.nic_name %] (owner)</td>
 	        <td class="Approve"><input type="checkbox" checked disabled></td>
             <td class="Edit"><input type="checkbox" checked disabled></td>
     	  </tr>
         [%ELSE %]
-	      <tr class="User" id="User[% u.user_id %]">
-	        <td class="Select"><input type="checkbox" data-id="[% u.user_id %]"></td>
+	      <tr class="User" id="User[% u.uid %]">
+	        <td class="Select"><input type="checkbox" data-id="[% u.uid %]"></td>
     	    <td class="Name">[% u.nic_name %]</td>
-	        <td class="Approve"><input type="checkbox" [%IF u.may_approve %]checked[%END %]></td>
-            <td class="Edit"><input type="checkbox" [%IF u.may_edit %]checked[%END %]></td>
+	        <td class="Approve"><input type="checkbox" [%IF u.doc_approval %]checked[%END %]></td>
+            <td class="Edit"><input type="checkbox" [%IF u.doc_editable %]checked[%END %]></td>
     	  </tr>
         [%END %]
 	  [%END %]
@@ -69,7 +69,7 @@
       <div class="subject">許可されてないユーザー一覧</div>
       <select multiple="multiple">
 	[%FOREACH u IN unallow_users %]
-	<option value="[% u.id %]">[% u.nic_name %]</option>
+	<option value="[% u.uid %]">[% u.nic_name %]</option>
 	[%END %]
       </select>
     </div>

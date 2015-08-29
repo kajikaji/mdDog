@@ -23,16 +23,22 @@
 # 画像をバイナリ出力する
 
 use strict; no strict "refs";
-use lib '../lib/';
+use lib '../lib', '../src';
 use mdDog;
 use MYUTIL;
 
 my $dog = mdDog->new('/plugin');
-$dog->setup_config();
-$dog->login();
+my $fid = $dog->qParam('fid');
+return unless($fid);
+$dog->setup_config($fid);
+my $uid = $dog->login();
 
-return if(!$dog->qParam('fid'));
-
-$dog->print_image();
+my $image     = $dog->qParam('image');
+my $thumbnail = $dog->qParam('thumbnail');
+my $tmp       = $dog->qParam('tmp');
+my $size      = $dog->qParam('size'); # 0 - 100
+my $master    = $dog->qParam('master');
+ 
+$dog->print_image($uid, $fid, $image, $thumbnail, $tmp, $size);
 
 exit();

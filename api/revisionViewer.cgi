@@ -10,15 +10,18 @@ use mdDog::API;
 use MYUTIL;
 
 my $dog = mdDog::API->new('api');
-$dog->setup_config();
-$dog->login();
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login();
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if($ENV{'REQUEST_METHOD'} eq 'GET'){
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
-    return unless($dog->qParam('fid'));
+    my $revision = $dog->qParam('revision');
+    my $user     = $dog->qParam('user');
 
-    print $dog->get_revisiondata();
+    return unless($fid);
+    print $dog->get_revisiondata($fid, $revision, $user);
 }
 
 exit();

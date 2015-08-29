@@ -1,17 +1,12 @@
 package mdDog::Doc::Create;
 
 use strict; no strict "subs";
-use NKF;
 use parent mdDog::Doc;
 
 # @summary MDファイルを作る
 #
 sub create_file {
-    my $self = shift;
-    my $uid  = $self->{s}->param("login");
-
-    my $docname = nkf("-w", $self->qParam('doc_name'));
-    my $filename = nkf("-w", $self->qParam('file_name'));
+    my ($self, $uid, $docname, $filename) = @_;
     $docname =~ s/^\s*(.*)\s*$/$1/;
     $docname =~ s/^(.*)\..*$/$1/;
     return unless($docname);

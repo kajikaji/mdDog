@@ -21,14 +21,12 @@
 # --------------------------------------------------------------------
 
 use strict; no strict "refs";
-use lib '../lib/';
+use lib '../lib', '../src';
 use mdDog;
-use Data::Dumper;
 
-my $dog =mdDog->new('/plugin');
-$dog->setup_config();
-
+my $dog = mdDog->new('/plugin');
 my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
 my $rev = $dog->qParam('revision');
 
 exit() unless($fid);

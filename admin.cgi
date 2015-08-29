@@ -27,13 +27,15 @@ use Data::Dumper;
 
 my $dog = mdDog::Admin->new();
 $dog->setup_config();
-if(!$dog->login_for_admin()){
-  #管理者でない場合、index.cgiにリダイレクト
+my $uid = $dog->login_for_admin();
+unless( $uid ){  #管理者でない場合、index.cgiにリダイレクト
   print "Location: index.cgi\n\n";
   exit();
 }
 
-$dog->set_user_infos();
+my $userinfos = $dog->set_user_infos();
 
-$dog->print_page();
+$dog->print_page({
+    userinfos => $userinfos
+});
 exit();

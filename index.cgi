@@ -28,7 +28,7 @@ use MYUTIL;
 
 my $dog = mdDog->new();
 $dog->setup_config();
-$dog->login();
+my $uid = $dog->login();
 
 my $ope = $dog->qParam('unuse')?'unuse'
     :$dog->qParam('use')?'use'
@@ -38,8 +38,19 @@ if( $ope ){
     $dog->change_file_info($ope);
 }
 
-$dog->listup_groups();
-$dog->listup_documents();
+my $grouplist = $dog->listup_groups();
+my $page      = $dog->param_or_cookie("index", "page");
+my $style     = $dog->param_or_cookie("index", "style");
+my $group     = $dog->param_or_cookie("index", "group");
+my ($infos, $count, $paging) = 
+    $dog->listup_documents($uid, $page, $style, $group);
 
-$dog->print_page();
+$dog->print_page({
+    'grouplist'      => $grouplist,
+    'infos'          => $infos,
+    'document_count' => $count,
+    'paging'         => $paging,
+    'style'          => $style,
+    'page'           => $page
+});
 exit();

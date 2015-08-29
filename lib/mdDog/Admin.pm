@@ -27,8 +27,8 @@ use MYUTIL;
 sub login_for_admin{
     my $self = shift;
 
-    $self->SUPER::login();
-    return $self->{userinfo}->{is_admin}
+    my $uid = $self->SUPER::login();
+    return $self->{userinfo}->{is_admin}?$uid:undef;
 }
 
 sub set_user_infos{
@@ -41,8 +41,7 @@ sub set_user_infos{
     foreach(@$infos){
         $_->{created_at} = MYUTIL::format_date3($_->{created_at});
     }
-
-    $self->{t}->{userinfos} = $infos
+    return $infos;
 }
 
 

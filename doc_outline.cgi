@@ -25,19 +25,27 @@ use lib './lib', './src';
 use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("all");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login();
+$dog->check_auths($uid, $fid, "all");
 
-if( !$dog->qParam('fid') ){
-    $dog->{t}->{error} = "mdドキュメントが指定されていません<br>doc_outline.cgi:err01<br>";
-}else{
-    $dog->set_master_outline();
-
-    #MDファイルの目次作成
-    #MDファイルの出力
-    $dog->set_document_info();
+unless( $fid ){
+    my $error = "mdドキュメントが指定されていません";
+    $dog->print_page({
+        'error'  => $error
+    });
+    exit();
 }
 
-$dog->print_page();
+my ($loglist, $contents, $docs) = $dog->set_master_outline($fid);
+my $docinfo = $dog->set_document_info($uid, $fid);
+
+$dog->print_page({
+    'fid'      => $fid,
+    'loglist'  => $loglist,  # 更新履歴
+    'contents' => $contents, # 目次
+    'docs'     => $docs,     # 本文
+    'docinfo'  => $docinfo,
+});
 exit();

@@ -26,16 +26,31 @@ use mdDog::Profile;
 
 my $dog = mdDog::Profile->new();
 $dog->setup_config();
-unless($dog->login()){
+my $uid = $dog->login();
+unless( $uid ){
     print "Location: index.cgi\n\n";
     exit();
 }
 
 if($dog->qParam("save")){
-  #アカウント情報の保存
-  if($dog->change_profile()){
-    $dog->login();
-  }
+    #アカウント情報の保存
+    my $account     = $dog->qParam('account');
+    my $mail        = $dog->qParam('mail');
+    my $nic_name    = $dog->qParam('nic_name');
+    my $password    = $dog->qParam('password');
+    my $re_password = $dog->qParam('re_password');
+
+    if( $password ne $re_password ){
+        push @{$dog->{t}->{message}->{error}},
+            "再入力されたパスワードが一致しません";
+    }
+    elsif( $dog->change_profile($uid,
+                                $account,
+                                $mail,
+                                $nic_name,
+                                $password)){
+        $dog->login();
+    }
 }
 
 $dog->print_page();

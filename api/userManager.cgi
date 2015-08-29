@@ -8,26 +8,34 @@ use strict;no strict "refs";
 use lib '../lib', '../src';
 use mdDog::API;
 
-my $dog = mdDog::API->new('api');
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("is_owned", "is_admin");
+my $dog    = mdDog::API->new('api');
+my $fid    = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid    = $dog->login();
+my $action = $dog->qParam('action');
+$dog->check_auths($uid, $fid, "is_owned", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
 
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ) {
-    if( $dog->qParam('action')  eq 'user_add' ) {
-        print $dog->document_user_add();
+    if( $action  eq 'user_add' ) {
+        my @users = $dog->qParam('users[]');
+        print $dog->document_user_add($uid, $fid, \@users);
     }
-    if( $dog->qParam('action') eq 'user_delete' ){
-	print $dog->document_user_delete();
+    if( $action eq 'user_delete' ){
+        my @users = $dog->qParam('users[]');
+        print $dog->document_user_delete($uid, $fid, \@users);
     }
-    if( $dog->qParam('action') eq 'user_may_approve' ){
-	print $dog->document_user_may_approve();
+    if( $action eq 'user_may_approve' ){
+        my $checked = $dog->qParam('checked')?'true':'false';
+        my $user = $dog->qParam('uid');
+        print $dog->document_user_may_approve($uid, $fid, $user, $checked);
     }
-    if( $dog->qParam('action') eq 'user_may_edit' ){
-	print $dog->document_user_may_edit();
+    if( $action eq 'user_may_edit' ){
+        my $checked = $dog->qParam('checked')?'true':'false';
+        my $user = $dog->qParam('uid');
+        print $dog->document_user_may_edit($uid, $fid, $user, $checked);
     }
 }
 

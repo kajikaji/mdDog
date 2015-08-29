@@ -34,14 +34,12 @@ use constant USER_AUTH_DELETE  => 3;
 #[API] JSONを返す
 #
 sub get_data {
-    my $self = shift;
-    my $uid = $self->{s}->param("login");
+    my ($self, $uid, $fid, $eid, $action) = @_;
     return unless($uid);
-    my $fid = $self->qParam('fid') + 0;
-    my $eid = $self->qParam('eid') + 0;
+
     my $data;
 
-    if ($self->qParam('action') eq 'image_list') {
+    if ( $action eq 'image_list' ) {
         $self->{git}->attach_local_tmp($uid);
         my $imgdir = "$self->{repodir}/${fid}/image";
         if ( -d $imgdir) {
@@ -80,14 +78,10 @@ sub get_data {
 #[API]
 #
 sub update_paragraph {
-    my $self = shift;
-    my $uid = $self->{s}->param("login");
+    my ($self, $uid, $fid, $eid, $data) = @_;
     return unless($uid);
-    my $fid = $self->qParam('fid') + 0;
-    my $eid = $self->qParam('eid') + 0;
-    my $data = $self->qParam('data');
+
     $data .= "\n" if( $data !~ m/(.*)\n*$/);
-#    $data .= "\n" if( $data !~ m/(.*)\n\n$/);
 
     my $document = $self->_get_user_document($uid, $fid);
     $document = alter_paragraph(length($document)>0?$document:"", $eid, $data);
@@ -99,7 +93,7 @@ sub update_paragraph {
     syswrite $hF, $document, length($document);
     close $hF;
 
-    my $author = $self->_get_author($self->{s}->param('login'));
+    my $author = $self->_get_author($uid);
     $self->{git}->commit($self->{filename}, $author, "temp saved");
     $self->{git}->detach_local();
 
@@ -129,11 +123,11 @@ sub update_paragraph {
 #[API]
 #
 sub delete_paragraph {
-    my $self = shift;
-    my $uid = $self->{s}->param("login");
+    my ($self, $uid, $fid, $eid) = @_;
+#    my $uid = $self->{s}->param("login");
     return unless($uid);
-    my $fid = $self->qParam('fid') + 0;
-    my $eid = $self->qParam('eid') + 0;
+#    my $fid = $self->qParam('fid') + 0;
+#    my $eid = $self->qParam('eid') + 0;
     my $document = $self->_get_user_document($uid, $fid);
 
     $document = alter_paragraph($document, $eid, "");
@@ -214,14 +208,11 @@ sub outline_remove_divide {
 #[API] 指定のrevisionのJSONデータを返す
 #
 sub get_revisiondata {
-    my $self = shift;
-    my $fid  = $self->qParam("fid");
+    my ($self, $fid, $revision, $user) = @_;
 
     $self->_set_filename($fid);
     my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
     my $document;
-    my $revision = $self->qParam('revision');
-    my $user = $self->qParam('user');
     $user = undef if($user == 0);
 
     my $gitctrl = $self->{git};
@@ -255,12 +246,9 @@ sub get_revisiondata {
 #[API] 指定のrevisionの差分を返す
 #
 sub get_diff {
-    my $self = shift;
-    my $fid = $self->qParam('fid');
+    my ($self, $fid, $revision, $dist) = @_;
     $self->_set_filename($fid);
 
-    my $revision = $self->qParam('revision');
-    my $dist     = $self->qParam('dist');
     my $diff     = $self->{git}->get_diff($self->{filename}, $revision, $dist);
 
     my $json = JSON->new();
@@ -268,24 +256,24 @@ sub get_diff {
         name     => $self->{filename},
         revision => $revision,
         dist     => $dist?$dist:'ひとつ前',
-        diff    => $diff,
+        diff     => $diff,
     });
 }
 
 ############################################################
 #[API]
 sub restruct_document {
-    my $self = shift;
-    my $fid = $self->qParam('fid');
-    my $doc = $self->qParam('doc');
-    my $uid = $self->{s}->param("login");
+    my ($self, $fid, $uid, $doc) = @_;
+#    my $fid = $self->qParam('fid');
+#    my $doc = $self->qParam('doc');
+#    my $uid = $self->{s}->param("login");
     return unless( $fid && $uid );
 
     my $gitctrl = $self->{git};
     my $oldlogs = $gitctrl->get_user_logs($uid);
     my $log;
     foreach(@$oldlogs){
-      $log .= $_->{attr}->{date} . ": " . $_->{raw};
+      $log .= $_->format_datetime . ": " . $_->{message};
       $log .= "====\n";
     }
 
@@ -447,18 +435,13 @@ sub _user_auth {
 #[API]
 #
 sub document_user_add {
-    my $self  = shift;
-
-    my $fid   = $self->qParam('fid');
-    my @users = $self->qParam('users[]');
-    my $uid   = $self->{s}->param('login');
-
+    my ($self, $uid, $fid, $users)  = @_;
     my $ar_insert;
     my $sql = SQL::user_info;
     $sql =~ s/ id = \?/ id IN (/;
 
     my $i = 0;
-    foreach(@users) {
+    foreach(@$users) {
       push @$ar_insert, {
           info_id    => $fid,
           user_id    => $_,
@@ -487,13 +470,8 @@ sub document_user_add {
 #[API]
 #
 sub document_user_delete {
-    my $self  = shift;
-
-    my $fid   = $self->qParam('fid');
-    my @users = $self->qParam('users[]');
-    my $uid   = $self->{s}->param('login');
-
-    return unless( @users );
+    my ($self, $uid, $fid, $users) = @_;
+    return unless( @$users );
 
     my $sql_delete = << "SQL";
 DELETE FROM docx_auths
@@ -506,7 +484,7 @@ SQL
     $sql =~ s/ id = \?/ id IN (/;
 
     my $i = 0;
-    foreach(@users) {
+    foreach(@$users) {
         $sql_delete .= ',' if( $i > 0 );
         $sql_delete .= $_;
 
@@ -533,23 +511,19 @@ SQL
 #[API]
 #
 sub document_user_may_approve {
-    my $self = shift;
-
-    my $fid   = $self->qParam('fid');
-    my $uid   = $self->qParam('uid');
-    my $checked = $self->qParam('checked')?'true':'false';
+    my ($self, $uid, $fid, $user, $checked) = @_;
 
     $self->{teng}->update('docx_auths' => {
         may_approve => $checked
     }, {
         info_id => $fid,
-        user_id => $uid
+        user_id => $user
     });
 
     $self->dbCommit();
 
     my $sth = $self->{dbh}->prepare(SQL::auth_info);
-    $sth->execute($fid, $uid);
+    $sth->execute($fid, $user);
     my $info = $sth->fetchrow_hashref();
 
     my $json = JSON->new();
@@ -560,22 +534,18 @@ sub document_user_may_approve {
 #[API]
 #
 sub document_user_may_edit {
-    my $self    = shift;
-
-    my $fid     = $self->qParam('fid');
-    my $uid     = $self->qParam('uid');
-    my $checked = $self->qParam('checked')?'true':'false';
+    my ($self, $uid, $fid, $user, $checked) = @_;
 
     $self->{teng}->update('docx_auths' => {
         may_edit => $checked
     }, {
         info_id => $fid,
-        user_id => $uid
+        user_id => $user
     });
     $self->dbCommit();
 
     my $sth = $self->{dbh}->prepare(SQL::auth_info);
-    $sth->execute($fid, $uid);
+    $sth->execute($fid, $user);
     my $info = $sth->fetchrow_hashref();
 
     my $json = JSON->new();
@@ -586,10 +556,7 @@ sub document_user_may_edit {
 #[API]
 #
 sub document_change_public {
-    my $self = shift;
-
-    my $fid       = $self->qParam('fid');
-    my $is_public = $self->qParam('is_public')?'true':'false';
+    my ($self, $fid, $is_public) = @_;
 
     $self->{teng}->update('docx_infos' => {
         is_public => $is_public
@@ -677,11 +644,8 @@ sub clear_user_buffer {
 #
 #
 sub get_groups {
-    my $self = shift;
-
-    if( $self->qParam('fid') ){
-      return $self->get_doc_groups();
-    }
+    my ($self, $fid) = @_;
+    return $self->get_doc_groups($fid)  if( $fid );
 
     my $sql = SQL::group_list;
     $sql   .= " ORDER BY title ";
@@ -696,9 +660,7 @@ sub get_groups {
 #
 #--------------------------------------------------
 sub get_doc_groups {
-    my $self = shift;
-    my $fid = $self->qParam('fid') + 0;
-
+    my ($self, $fid) = @_;
     return unless( $fid );
 
     my $sql = SQL::doc_group_list;
@@ -713,8 +675,7 @@ sub get_doc_groups {
 #
 #--------------------------------------------------
 sub search_groups{
-    my $self = shift;
-    my $search = $self->qParam('search');
+    my ($self, $search) = @_;
     return unless( $search );
 
     my $sql = SQL::group_list;
@@ -730,15 +691,12 @@ sub search_groups{
 #
 #--------------------------------------------------
 sub add_groups {
-    my $self = shift;
-    my @groups = $self->qParam('groups[]');
-#    return unless( @groups );
-    my $fid    = $self->qParam('fid') + 0;
-    my $uid    = $self->{s}->param('login');
+    my ($self, $uid, $fid, $groups) = @_;
+    return unless( $groups );
     my $g_type   = 1;
 
     #グループの登録
-    for (@groups) {
+    for (@$groups) {
         my $groupname = $_;
         my $sql_check = SQL::group_list;
         $sql_check   .= " WHERE title = '${groupname}'";
@@ -760,9 +718,9 @@ sub add_groups {
         doc_id => $fid
     });
 
-    if( @groups ){
+    if( @$groups ){
         my $values = "";
-        for( @groups ){
+        for( @$groups ){
             $values .= ',' if ( $values =~ m/^\(.*\).*/ );
             $values .= "(${fid}, (select id from mddog_groups where title = '$_'))";
         }
@@ -784,9 +742,9 @@ SQL
 
     $self->{dbh}->commit();
 
-    my $length = @groups;
+    my $length = @$groups;
     my $json = JSON->new();
-    return $json->encode(\@groups);
+    return $json->encode($groups);
 }
 
 1;

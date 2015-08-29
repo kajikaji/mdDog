@@ -25,19 +25,27 @@ use lib './lib/', './src';
 use mdDog::Doc::Approve;
 
 my $dog = mdDog::Doc::Approve->new();
-$dog->setup_config();
-$dog->login_user_document();
-$dog->check_auths("is_approve", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login_user_document($fid);
+$dog->check_auths($uid, $fid, "is_approve", "is_admin");
+my %parts;
 
 #承認処理
 if( $dog->qParam('approve') ){
-    $dog->doc_approve();
+    my $user     = $dog->qParam("user");
+    my $revision = $dog->qParam("revision");
+    $dog->doc_approve($uid, $fid, $user, $revision);
 }elsif( $dog->qParam('approve_pre') ){ # 確認
-    $dog->set_approve_list();
+    my $user     = $dog->qParam("user");
+    my $revision = $dog->qParam("revision");
+    $parts{loglist} = $dog->set_approve_list(
+        $uid, $fid, $user, $revision);
+    $parts{approve_pre} = 1;
 }
 
-$dog->set_user_log();
-$dog->set_document_info();
+$parts{userlist} = $dog->set_user_log($uid, $fid);
+$parts{docinfo}  = $dog->set_document_info($uid, $fid);
 
-$dog->print_page();
+$dog->print_page(\%parts);
 exit();

@@ -154,12 +154,12 @@ sub get_user_logs {
     for( $self->{git}->log("master.." . $branch) ){
         my $obj = eval {$_};
 
-        $obj->{user} = $uid;
         my $log = mdDog::model::GitLog->new(
             rev     => $obj->{id},
             message => $obj->{message},
             author  => $obj->{attr}->{author},
             date    => $obj->{attr}->{date},
+            user    => $uid
         );
 
         if( !$raw && $log->{message} !~ m/^#.*#\n$/ ){
@@ -457,30 +457,28 @@ sub unlock_dir {
 # @param2 isCreate: 1だと強制でリポジトリ作成
 #
 sub attach_local {
-  my $self = shift;
-  my $uid = shift;
-  my $isCreate = shift;
+    my ($self, $uid, $isCreate) = @_;
 
-  $self->lock_dir();
+    $self->lock_dir();
 
-  my $gitctrl = $self->{git};
-  my @branches = $gitctrl->branch;
-  my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
+    my $gitctrl = $self->{git};
+    my @branches = $gitctrl->branch;
+    my $branch = $uid?"$self->{branch_prefix}${uid}":"master";
 
-  if(MYUTIL::is_include(\@branches, $branch)){
-    if($isCreate){
-      my $latest_rev  = $self->get_branch_root();
-      my $branch_root = $self->get_branch_root($uid);
-      if($latest_rev ne $branch_root){
-        #ユーザーの古い履歴は不要なので削除
-        $gitctrl->branch("-D", $branch);
-        $gitctrl->branch($branch);
-      }
+    if(MYUTIL::is_include(\@branches, $branch)){
+        if($isCreate){
+            my $latest_rev  = $self->get_branch_root();
+            my $branch_root = $self->get_branch_root($uid);
+            if($latest_rev ne $branch_root){
+                #ユーザーの古い履歴は不要なので削除
+                $gitctrl->branch("-D", $branch);
+                $gitctrl->branch($branch);
+            }
+        }
+        $gitctrl->checkout(${branch});
+    }elsif($isCreate){
+        $gitctrl->checkout({b => ${branch}});
     }
-    $gitctrl->checkout(${branch});
-  }elsif($isCreate){
-    $gitctrl->checkout({b => ${branch}});
-  }
 }
 
 ############################################################

@@ -26,13 +26,16 @@ use mdDog::Doc::Create;
 
 my $dog = mdDog::Doc::Create->new();
 $dog->setup_config();
-unless($dog->login()){
+my $uid = $dog->login();
+unless( $uid ){
     $dog->{t}->{error} = "この操作はログインする必要があります<br>doc_create.cgi";
 }else{
     if($dog->qParam('create')){
-	$dog->create_file();
-	print "Location: index.cgi\n\n";
-	exit();
+        my $docname = $dog->qParam('doc_name');
+        my $filename = $dog->qParam('file_name');
+        $dog->create_file($uid, $docname, $filename);
+        print "Location: index.cgi\n\n";
+        exit();
     }
 }
 

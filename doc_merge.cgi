@@ -25,13 +25,22 @@ use lib './lib', './src';
 use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
-$dog->setup_config();
-$dog->login_user_document();
-$dog->check_auths("is_edit", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login_user_document($fid);
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
-$dog->set_document_info();
-$dog->set_buffer_info();
-$dog->set_merge_view();
+my $docinfo = $dog->set_document_info($uid, $fid);
+my $is_live = $dog->set_buffer_info($uid, $fid);
+my ($doc_master, $doc_mine, $diff) = 
+    $dog->set_merge_view($uid, $fid);
 
-$dog->print_page();
+$dog->print_page({
+    'fid'      => $fid,
+    'doc_master' => $doc_master,
+    'doc_mine' => $doc_mine,
+    'diff'     => $diff,
+    'is_live'  => $is_live,
+    'docinfo'  => $docinfo
+});
 exit();

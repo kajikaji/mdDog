@@ -140,6 +140,7 @@ SELECT
 FROM (${sql}) foo
 LEFT OUTER JOIN mddog_doc_group dg ON dg.doc_id = foo.id
 LEFT OUTER JOIN mddog_groups g ON g.id = dg.group_id
+ORDER BY foo.id
 SQL
 
     return $sql_wrapper;
@@ -155,6 +156,41 @@ INNER JOIN docx_infos di ON da.info_id = di.id
 WHERE
   da.info_id = ?
   AND da.user_id = ?
+SQL
+}
+
+sub document_auth_infos{
+    return << "SQL";
+SELECT
+  a.*,
+  u.id AS uid,
+  u.account,
+  u.nic_name,
+  u.mail,
+  u.is_used,
+  u.may_admin,
+  CASE
+    WHEN i.created_by = a.user_id THEN true
+    ELSE false
+  END AS is_owned
+FROM
+  docx_auths a
+INNER JOIN docx_users u ON a.user_id = u.id
+INNER JOIN docx_infos i ON a.info_id = i.id
+WHERE
+  a.info_id = ?;
+SQL
+}
+
+sub document_unallow_users {
+    return << "SQL";
+SELECT
+  *
+FROM
+  docx_users
+WHERE
+  id not in (SELECT user_id FROM docx_auths WHERE info_id = ?)
+  AND is_used = 't';
 SQL
 }
 

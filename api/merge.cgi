@@ -10,16 +10,18 @@ use mdDog::API;
 use MYUTIL;
 
 my $dog = mdDog::API->new('api');
-$dog->setup_config();
-$dog->login();
-$dog->check_auths("is_edit", "is_admin");
+my $fid = $dog->qParam('fid');
+$dog->setup_config($fid);
+my $uid = $dog->login();
+$dog->check_auths($uid, $fid, "is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
 } elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
-    return unless( $dog->qParam('fid') );
 
-    print $dog->restruct_document();
+    return unless( $fid );
+    my $doc = $dog->qParam('doc');
+    print $dog->restruct_document($fid, $uid, $doc);
 }
 
 exit();

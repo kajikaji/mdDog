@@ -12,6 +12,7 @@
 
 <section class="DocApprove">
 [% IF approve_pre %]
+<div class="Logtable">
 <table class="Gitlog">
   <thead>
     <tr>
@@ -26,6 +27,10 @@
       <td class="Date">[% log.format_datetime %]</td>
       <td class="Message">[% log.message %]</td>
       <td class="Author">[% log.author_name %]</td>
+      [% IF loop.first %]
+        [% SET revision = log.rev %]
+        [% SET user = log.user %]
+      [% END %]
     </tr>
     [% END %]
   </tbody>

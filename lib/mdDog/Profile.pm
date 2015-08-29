@@ -7,22 +7,10 @@ use Digest::MD5 qw/md5 md5_hex/;
 # @summary プロフィールの変更
 #
 sub change_profile{
-    my $self = shift;
-    my $uid  = $self->{s}->param('login');
-
-    my $account     = $self->qParam('account');
-    my $mail        = $self->qParam('mail');
-    my $nic_name    = $self->qParam('nic_name');
-    my $password    = $self->qParam('password');
-    my $re_password = $self->qParam('re_password');
+    my ($self, $uid, $account, $mail, $nic_name, $password) = @_;
 
     if( length $password == 0 ){
         push @{$self->{t}->{message}->{error}}, "パスワードが入力されていません";
-        return 0;
-    }
-
-    if( $password ne $re_password ){
-        push @{$self->{t}->{message}->{error}}, "再入力されたパスワードが一致しません";
         return 0;
     }
     unless( $account && $nic_name && $mail ){
