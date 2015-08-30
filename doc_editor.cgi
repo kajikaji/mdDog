@@ -26,25 +26,33 @@ use mdDog::Doc::Editor;
 
 my $dog = mdDog::Doc::Editor->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login_user_document($fid);
-$dog->check_auths($uid, $fid, "is_edit", "is_admin");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+unless( $dog->login ){
+    print "Location: doc_history.cgi?fid=${fid}\n\n";
+    exit;
+}
+
+$dog->check_auths("is_edit", "is_admin");
 
 # コミット処理
 if( $dog->qParam('commit') ){
     my $comment = $dog->qParam('comment');
-    $dog->fix_md_buffer($uid, $fid, $comment);
+    $dog->fix_md_buffer($comment);
 }
 
 #バッファリセット
 if( $dog->qParam('resetBuffer') ){
-    $dog->reset_buffer($uid, $fid);
+    $dog->reset_buffer;
 }
 
-my ($markdown, $raws) = $dog->set_buffer_md($uid, $fid);
-my $divides = $dog->set_outline_buffer($uid, $fid);
-my $is_live = $dog->set_buffer_info($uid, $fid);
-my $docinfo = $dog->set_document_info($uid, $fid);
+my ($markdown, $raws) = $dog->set_buffer_md;
+my $divides = $dog->set_outline_buffer;
+my $is_live = $dog->set_buffer_info;
+my $docinfo = $dog->set_document_info;
 
 $dog->print_page({
     'fid'      => $fid,

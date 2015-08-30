@@ -7,10 +7,11 @@ use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragra
 # @summary MDドキュメントの編集バッファをテンプレートにセットする
 #
 sub set_buffer_md{
-    my ($self, $uid, $fid) = @_;
-    return unless($uid);
+    my ($self) = @_;
+    return unless( $self->{userinfo}->{uid} );
 
-    my $document = $self->_get_user_document($uid, $fid);
+    my $document = $self->_get_user_document($self->{userinfo}->{uid},
+                                             $self->{fid});
     my $raws     = paragraphs($document);
     my $md       = markdown($document);
     $md =~ s#"plugin/image_viewer\.cgi\?(.*)"#"plugin/image_viewer.cgi?tmp=1&$1" #g;
@@ -21,10 +22,10 @@ sub set_buffer_md{
 # @summary アウトラインの改ページ情報の取得
 #
 sub set_outline_buffer{
-    my ($self, $uid, $fid) = @_;
-    return unless($uid);
+    my ($self) = @_;
+    return unless( $self->{userinfo}->{uid} );
 
-    $self->{git}->attach_info($uid);
+    $self->{git}->attach_info($self->{userinfo}->{uid});
     $self->{outline}->init();
     $self->{git}->detach_local();
 

@@ -10,21 +10,63 @@ use SQL;
 use model::Docinfo;
 use model::DocGroup;
 
+sub init {
+    my ($self, $fid) = @_;
+    die ("不正な呼び出しです")  unless( $fid );
+
+    my $workdir = "$self->{repodir}/" . $fid;
+    $self->{git}     = GitCtrl->new($workdir);
+    $self->{outline} = OutlineCtrl->new($workdir);
+    $self->{fid} = $fid;
+
+    $self->SUPER::init;
+}
+
+# @summary 権限チェック
+#
+sub check_auths {
+    my ($self)  = @_;
+
+    if( $self->{userinfo} ){
+        my $sth = $self->{dbh}->prepare(SQL::auth_info);
+        $sth->execute($self->{fid}, $self->{userinfo}->{uid});
+        if( my $row = $sth->fetchrow_hashref() ){
+            $self->{userinfo}->set_docACL($row, $self->{userinfo}->{uid});
+        }
+        $sth->finish();
+    }
+
+    foreach (@_) {
+        return if( $_ =~ m/all/ );
+        return if( $_ =~ m/is_edit/    && $self->{userinfo}->is_Editable  );
+        return if ( $_ =~ m/is_owned/  && $self->{userinfo}->is_Owned     );
+        return if ( $_ =~ m/is_approve/ && $self->{userinfo}->is_Approval );
+        return if ( $_ =~ m/is_admin/  && $self->{userinfo}->is_Admin     );
+    }
+=pod
+    if ( $fid ){
+        print "Location: doc_history.cgi?fid=${fid}\n\n";
+    } else {
+        print "Location: index.cgi\n\n";
+    }
+    exit();
+=cut
+}
+
 # @summary ドキュメント情報を取得してテンプレートにセット
 #
 sub set_document_info {
-    my ($self, $uid, $fid) = @_;
+    my ($self) = @_;
 
-    return unless($fid);        # NULL CHECK
     my $logs  = $self->{git}->get_shared_logs();
 
     my $sth = $self->{dbh}->prepare(SQL::document_info);
-    $sth->execute($fid);
+    $sth->execute($self->{fid});
     my $row = $sth->fetchrow_hashref();
 
     my $docinfo = mdDog::model::Docinfo->new();
     $docinfo->set_row($row);
-    $docinfo->{file_size}       = -s $self->{repodir} . "/${fid}/$row->{file_name}";
+    $docinfo->{file_size}       = -s $self->{repodir} . "/$self->{fid}/$row->{file_name}";
     $docinfo->{last_updated_at} = $logs->[0]->format_datetime;
 
     do{
@@ -37,7 +79,7 @@ sub set_document_info {
     }while( $row = $sth->fetchrow_hashref() );
     $sth->finish();
 
-    if( $uid ){
+    if( $self->{userinfo} ){
         $docinfo->{is_owned}    = $self->{userinfo}->is_Owned;
         $docinfo->{is_approval} = $self->{userinfo}->is_Approval;
         $docinfo->{is_editable} = $self->{userinfo}->is_Editable;
@@ -61,8 +103,8 @@ sub set_document_log(){
 # @summary ユーザーのバッファの状態を取得してテンプレートにセット
 #
 sub set_buffer_info {
-    my ($self, $uid, $fid) = @_;
-    return 0 unless( $fid && $uid );
+    my ($self) = @_;
+    return 0 unless( $self->{userinfo} );
 
     my $is_live = 0;
     my $gitctrl = $self->{git};
@@ -73,39 +115,35 @@ sub set_buffer_info {
     if( $shared_logs ){
         $latest_rev = $shared_logs->[0]->{rev};
     }
-    if($gitctrl->is_exist_user_branch($uid)){
-        my $user_root = $gitctrl->get_branch_root($uid);
-#        $self->{t}->{is_live} = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
+    if($gitctrl->is_exist_user_branch($self->{userinfo}->{uid})){
+        my $user_root = $gitctrl->get_branch_root($self->{userinfo}->{uid});
         $is_live = $latest_rev =~ m/^${user_root}[0-9a-z]+/ ?1:0;
     }else{
-#        $self->{t}->{is_live} = 1;
         $is_live = 1;
     }
 
     # check exist of temporary buffer
-    if($self->{git}->is_exist_user_branch($uid, 'tmp')
-      && $self->{git}->is_updated_buffer($uid)){
+    if($self->{git}->is_exist_user_branch($self->{userinfo}->{uid}, 'tmp')
+      && $self->{git}->is_updated_buffer($self->{userinfo}->{uid})){
         push @{$self->{t}->{message}->{buffered}}, "Buffered";
     }
     return $is_live;
 }
 
 # @summary MDドキュメントの編集バッファをフィックスする
-# query1: login
-# query2: fid
-# query3: comment
+# query: comment
 #
 sub fix_md_buffer {
-    my ($self, $uid, $fid, $comment) = @_;
-    unless($uid && $fid && $comment){
+    my ($self, $comment) = @_;
+    unless($self->{userinfo} && $comment){
         push @{$self->{t}->{message}->{error}},
             "コメントがないためコミット失敗しました";
         return 0;
     }
 
     my $gitctrl = $self->{git};
-    my $author  = $self->_get_author($uid);
-    my $ret = $gitctrl->fix_tmp($uid, $author, $comment);
+    my $author  = $self->_get_author($self->{userinfo}->{uid});
+    my $ret = $gitctrl->fix_tmp($self->{userinfo}->{uid}, $author, $comment);
     unless($ret){
         push @{$self->{t}->{message}->{error}},
             "編集バッファのコミットに失敗しました";
@@ -115,9 +153,9 @@ sub fix_md_buffer {
     push(@{$self->{t}->{message}->{info}}, $gitctrl->{info})
         if($gitctrl->{info});
 
-    $self->{git}->attach_info($uid);
+    $self->{git}->attach_info($self->{userinfo}->{uid});
     $self->{outline}->init();
-    $self->{git}->restruct_info($uid);
+    $self->{git}->restruct_info($self->{userinfo}->{uid});
     $self->{outline}->save();
     $self->{git}->commit_info($self->{outline}->{filename}, $author);
     $self->{git}->detach_local();
@@ -128,14 +166,14 @@ sub fix_md_buffer {
 # @summary 編集バッファを削除
 #
 sub reset_buffer {
-    my ($self, $uid, $fid) = @_;
-    unless( $uid && $fid ){
+    my ($self) = @_;
+    unless( $self->{userinfo} ){
         push @{$self->{t}->{message}->{error}}, "不正なアクセスです";
         return 0;
     }
 
     my $gitctrl = $self->{git};
-    return $gitctrl->reset_buffer($uid);
+    return $gitctrl->reset_buffer($self->{userinfo}->{uid});
 }
 
 # @summary
@@ -143,11 +181,10 @@ sub reset_buffer {
 #  - またドキュメントの情報もテンプレートにセットする
 #
 sub set_master_outline{
-    my ($self, $fid) = @_;
-    return unless($fid);  # NULL CHECK
+    my ($self) = @_;
 
-    $self->_set_filename($fid);
-    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
+    $self->_set_filename($self->{fid});
+    my $filepath = "$self->{repodir}/$self->{fid}/$self->{filename}";
     my $gitctrl  = $self->{git};
 
     my $loglist = $gitctrl->get_shared_logs(undef, "DESC");
@@ -209,8 +246,8 @@ sub set_master_outline{
 # @summary ログインユーザー自身の編集バッファのログの取得
 #
 sub set_my_log {
-    my ($self, $uid, $fid) = @_;
-    return 0 unless($fid && $uid);  # NULL CHECK
+    my ($self) = @_;
+    return 0 unless( $self->{userinfo} );  # NULL CHECK
 
     my @userary;
     my $latest_rev = undef;
@@ -219,19 +256,19 @@ sub set_my_log {
     #共有リポジトリ(master)
     $self->{t}->{sharedlist} = $gitctrl->get_shared_logs();
 
-    if($gitctrl->is_exist_user_branch($uid)){
-#        $self->{t}->{loglist} = $gitctrl->get_user_logs($uid);
-        return $gitctrl->get_user_logs($uid);
+    if($gitctrl->is_exist_user_branch($self->{userinfo}->{uid})){
+        return $gitctrl->get_user_logs($self->{userinfo}->{uid});
     }
 }
 
 # @summary ドキュメントの生データをテンプレートにセットする
 #
 sub set_buffer_raw{
-    my ($self, $uid, $fid) = @_;
-    return unless($uid);
+    my ($self) = @_;
+    return unless( $self->{userinfo} );
 
-    my $document = $self->_get_user_document($uid, $fid);
+    my $document = $self->_get_user_document($self->{userinfo}->{uid},
+                                             $self->{fid});
     return $document;
 }
 
@@ -240,20 +277,20 @@ sub set_buffer_raw{
 # @query document
 #
 sub update_md_buffer {
-    my ($self, $uid, $fid) = @_;
-    return 0 unless($uid && $fid);
+    my ($self) = @_;
+    return 0 unless( $self->{userinfo} );
 
-    unless( $self->_set_filename($fid) ){
+    unless( $self->_set_filename($self->{fid}) ){
         push @{$self->{t}->{message}->{error}}, "指定のファイルが見つかりません";
         return 0;
     }
-    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
+    my $filepath = "$self->{repodir}/$self->{fid}/$self->{filename}";
     my $document = $self->qParam('document');
     $document    =~ s#<div>\n##g;
     $document    =~ s#</div>\n##g;
     $document    =~ s/\r\n/\n/g;
 
-    $self->{git}->attach_local_tmp($uid, 1);
+    $self->{git}->attach_local_tmp($self->{userinfo}->{uid}, 1);
 
     #ファイル書き込み
     open my $hF, '>', $filepath || die "failed to read ${filepath}";
@@ -270,12 +307,11 @@ sub update_md_buffer {
 # @summary 差異のある２つのリポジトリの情報をテンプレートにセットする
 #
 sub set_merge_view {
-    my ($self, $uid, $fid) = @_;
-
+    my ($self) = @_;
     my $gitctrl  = $self->{git};
 
-    $self->_set_filename($fid);
-    my $filepath = "$self->{repodir}/${fid}/$self->{filename}";
+    $self->_set_filename($self->{fid});
+    my $filepath = "$self->{repodir}/$self->{fid}/$self->{filename}";
 
     # taking a info from MASTER
     $gitctrl->attach_local(undef);
@@ -287,7 +323,7 @@ sub set_merge_view {
     $gitctrl->detach_local();
 
     # takeing a info from MINE including 'diff'
-    $gitctrl->attach_local($uid);
+    $gitctrl->attach_local($self->{userinfo}->{uid});
     my ($doc_user, $pos2) = MYUTIL::_fread($filepath);
     my $list_user;
     foreach(split(/\n/, $doc_user)){
@@ -304,33 +340,31 @@ sub set_merge_view {
 }
 
 # @summary ユーザーのブランチにアップロードしたファイルをコミットする
-# query1: fid
-# query2: login
-# query3: uploadfile
+# query: uploadfile
 #
 sub upload_file {
-    my ($self, $uid, $fid, $hF) = @_;
-    return 0 unless($fid && $uid); # NULL CHECK
+    my ($self, $hF) = @_;
+    return 0 unless( $self->{userinfo} ); # NULL CHECK
     unless($hF){
         push @{$self->{t}->{message}->{error}}, "ファイルがアップロードできませんでした";
         return 0;
     }
 
     my $filename = basename($hF);
-    my $author   = $self->_get_author($uid);
+    my $author   = $self->_get_author($self->{userinfo}->{uid});
     my $row      = $self->{teng}->single('docx_infos',
                           {file_name => $filename, is_used => 1});
-    if( !$row || $row->id != $fid ){
+    if( !$row || $row->id != $self->{fid} ){
         push @{$self->{t}->{message}->{error}},
             "違うファイルがアップロードされたため更新されませんでした";
         close($hF);
         return 0;
     }
 
-    $self->{git}->attach_local_tmp($uid, 1);
+    $self->{git}->attach_local_tmp($self->{userinfo}->{uid}, 1);
 
     my $tmppath  = $self->{q}->tmpFileName($hF);
-    my $filepath = $self->{repodir}. "/$fid/$filename";
+    my $filepath = $self->{repodir}. "/$self->{fid}/$filename";
     move ($tmppath, $filepath) || die "Upload Error!. $filepath";
     close($hF);
 

@@ -11,7 +11,7 @@ use MYUTIL;
 
 my $dog = mdDog::API->new('api');
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
+$dog->init($fid);
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){

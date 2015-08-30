@@ -26,14 +26,22 @@ use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login_user_document($fid);
-$dog->check_auths($uid, $fid, "is_edit", "is_admin");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+unless( $dog->login ){
+    print "Location: doc_history.cgi?fid=${fid}\n\n";
+    exit;
+}
 
-my $docinfo = $dog->set_document_info($uid, $fid);
-my $is_live = $dog->set_buffer_info($uid, $fid);
+$dog->check_auths("is_edit", "is_admin");
+
+my $docinfo = $dog->set_document_info;
+my $is_live = $dog->set_buffer_info;
 my ($doc_master, $doc_mine, $diff) = 
-    $dog->set_merge_view($uid, $fid);
+    $dog->set_merge_view;
 
 $dog->print_page({
     'fid'      => $fid,

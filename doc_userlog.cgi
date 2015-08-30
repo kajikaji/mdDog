@@ -26,24 +26,32 @@ use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login_user_document($fid);
-$dog->check_auths($uid, $fid, "is_edit", "is_admin");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+unless( $dog->login ){
+    print "Location: doc_history.cgi?fid=${fid}\n\n";
+    exit;
+}
+
+$dog->check_auths("is_edit", "is_admin");
 
 #コミット処理
 if ($dog->qParam('commit')) {
     my $comment = $dog->qParam('comment');
-    $dog->fix_md_buffer($uid, $fid, $comment);
+    $dog->fix_md_buffer($comment);
 }
 
 #バッファリセット
 if( $dog->qParam('resetBuffer') ){
-    $dog->reset_buffer($uid, $fid);
+    $dog->reset_buffer;
 }
 
-my $loglist = $dog->set_my_log($uid, $fid);
-my $docinfo = $dog->set_document_info($uid, $fid);
-my $is_live = $dog->set_buffer_info($uid, $fid);
+my $loglist = $dog->set_my_log;
+my $docinfo = $dog->set_document_info;
+my $is_live = $dog->set_buffer_info;
 
 $dog->print_page({
     'fid'     => $fid,

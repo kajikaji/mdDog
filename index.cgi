@@ -27,7 +27,7 @@ use mdDog;
 use MYUTIL;
 
 my $dog = mdDog->new();
-$dog->setup_config();
+$dog->init();
 my $uid = $dog->login();
 
 my $ope = $dog->qParam('unuse')?'unuse'

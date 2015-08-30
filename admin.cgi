@@ -26,7 +26,7 @@ use mdDog::Admin;
 use Data::Dumper;
 
 my $dog = mdDog::Admin->new();
-$dog->setup_config();
+$dog->init();
 my $uid = $dog->login_for_admin();
 unless( $uid ){  #管理者でない場合、index.cgiにリダイレクト
   print "Location: index.cgi\n\n";

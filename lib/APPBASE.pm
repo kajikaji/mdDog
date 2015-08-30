@@ -30,90 +30,82 @@ use Teng::Schema::Loader;
 use constant TRUE => 1;
 use constant FALSE => 0;
 
-use DEFINE;
 use SCONFIG;
 use MYUTIL;
 
 sub new {
-  my $pkg = shift;
-  my $dir = shift;
+    my $pkg = shift;
+    my $dir = shift;
 
-  my $relative = "";
-  if($dir){
-    $dir =~ s/^\/(.*)$/$1/;
-    foreach(split(/\//, $dir)){
-      $relative .= "../";
+    my $relative = "";
+    if( defined($dir) ){
+        $dir =~ s/^\/(.*)$/$1/;
+        foreach(split(/\//, $dir)){
+            $relative .= "../";
+        }
     }
-  }
 
-  my $hash = {
-    q           => new CGI,
-    s           => undef,      #CGI::Session
-    cookie      => undef,
-    cginame     => undef,
-    basename    => undef,
-    sessiondir  => "${relative}sess/",
-    templatedir  => "${relative}tmpl/",
-    tmplfile    => undef,
-    tmpl_error  => "error.tmpl",
-    t           => undef,
+    my $hash = {
+        q           => new CGI,
+        s           => undef,      #CGI::Session
+        cookie      => undef,
+        cginame     => undef,
+        basename    => undef,
+        sessiondir  => "${relative}sess/",
+        templatedir => "${relative}tmpl/",
+        relative    => $relative,
+        tmplfile    => undef,
+        tmpl_error  => "error.tmpl",
+        t           => undef,
 
-    dbh         => undef,
-    dsn         => undef,       # you must edit into 'SCONFIG';
-    duser       => undef,       # you must edit into 'SCONFIG';
-    dpass       => undef,       # you must edit into 'SCONFIG';
-    teng        => undef,
-  };
+        dbh         => undef,
+        dsn         => undef,       # you must edit into 'SCONFIG';
+        duser       => undef,       # you must edit into 'SCONFIG';
+        dpass       => undef,       # you must edit into 'SCONFIG';
+        teng        => undef,
+    };
 
-  $hash = DEFINE::param($hash, $relative);
-  $hash = SCONFIG::param($hash);
+    my $cginame  = $0;
+    $cginame     =~ s/.*\///g;
+    my $basename = $cginame;
+    $basename    =~ s/\..+//g;
+    $hash->{cginame}  = $cginame;
+    $hash->{basename} = $basename;
+    $hash->{tmplfile} = $basename . '.tmpl';
 
-  return bless $hash, $pkg;
+    $hash = SCONFIG::param($hash);
+    return bless $hash, $pkg;
 }
 
 # =============================================================================#
 # OUTLINE : 基本アプリ用の初期設定メソッド
 # RETURN  : TRUE/FALSE
 # =============================================================================#
-sub setup_config {
-  my $self = shift;
-  my $tmplfile = shift;
+sub init {
+    my $self = shift;
 
-  my $cginame = $0;
-  $cginame =~ s/.*\///g;
-  my $basename = $cginame;
-  $basename =~ s/\..+//g;
+    #セッションの準備
+    $self->{s} = CGI::Session->new("driver:File",
+                                    $self->{q},
+                                   {Directory => $self->{sessiondir}});
+    $self->{s}->expire('+1h');
+    $self->add_cookie("CGISESSID", $self->{s}->id);
 
-  $self->{cginame} = $cginame;
-  $self->{basename} = $basename;
+    #テンプレートの準備
+    $self->_default_tmpl();
 
-  #セッションの準備
-  $self->{s} = new CGI::Session("driver:File", $self->{q}, {Directory=>$self->{sessiondir}});
-  $self->{s}->expire('+1h');
-  $self->add_cookie("CGISESSID", $self->{s}->id);
+    #DBの準備
+    $self->_db_connect() if($self->{dsn} && $self->{duser} && $self->{dpass});
 
-  #テンプレートの準備
-  $self->setupTmpl($tmplfile);
-
-  #DBの準備
-  $self->connectDb() if($self->{dsn} && $self->{duser} && $self->{dpass});
-
-  return TRUE;
+    return TRUE;
 }
 
 # =============================================================================#
 # OUTLINE : テンプレートの設定準備
 # RETURN  : NONE
 # =============================================================================#
-sub setupTmpl {
+sub _default_tmpl {
     my $self     = shift;
-    my $tmplfile = shift;
-
-    if($tmplfile) {
-        $self->{tmplfile} = $tmplfile ;
-    } else {
-        $self->{tmplfile} = $self->{basename} . '.tmpl';
-    }
 
     $self->{t} = {
         maintitle      => $self->{maintitle},
@@ -140,7 +132,7 @@ sub setupTmpl {
 sub print_page {
   my $self  = shift;
 
-  $self->destroy();
+  $self->_db_destroy();
 
   my $tmplfile;
   if($self->{t}->{error}){
@@ -158,7 +150,7 @@ sub print_page {
 # OUTLINE : DB接続
 # RETURN  : NONE
 # =============================================================================#
-sub connectDb {
+sub _db_connect {
     my $self = shift;
 
     $self->{dbh} = DBI->connect_cached(
@@ -170,6 +162,18 @@ sub connectDb {
         dbh       => $self->{dbh},
         namespace => 'mdDog::DB'
     );
+}
+
+# =============================================================================#
+# OUTLINE : DB接続の破棄
+# RETURN  : NONE
+# =============================================================================#
+sub _db_destroy {
+    my $self = shift;
+
+    if($self->{dbh}->{Active}) {    #DBコネクションがあったら
+        $self->{dbh}->disconnect;   #DBコネクションの破棄
+    }
 }
 
 # =============================================================================#
@@ -201,17 +205,6 @@ sub errorMessage {
     $tmplobj->process($self->{tmplfile}, $self->{t} ) || die;
     exit();
   }
-}
-# =============================================================================#
-# OUTLINE : DB接続の破棄
-# RETURN  : NONE
-# =============================================================================#
-sub destroy {
-    my $self = shift;
-
-    if($self->{dbh}->{Active}) {    #DBコネクションがあったら
-        $self->{dbh}->disconnect;   #DBコネクションの破棄
-    }
 }
 
 # =============================================================================#

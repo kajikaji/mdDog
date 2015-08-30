@@ -6,7 +6,7 @@ use SQL;
 use model::User;
 
 sub get_document_users {
-    my ($self, $fid) = @_;
+    my ($self) = @_;
     my @users;
     my @unallows;
 
@@ -29,7 +29,7 @@ sub get_document_users {
     $sth->finish();
 
     $sth = $self->{dbh}->prepare(SQL::document_unallow_users);
-    $sth->execute($fid);
+    $sth->execute($self->{fid});
     while( my $row = $sth->fetchrow_hashref() ){
         my $user = mdDog::model::User->new();
         $user->{uid}      = $row->{id};
@@ -46,13 +46,13 @@ sub get_document_users {
 # @summary ドキュメントの名称を変更
 #
 sub change_doc_name {
-    my ($self, $fid, $doc_name)     = @_;
-    return 0 unless($fid && $doc_name);
+    my ($self, $doc_name)     = @_;
+    return 0 unless( $doc_name );
 
     $self->{teng}->update('docx_infos' => {
         doc_name => $doc_name
     }, {
-        id => $fid
+        id => $self->{fid}
     });
 
     $self->dbCommit();

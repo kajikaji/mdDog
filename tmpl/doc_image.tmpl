@@ -31,7 +31,7 @@
 	      [% FOREACH image IN images %]
 	      <li>
 	        <div class="Info"><input type="checkbox" name="select_image" value="[% image %]"> [% image %]</div>
-	        <img src="plugin/image_viewer.cgi?image=[% image %]&fid=[% fid %]&uid=[% uid %]&tmp=1&thumbnail=1">
+	        <img src="plugin/image_viewer.cgi?image=[% image %]&fid=[% fid %]&uid=[% userinfo.uid %]&tmp=1&thumbnail=1">
 	      </li>
 	      [% END %]
         </ul>

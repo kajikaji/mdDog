@@ -12,43 +12,40 @@ use constant THUMBNAIL_SIZE => 150;
 # @summary MDドキュメントで管理している画像一覧を取得
 #
 sub set_md_image{
-    my ($self, $uid, $fid) = @_;
-    return unless($uid);
+    my ($self) = @_;
+    return unless( $self->{userinfo} );
 
-    my $imgdir = "$self->{repodir}/${fid}/image";
+    my $imgdir = "$self->{repodir}/$self->{fid}/image";
     unless(-d $imgdir){
         mkdir $imgdir, 0774 || die "can't make image directory.";
     }
 
-    $self->{git}->attach_local_tmp($uid);
+    $self->{git}->attach_local_tmp($self->{userinfo}->{uid});
     my @images = glob "$imgdir/*";
     $self->{git}->detach_local();
 
     my @imgpaths;
     foreach (@images) {
         my $path = $_;
-        $path =~ s#$self->{repodir}/${fid}/image/(.*)$#$1#g;
+        $path =~ s#$self->{repodir}/$self->{fid}/image/(.*)$#$1#g;
         push @imgpaths, $path;
     }
 
     return \@imgpaths;
-
-#    $self->{t}->{images} = \@imgpaths;
-#    $self->{t}->{uid}    = $self->{s}->param("login");
 }
 
 # @summary 画像をアップロードしてユーザーの編集バッファにコミット
 #
 sub upload_image {
-    my ($self, $uid, $fid) = @_;
-    return 0 unless($fid && $uid);
+    my ($self) = @_;
+    return 0 unless( $self->{userinfo}->{uid} );
 
     my $hF       = $self->{q}->upload('imagefile');
     my $filename = basename($hF);
 
-    $self->{git}->attach_local_tmp($uid, 1);
+    $self->{git}->attach_local_tmp($self->{userinfo}->{uid}, 1);
 
-    my $imgdir   = "$self->{repodir}/${fid}/image";
+    my $imgdir   = "$self->{repodir}/$self->{fid}/image";
     unless(-d $imgdir){
         mkdir $imgdir, 0774 || die "can't make image directory.";
     }
@@ -57,7 +54,7 @@ sub upload_image {
     move ($tmppath, $filepath) || die "Upload Error!. $filepath";
     close($hF);
 
-    my $thumbnail = $self->_add_thumbnail($fid, $filename);
+    my $thumbnail = $self->_add_thumbnail($self->{fid}, $filename);
 
     my $author = $self->_get_author($self->{s}->param('login'));
     $self->{git}->add_image($filepath, $author);
@@ -71,14 +68,12 @@ sub upload_image {
 # @summary 画像を削除
 #
 sub delete_image {
-    my ($self, $uid, $fid) = @_;
-    return 0 unless($uid && $fid);
+    my ($self, $selected) = @_;
+    return 0 unless( $self->{userinfo}->{uid} );
 
-    my @selected = ($self->qParam('select_image'));
-
-    $self->{git}->attach_local_tmp($uid);
-    my $author = $self->_get_author($self->{s}->param('login'));
-    $self->{git}->delete_image([@selected], $author);
+    $self->{git}->attach_local_tmp($self->{userinfo}->{uid});
+    my $author = $self->_get_author($self->{userinfo}->{uid});
+    $self->{git}->delete_image([@$selected], $author);
     $self->{git}->detach_local();
     push @{$self->{t}->{message}->{info}}, "画像を削除しました";
     return 1;

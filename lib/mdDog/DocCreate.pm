@@ -1,4 +1,4 @@
-package mdDog::Doc::Create;
+package mdDog::DocCreate;
 
 use strict; no strict "subs";
 use parent mdDog::Doc;

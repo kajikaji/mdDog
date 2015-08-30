@@ -10,7 +10,7 @@ use mdDog::API;
 
 my $dog    = mdDog::API->new('api');
 my $fid    = $dog->qParam('fid');
-$dog->setup_config($fid);
+$dog->init($fid);
 my $uid    = $dog->login();
 my $action = $dog->qParam('action');
 $dog->check_auths($uid, $fid, "is_owned", "is_admin");

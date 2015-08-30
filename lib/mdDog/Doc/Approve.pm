@@ -6,7 +6,7 @@ use parent mdDog::Doc;
 # @summary ドキュメントのログを取得(承認者用)
 #
 sub set_user_log {
-    my ($self, $uid, $fid) = @_;
+    my ($self) = @_;
 
     my @userary;
     my $gitctrl    = $self->{git};
@@ -34,8 +34,8 @@ sub set_user_log {
 # @summary 承認するために指定したリヴィジョンまでの履歴を取得してテンプレートにセット
 #
 sub set_approve_list {
-    my ($self, $uid, $fid, $user, $revision) = @_;
-    return unless($uid && $fid && $revision && $user); # NULL CHECK
+    my ($self, $user, $revision) = @_;
+    return unless($self->{userinfo}->{uid} && $revision && $user); # NULL CHECK
 
     my $branch = "$self->{repo_prefix}${user}";
     my @logs;
@@ -57,8 +57,8 @@ sub set_approve_list {
 # @summary 指定のユーザーの指定のリヴィジョンを承認して共有化
 #
 sub doc_approve {
-    my ($self, $uid, $fid, $user, $revision) = @_;
-    return unless($uid && $fid && $revision && $user); # NULL CHECK
+    my ($self, $user, $revision) = @_;
+    return unless($self->{userinfo}->{uid} && $revision && $user); # NULL CHECK
 
     $self->{git}->approve($user, $revision);
 }

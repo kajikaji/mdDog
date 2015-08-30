@@ -25,7 +25,7 @@ use lib './lib/', './src';
 use mdDog::Profile;
 
 my $dog = mdDog::Profile->new();
-$dog->setup_config();
+$dog->init();
 my $uid = $dog->login();
 unless( $uid ){
     print "Location: index.cgi\n\n";

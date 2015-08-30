@@ -22,16 +22,10 @@ package mdDog;
 
 use strict; no strict "subs";
 use parent APPBASE;
-use Git::Wrapper;
-use Data::Dumper;
-#use File::Copy;
-#use File::Basename;
 use File::Path;
-use Date::Manip;
 use Text::Markdown::MdDog qw/markdown paragraph_html paragraph_raw alter_paragraph paragraphs/;
 use Cwd;
 use Image::Magick;
-use JSON;
 use MYUTIL;
 use GitCtrl;
 use OutlineCtrl;
@@ -44,14 +38,24 @@ use model::DocGroup;
 # @summary constructor
 #
 sub new {
-    my $pkg   = shift;
-    my $base  = $pkg->SUPER::new(@_);
+    my ($pkg, $dir) = @_;
+    my $base  = $pkg->SUPER::new($dir);
 
     my $hash  = {
+        maintitle   => 'mdDog',
+        subtitle    => '',
+        description => 'is a MarkDown Document system On Git',
+        author      => 'gm2bv',
+        copyright   => 'gm2bv <gm2bv2001@gmail.com>',
+        program     => 'mdDog',
+        version     => 20150416,
+        company     => '',
+        repodir     => "$base->{relative}work",
+        paging_top  => 3,
+
         repo_prefix => "user_",
         git         => undef,
         outline     => undef,
-
         filename    => undef,
     };
     @{$base}{keys %{$hash}} = values %{$hash};
@@ -61,14 +65,8 @@ sub new {
 
 # @summary need to call at first
 #
-sub setup_config {
-    my ($self, $fid) = @_;
-
-    if( $fid ){
-        my $workdir = "$self->{repodir}/" . $fid;
-        $self->{git}     = GitCtrl->new($workdir);
-        $self->{outline} = OutlineCtrl->new($workdir);
-    }
+sub init {
+    my ($self) = @_;
 
     if( join(' ', $self->{q}->param()) =~ m/.*page.*/ ){
         $self->add_cookie('INDEXPAGE', $self->qParam('page'), "+ 2hour");
@@ -81,7 +79,7 @@ sub setup_config {
         $self->add_cookie('INDEXGROUP', $self->qParam('group'), "+ 2hour");
     }
 
-    $self->SUPER::setup_config();
+    $self->SUPER::init;
 }
 
 # @summary ログイン処理
@@ -147,55 +145,6 @@ sub print_page {
 }
 
 
-# @summary
-#  - ユーザーが編集・承認を行なうページへのログインを行なう
-#  - 条件を満たさないと適宜ページにリダイレクトする
-#
-sub login_user_document {
-  my ($self, $fid) = @_;
-
-  unless($fid) {
-      print "Location: index.cgi\n\n";
-      exit();
-  }
-  my $uid;
-  if( my $uid = $self->login() ){
-      return $uid;
-  }
-
-  print "Location: doc_history.cgi?fid=${fid}\n\n";
-  exit();
-}
-
-# @summary 権限チェック
-#
-sub check_auths {
-    my ($self, $uid, $fid)  = @_;
-
-    if( $uid ){
-        my $sth = $self->{dbh}->prepare(SQL::auth_info);
-        $sth->execute($fid, $uid);
-        if( my $row = $sth->fetchrow_hashref() ){
-            $self->{userinfo}->set_docACL($row, $uid);
-        }
-        $sth->finish();
-    }
-
-    foreach (@_) {
-        return if( $_ =~ m/all/ );
-        return if( $_ =~ m/is_edit/    && $self->{userinfo}->is_Editable  );
-        return if ( $_ =~ m/is_owned/  && $self->{userinfo}->is_Owned     );
-        return if ( $_ =~ m/is_approve/ && $self->{userinfo}->is_Approval );
-        return if ( $_ =~ m/is_admin/  && $self->{userinfo}->is_Admin     );
-    }
-    if ( $fid ){
-        print "Location: doc_history.cgi?fid=${fid}\n\n";
-    } else {
-        print "Location: index.cgi\n\n";
-    }
-    exit();
-}
-
 # @summary 登録されたドキュメント一覧の取得してテンプレートにセット
 #
 sub listup_documents {
@@ -205,10 +154,10 @@ sub listup_documents {
     my @infos;
     my ($sql, $sql_cnt);
 
-    if( $uid ){
-        $sql     = SQL::list_for_index($uid, $style,
+    if( $self->{userinfo} ){
+        $sql     = SQL::list_for_index($self->{userinfo}->{uid}, $style,
                                    $offset, $self->{paging_top}, $group);
-        $sql_cnt = SQL::document_list($uid, $style, $group);
+        $sql_cnt = SQL::document_list($self->{userinfo}->{uid}, $style, $group);
     }else{ #ログインなし
         $sql     = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list_without_login($group);
@@ -231,7 +180,7 @@ sub listup_documents {
 
             my $info = mdDog::model::Docinfo->new();
             $info->set_row($_);
-            $info->{is_owned}  = $uid && $_->{created_by}==${uid}?1:0;
+            $info->{is_owned}  = $uid && $_->{created_by}==$self->{userinfo}->{uid}?1:0;
             $info->{file_size} = -s $self->{repodir} . "/$_->{id}/$_->{file_name}";
             $info->{last_updated_at} = $logs->[0]->format_datetime;
 
@@ -383,10 +332,10 @@ sub print_image {
         $imgpath = "$self->{repodir}/${fid}/thumb/${image}";
     }
 
-    if($uid && $tmp){
-        $self->{git}->attach_local_tmp($uid);
+    if($self->{userinfo} && $tmp){
+        $self->{git}->attach_local_tmp(${uid});
     }else{
-        $self->{git}->attach_local($uid);
+        $self->{git}->attach_local(${uid});
     }
 
     if( -f $imgpath ){

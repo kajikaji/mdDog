@@ -22,10 +22,10 @@
 
 use strict;no strict "refs";
 use lib './lib', './src';
-use mdDog::Doc::Create;
+use mdDog::DocCreate;
 
-my $dog = mdDog::Doc::Create->new();
-$dog->setup_config();
+my $dog = mdDog::DocCreate->new();
+$dog->init();
 my $uid = $dog->login();
 unless( $uid ){
     $dog->{t}->{error} = "この操作はログインする必要があります<br>doc_create.cgi";

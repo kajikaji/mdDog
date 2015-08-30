@@ -11,7 +11,7 @@ use MYUTIL;
 
 my $dog    = mdDog::API->new('api');
 my $fid    = $dog->qParam('fid');
-$dog->setup_config($fid);
+$dog->init($fid);
 my $uid    = $dog->login();
 my $action = $dog->qParam('action');
 my $num    = $dog->qParam('num');

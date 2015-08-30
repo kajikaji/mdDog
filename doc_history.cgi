@@ -26,9 +26,13 @@ use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login();
-$dog->check_auths($uid, $fid, "all");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+$dog->login();
+$dog->check_auths("all");
 
 unless( $fid ){
     my $error = "ドキュメントが指定されずにアクセスされました";
@@ -40,7 +44,7 @@ unless( $fid ){
 
 my $user       = $dog->qParam('user');
 my $ver        = $dog->qParam('revision');
-my $docinfo    = $dog->set_document_info($uid, $fid);
+my $docinfo    = $dog->set_document_info;
 my $sharedlist = $dog->set_document_log();
 
 $dog->print_page({

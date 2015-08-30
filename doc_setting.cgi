@@ -26,22 +26,29 @@ use mdDog::Doc::Setting;
 
 my $dog = mdDog::Doc::Setting->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login_user_document($fid);
-$dog->check_auths($uid, $fid, "is_owned", "is_admin");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+unless( $dog->login ){
+    print "Location: doc_history.cgi?fid=${fid}\n\n";
+    exit;
+}
+
+$dog->check_auths("is_owned", "is_admin");
 
 if( $dog->qParam("change_name") ){
     #ドキュメントの名前変更
     my $doc_name = $dog->qParam('doc_name');
-    $dog->change_doc_name($fid, $doc_name);
+    $dog->change_doc_name($doc_name);
 }
 
 my %parts;
-my ($users, $unallows) = $dog->get_document_users($fid);
+my ($users, $unallows) = $dog->get_document_users;
 $parts{users}          = $users;
 $parts{unallow_users}  = $unallows;
-
-$parts{docinfo} = $dog->set_document_info($uid, $fid);
+$parts{docinfo}        = $dog->set_document_info;
 
 $dog->print_page(\%parts);
 exit();

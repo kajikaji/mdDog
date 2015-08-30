@@ -9,7 +9,7 @@ use lib '../lib', '../src';
 use mdDog::API;
 
 my $dog = mdDog::API->new('api');
-$dog->setup_config();
+$dog->init();
 $dog->login();
 exit() unless( $dog->{user}->{is_admin} );
 

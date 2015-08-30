@@ -26,26 +26,33 @@ use mdDog::Doc::Approve;
 
 my $dog = mdDog::Doc::Approve->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login_user_document($fid);
-$dog->check_auths($uid, $fid, "is_approve", "is_admin");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+unless( $dog->login ){
+    print "Location: doc_history.cgi?fid=${fid}\n\n";
+    exit;
+}
+
+$dog->check_auths("is_approve", "is_admin");
 my %parts;
 
 #承認処理
 if( $dog->qParam('approve') ){
     my $user     = $dog->qParam("user");
     my $revision = $dog->qParam("revision");
-    $dog->doc_approve($uid, $fid, $user, $revision);
+    $dog->doc_approve($user, $revision);
 }elsif( $dog->qParam('approve_pre') ){ # 確認
     my $user     = $dog->qParam("user");
     my $revision = $dog->qParam("revision");
-    $parts{loglist} = $dog->set_approve_list(
-        $uid, $fid, $user, $revision);
+    $parts{loglist} = $dog->set_approve_list($user, $revision);
     $parts{approve_pre} = 1;
 }
 
-$parts{userlist} = $dog->set_user_log($uid, $fid);
-$parts{docinfo}  = $dog->set_document_info($uid, $fid);
+$parts{userlist} = $dog->set_user_log;
+$parts{docinfo}  = $dog->set_document_info;
 
 $dog->print_page(\%parts);
 exit();

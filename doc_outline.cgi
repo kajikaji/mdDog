@@ -26,9 +26,13 @@ use mdDog::Doc;
 
 my $dog = mdDog::Doc->new();
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
-my $uid = $dog->login();
-$dog->check_auths($uid, $fid, "all");
+unless( $fid ){
+    print "Location: index.cgi\n\n";
+    exit;
+}
+$dog->init($fid);
+$dog->login();
+$dog->check_auths("all");
 
 unless( $fid ){
     my $error = "mdドキュメントが指定されていません";
@@ -38,8 +42,9 @@ unless( $fid ){
     exit();
 }
 
-my ($loglist, $contents, $docs) = $dog->set_master_outline($fid);
-my $docinfo = $dog->set_document_info($uid, $fid);
+my ($loglist, $contents, $docs)
+            = $dog->set_master_outline;
+my $docinfo = $dog->set_document_info;
 
 $dog->print_page({
     'fid'      => $fid,

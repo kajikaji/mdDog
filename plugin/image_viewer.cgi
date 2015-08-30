@@ -24,13 +24,13 @@
 
 use strict; no strict "refs";
 use lib '../lib', '../src';
-use mdDog;
+use mdDog::Doc;
 use MYUTIL;
 
-my $dog = mdDog->new('/plugin');
+my $dog = mdDog::Doc->new('/plugin');
 my $fid = $dog->qParam('fid');
 return unless($fid);
-$dog->setup_config($fid);
+$dog->init($fid);
 my $uid = $dog->login();
 
 my $image     = $dog->qParam('image');

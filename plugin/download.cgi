@@ -26,7 +26,7 @@ use mdDog;
 
 my $dog = mdDog->new('/plugin');
 my $fid = $dog->qParam('fid');
-$dog->setup_config($fid);
+$dog->init($fid);
 my $rev = $dog->qParam('revision');
 
 exit() unless($fid);
