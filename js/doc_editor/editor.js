@@ -8,7 +8,7 @@ define(['editBufferParagraphCtrl', 'editBufferDivideCtrl'],
     var editor = function(){
         this.mdDoc     = $('.BufferEdit.Markdown .Document');
         this.fid       = getParam('fid');
-        this.api_clear = 'api/bufferClear.cgi';
+        this.api_clear = 'api/docEditor.cgi';
     };
 
     editor.prototype = {
@@ -43,7 +43,8 @@ define(['editBufferParagraphCtrl', 'editBufferDivideCtrl'],
                 url  : this.api_clear,
                 type : 'POST',
                 data : {
-                    fid : this.fid
+                    fid : this.fid,
+                    action : 'bufferclear',
                 },
                 timeout: 5000
             }).done($.proxy(function(res){

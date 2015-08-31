@@ -3,7 +3,7 @@
 define(function(){
     var merge = function(fid){
         this.fid = fid;
-        this.api = 'api/merge.cgi';
+        this.api = 'api/docEditor.cgi';
     };
     merge.prototype = {
         init: function(){
@@ -53,7 +53,8 @@ define(function(){
                 type : 'POST',
                 data : {
                     fid : this.fid,
-                    doc : doc
+                    doc : doc,
+                    action: 'merge',
                 },
                 timeout: 5000
             }).done(function(res){

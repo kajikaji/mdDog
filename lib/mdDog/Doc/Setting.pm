@@ -11,7 +11,7 @@ sub get_document_users {
     my @unallows;
 
     my $sth = $self->{dbh}->prepare(SQL::document_auth_infos);
-    $sth->execute($fid);
+    $sth->execute($self->{fid});
     while( my $row = $sth->fetchrow_hashref() ){
         my $user = mdDog::model::User->new(
             uid          => $row->{uid},

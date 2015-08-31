@@ -2,7 +2,7 @@
 
 define(['docSettingView'], function(view){
     var docCtrl = function(fid){
-        this.api = "api/documentManager.cgi";
+        this.api = "api/docManage.cgi";
         this.fid = fid;
     };
     docCtrl.prototype = {

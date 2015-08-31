@@ -20,12 +20,13 @@ define(function(){
             if(user === null) user = 0;
 
             $.ajax({
-                url  : 'api/revisionViewer.cgi',
+                url  : 'api/docViewer.cgi',
                 type : 'POST',
                 data : {
                     'fid'     : fid,
                     'user'    : user,
                     'revision': revision,
+                    'action'  : 'show',
                 }
             }).done($.proxy(this.show, this));
         },

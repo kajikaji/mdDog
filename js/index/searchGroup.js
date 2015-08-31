@@ -3,7 +3,6 @@
 define(function(){
     var searchGroup = function(obj){
         this.obj = obj;
-        this.api      = 'api/searchGroups.cgi';
     };
     searchGroup.prototype = {
         init: function(){

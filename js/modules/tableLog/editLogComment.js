@@ -4,7 +4,7 @@ define(function(){
     var editLogComment = function(fid, revision){
         this.fid = fid;
         this.revision = revision;
-        this.api = 'api/bufferLogEdit.cgi';
+        this.api = 'api/docEditor.cgi';
         
     };
     editLogComment.prototype = {

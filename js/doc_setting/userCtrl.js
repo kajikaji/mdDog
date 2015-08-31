@@ -2,7 +2,7 @@
 
 define(['docSettingView'],function(view){
     var userCtrl = function(fid){
-        this.api = "api/userManager.cgi";
+        this.api = "api/docManage.cgi";
         this.fid = fid;
     };
     userCtrl.prototype = {

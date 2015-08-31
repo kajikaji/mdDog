@@ -8,7 +8,7 @@ define(function(){
         this.src      = obj;
         this.fid      = fid;
         this.formtmpl = 'editform';
-        this.api      = 'api/mdEditor.cgi';
+        this.api      = 'api/docEditor.cgi';
 
         this.id;
         this.elmId;

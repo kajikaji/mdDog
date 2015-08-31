@@ -19,12 +19,13 @@ define(function(){
             var dist     = $(target).data('dist');
 
             $.ajax({
-                url  : 'api/diffViewer.cgi',
+                url  : 'api/docViewer.cgi',
                 type : 'POST',
                 data : {
                     'fid'     : fid,
                     'revision': revision,
                     'dist'    : dist,
+                    'action'  : 'diff',
                 }
             }).done($.proxy(this.show, this));
         },

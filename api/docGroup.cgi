@@ -6,24 +6,25 @@
 
 use strict;no strict "refs";
 use lib '../lib', '../src';
-use mdDog::API;
+use mdDog::Doc::API;
 
-my $dog = mdDog::API->new('api');
+my $dog = mdDog::Doc::API->new('api');
 my $fid = $dog->qParam('fid');
+return unless( $fid );
 $dog->init($fid);
-my $uid = $dog->login();
-$dog->check_auths($uid, $fid, "is_edit", "is_admin");
+$dog->login();
+$dog->check_auths("is_edit", "is_admin");
 
 print "Content-type: application/json; charset=utf-8\n\n";
 if( $ENV{'REQUEST_METHOD'} eq 'GET' ){
-    print $dog->get_doc_groups($fid);
+    print $dog->get_doc_groups;
 }elsif( $ENV{'REQUEST_METHOD'} eq 'POST' ){
     if( my $search = $dog->qParam('search') ){
         print $dog->search_groups($search);
     }
     if( $dog->qParam('action') eq 'editGroup' ){
         my @groups = $dog->qParam('groups[]');
-        print $dog->add_groups($uid, $fid, \@groups);
+        print $dog->add_groups(\@groups);
     }
 }
 

@@ -53,7 +53,7 @@ define(function(){
                 }
                 var mdId = Number($(obj).attr('id').substr(2));
                 $.ajax({
-                    url: 'api/outlineEditor.cgi',
+                    url: 'api/docOutlineEditor.cgi',
                     type: 'POST',
                     data: {
                         fid: getParam('fid'),
