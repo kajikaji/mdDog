@@ -10,12 +10,12 @@ define(function(){
         init: function (){
             this.page = 0;
             $('.Outline').find('.History.Page').each($.proxy(function(i, elm){
-                this.adjustPage("History", elm);
+                this.adjustHistoryPage(elm);
             }, this));
 
             this.page = 0;
             $('.Outline').find('.Contents.Page').each($.proxy(function(i, elm){
-                this.adjustPage("Contents", elm);
+                this.adjustContentsPage("Contents", elm);
             }, this));
 
             this.page = 0;
@@ -95,15 +95,43 @@ define(function(){
         },
 
         //目次・履歴のページ分割
-        adjustPage : function(className, obj){
+        adjustHistoryPage : function(obj){
             var innerHeight = $(obj).height();
             var pageHeight  = $(obj).outerHeight();  //297mm
             var cHeight     = 0.0;
-            var newPage     = $('<div>').addClass(className + ' Page P' + this.page);
-            $('.' + className + '.Page').after(newPage);
+            var subject     = $(obj).find('> .Subject').clone();
+            var tbl         = $(obj).find('> .Gitlog').clone();
+            tbl.find('tbody').children().remove();
+            var page        = 0;
+            var newPage     = $('<div>').addClass('History Page P' + page);
+            $('.History.Page').after(newPage.append(subject.clone()).append(tbl.clone()));
+
+            $(obj).find('> .Gitlog tbody tr').each($.proxy(function(i, elm){
+                var objHeight = $(elm).outerHeight(true);
+                if( objHeight + cHeight > innerHeight ){
+                    this.addPage('History', page, 0, elm);
+                    cHeight = objHeight;
+                    page++;
+                    $('.History.Page.P' + page).append(subject.clone()).append(tbl);
+                }
+                else{
+                    cHeight += objHeight;
+                }
+                $('.History.Page.P' + page + ' .Gitlog tbody').append($(elm).clone());
+            } ,this));
+	        $(obj).remove();
+        },
+
+        //目次のページ分割
+        adjustContentsPage : function(obj){
+            var innerHeight = $(obj).height();
+            var pageHeight  = $(obj).outerHeight();  //297mm
+            var cHeight     = 0.0;
+            var newPage     = $('<div>').addClass('Contents Page P' + this.page);
+            $('.Contents.Page').after(newPage);
 
             $(obj).children().each($.proxy(function(i, elm){
-                cHeight = this.recursivePage(className, elm, innerHeight, pageHeight, cHeight, 0);
+                cHeight = this.recursivePage("Contents", elm, innerHeight, pageHeight, cHeight, 0);
             } ,this));
 	        $(obj).remove();
         },
