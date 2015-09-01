@@ -1,7 +1,7 @@
 package mdDog::DocCreate;
 
 use strict; no strict "subs";
-use parent mdDog::Doc;
+use parent mdDog;
 
 # @summary MDファイルを作る
 #
