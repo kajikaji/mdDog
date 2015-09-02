@@ -42,12 +42,12 @@ my $grouplist = $dog->listup_groups();
 my $page      = $dog->param_or_cookie("index", "page");
 my $style     = $dog->param_or_cookie("index", "style");
 my $group     = $dog->param_or_cookie("index", "group");
-my ($infos, $count, $paging) = 
+my ($docs, $count, $paging) = 
     $dog->listup_documents($uid, $page, $style, $group);
 
 $dog->print_page({
     'grouplist'      => $grouplist,
-    'infos'          => $infos,
+    'docs'           => $docs,
     'document_count' => $count,
     'paging'         => $paging,
     'style'          => $style,

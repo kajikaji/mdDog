@@ -8,10 +8,10 @@ define(function(){
         init: function(){
             this.obj.on('change', $.proxy(function(){
                 var group = this.obj.val();
-                var href = "index.cgi?group=" + group;
+                var href = "index.cgi?group=" + group + '&page=0';
                 var style = getParam('style');
                 if( style ){
-                    href += "&style" + style;
+                    href += "&style=" + style;
                 }
                 location.href = href;
             }, this));

@@ -159,7 +159,8 @@ sub listup_documents {
                                    $offset, $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list($self->{userinfo}->{uid}, $style, $group);
     }else{ #ログインなし
-        $sql     = SQL::list_for_index_without_login($offset, $self->{paging_top}, $group);
+        $sql     = SQL::list_for_index_without_login($offset,
+                                                     $self->{paging_top}, $group);
         $sql_cnt = SQL::document_list_without_login($group);
     }
 
@@ -170,7 +171,7 @@ sub listup_documents {
         foreach( @$ary ) {
             my $logs = GitCtrl->new("$self->{repodir}/$_->{id}")->get_shared_logs();
 
-            if( $prev_obj && $prev_obj->{fid} eq $_->{id} ){
+            if( defined($prev_obj) && $prev_obj->{fid} eq $_->{id} ){
                 push @{$prev_obj->{groups}}, mdDog::model::DocGroup->new(
                     gid  => $_->{gid},
                     name => $_->{group_title}

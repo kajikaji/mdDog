@@ -28,10 +28,10 @@
     </ul>
   [%END %]
 
-  [%IF infos %]
+  [%IF document_count > 0 %]
   <table class="DocList">
     <tbody>
-      [%FOREACH info IN infos %]
+      [%FOREACH info IN docs %]
       <tr class="[%IF info.is_used %]Active[%ELSE %]Nonactive[%END %] [%IF info.deleted_at %]Deleted[%END %]" id="doc[% info.fid %]">
         <td class="Info">
 
