@@ -5,7 +5,7 @@ define(function(){
         this.fid      = fid;
         this.revision = revision;
         this.callback = callback;
-        this.api = 'api/docEditor.cgi';
+        this.api      = 'api/docEditor.cgi';
     };
     rollbackBuffer.prototype = {
         init: function() {

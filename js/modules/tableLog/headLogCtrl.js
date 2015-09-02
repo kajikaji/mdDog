@@ -25,19 +25,20 @@ define(['rollbackBuffer', 'editLogComment'], function(Rollback,EditLog){
             var revision = headLog.attr('id').substr(3);
 //            var logId   = '#Log' + res.revision;
             var nextLog = headLog.next('tr.Log');
-            var nextId = nextLog.attr('id').substr(3);
                 
             headLog.slideUp(100, function(){
                 headLog.remove();
             });
 
-            $(nextLog).find('td.Ctrl ul li').removeClass('CtrlTemp');
-
-            this.rollback = new Rollback(this.fid, nextId, $.proxy(this.reduceLog,this));
-            this.rollback.init();
-            this.editlog = new EditLog(this.fid, nextId);
-            this.editlog.init();
-
+            if( nextLog ){
+                $(nextLog).find('td.Ctrl ul li').removeClass('CtrlTemp');
+                var nextId = nextLog.attr('id').substr(3);
+                this.rollback = new Rollback(this.fid, nextId,
+                                             $.proxy(this.reduceLog,this));
+                this.rollback.init();
+                this.editlog = new EditLog(this.fid, nextId);
+                this.editlog.init();
+            }
 	        this.updateMessage();
         },
         updateMessage: function(){
