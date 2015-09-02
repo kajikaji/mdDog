@@ -55,8 +55,8 @@ if( $dog->qParam('resetBuffer') ){
 }
 
 my $document = $dog->set_buffer_raw;
-my $docinfo = $dog->set_document_info;
-my $is_live = $dog->set_buffer_info;
+my $docinfo  = $dog->get_document_info;
+my $is_live  = $dog->set_buffer_info;
 
 $dog->print_page({
     'fid'     => $fid,

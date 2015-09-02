@@ -55,7 +55,7 @@ sub check_auths {
 
 # @summary ドキュメント情報を取得してテンプレートにセット
 #
-sub set_document_info {
+sub get_document_info {
     my ($self) = @_;
 
     my $logs  = $self->{git}->get_shared_logs();
@@ -176,18 +176,23 @@ sub reset_buffer {
     return $gitctrl->reset_buffer($self->{userinfo}->{uid});
 }
 
+
+sub get_master_loglist{
+    my ($self) = @_;
+
+    return $self->{git}->get_shared_logs(undef, "DESC");
+}
+
 # @summary
 #  - MDドキュメントをアウトライン用整形してテンプレートにセットする
 #  - またドキュメントの情報もテンプレートにセットする
 #
-sub set_master_outline{
+sub get_master_outline{
     my ($self) = @_;
 
     $self->_set_filename($self->{fid});
     my $filepath = "$self->{repodir}/$self->{fid}/$self->{filename}";
     my $gitctrl  = $self->{git};
-
-    my $loglist = $gitctrl->get_shared_logs(undef, "DESC");
 
     #ドキュメントの読み込み
     $gitctrl->attach_local();
@@ -240,7 +245,7 @@ sub set_master_outline{
         push @$docs, $dat;
     }
 
-    return ($loglist, \@contents, $docs);
+    return (\@contents, $docs);
 }
 
 # @summary ログインユーザー自身の編集バッファのログの取得

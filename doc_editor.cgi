@@ -52,7 +52,7 @@ if( $dog->qParam('resetBuffer') ){
 my ($markdown, $raws) = $dog->set_buffer_md;
 my $divides = $dog->set_outline_buffer;
 my $is_live = $dog->set_buffer_info;
-my $docinfo = $dog->set_document_info;
+my $docinfo = $dog->get_document_info;
 
 $dog->print_page({
     'fid'      => $fid,

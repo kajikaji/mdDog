@@ -48,7 +48,7 @@ my %parts;
 my ($users, $unallows) = $dog->get_document_users;
 $parts{users}          = $users;
 $parts{unallow_users}  = $unallows;
-$parts{docinfo}        = $dog->set_document_info;
+$parts{docinfo}        = $dog->get_document_info;
 
 $dog->print_page(\%parts);
 exit();

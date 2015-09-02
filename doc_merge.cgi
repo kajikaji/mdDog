@@ -38,7 +38,7 @@ unless( $dog->login ){
 
 $dog->check_auths("is_edit", "is_admin");
 
-my $docinfo = $dog->set_document_info;
+my $docinfo = $dog->get_document_info;
 my $is_live = $dog->set_buffer_info;
 my ($doc_master, $doc_mine, $diff) = 
     $dog->set_merge_view;

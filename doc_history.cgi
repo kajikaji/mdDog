@@ -44,7 +44,7 @@ unless( $fid ){
 
 my $user       = $dog->qParam('user');
 my $ver        = $dog->qParam('revision');
-my $docinfo    = $dog->set_document_info;
+my $docinfo    = $dog->get_document_info;
 my $sharedlist = $dog->set_document_log();
 
 $dog->print_page({
