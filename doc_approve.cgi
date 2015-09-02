@@ -52,7 +52,7 @@ if( $dog->qParam('approve') ){
 }
 
 $parts{userlist} = $dog->set_user_log;
-$parts{docinfo}  = $dog->set_document_info;
+$parts{docinfo}  = $dog->get_document_info;
 
 $dog->print_page(\%parts);
 exit();

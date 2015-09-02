@@ -42,9 +42,10 @@ unless( $fid ){
     exit();
 }
 
-my ($loglist, $contents, $docs)
-            = $dog->set_master_outline;
-my $docinfo = $dog->set_document_info;
+my $loglist = $dog->get_master_loglist;
+my ($contents, $docs)
+            = $dog->get_master_outline;
+my $docinfo = $dog->get_document_info;
 
 $dog->print_page({
     'fid'      => $fid,

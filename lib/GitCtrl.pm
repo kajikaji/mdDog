@@ -96,7 +96,7 @@ sub get_shared_logs {
     }
 
     if( $desc ){
-        @logs = sort{$a->{date} cmp $b->{date}} @logs;
+        @logs = sort{$a->format_datetime cmp $b->format_datetime} @logs;
     }
 
     return \@logs;

@@ -55,7 +55,7 @@ if( $dog->qParam('resetBuffer') ){
     $dog->reset_buffer;
 }
 
-my $docinfo = $dog->set_document_info;
+my $docinfo = $dog->get_document_info;
 my $is_live = $dog->set_buffer_info;
 
 $dog->print_page({
