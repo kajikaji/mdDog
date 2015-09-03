@@ -25,8 +25,8 @@ require.config({
 require(['leftMenu'], function(LeftMenu){
 
     if( $('.BufferEditMenu').length ){
-        var leftMenu = new LeftMenu();
-        leftMenu.movableMenu($('.BufferEditMenu'));
+        var leftMenu = new LeftMenu($('.BufferEditMenu'));
+        leftMenu.movableMenu();
         if( $('#jumpTopBtn').length ){
             leftMenu.jumpToTop($('#jumpTopBtn'));
         }

@@ -1,7 +1,9 @@
 'use strict'
 
 define(["leftMenu"], function(LeftMenu){
-    var outlineViewer = function(){};
+    var outlineViewer = function(menu){
+        this.menu = menu;
+    };
     outlineViewer.prototype = $.extend({}, LeftMenu.prototype, {
         init: function(){
             this.movableMenu($('.OutlineMenu'));

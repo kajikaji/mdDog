@@ -21,7 +21,7 @@ require(['mdOutline', 'outlineViewer', 'modalLoading'],
     var loading = new ModalLoading();
     loading.show($.proxy(function(){
         new Outline().init();
-        new OutlineViewer().init();
+        new OutlineViewer($('.OutlineMenu')).init();
         loading.remove();
     }, this));
 });
