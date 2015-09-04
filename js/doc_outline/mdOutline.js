@@ -15,7 +15,7 @@ define(function(){
 
             this.page = 0;
             $('.Outline').find('.Contents.Page').each($.proxy(function(i, elm){
-                this.adjustContentsPage("Contents", elm);
+                this.adjustContentsPage(elm);
             }, this));
 
             this.page = 0;
