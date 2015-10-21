@@ -148,6 +148,25 @@ sub outline_add_divide {
     return $json->encode({action => 'divide',num => ${num}});
 }
 
+# @summary アウトラインで改ページを加える
+#
+sub master_outline_add_divide {
+    my ($self, $num) = @_;
+    return unless($self->{userinfo});
+
+    my $author = $self->_get_author($self->{s}->param('login'));
+    my $comment = "INSERT DIVIDE";
+
+    $self->{git}->attach_info();
+    $self->{outline}->init();
+    $self->{outline}->insert_divide($num, $comment);
+    $self->{git}->commit_info($self->{outline}->{filename}, $author);
+    $self->{git}->detach_local();
+
+    my $json = JSON->new();
+    return $json->encode({action => 'divide',num => ${num}});
+}
+
 ############################################################
 #[API] アウトラインに設定された改ページを削除する
 #

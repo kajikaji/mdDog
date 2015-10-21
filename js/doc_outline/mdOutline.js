@@ -154,8 +154,45 @@ define(function(){
                     newpage = 0;
                 }
 
-                $(".Document.Page.P" + this.page).append($(elm).clone());
+                var num = $(elm).attr('id');
+                if( num !== undefined ){
+                    num = num.substr(8);
+                    var ctrlDivide = $('<div>').addClass('Divide').attr('data-num', num);
+                    ctrlDivide.append($('<span>').addClass('typcn typcn-info-large'));
+                    $(".Document.Page.P" + this.page).append(ctrlDivide);
+                    ctrlDivide.hover(
+                        $.proxy(function(){
+                            this.showOutlineInfoMenu(ctrlDivide);
+                            ctrlDivide.addClass('Active');
+                        }, this),
+                        $.proxy(function(){
+                            this.hideOutlineInfoMenu();
+                            ctrlDivide.removeClass('Active');
+                        }, this)
+                    );
+                    ctrlDivide.on('click', $.proxy(function(){
+                        var num = ctrlDivide.data('num');
+                        $.ajax({
+                            url: 'api/docOutlineEditor.cgi',
+                            type: 'POST',
+                            data: {
+                                fid: getParam('fid'),
+                                action: 'mdivide',
+                                num: num,
+                            }
+                        }).done($.proxy(function(){
+                            var curPage = ctrlDivide.parent('.Document.Page');
+                            var newPage = $('<div>').addClass('Document Page');
 
+                            ctrlDivide.nextAll().each(function(){
+                                newPage.append($(this));
+                            });
+                            curPage.after(newPage);
+                        }, this));
+                    }, this));
+                }
+
+                $(".Document.Page.P" + this.page).append($(elm).clone());
                 var objHeight = $(elm).outerHeight(true);
                 if( cHeight + objHeight >= innerHeight ){
                     cHeight = objHeight;
@@ -163,6 +200,7 @@ define(function(){
                 }else{
                     cHeight += objHeight;
                 }
+
             }, this));
 
             $(".Document.Page.P" + this.page).append(this.pageFooter(this.page + 1));
@@ -195,7 +233,22 @@ define(function(){
                     });
                 });
             });
+        },
+
+        showOutlineInfoMenu: function(obj){
+            var menu = $("<div>").addClass("Description").attr('id', 'description');
+            var pos = obj.offset();
+            menu.text('ここで改行');
+            menu.css({left : pos.left + obj.width(), top : pos.top + obj.height(), display: 'none' });
+            $('body').prepend(menu);
+            menu.fadeIn(200);
+        },
+        hideOutlineInfoMenu: function(){
+            $('#description').fadeOut(200, function(){
+                $('#description').remove();
+            });
         }
+        
     };
 
     return mdOutline;

@@ -1085,6 +1085,12 @@ ul.OutlineMenu {
       content: "";
       height: 20px; }
 
+.Description {
+  position: absolute;
+  z-index: 100;
+  border: 1px solid #888;
+  background-color: #fff; }
+
 section.Outline {
   padding: 30px 0;
   margin-left: 180px;
@@ -1169,6 +1175,16 @@ section.Outline {
       font-size: 10pt;
       line-height: 1.4em;
       border: 1px solid #888; }
+    section.Outline .Document .Divide {
+      position: absolute;
+      left: 0;
+      padding: 0;
+      margin: 0;
+      cursor: pointer; }
+      section.Outline .Document .Divide .typcn {
+        color: #aaaaaa; }
+      section.Outline .Document .Divide.Active .typcn {
+        color: #0000cd; }
     section.Outline .Document .PageFooter {
       position: absolute;
       top: 280mm;

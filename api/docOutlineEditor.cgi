@@ -28,6 +28,9 @@ if($ENV{'REQUEST_METHOD'} eq 'GET'){
     elsif($action eq 'undivide' &&  $num ){
         print $dog->outline_remove_divide($num);
     }
+    elsif($action eq 'mdivide' &&  $num){
+        print $dog->master_outline_add_divide($num);
+    }
 }
 
 exit();

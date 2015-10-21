@@ -2,6 +2,7 @@ $corner_b     :5px;
 $orange       :#ff7f50;
 $blue         :#0000cd;
 $green        :#006400;
+$gray         :#aaaaaa;
 $black        :#000;
 $border_color :#888;
 $link_color   :#4169e0;
@@ -1229,6 +1230,13 @@ ul.OutlineMenu{
   @include bufferEditMenu();
 }
 
+.Description{
+    position: absolute;
+    z-index: 100;
+    border: 1px solid $border_color;
+    background-color: #fff;
+}
+
 section.Outline{
     padding: 30px 0;
     margin-left: $left_menu_width;
@@ -1257,18 +1265,33 @@ section.Outline{
 
     .Document{
         @include markdown-set();
-	position: relative;
+	    position: relative;
 
-	.PageFooter{
-	    position: absolute;
+        .Divide{
+            position: absolute;
+            left: 0;
+            padding: 0;
+            margin: 0;
+
+            cursor: pointer;
+            .typcn{
+                color: $gray;
+            }
+            &.Active .typcn{
+                color: $blue;
+            }
+        }
+
+	    .PageFooter{
+	        position: absolute;
             top: 280mm;
-	    width: 190mm;
+	        width: 190mm;
             box-sizing: border-box;
 
-	    .PageNum{
-		text-align: center;
+	        .PageNum{
+		        text-align: center;
+	        }
 	    }
-	}
     }
     .Cover{
 	    text-align: center;
